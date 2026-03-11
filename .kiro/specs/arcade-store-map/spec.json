@@ -1,0 +1,22 @@
+{
+  "feature_name": "arcade-store-map",
+  "created_at": "2026-03-11T18:26:51Z",
+  "updated_at": "2026-03-12T04:04:00Z",
+  "language": "ja",
+  "phase": "completed",
+  "approvals": {
+    "requirements": {
+      "generated": true,
+      "approved": true
+    },
+    "design": {
+      "generated": true,
+      "approved": true
+    },
+    "tasks": {
+      "generated": true,
+      "approved": true
+    }
+  },
+  "ready_for_implementation": true
+}
