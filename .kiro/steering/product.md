@@ -28,7 +28,7 @@
 - 初期は静的データとして管理（動的更新なし）
 - データソース:
   - ラスサバ: https://bandainamco-am.co.jp/am/vg/jojols/location/
-  - イニブ: https://gundam-vs.jp/extreme/ac2ob/location/
+  - イニブ: https://gundam-vs.jp/extreme/ac2ib/location/
 
 ---
 _パターンと目的に焦点。機能の網羅的リストではない_
