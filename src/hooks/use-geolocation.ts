@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 
 interface GeolocationState {
   location: { lat: number; lng: number } | null
@@ -56,6 +56,15 @@ export function useGeolocation(): UseGeolocationReturn {
       { enableHighAccuracy: true, timeout: 10000 }
     )
   }, [])
+
+  useEffect(() => {
+    if (!navigator.geolocation || !navigator.permissions) return
+    navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+      if (result.state === 'granted') {
+        locate()
+      }
+    })
+  }, [locate])
 
   return { ...state, locate }
 }
