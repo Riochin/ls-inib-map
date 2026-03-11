@@ -1,5 +1,8 @@
 # LS × EXVS マップ
 
+<img width="1376" height="768" alt="image" src="https://github.com/user-attachments/assets/6a8279c9-e9a3-487f-9bca-eaab710cdc29" />
+
+
 [![Deploy](https://img.shields.io/badge/demo-Vercel-black)](https://ls-inib-map.vercel.app/)
 
 ラスサバ（ジョジョの奇妙な冒険 ラストサバイバー）とイニブ（機動戦士ガンダム EXTREME VS.2 INFINITEBOOST）の設置店舗を地図上で検索できる Web アプリです。
