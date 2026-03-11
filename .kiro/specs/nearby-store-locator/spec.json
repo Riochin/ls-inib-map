@@ -1,0 +1,22 @@
+{
+  "feature_name": "nearby-store-locator",
+  "created_at": "2026-03-12T04:10:00Z",
+  "updated_at": "2026-03-12T04:18:00Z",
+  "language": "ja",
+  "phase": "completed",
+  "approvals": {
+    "requirements": {
+      "generated": true,
+      "approved": true
+    },
+    "design": {
+      "generated": true,
+      "approved": true
+    },
+    "tasks": {
+      "generated": true,
+      "approved": true
+    }
+  },
+  "ready_for_implementation": true
+}
