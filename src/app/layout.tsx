@@ -4,6 +4,16 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'ラスサバ・イニブ 設置店舗マップ',
   description: 'ジョジョの奇妙な冒険ラストサバイバー・機動戦士ガンダムEXVS2の設置店舗を地図で検索',
+  openGraph: {
+    title: 'ラスサバ・イニブ 設置店舗マップ',
+    description: 'ジョジョの奇妙な冒険ラストサバイバー・機動戦士ガンダムEXVS2の設置店舗を地図で検索',
+    siteName: 'ラスサバ・イニブ 設置店舗マップ',
+    locale: 'ja_JP',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
 }
 
 export const viewport: Viewport = {
