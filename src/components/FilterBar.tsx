@@ -15,7 +15,7 @@ const FILTERS: { value: FilterOption; label: string }[] = [
 
 export function FilterBar({ activeFilter, onFilterChange }: FilterBarProps) {
   return (
-    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 flex gap-2 bg-white/90 backdrop-blur-sm rounded-full px-2 py-1.5 shadow-lg">
+    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 flex gap-2 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-lg whitespace-nowrap">
       {FILTERS.map(({ value, label }) => (
         <button
           key={value}

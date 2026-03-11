@@ -1,19 +1,23 @@
 'use client'
 
-import { useState, useCallback } from 'react'
-import { Map } from '@vis.gl/react-google-maps'
+import { useState, useCallback, useEffect, useRef } from 'react'
+import { Map, useMap } from '@vis.gl/react-google-maps'
 import type { Store } from '@/types/store'
 import { StoreMarker } from './StoreMarker'
+import { CurrentLocationMarker } from './CurrentLocationMarker'
 
 interface MapViewProps {
   stores: Store[]
+  userLocation?: { lat: number; lng: number } | null
 }
 
 const DEFAULT_CENTER = { lat: 35.68, lng: 139.77 }
 const DEFAULT_ZOOM = 10
 
-export function MapView({ stores }: MapViewProps) {
+export function MapView({ stores, userLocation }: MapViewProps) {
+  const map = useMap()
   const [openStoreId, setOpenStoreId] = useState<string | null>(null)
+  const prevLocationRef = useRef<{ lat: number; lng: number } | null>(null)
 
   const handleOpen = useCallback((storeId: string) => {
     setOpenStoreId(storeId)
@@ -22,6 +26,18 @@ export function MapView({ stores }: MapViewProps) {
   const handleClose = useCallback(() => {
     setOpenStoreId(null)
   }, [])
+
+  useEffect(() => {
+    if (!map || !userLocation) return
+    if (
+      prevLocationRef.current &&
+      prevLocationRef.current.lat === userLocation.lat &&
+      prevLocationRef.current.lng === userLocation.lng
+    ) return
+    prevLocationRef.current = userLocation
+    map.panTo(userLocation)
+    map.setZoom(14)
+  }, [map, userLocation])
 
   return (
     <Map
@@ -42,6 +58,7 @@ export function MapView({ stores }: MapViewProps) {
           onClose={handleClose}
         />
       ))}
+      {userLocation && <CurrentLocationMarker position={userLocation} />}
     </Map>
   )
 }
