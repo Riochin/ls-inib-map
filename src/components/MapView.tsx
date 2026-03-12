@@ -109,7 +109,7 @@ function InfoWindowContent({ store, onClose }: { store: Store; onClose: () => vo
       </button>
       <h3 className="font-bold text-base leading-snug mb-1 break-words whitespace-normal">{store.name}</h3>
       <p className="text-xs text-gray-600 mb-1">{store.address}</p>
-      <div className="flex gap-1">
+      <div className="flex gap-1 mb-1.5">
         {store.games.map((game) => (
           <span
             key={game}
@@ -120,6 +120,17 @@ function InfoWindowContent({ store, onClose }: { store: Store; onClose: () => vo
           </span>
         ))}
       </div>
+      <a
+        href={`https://www.google.com/maps/dir/?api=1&destination=${store.lat},${store.lng}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
+          <path d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 002.144-1.64A19.253 19.253 0 0018.75 14C18.75 8.787 14.713 4.75 9.5 4.75S.25 8.787.25 14c0 2.154.848 4.29 2.216 6.11a19.253 19.253 0 004.144 3.601 16.975 16.975 0 002.144 1.64zM9.5 16.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" transform="translate(2.5 -2.5) scale(0.95)" />
+        </svg>
+        経路
+      </a>
     </div>
   )
 }
