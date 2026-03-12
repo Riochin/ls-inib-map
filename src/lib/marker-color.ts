@@ -37,6 +37,22 @@ export function getMarkerTheme(store: Store): ColorTheme {
   return THEMES.gundamOnly
 }
 
+export type ThemeKey = 'both' | 'gundamOnly'
+
+export function getThemeKey(store: Store): ThemeKey {
+  const hasJojo = store.games.includes('jojo-ls')
+  return hasJojo ? 'both' : 'gundamOnly'
+}
+
+export function getThemeByKey(key: ThemeKey): ColorTheme {
+  return THEMES[key]
+}
+
+export const GRADIENT_DEFS: { id: ThemeKey; from: string; to: string }[] = [
+  { id: 'both', from: THEMES.both.gradientFrom, to: THEMES.both.gradientTo },
+  { id: 'gundamOnly', from: THEMES.gundamOnly.gradientFrom, to: THEMES.gundamOnly.gradientTo },
+]
+
 export function getMarkerColor(store: Store): string {
   return getMarkerTheme(store).gradientFrom
 }

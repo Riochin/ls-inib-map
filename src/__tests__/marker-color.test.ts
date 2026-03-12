@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getMarkerColor, getMarkerTheme, getFilterActiveColor, getGameLabel } from '@/lib/marker-color'
+import { getMarkerColor, getMarkerTheme, getFilterActiveColor, getGameLabel, getThemeKey, getThemeByKey, GRADIENT_DEFS } from '@/lib/marker-color'
 import type { Store } from '@/types/store'
 
 function makeStore(games: Store['games']): Store {
@@ -59,6 +59,51 @@ describe('getFilterActiveColor', () => {
     const color = getFilterActiveColor('gundam-exvs')
     expect(color.bg).toBe('bg-blue-600')
     expect(color.text).toBe('text-white')
+  })
+})
+
+describe('getThemeKey', () => {
+  it('両タイトル稼働店舗は"both"を返す', () => {
+    expect(getThemeKey(makeStore(['jojo-ls', 'gundam-exvs']))).toBe('both')
+  })
+
+  it('ラスサバのみ稼働店舗は"both"を返す', () => {
+    expect(getThemeKey(makeStore(['jojo-ls']))).toBe('both')
+  })
+
+  it('イニブのみ稼働店舗は"gundamOnly"を返す', () => {
+    expect(getThemeKey(makeStore(['gundam-exvs']))).toBe('gundamOnly')
+  })
+})
+
+describe('getThemeByKey', () => {
+  it('"both"キーで紫系テーマを返す', () => {
+    const theme = getThemeByKey('both')
+    expect(theme.gradientFrom).toBe('#7B2FBE')
+  })
+
+  it('"gundamOnly"キーで青系テーマを返す', () => {
+    const theme = getThemeByKey('gundamOnly')
+    expect(theme.gradientFrom).toBe('#2563EB')
+  })
+})
+
+describe('GRADIENT_DEFS', () => {
+  it('2つのグラデーション定義を含む', () => {
+    expect(GRADIENT_DEFS).toHaveLength(2)
+  })
+
+  it('bothとgundamOnlyのIDを持つ', () => {
+    const ids = GRADIENT_DEFS.map((d) => d.id)
+    expect(ids).toContain('both')
+    expect(ids).toContain('gundamOnly')
+  })
+
+  it('各定義にfromとtoの色を持つ', () => {
+    for (const def of GRADIENT_DEFS) {
+      expect(def.from).toMatch(/^#/)
+      expect(def.to).toMatch(/^#/)
+    }
   })
 })
 
