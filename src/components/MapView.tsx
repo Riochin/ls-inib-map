@@ -30,6 +30,10 @@ export function MapView({ stores, userLocation }: MapViewProps) {
     setOpenStoreId(null)
   }, [])
 
+  const handleMapClick = useCallback(() => {
+    setOpenStoreId(null)
+  }, [])
+
   useEffect(() => {
     if (!map || !userLocation) return
     if (
@@ -55,7 +59,7 @@ export function MapView({ stores, userLocation }: MapViewProps) {
       gestureHandling="greedy"
       disableDefaultUI
       zoomControl
-      onClick={handleClose}
+      onClick={handleMapClick}
       style={{ width: '100%', height: '100%' }}
     >
       {/* Shared SVG gradient definitions */}
@@ -82,9 +86,9 @@ export function MapView({ stores, userLocation }: MapViewProps) {
       {openStore && (
         <InfoWindow
           position={{ lat: openStore.lat, lng: openStore.lng }}
-          onClose={handleClose}
+          headerDisabled
         >
-          <InfoWindowContent store={openStore} />
+          <InfoWindowContent store={openStore} onClose={handleClose} />
         </InfoWindow>
       )}
 
@@ -93,11 +97,17 @@ export function MapView({ stores, userLocation }: MapViewProps) {
   )
 }
 
-function InfoWindowContent({ store }: { store: Store }) {
+function InfoWindowContent({ store, onClose }: { store: Store; onClose: () => void }) {
   const theme = getMarkerTheme(store)
   return (
-    <div className="p-1 min-w-[200px]">
-      <h3 className="font-bold text-sm mb-1">{store.name}</h3>
+    <div className="p-1 min-w-[200px] max-w-[260px] relative pr-5">
+      <button
+        onClick={onClose}
+        className="absolute top-0 right-0 w-5 h-5 flex items-center justify-center text-gray-400 hover:text-gray-600 text-sm leading-none"
+      >
+        ✕
+      </button>
+      <h3 className="font-bold text-base leading-snug mb-1 break-words whitespace-normal">{store.name}</h3>
       <p className="text-xs text-gray-600 mb-1">{store.address}</p>
       <div className="flex gap-1">
         {store.games.map((game) => (
