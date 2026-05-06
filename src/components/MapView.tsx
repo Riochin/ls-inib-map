@@ -13,8 +13,8 @@ interface MapViewProps {
   userLocation?: { lat: number; lng: number } | null
 }
 
-const DEFAULT_CENTER = { lat: 35.68, lng: 139.77 }
-const DEFAULT_ZOOM = 10
+const DEFAULT_CENTER = { lat: 35.7337, lng: 139.7394 } // namco巣鴨店付近
+const DEFAULT_ZOOM = 15
 
 export function MapView({ stores, userLocation }: MapViewProps) {
   const map = useMap()
