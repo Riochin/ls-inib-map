@@ -89,14 +89,15 @@ describe('getThemeByKey', () => {
 })
 
 describe('GRADIENT_DEFS', () => {
-  it('2つのグラデーション定義を含む', () => {
-    expect(GRADIENT_DEFS).toHaveLength(2)
+  it('3つのグラデーション定義を含む', () => {
+    expect(GRADIENT_DEFS).toHaveLength(3)
   })
 
-  it('bothとgundamOnlyのIDを持つ', () => {
+  it('both・gundamOnly・closedのIDを持つ', () => {
     const ids = GRADIENT_DEFS.map((d) => d.id)
     expect(ids).toContain('both')
     expect(ids).toContain('gundamOnly')
+    expect(ids).toContain('closed')
   })
 
   it('各定義にfromとtoの色を持つ', () => {
