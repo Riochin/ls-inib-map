@@ -7,7 +7,7 @@ interface AddressFilterButtonProps {
 
 export function AddressFilterButton({ isActive, onOpen }: AddressFilterButtonProps) {
   return (
-    <div className="absolute top-4 right-4 z-10">
+    <div className="absolute bottom-24 left-4 z-10">
       <button
         onClick={onOpen}
         className="relative w-14 h-14 bg-white/90 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center hover:bg-white active:bg-gray-100 transition-colors"
