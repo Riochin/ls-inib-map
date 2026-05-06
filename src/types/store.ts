@@ -21,3 +21,30 @@ export interface Store {
 
 /** フィルタ選択肢 */
 export type FilterOption = 'all' | GameTitle
+
+/** 住所パース結果 */
+export interface ParsedAddress {
+  prefecture: string
+  city: string | null
+  ward: string | null
+}
+
+/** 住所フィルタ選択状態 */
+export interface AddressFilter {
+  prefecture: string | null
+  cities: string[]
+  wards: string[]
+}
+
+/** 住所インデックス */
+export interface AddressIndex {
+  prefectureCities: Map<string, string[]>
+  cityWards: Map<string, string[]>
+  storeAddresses: Map<string, ParsedAddress>
+}
+
+export const EMPTY_ADDRESS_FILTER: AddressFilter = {
+  prefecture: null,
+  cities: [],
+  wards: [],
+}
