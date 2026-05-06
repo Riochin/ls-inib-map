@@ -27,9 +27,18 @@ const THEMES = {
     filterActiveBg: 'bg-blue-600',
     filterActiveText: 'text-white',
   },
+  closed: {
+    gradientFrom: '#4B5563',
+    gradientTo: '#9CA3AF',
+    badgeBg: '#4B5563',
+    badgeText: '#FFFFFF',
+    filterActiveBg: 'bg-gray-400',
+    filterActiveText: 'text-white',
+  },
 } as const satisfies Record<string, ColorTheme>
 
 export function getMarkerTheme(store: Store): ColorTheme {
+  if (store.closed) return THEMES.closed
   const hasJojo = store.games.includes('jojo-ls')
   const hasGundam = store.games.includes('gundam-exvs')
   if (hasJojo && hasGundam) return THEMES.both
@@ -37,9 +46,10 @@ export function getMarkerTheme(store: Store): ColorTheme {
   return THEMES.gundamOnly
 }
 
-export type ThemeKey = 'both' | 'gundamOnly'
+export type ThemeKey = 'both' | 'gundamOnly' | 'closed'
 
 export function getThemeKey(store: Store): ThemeKey {
+  if (store.closed) return 'closed'
   const hasJojo = store.games.includes('jojo-ls')
   return hasJojo ? 'both' : 'gundamOnly'
 }
@@ -51,6 +61,7 @@ export function getThemeByKey(key: ThemeKey): ColorTheme {
 export const GRADIENT_DEFS: { id: ThemeKey; from: string; to: string }[] = [
   { id: 'both', from: THEMES.both.gradientFrom, to: THEMES.both.gradientTo },
   { id: 'gundamOnly', from: THEMES.gundamOnly.gradientFrom, to: THEMES.gundamOnly.gradientTo },
+  { id: 'closed', from: THEMES.closed.gradientFrom, to: THEMES.closed.gradientTo },
 ]
 
 export function getMarkerColor(store: Store): string {

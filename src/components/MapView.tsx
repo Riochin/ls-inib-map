@@ -100,7 +100,7 @@ export function MapView({ stores, userLocation }: MapViewProps) {
 function InfoWindowContent({ store, onClose }: { store: Store; onClose: () => void }) {
   const theme = getMarkerTheme(store)
   return (
-    <div className="p-1 min-w-[200px] max-w-[260px] relative pr-5">
+    <div className={`p-1 min-w-[200px] max-w-[260px] relative pr-5${store.closed ? ' bg-gray-100 rounded' : ''}`}>
       <button
         onClick={onClose}
         className="absolute top-0 right-0 w-5 h-5 flex items-center justify-center text-gray-400 hover:text-gray-600 text-sm leading-none"
@@ -131,6 +131,9 @@ function InfoWindowContent({ store, onClose }: { store: Store; onClose: () => vo
         </svg>
         経路
       </a>
+      {store.closed && (
+        <span className="absolute bottom-1 right-1 text-xs text-gray-400 font-medium">閉店</span>
+      )}
     </div>
   )
 }

@@ -4,7 +4,7 @@ export const stores: Store[] = [
   // === 東京都 ===
   // 両タイトル稼働
   { id: 'tokyo-001', name: '新宿スポーツランド本館', address: '東京都新宿区新宿3-22-12', lat: 35.693126, lng: 139.701829, games: ['jojo-ls', 'gundam-exvs'] },
-  { id: 'tokyo-002', name: 'namco巣鴨', address: '東京都豊島区巣鴨1-15-1 宮田ビルB1・B2F', lat: 35.733184, lng: 139.739923, games: ['jojo-ls', 'gundam-exvs'] },
+  { id: 'tokyo-002', name: 'namco巣鴨よ永遠に', address: '東京都豊島区巣鴨1-15-1 宮田ビルB1・B2F', lat: 35.733184, lng: 139.739923, games: ['jojo-ls', 'gundam-exvs'], closed: true },
   { id: 'tokyo-003', name: 'タイトーステーション新宿南口ゲームワールド', address: '東京都新宿区新宿3-35-8', lat: 35.689921, lng: 139.702309, games: ['jojo-ls', 'gundam-exvs'] },
   { id: 'tokyo-004', name: 'GiGO 総本店', address: '東京都豊島区東池袋1-13-6', lat: 35.729531, lng: 139.71471, games: ['jojo-ls', 'gundam-exvs'] },
   { id: 'tokyo-005', name: 'ゲームサファリ池袋', address: '東京都豊島区東池袋1-42-3 やすだ東池袋店2F', lat: 35.732339, lng: 139.713315, games: ['jojo-ls', 'gundam-exvs'] },

@@ -15,6 +15,8 @@ export interface Store {
   lng: number
   /** 稼働タイトル（1つ以上） */
   games: [GameTitle, ...GameTitle[]]
+  /** 閉店フラグ（省略時は営業中） */
+  closed?: boolean
 }
 
 /** フィルタ選択肢 */
