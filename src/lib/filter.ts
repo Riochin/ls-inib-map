@@ -26,6 +26,15 @@ export function filterStoresByAddress(
   })
 }
 
+export function filterStoresByKeyword(stores: Store[], query: string): Store[] {
+  if (!query.trim()) return stores
+  const tokens = query.trim().toLowerCase().split(/\s+/)
+  return stores.filter((store) => {
+    const target = (store.name + store.address).toLowerCase()
+    return tokens.every((token) => target.includes(token))
+  })
+}
+
 export function filterStoresAll(
   stores: Store[],
   gameFilter: FilterOption,
