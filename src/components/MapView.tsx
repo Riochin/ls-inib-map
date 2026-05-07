@@ -59,6 +59,7 @@ export function MapView({ stores, userLocation }: MapViewProps) {
       gestureHandling="greedy"
       disableDefaultUI
       zoomControl
+      clickableIcons={false}
       onClick={handleMapClick}
       style={{ width: '100%', height: '100%' }}
     >
