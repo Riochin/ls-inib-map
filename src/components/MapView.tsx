@@ -11,12 +11,15 @@ import { useVisibleStores } from '@/hooks/use-visible-stores'
 interface MapViewProps {
   stores: Store[]
   userLocation?: { lat: number; lng: number } | null
+  focusStore?: Store | null
+  onFocusConsumed?: () => void
+  onMapClick?: () => void
 }
 
 const DEFAULT_CENTER = { lat: 35.7337, lng: 139.7394 } // namco巣鴨店付近
 const DEFAULT_ZOOM = 15
 
-export function MapView({ stores, userLocation }: MapViewProps) {
+export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onMapClick }: MapViewProps) {
   const map = useMap()
   const visibleStores = useVisibleStores(stores)
   const [openStoreId, setOpenStoreId] = useState<string | null>(null)
@@ -32,7 +35,8 @@ export function MapView({ stores, userLocation }: MapViewProps) {
 
   const handleMapClick = useCallback(() => {
     setOpenStoreId(null)
-  }, [])
+    onMapClick?.()
+  }, [onMapClick])
 
   useEffect(() => {
     if (!map || !userLocation) return
@@ -45,6 +49,14 @@ export function MapView({ stores, userLocation }: MapViewProps) {
     map.panTo(userLocation)
     map.setZoom(14)
   }, [map, userLocation])
+
+  useEffect(() => {
+    if (!map || !focusStore) return
+    map.panTo({ lat: focusStore.lat, lng: focusStore.lng })
+    map.setZoom(16)
+    setOpenStoreId(focusStore.id)
+    onFocusConsumed?.()
+  }, [map, focusStore, onFocusConsumed])
 
   const openStore = useMemo(
     () => (openStoreId ? stores.find((s) => s.id === openStoreId) ?? null : null),
