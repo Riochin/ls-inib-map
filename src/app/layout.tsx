@@ -28,12 +28,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const gaId = process.env.NEXT_PUBLIC_GA_ID
-
   return (
     <html lang="ja">
       <body>{children}</body>
-      {gaId && <GoogleAnalytics gaId={gaId} />}
+      <GoogleAnalytics gaId="G-9VVXLS9KMZ" />
     </html>
   )
 }
