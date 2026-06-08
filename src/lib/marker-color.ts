@@ -77,13 +77,6 @@ export function getMarkerEmoji(store: Store): string | null {
   return null
 }
 
-export const GRADIENT_DEFS: { id: ThemeKey; from: string; to: string }[] = [
-  { id: 'both', from: THEMES.both.gradientFrom, to: THEMES.both.gradientTo },
-  { id: 'gundamOnly', from: THEMES.gundamOnly.gradientFrom, to: THEMES.gundamOnly.gradientTo },
-  { id: 'closed', from: THEMES.closed.gradientFrom, to: THEMES.closed.gradientTo },
-  { id: 'delisted', from: THEMES.delisted.gradientFrom, to: THEMES.delisted.gradientTo },
-]
-
 export function getMarkerColor(store: Store): string {
   return getMarkerTheme(store).gradientFrom
 }

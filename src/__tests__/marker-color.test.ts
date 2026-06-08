@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getMarkerColor, getMarkerTheme, getFilterActiveColor, getGameLabel, getThemeKey, getThemeByKey, getStoreStatusLabel, getMarkerEmoji, GRADIENT_DEFS } from '@/lib/marker-color'
+import { getMarkerColor, getMarkerTheme, getFilterActiveColor, getGameLabel, getThemeKey, getThemeByKey, getStoreStatusLabel, getMarkerEmoji } from '@/lib/marker-color'
 import type { Store } from '@/types/store'
 
 function makeStore(games: Store['games'], extra: Partial<Store> = {}): Store {
@@ -141,27 +141,6 @@ describe('getThemeByKey', () => {
   it('"gundamOnly"キーで青系テーマを返す', () => {
     const theme = getThemeByKey('gundamOnly')
     expect(theme.gradientFrom).toBe('#2563EB')
-  })
-})
-
-describe('GRADIENT_DEFS', () => {
-  it('4つのグラデーション定義を含む', () => {
-    expect(GRADIENT_DEFS).toHaveLength(4)
-  })
-
-  it('both・gundamOnly・closed・delistedのIDを持つ', () => {
-    const ids = GRADIENT_DEFS.map((d) => d.id)
-    expect(ids).toContain('both')
-    expect(ids).toContain('gundamOnly')
-    expect(ids).toContain('closed')
-    expect(ids).toContain('delisted')
-  })
-
-  it('各定義にfromとtoの色を持つ', () => {
-    for (const def of GRADIENT_DEFS) {
-      expect(def.from).toMatch(/^#/)
-      expect(def.to).toMatch(/^#/)
-    }
   })
 })
 

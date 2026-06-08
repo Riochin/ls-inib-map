@@ -3,10 +3,9 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { Map, useMap, InfoWindow } from '@vis.gl/react-google-maps'
 import type { Store } from '@/types/store'
-import { StoreMarker } from './StoreMarker'
 import { CurrentLocationMarker } from './CurrentLocationMarker'
-import { GRADIENT_DEFS, getMarkerTheme, getGameLabel } from '@/lib/marker-color'
-import { useVisibleStores } from '@/hooks/use-visible-stores'
+import { getMarkerTheme, getGameLabel } from '@/lib/marker-color'
+import { useStoreClusterer } from '@/hooks/use-store-clusterer'
 
 interface MapViewProps {
   stores: Store[]
@@ -21,13 +20,14 @@ const DEFAULT_ZOOM = 15
 
 export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onMapClick }: MapViewProps) {
   const map = useMap()
-  const visibleStores = useVisibleStores(stores)
   const [openStoreId, setOpenStoreId] = useState<string | null>(null)
   const prevLocationRef = useRef<{ lat: number; lng: number } | null>(null)
 
   const handleOpen = useCallback((storeId: string) => {
     setOpenStoreId(storeId)
   }, [])
+
+  const { focusMarker } = useStoreClusterer({ stores, onMarkerClick: handleOpen })
 
   const handleClose = useCallback(() => {
     setOpenStoreId(null)
@@ -52,11 +52,11 @@ export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onM
 
   useEffect(() => {
     if (!map || !focusStore) return
-    map.panTo({ lat: focusStore.lat, lng: focusStore.lng })
-    map.setZoom(16)
+    // クラスタに埋もれた店舗でも個別表示されるよう pan/zoom→de-cluster してから開く
+    focusMarker(focusStore.id)
     setOpenStoreId(focusStore.id)
     onFocusConsumed?.()
-  }, [map, focusStore, onFocusConsumed])
+  }, [map, focusStore, focusMarker, onFocusConsumed])
 
   const openStore = useMemo(
     () => (openStoreId ? stores.find((s) => s.id === openStoreId) ?? null : null),
@@ -75,25 +75,7 @@ export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onM
       onClick={handleMapClick}
       style={{ width: '100%', height: '100%' }}
     >
-      {/* Shared SVG gradient definitions */}
-      <svg width="0" height="0" style={{ position: 'absolute' }}>
-        <defs>
-          {GRADIENT_DEFS.map((g) => (
-            <linearGradient key={g.id} id={`grad-${g.id}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={g.from} />
-              <stop offset="100%" stopColor={g.to} />
-            </linearGradient>
-          ))}
-        </defs>
-      </svg>
-
-      {visibleStores.map((store) => (
-        <StoreMarker
-          key={store.id}
-          store={store}
-          onOpen={handleOpen}
-        />
-      ))}
+      {/* マーカーは useStoreClusterer が命令的に描画する（クラスタリング） */}
 
       {/* Single InfoWindow for the selected store */}
       {openStore && (
