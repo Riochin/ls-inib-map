@@ -10,6 +10,8 @@ const X_HANDLE = 'ls_boushi'
 const X_URL = `https://x.com/${X_HANDLE}`
 const REPO_URL = 'https://github.com/Riochin/ls-inib-map'
 const INFO_REPORT_URL = `https://x.com/intent/post?text=${encodeURIComponent(`@${X_HANDLE} 店舗情報の修正・提供：`)}`
+const TWEET_HASHTAG = 'ラストサバイニブ'
+const TWEET_TEXT = 'ラスサバ・イニブの設置店舗マップ📍'
 
 // --- ブランド/外部リンク用アイコン ---
 
@@ -25,18 +27,6 @@ function GitHubIcon() {
   return (
     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M12 .5C5.37.5 0 5.78 0 12.29c0 5.21 3.438 9.63 8.205 11.19.6.111.82-.254.82-.567 0-.28-.01-1.022-.015-2.005-3.338.711-4.042-1.582-4.042-1.582-.546-1.361-1.333-1.724-1.333-1.724-1.089-.731.083-.716.083-.716 1.205.083 1.84 1.215 1.84 1.215 1.07 1.797 2.807 1.278 3.492.977.108-.76.418-1.279.762-1.573-2.665-.297-5.466-1.302-5.466-5.795 0-1.28.468-2.327 1.235-3.148-.124-.297-.535-1.49.117-3.106 0 0 1.008-.32 3.3 1.202a11.6 11.6 0 013.003-.395c1.02.005 2.047.135 3.006.395 2.29-1.523 3.297-1.202 3.297-1.202.653 1.616.242 2.81.118 3.106.769.821 1.233 1.868 1.233 3.148 0 4.504-2.805 5.494-5.478 5.785.43.36.814 1.07.814 2.157 0 1.557-.014 2.81-.014 3.193 0 .315.216.683.825.567C20.565 21.917 24 17.495 24 12.29 24 5.78 18.627.5 12 .5z" />
-    </svg>
-  )
-}
-
-function ShareIcon() {
-  return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <circle cx="18" cy="5" r="3" />
-      <circle cx="6" cy="12" r="3" />
-      <circle cx="18" cy="19" r="3" />
-      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
     </svg>
   )
 }
@@ -184,36 +174,25 @@ function HowToPage() {
   )
 }
 
-/** ネイティブ共有（Web Share API）。非対応時はURLをクリップボードへコピー */
+/** Xへの投稿（ツイート）。本文・URL・ハッシュタグをプリフィルしてインテントを開く */
 function ShareButton() {
-  const [copied, setCopied] = useState(false)
-
-  const handleShare = async () => {
-    const url = window.location.href
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: 'ラスサバ・イニブ 設置店舗マップ', url })
-      } catch {
-        // 共有キャンセル等は無視
-      }
-      return
-    }
-    try {
-      await navigator.clipboard.writeText(url)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch {
-      // クリップボード不可は無視
-    }
+  const handleTweet = () => {
+    const url = window.location.origin
+    const intent =
+      'https://x.com/intent/post' +
+      `?text=${encodeURIComponent(TWEET_TEXT)}` +
+      `&url=${encodeURIComponent(url)}` +
+      `&hashtags=${encodeURIComponent(TWEET_HASHTAG)}`
+    window.open(intent, '_blank', 'noopener,noreferrer')
   }
 
   return (
     <button
-      onClick={handleShare}
-      className="w-full inline-flex items-center justify-center gap-2 py-2.5 border border-gray-300 rounded-full text-sm font-semibold text-gray-800 hover:bg-gray-50 transition-colors"
+      onClick={handleTweet}
+      className="w-full inline-flex items-center justify-center gap-2 py-2.5 bg-black text-white rounded-full text-sm font-semibold hover:bg-gray-800 transition-colors"
     >
-      <ShareIcon />
-      {copied ? 'URLをコピーしました' : 'このマップを共有'}
+      <XIcon />
+      Xでツイートする
     </button>
   )
 }
