@@ -12,11 +12,6 @@ export interface StoresMeta {
     jojols: string
     gundam: string
   }
-  /** 公式が公表する設置店舗総数（網羅率算出用・任意） */
-  officialTotals?: {
-    jojols: number
-    gundam: number
-  }
 }
 
 /**

@@ -68,8 +68,6 @@ export interface GenerateInput {
   stores: GeocodedStore[]
   /** データ出典URL（公式2サイト） */
   source: StoresMeta['source']
-  /** 公式が公表する設置店舗総数（網羅率算出用・任意） */
-  officialTotals?: StoresMeta['officialTotals']
   /** 最終更新日時として埋め込む生成時刻（ISO 8601・呼び出し側が注入） */
   now: string
 }
@@ -90,7 +88,6 @@ export function generateStoresFile(input: GenerateInput): StoresFile {
     source: input.source,
     stores,
   }
-  if (input.officialTotals) file.officialTotals = input.officialTotals
   return file
 }
 

@@ -15,9 +15,8 @@ const data = storesFile as StoresFile
 /** 設置店舗一覧（read-only） */
 export const stores: Store[] = data.stores
 
-/** データメタ情報（最終更新日時・出典・任意の公式総数） */
+/** データメタ情報（最終更新日時・出典） */
 export const storesMeta: StoresMeta = {
   lastUpdated: data.lastUpdated,
   source: data.source,
-  ...(data.officialTotals ? { officialTotals: data.officialTotals } : {}),
 }

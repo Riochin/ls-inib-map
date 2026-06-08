@@ -20,21 +20,20 @@ export function buildCountLabel(total: number, filtered: number, isFiltered: boo
 }
 
 /**
- * 掲載数と公式総数から網羅率（%・四捨五入）を算出する（Req4.3）。
- * 公式総数が 0 以下なら算出不能として null を返す。
- */
-export function formatCoverageRate(listed: number, official: number): number | null {
-  if (official <= 0) return null
-  return Math.round((listed / official) * 100)
-}
-
-/**
  * ISO 8601 の最終更新日時を日本のユーザー向け文字列に整形する（Req5.3）。
  * 不正・空文字の場合は null を返す（メタ欠落時のグレースフルデグラデーション）。
+ *
+ * 日本向けサービスのため表示は常に JST 固定。タイムゾーンを指定しないと
+ * SSR（UTC サーバー）とクライアント（閲覧者ローカル）で文字列が食い違い、
+ * ハイドレーション不一致や時刻ずれを起こすため `Asia/Tokyo` を明示する。
  */
 export function formatLastUpdated(iso: string): string | null {
   if (!iso) return null
   const date = new Date(iso)
   if (Number.isNaN(date.getTime())) return null
-  return new Intl.DateTimeFormat('ja-JP', { dateStyle: 'medium', timeStyle: 'short' }).format(date)
+  return new Intl.DateTimeFormat('ja-JP', {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+    timeZone: 'Asia/Tokyo',
+  }).format(date)
 }

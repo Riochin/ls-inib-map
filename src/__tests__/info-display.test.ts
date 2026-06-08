@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildCountLabel, formatCoverageRate, formatLastUpdated, DEFAULT_DATA_SOURCE } from '@/lib/info-display'
+import { buildCountLabel, formatLastUpdated, DEFAULT_DATA_SOURCE } from '@/lib/info-display'
 
 describe('buildCountLabel', () => {
   it('非フィルタ時は総数のみを表示する（Req4.1）', () => {
@@ -15,24 +15,17 @@ describe('buildCountLabel', () => {
   })
 })
 
-describe('formatCoverageRate', () => {
-  it('掲載数と公式総数から網羅率（%）を四捨五入で返す（Req4.3）', () => {
-    expect(formatCoverageRate(80, 100)).toBe(80)
-    expect(formatCoverageRate(1, 3)).toBe(33)
-    expect(formatCoverageRate(2, 3)).toBe(67)
-  })
-
-  it('公式総数が0以下なら null を返す（算出不能）', () => {
-    expect(formatCoverageRate(10, 0)).toBeNull()
-    expect(formatCoverageRate(10, -1)).toBeNull()
-  })
-})
-
 describe('formatLastUpdated', () => {
   it('有効なISO日時を日本向けの文字列に整形する（Req5.3）', () => {
     const out = formatLastUpdated('2026-06-08T05:45:00Z')
     expect(out).not.toBeNull()
     expect(out).toContain('2026')
+  })
+
+  it('タイムゾーンを JST 固定で整形する（SSR/クライアントのハイドレーション不一致防止）', () => {
+    // 2026-06-07T20:00:00Z は JST では 2026-06-08 05:00。実行環境のTZに依らず JST で日付が繰り上がる。
+    const out = formatLastUpdated('2026-06-07T20:00:00Z')
+    expect(out).toContain('2026/06/08')
   })
 
   it('不正な日時文字列は null を返す（グレースフルデグラデーション）', () => {

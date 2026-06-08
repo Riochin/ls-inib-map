@@ -95,23 +95,6 @@ describe('generateStoresFile', () => {
     expect(file.stores.map((s) => s.id)).toEqual(['a', 'b', 'c'])
   })
 
-  it('officialTotals は指定時のみ付与する', () => {
-    const withTotals = generateStoresFile({
-      stores: [geocodedStore()],
-      source: SOURCE,
-      officialTotals: { jojols: 100, gundam: 200 },
-      now: '2026-06-08T00:00:00.000Z',
-    })
-    expect(withTotals.officialTotals).toEqual({ jojols: 100, gundam: 200 })
-
-    const without = generateStoresFile({
-      stores: [geocodedStore()],
-      source: SOURCE,
-      now: '2026-06-08T00:00:00.000Z',
-    })
-    expect(without).not.toHaveProperty('officialTotals')
-  })
-
   it('座標が数値でない店舗は例外で中断する（必須フィールド保証）', () => {
     expect(() =>
       generateStoresFile({
@@ -174,10 +157,5 @@ describe('hasMeaningfulDiff', () => {
       lastUpdated: 'different',
     } as StoresFile
     expect(hasMeaningfulDiff(base, reordered)).toBe(false)
-  })
-
-  it('officialTotals の差分は差分ありと判定する', () => {
-    const next: StoresFile = { ...base, officialTotals: { jojols: 1, gundam: 2 } }
-    expect(hasMeaningfulDiff(base, next)).toBe(true)
   })
 })

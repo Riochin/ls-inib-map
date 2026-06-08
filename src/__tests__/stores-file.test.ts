@@ -3,19 +3,13 @@ import type { StoresMeta, StoresFile } from '@/types/stores-file'
 import type { Store } from '@/types/store'
 
 describe('StoresMeta / StoresFile 型', () => {
-  it('StoresMeta は lastUpdated・source を必須、officialTotals を任意で持つ', () => {
+  it('StoresMeta は lastUpdated・source を必須で持つ', () => {
     const meta: StoresMeta = {
       lastUpdated: '2026-06-08T00:00:00.000Z',
       source: { jojols: 'https://example.com/jojo', gundam: 'https://example.com/gundam' },
     }
     expect(meta.lastUpdated).toBe('2026-06-08T00:00:00.000Z')
     expect(meta.source.jojols).toContain('https://')
-
-    const withTotals: StoresMeta = {
-      ...meta,
-      officialTotals: { jojols: 300, gundam: 280 },
-    }
-    expect(withTotals.officialTotals?.jojols).toBe(300)
   })
 
   it('StoresFile はメタ情報＋既存 Store 配列で構成される', () => {
