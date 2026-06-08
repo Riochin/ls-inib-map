@@ -1,15 +1,92 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { getMarkerImage, type MarkerThemeKey } from '@/lib/marker-image'
 
 const STORAGE_KEY = 'ls-exvs-onboarded'
 
-const STEPS: { icon: string; title: string; desc: string }[] = [
-  { icon: '🎮', title: 'タイトルで絞り込み', desc: '画面上部のボタンでラスサバ／イニブを切り替えできます。' },
-  { icon: '🔍', title: '店舗を検索', desc: '右上の検索ボタンから店舗名で探せます。選ぶと地図がその店舗へ移動します。' },
-  { icon: '📍', title: 'エリア・現在地', desc: '左下のボタンで都道府県・市区町村の絞り込みや、現在地への移動ができます。' },
-  { icon: '🔵', title: 'まとまったピン', desc: '密集したピンは数字付きの丸にまとまります。タップ／ズームで個別に開きます。' },
+// --- 実際のボタンと同じアイコン（アプリ本体から流用） ---
+
+function SearchIcon() {
+  return (
+    <svg className="w-5 h-5 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+  )
+}
+
+function AreaIcon() {
+  return (
+    <svg className="w-6 h-6 text-gray-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+    </svg>
+  )
+}
+
+function LocateIcon() {
+  return (
+    <svg className="w-6 h-6 text-blue-600" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M21 3L3 10.53v.98l6.84 2.65L12.48 21h.98L21 3z" />
+    </svg>
+  )
+}
+
+/** 実際のフィルタバーを縮小再現したミニチュア */
+function FilterBarMini() {
+  return (
+    <div className="flex gap-0.5 bg-gray-100 rounded-full px-1 py-0.5">
+      <span className="text-[9px] px-1.5 py-0.5 rounded-full text-gray-500">すべて</span>
+      <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-purple-700 text-white font-semibold">ラスサバ</span>
+      <span className="text-[9px] px-1.5 py-0.5 rounded-full text-gray-500">イニブ</span>
+    </div>
+  )
+}
+
+/** 実際のクラスタバブルを再現したミニチュア */
+function ClusterMini() {
+  return (
+    <span className="w-7 h-7 flex items-center justify-center rounded-full bg-[#7B2FBE] text-white text-[11px] font-bold border-2 border-white shadow">
+      5
+    </span>
+  )
+}
+
+/** ボタン風の白い丸チップでアイコンを囲み、本体ボタンと見た目を揃える */
+function IconChip({ children }: { children: ReactNode }) {
+  return (
+    <span className="w-10 h-10 shrink-0 bg-white rounded-full shadow border border-gray-100 flex items-center justify-center">
+      {children}
+    </span>
+  )
+}
+
+const STEPS: { visual: ReactNode; title: string; desc: string }[] = [
+  {
+    visual: <span className="w-10 shrink-0 flex justify-center"><FilterBarMini /></span>,
+    title: 'タイトルで絞り込み',
+    desc: '画面上部のボタンでラスサバ／イニブを切り替えできます。',
+  },
+  {
+    visual: <IconChip><SearchIcon /></IconChip>,
+    title: '店舗を検索',
+    desc: '右上の検索ボタンから店舗名で探せます。選ぶと地図がその店舗へ移動します。',
+  },
+  {
+    visual: <IconChip><AreaIcon /></IconChip>,
+    title: 'エリアで絞り込み',
+    desc: '左下のボタンで都道府県・市区町村を指定して絞り込めます。',
+  },
+  {
+    visual: <IconChip><LocateIcon /></IconChip>,
+    title: '現在地へ移動',
+    desc: '左下のボタンで現在地を取得し、地図をその位置へ移動します。',
+  },
+  {
+    visual: <span className="w-10 shrink-0 flex justify-center"><ClusterMini /></span>,
+    title: 'まとまったピン',
+    desc: '密集したピンは数字付きの丸にまとまります。タップ／ズームで個別に開きます。',
+  },
 ]
 
 const LEGEND: { theme: MarkerThemeKey; label: string }[] = [
@@ -54,10 +131,10 @@ function OnboardingModal({ onClose }: { onClose: () => void }) {
         <h2 className="text-lg font-bold text-gray-800 mb-1">使い方</h2>
         <p className="text-xs text-gray-500 mb-4">ラスサバ・イニブの設置店舗マップへようこそ</p>
 
-        <ul className="flex flex-col gap-3 mb-5">
+        <ul className="flex flex-col gap-3.5 mb-5">
           {STEPS.map((step) => (
-            <li key={step.title} className="flex gap-3 items-start">
-              <span className="text-xl leading-none mt-0.5 w-6 text-center shrink-0">{step.icon}</span>
+            <li key={step.title} className="flex gap-3 items-center">
+              {step.visual}
               <div>
                 <p className="text-sm font-semibold text-gray-800">{step.title}</p>
                 <p className="text-xs text-gray-600 leading-snug">{step.desc}</p>
@@ -73,7 +150,7 @@ function OnboardingModal({ onClose }: { onClose: () => void }) {
               const img = getMarkerImage(theme)
               return (
                 <li key={theme} className="flex items-center gap-3">
-                  <span className="w-9 flex justify-center shrink-0">
+                  <span className="w-10 flex justify-center shrink-0">
                     {/* 実際のマーカー画像を使った凡例 */}
                     <img src={img.url} alt="" className="h-7 w-auto" />
                   </span>
