@@ -1,0 +1,59 @@
+name: 設置店舗データ自動更新
+
+# 定期スケジュールと手動起動で、ビルド前の静的データ生成パイプラインを実行する（Req2.5）。
+# ランタイムのAPIサーバー/データベースは導入せず、生成物 stores.json を再生成して
+# 差分がある場合のみコミット・プッシュする。push 成功で Vercel の自動デプロイが発火する。
+on:
+  schedule:
+    # 毎週水曜 09:00 JST（= 00:00 UTC）
+    - cron: '0 0 * * 3'
+  workflow_dispatch:
+
+# stores.json / ジオコードキャッシュの commit & push に必要（Req2.5）
+permissions:
+  contents: write
+
+# 同時実行を直列化し、push 競合を防ぐ（実行中ジョブはキャンセルしない）
+concurrency:
+  group: update-stores
+  cancel-in-progress: false
+
+jobs:
+  update-stores:
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: Node.js をセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: 依存関係をインストール
+        run: npm ci
+
+      # スクレイプ→マージ→ジオコード→生成を連結。失敗時は process.exitCode=1 で
+      # このステップが失敗し、後続のコミット段へ進まない（既存データを破壊しない・Req2.6）。
+      - name: データ更新パイプラインを実行
+        env:
+          # 地図表示用とは分離したジオコーディング専用キー（CI Secret 管理）
+          GOOGLE_GEOCODING_API_KEY: ${{ secrets.GOOGLE_GEOCODING_API_KEY }}
+        run: npx tsx scripts/pipeline.ts
+
+      # 実体差分がある場合のみコミット・プッシュする。差分ゲートにより stores.json は
+      # 実体差分が無ければ書き換わらないため、git の差分検知で「差分なし＝コミットなし」を
+      # 担保する（Req2.7）。ジオコードキャッシュの追記分も合わせてコミット対象に含める。
+      - name: 差分があればコミット・プッシュ
+        run: |
+          if [ -z "$(git status --porcelain src/data/stores.json scripts/cache/geocode.json)" ]; then
+            echo '[workflow] 実体差分なし: コミットをスキップします'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/data/stores.json scripts/cache/geocode.json
+          git commit -m 'chore: 設置店舗データを自動更新'
+          git push
+          echo '[workflow] 設置店舗データを更新しました'
