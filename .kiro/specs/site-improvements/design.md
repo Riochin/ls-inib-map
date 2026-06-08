@@ -408,7 +408,7 @@ function hasMeaningfulDiff(current: StoresFile, next: StoresFile): boolean
 | Requirements | 2.5, 2.6 |
 
 **Contracts**: Batch [x]
-- Trigger: cron（例: 1日1回）+ 手動 `workflow_dispatch`。
+- Trigger: cron（毎週水曜 09:00 JST = 00:00 UTC、`0 0 * * 3`）+ 手動 `workflow_dispatch`。
 - Secrets: `GOOGLE_GEOCODING_API_KEY`。
 - Recovery: スクリプト失敗時はコミットせず終了しログ記録（Req2.6）。push成功でVercel自動デプロイ（Req2.5）。
 - コミット規約: `feat:`/`fix:` + 日本語要約（例 `chore: 設置店舗データを自動更新`）（Req8.3）。
