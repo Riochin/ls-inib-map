@@ -3,10 +3,9 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { Map, useMap, InfoWindow } from '@vis.gl/react-google-maps'
 import type { Store } from '@/types/store'
-import { StoreMarker } from './StoreMarker'
 import { CurrentLocationMarker } from './CurrentLocationMarker'
-import { GRADIENT_DEFS, getMarkerTheme, getGameLabel } from '@/lib/marker-color'
-import { useVisibleStores } from '@/hooks/use-visible-stores'
+import { getMarkerTheme, getGameLabel, getStoreStatusLabel } from '@/lib/marker-color'
+import { useStoreClusterer } from '@/hooks/use-store-clusterer'
 
 interface MapViewProps {
   stores: Store[]
@@ -21,13 +20,14 @@ const DEFAULT_ZOOM = 15
 
 export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onMapClick }: MapViewProps) {
   const map = useMap()
-  const visibleStores = useVisibleStores(stores)
   const [openStoreId, setOpenStoreId] = useState<string | null>(null)
   const prevLocationRef = useRef<{ lat: number; lng: number } | null>(null)
 
   const handleOpen = useCallback((storeId: string) => {
     setOpenStoreId(storeId)
   }, [])
+
+  const { focusMarker } = useStoreClusterer({ stores, onMarkerClick: handleOpen })
 
   const handleClose = useCallback(() => {
     setOpenStoreId(null)
@@ -52,11 +52,11 @@ export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onM
 
   useEffect(() => {
     if (!map || !focusStore) return
-    map.panTo({ lat: focusStore.lat, lng: focusStore.lng })
-    map.setZoom(16)
+    // クラスタに埋もれた店舗でも個別表示されるよう pan/zoom→de-cluster してから開く
+    focusMarker(focusStore.id)
     setOpenStoreId(focusStore.id)
     onFocusConsumed?.()
-  }, [map, focusStore, onFocusConsumed])
+  }, [map, focusStore, focusMarker, onFocusConsumed])
 
   const openStore = useMemo(
     () => (openStoreId ? stores.find((s) => s.id === openStoreId) ?? null : null),
@@ -75,25 +75,7 @@ export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onM
       onClick={handleMapClick}
       style={{ width: '100%', height: '100%' }}
     >
-      {/* Shared SVG gradient definitions */}
-      <svg width="0" height="0" style={{ position: 'absolute' }}>
-        <defs>
-          {GRADIENT_DEFS.map((g) => (
-            <linearGradient key={g.id} id={`grad-${g.id}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor={g.from} />
-              <stop offset="100%" stopColor={g.to} />
-            </linearGradient>
-          ))}
-        </defs>
-      </svg>
-
-      {visibleStores.map((store) => (
-        <StoreMarker
-          key={store.id}
-          store={store}
-          onOpen={handleOpen}
-        />
-      ))}
+      {/* マーカーは useStoreClusterer が命令的に描画する（クラスタリング） */}
 
       {/* Single InfoWindow for the selected store */}
       {openStore && (
@@ -112,8 +94,10 @@ export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onM
 
 function InfoWindowContent({ store, onClose }: { store: Store; onClose: () => void }) {
   const theme = getMarkerTheme(store)
+  // 閉店（🌸）・移設（公式一覧から消失）はグレー背景＋状態ラベルで通常店舗と区別する
+  const statusLabel = getStoreStatusLabel(store)
   return (
-    <div className={`p-1 min-w-[200px] max-w-[260px] relative pr-5${store.closed ? ' bg-gray-100 rounded' : ''}`}>
+    <div className={`p-1 min-w-[200px] max-w-[260px] relative pr-5${statusLabel ? ' bg-gray-100 rounded' : ''}`}>
       <button
         onClick={onClose}
         className="absolute top-0 right-0 w-5 h-5 flex items-center justify-center text-gray-400 hover:text-gray-600 text-sm leading-none"
@@ -123,15 +107,19 @@ function InfoWindowContent({ store, onClose }: { store: Store; onClose: () => vo
       <h3 className="font-bold text-base leading-snug mb-1 break-words whitespace-normal">{store.name}</h3>
       <p className="text-xs text-gray-600 mb-1">{store.address}</p>
       <div className="flex gap-1 mb-1.5">
-        {store.games.map((game) => (
-          <span
-            key={game}
-            className="text-xs px-2 py-0.5 rounded-full"
-            style={{ backgroundColor: theme.badgeBg, color: theme.badgeText }}
-          >
-            {getGameLabel(game)}
-          </span>
-        ))}
+        {store.games.map((game) => {
+          const count = store.machineCounts?.[game]
+          return (
+            <span
+              key={game}
+              className="text-xs px-2 py-0.5 rounded-full"
+              style={{ backgroundColor: theme.badgeBg, color: theme.badgeText }}
+            >
+              {getGameLabel(game)}
+              {count != null && ` ${count}台`}
+            </span>
+          )
+        })}
       </div>
       <a
         href={`https://www.google.com/maps/dir/?api=1&destination=${store.lat},${store.lng}`}
@@ -144,8 +132,8 @@ function InfoWindowContent({ store, onClose }: { store: Store; onClose: () => vo
         </svg>
         経路
       </a>
-      {store.closed && (
-        <span className="absolute bottom-1 right-1 text-xs text-gray-400 font-medium">閉店</span>
+      {statusLabel && (
+        <span className="absolute bottom-1 right-1 text-xs text-gray-400 font-medium">{statusLabel}</span>
       )}
     </div>
   )

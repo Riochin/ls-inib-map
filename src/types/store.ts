@@ -15,8 +15,19 @@ export interface Store {
   lng: number
   /** 稼働タイトル（1つ以上） */
   games: [GameTitle, ...GameTitle[]]
-  /** 閉店フラグ（省略時は営業中） */
+  /**
+   * ゲーム別の設置台数（公式公表値・任意）。各サイトが個別に公表するため
+   * タイトルごとに保持する（例 `{ 'jojo-ls': 3, 'gundam-exvs': 2 }`）。
+   * 公式表記が無い（0）タイトルはキーごと省略する。
+   */
+  machineCounts?: Partial<Record<GameTitle, number>>
+  /** 閉店フラグ（恒久閉店・手動判定・🌸表示。省略時は営業中） */
   closed?: boolean
+  /**
+   * 移設可能性フラグ（公式一覧から消失＝移設/撤去の可能性・自動検出・無装飾グレー）。
+   * `closed`（閉店）とは別状態。両者が重なる場合は `closed` を優先表示する。
+   */
+  delisted?: boolean
 }
 
 /** フィルタ選択肢 */
