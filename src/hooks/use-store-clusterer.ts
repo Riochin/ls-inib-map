@@ -67,6 +67,14 @@ function createMarkerContent(store: Store): HTMLImageElement {
   return el
 }
 
+/**
+ * マーカーの見た目に影響する状態の署名。店舗IDは住所＋店名のハッシュで安定するため、
+ * IDが同じでも closed/delisted/games/座標が変われば再描画が要る。差分検出に用いる。
+ */
+function markerSignature(store: Store): string {
+  return `${getThemeKey(store)}|${store.lat}|${store.lng}|${store.games.includes('jojo-ls') ? 1 : 0}`
+}
+
 /** クラスタバブルの DOM。配色（紫/青）を受け取り、件数を中央に表示する */
 function createClusterContent(count: number, color: string): HTMLDivElement {
   const size = count < 10 ? 36 : count < 100 ? 44 : 52
@@ -127,6 +135,10 @@ export function useStoreClusterer({ stores, onMarkerClick }: UseStoreClustererPa
   const storesByIdRef = useRef<Map<string, Store>>(new Map())
   // マーカー→ラスサバ含有フラグ。クラスタ色の判定（紫/青）に用いる
   const markerHasJojoRef = useRef<WeakMap<AdvancedMarker, boolean>>(new WeakMap())
+  // 店舗ID→現在の見た目署名。状態変化（closed/delisted/games/座標）の再描画判定に用いる
+  const markerSigRef = useRef<Map<string, string>>(new Map())
+  // 店舗ID→クリックリスナーのハンドル。マーカー破棄時に解放してリークを防ぐ
+  const listenersRef = useRef<Map<string, google.maps.MapsEventListener>>(new Map())
 
   // クリックハンドラは ref 経由で参照し、ハンドラ差し替えでマーカーを再生成しない
   const onMarkerClickRef = useRef(onMarkerClick)
@@ -144,6 +156,10 @@ export function useStoreClusterer({ stores, onMarkerClick }: UseStoreClustererPa
       instance.clearMarkers()
       setClusterer(null)
       markersRef.current.clear()
+      // クリックリスナーを解放してから署名キャッシュも破棄する（リーク防止）
+      for (const listener of listenersRef.current.values()) listener.remove()
+      listenersRef.current.clear()
+      markerSigRef.current.clear()
     }
   }, [map, markerLibrary])
 
@@ -157,7 +173,17 @@ export function useStoreClusterer({ stores, onMarkerClick }: UseStoreClustererPa
     for (const store of stores) byId.set(store.id, store)
 
     const { added, removed } = computeMarkerDiff(cache.keys(), byId.keys())
-    if (added.length === 0 && removed.length === 0) return
+
+    // IDは不変でも closed/delisted/games/座標が変わった既存マーカーは再描画が要る。
+    // 差分検出を素通りして古いピン画像が残るのを防ぐため、署名変化を検出して更新する。
+    const changed: string[] = []
+    for (const id of cache.keys()) {
+      const store = byId.get(id)
+      if (!store) continue // removed 側で破棄される
+      if (markerSigRef.current.get(id) !== markerSignature(store)) changed.push(id)
+    }
+
+    if (added.length === 0 && removed.length === 0 && changed.length === 0) return
 
     const addedMarkers: AdvancedMarker[] = []
     for (const id of added) {
@@ -168,17 +194,33 @@ export function useStoreClusterer({ stores, onMarkerClick }: UseStoreClustererPa
         content: createMarkerContent(store),
         gmpClickable: true,
       })
-      marker.addListener('gmp-click', () => onMarkerClickRef.current(id))
+      const listener = marker.addListener('gmp-click', () => onMarkerClickRef.current(id))
+      listenersRef.current.set(id, listener)
       markerHasJojoRef.current.set(marker, store.games.includes('jojo-ls'))
+      markerSigRef.current.set(id, markerSignature(store))
       cache.set(id, marker)
       addedMarkers.push(marker)
+    }
+
+    // 既存マーカーの状態更新（content/座標/ラスサバ含有フラグを差し替える）
+    for (const id of changed) {
+      const marker = cache.get(id)
+      const store = byId.get(id)
+      if (!marker || !store) continue
+      marker.content = createMarkerContent(store)
+      marker.position = { lat: store.lat, lng: store.lng }
+      markerHasJojoRef.current.set(marker, store.games.includes('jojo-ls'))
+      markerSigRef.current.set(id, markerSignature(store))
     }
 
     const removedMarkers: AdvancedMarker[] = []
     for (const id of removed) {
       const marker = cache.get(id)
       if (!marker) continue
+      listenersRef.current.get(id)?.remove()
+      listenersRef.current.delete(id)
       markerHasJojoRef.current.delete(marker)
+      markerSigRef.current.delete(id)
       removedMarkers.push(marker)
       cache.delete(id)
     }
