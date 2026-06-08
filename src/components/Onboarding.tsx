@@ -32,14 +32,12 @@ function LocateIcon() {
   )
 }
 
-/** 実際のフィルタバーを縮小再現したミニチュア */
-function FilterBarMini() {
+/** タイトル絞り込みを表す小さな「ラスサバ」チップ（主要ユーザー層に合わせた代表表示） */
+function FilterChipMini() {
   return (
-    <div className="flex gap-0.5 bg-gray-100 rounded-full px-1 py-0.5">
-      <span className="text-[9px] px-1.5 py-0.5 rounded-full text-gray-500">すべて</span>
-      <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-purple-700 text-white font-semibold">ラスサバ</span>
-      <span className="text-[9px] px-1.5 py-0.5 rounded-full text-gray-500">イニブ</span>
-    </div>
+    <span className="text-[9px] leading-none px-2 py-1 rounded-full bg-purple-700 text-white font-semibold whitespace-nowrap">
+      ラスサバ
+    </span>
   )
 }
 
@@ -63,7 +61,7 @@ function IconChip({ children }: { children: ReactNode }) {
 
 const STEPS: { visual: ReactNode; title: string; desc: string }[] = [
   {
-    visual: <span className="w-10 shrink-0 flex justify-center"><FilterBarMini /></span>,
+    visual: <span className="w-10 shrink-0 flex justify-center"><FilterChipMini /></span>,
     title: 'タイトルで絞り込み',
     desc: '画面上部のボタンでラスサバ／イニブを切り替えできます。',
   },
