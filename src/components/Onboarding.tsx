@@ -5,6 +5,29 @@ import { getMarkerImage, type MarkerThemeKey } from '@/lib/marker-image'
 
 const STORAGE_KEY = 'ls-exvs-onboarded'
 
+const AUTHOR_NAME = 'マルハット'
+const X_HANDLE = 'ls_boushi'
+const X_URL = `https://x.com/${X_HANDLE}`
+const REPO_URL = 'https://github.com/Riochin/ls-inib-map'
+
+// --- ブランド/外部リンク用アイコン ---
+
+function XIcon() {
+  return (
+    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  )
+}
+
+function GitHubIcon() {
+  return (
+    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M12 .5C5.37.5 0 5.78 0 12.29c0 5.21 3.438 9.63 8.205 11.19.6.111.82-.254.82-.567 0-.28-.01-1.022-.015-2.005-3.338.711-4.042-1.582-4.042-1.582-.546-1.361-1.333-1.724-1.333-1.724-1.089-.731.083-.716.083-.716 1.205.083 1.84 1.215 1.84 1.215 1.07 1.797 2.807 1.278 3.492.977.108-.76.418-1.279.762-1.573-2.665-.297-5.466-1.302-5.466-5.795 0-1.28.468-2.327 1.235-3.148-.124-.297-.535-1.49.117-3.106 0 0 1.008-.32 3.3 1.202a11.6 11.6 0 013.003-.395c1.02.005 2.047.135 3.006.395 2.29-1.523 3.297-1.202 3.297-1.202.653 1.616.242 2.81.118 3.106.769.821 1.233 1.868 1.233 3.148 0 4.504-2.805 5.494-5.478 5.785.43.36.814 1.07.814 2.157 0 1.557-.014 2.81-.014 3.193 0 .315.216.683.825.567C20.565 21.917 24 17.495 24 12.29 24 5.78 18.627.5 12 .5z" />
+    </svg>
+  )
+}
+
 // --- 実際のボタンと同じアイコン（アプリ本体から流用） ---
 
 function SearchIcon() {
@@ -109,7 +132,112 @@ function HelpButton({ onClick }: { onClick: () => void }) {
   )
 }
 
+function HowToPage() {
+  return (
+    <>
+      <h2 className="text-lg font-bold text-gray-800 mb-1">使い方</h2>
+      <p className="text-xs text-gray-500 mb-4">ラスサバ・イニブの設置店舗マップへようこそ</p>
+
+      <ul className="flex flex-col gap-3.5 mb-5">
+        {STEPS.map((step) => (
+          <li key={step.title} className="flex gap-3 items-center">
+            {step.visual}
+            <div>
+              <p className="text-sm font-semibold text-gray-800">{step.title}</p>
+              <p className="text-xs text-gray-600 leading-snug">{step.desc}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <div className="border-t border-gray-100 pt-4">
+        <p className="text-sm font-semibold text-gray-800 mb-2.5">ピンの見かた</p>
+        <ul className="flex flex-col gap-2.5">
+          {LEGEND.map(({ theme, label }) => {
+            const img = getMarkerImage(theme)
+            return (
+              <li key={theme} className="flex items-center gap-3">
+                <span className="w-10 flex justify-center shrink-0">
+                  {/* 実際のマーカー画像を使った凡例 */}
+                  <img src={img.url} alt="" className="h-7 w-auto" />
+                </span>
+                <span className="text-xs text-gray-700">{label}</span>
+              </li>
+            )
+          })}
+        </ul>
+      </div>
+    </>
+  )
+}
+
+function AboutPage() {
+  return (
+    <>
+      <h2 className="text-lg font-bold text-gray-800 mb-1">このアプリについて</h2>
+      <p className="text-xs text-gray-500 mb-4 leading-snug">
+        ラスサバ・イニブの設置店舗を地図でまとめて確認できる非公式の個人開発アプリです。
+      </p>
+
+      <dl className="flex flex-col gap-3.5 mb-4">
+        <div>
+          <dt className="text-xs font-semibold text-gray-500 mb-1">製作者</dt>
+          <dd>
+            <a
+              href={X_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm text-gray-800 hover:text-purple-700"
+            >
+              <span className="font-semibold">{AUTHOR_NAME}</span>
+              <span className="inline-flex items-center gap-1 text-gray-500">
+                <XIcon />@{X_HANDLE}
+              </span>
+            </a>
+          </dd>
+        </div>
+
+        <div>
+          <dt className="text-xs font-semibold text-gray-500 mb-1">お問い合わせ</dt>
+          <dd className="text-xs text-gray-700 leading-snug">
+            不具合・店舗情報の誤り・ご要望など、X（
+            <a href={X_URL} target="_blank" rel="noopener noreferrer" className="text-purple-700 hover:underline">
+              @{X_HANDLE}
+            </a>
+            ）までお気軽にどうぞ。お問い合わせ待ってます！
+          </dd>
+        </div>
+
+        <div>
+          <dt className="text-xs font-semibold text-gray-500 mb-1">ソースコード</dt>
+          <dd>
+            <a
+              href={REPO_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm text-gray-800 hover:text-purple-700"
+            >
+              <GitHubIcon />
+              GitHub で公開中
+            </a>
+          </dd>
+        </div>
+      </dl>
+
+      <div className="border-t border-gray-100 pt-3">
+        <p className="text-[11px] text-gray-500 leading-relaxed">
+          店舗データは各公式サイトをもとに自動更新しています。反映までに時間差があり、最新の状況と異なる場合があります。実際の稼働状況は店舗へご確認ください。
+        </p>
+      </div>
+    </>
+  )
+}
+
+const PAGE_COUNT = 2
+
 function OnboardingModal({ onClose }: { onClose: () => void }) {
+  const [page, setPage] = useState(0)
+
   return (
     <div
       className="absolute inset-0 z-30 flex items-center justify-center bg-black/40 p-4"
@@ -127,45 +255,52 @@ function OnboardingModal({ onClose }: { onClose: () => void }) {
           ✕
         </button>
 
-        <h2 className="text-lg font-bold text-gray-800 mb-1">使い方</h2>
-        <p className="text-xs text-gray-500 mb-4">ラスサバ・イニブの設置店舗マップへようこそ</p>
+        {page === 0 ? <HowToPage /> : <AboutPage />}
 
-        <ul className="flex flex-col gap-3.5 mb-5">
-          {STEPS.map((step) => (
-            <li key={step.title} className="flex gap-3 items-center">
-              {step.visual}
-              <div>
-                <p className="text-sm font-semibold text-gray-800">{step.title}</p>
-                <p className="text-xs text-gray-600 leading-snug">{step.desc}</p>
-              </div>
-            </li>
+        {/* ページインジケータ */}
+        <div className="flex justify-center gap-1.5 mt-5">
+          {Array.from({ length: PAGE_COUNT }, (_, i) => (
+            <span
+              key={i}
+              className={`w-1.5 h-1.5 rounded-full transition-colors ${i === page ? 'bg-gray-800' : 'bg-gray-300'}`}
+            />
           ))}
-        </ul>
-
-        <div className="border-t border-gray-100 pt-4">
-          <p className="text-sm font-semibold text-gray-800 mb-2.5">ピンの見かた</p>
-          <ul className="flex flex-col gap-2.5">
-            {LEGEND.map(({ theme, label }) => {
-              const img = getMarkerImage(theme)
-              return (
-                <li key={theme} className="flex items-center gap-3">
-                  <span className="w-10 flex justify-center shrink-0">
-                    {/* 実際のマーカー画像を使った凡例 */}
-                    <img src={img.url} alt="" className="h-7 w-auto" />
-                  </span>
-                  <span className="text-xs text-gray-700">{label}</span>
-                </li>
-              )
-            })}
-          </ul>
         </div>
 
-        <button
-          onClick={onClose}
-          className="mt-5 w-full py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-full hover:bg-gray-700 transition-colors"
-        >
-          はじめる
-        </button>
+        {/* フッターナビゲーション */}
+        <div className="flex items-center justify-between gap-3 mt-3">
+          {page === 0 ? (
+            <>
+              <button
+                onClick={() => setPage(1)}
+                className="text-xs text-gray-500 hover:text-gray-800 transition-colors"
+              >
+                このアプリについて →
+              </button>
+              <button
+                onClick={onClose}
+                className="px-5 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-full hover:bg-gray-700 transition-colors"
+              >
+                はじめる
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => setPage(0)}
+                className="text-xs text-gray-500 hover:text-gray-800 transition-colors"
+              >
+                ← 使い方
+              </button>
+              <button
+                onClick={onClose}
+                className="px-5 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-full hover:bg-gray-700 transition-colors"
+              >
+                閉じる
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </div>
   )
