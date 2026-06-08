@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { Map, useMap, InfoWindow } from '@vis.gl/react-google-maps'
 import type { Store } from '@/types/store'
 import { CurrentLocationMarker } from './CurrentLocationMarker'
-import { getMarkerTheme, getGameLabel } from '@/lib/marker-color'
+import { getMarkerTheme, getGameLabel, getStoreStatusLabel } from '@/lib/marker-color'
 import { useStoreClusterer } from '@/hooks/use-store-clusterer'
 
 interface MapViewProps {
@@ -94,8 +94,10 @@ export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onM
 
 function InfoWindowContent({ store, onClose }: { store: Store; onClose: () => void }) {
   const theme = getMarkerTheme(store)
+  // 閉店（🌸）・移設（公式一覧から消失）はグレー背景＋状態ラベルで通常店舗と区別する
+  const statusLabel = getStoreStatusLabel(store)
   return (
-    <div className={`p-1 min-w-[200px] max-w-[260px] relative pr-5${store.closed ? ' bg-gray-100 rounded' : ''}`}>
+    <div className={`p-1 min-w-[200px] max-w-[260px] relative pr-5${statusLabel ? ' bg-gray-100 rounded' : ''}`}>
       <button
         onClick={onClose}
         className="absolute top-0 right-0 w-5 h-5 flex items-center justify-center text-gray-400 hover:text-gray-600 text-sm leading-none"
@@ -130,8 +132,8 @@ function InfoWindowContent({ store, onClose }: { store: Store; onClose: () => vo
         </svg>
         経路
       </a>
-      {store.closed && (
-        <span className="absolute bottom-1 right-1 text-xs text-gray-400 font-medium">閉店</span>
+      {statusLabel && (
+        <span className="absolute bottom-1 right-1 text-xs text-gray-400 font-medium">{statusLabel}</span>
       )}
     </div>
   )
