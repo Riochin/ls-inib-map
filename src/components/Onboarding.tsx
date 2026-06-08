@@ -8,7 +8,6 @@ const STORAGE_KEY = 'ls-exvs-onboarded'
 const AUTHOR_NAME = 'マルハット'
 const X_HANDLE = 'ls_boushi'
 const X_URL = `https://x.com/${X_HANDLE}`
-const REPO_URL = 'https://github.com/Riochin/ls-inib-map'
 const SITE_URL = 'https://ls-inib-map.vercel.app/'
 const TWEET_HASHTAG = 'ラストサバイニブ'
 const TWEET_TEXT = 'ラスサバ・イニブの設置店舗マップ📍'
@@ -25,14 +24,6 @@ function XIcon() {
   return (
     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
       <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-    </svg>
-  )
-}
-
-function GitHubIcon() {
-  return (
-    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-      <path d="M12 .5C5.37.5 0 5.78 0 12.29c0 5.21 3.438 9.63 8.205 11.19.6.111.82-.254.82-.567 0-.28-.01-1.022-.015-2.005-3.338.711-4.042-1.582-4.042-1.582-.546-1.361-1.333-1.724-1.333-1.724-1.089-.731.083-.716.083-.716 1.205.083 1.84 1.215 1.84 1.215 1.07 1.797 2.807 1.278 3.492.977.108-.76.418-1.279.762-1.573-2.665-.297-5.466-1.302-5.466-5.795 0-1.28.468-2.327 1.235-3.148-.124-.297-.535-1.49.117-3.106 0 0 1.008-.32 3.3 1.202a11.6 11.6 0 013.003-.395c1.02.005 2.047.135 3.006.395 2.29-1.523 3.297-1.202 3.297-1.202.653 1.616.242 2.81.118 3.106.769.821 1.233 1.868 1.233 3.148 0 4.504-2.805 5.494-5.478 5.785.43.36.814 1.07.814 2.157 0 1.557-.014 2.81-.014 3.193 0 .315.216.683.825.567C20.565 21.917 24 17.495 24 12.29 24 5.78 18.627.5 12 .5z" />
     </svg>
   )
 }
@@ -277,21 +268,6 @@ function AboutPage() {
             <p className="text-[11px] text-gray-500 mt-1 leading-snug">
               投稿の際はこのタグでつぶやいてください。開発者がめっちゃ喜びます。みんなの投稿も見られます。
             </p>
-          </dd>
-        </div>
-
-        <div>
-          <dt className="text-xs font-semibold text-gray-500 mb-1">ソースコード</dt>
-          <dd>
-            <a
-              href={REPO_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm text-gray-800 hover:text-purple-700"
-            >
-              <GitHubIcon />
-              GitHub で公開中
-            </a>
           </dd>
         </div>
       </dl>
