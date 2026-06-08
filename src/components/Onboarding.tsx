@@ -9,12 +9,14 @@ const AUTHOR_NAME = 'マルハット'
 const X_HANDLE = 'ls_boushi'
 const X_URL = `https://x.com/${X_HANDLE}`
 const REPO_URL = 'https://github.com/Riochin/ls-inib-map'
+const SITE_URL = 'https://ls-inib-map.vercel.app/'
 const TWEET_HASHTAG = 'ラストサバイニブ'
 const TWEET_TEXT = 'ラスサバ・イニブの設置店舗マップ📍'
 const HASHTAG_URL = `https://x.com/hashtag/${encodeURIComponent(TWEET_HASHTAG)}`
 const INFO_REPORT_URL =
   'https://x.com/intent/post' +
   `?text=${encodeURIComponent(`@${X_HANDLE} 店舗情報の修正・提供：`)}` +
+  `&url=${encodeURIComponent(SITE_URL)}` +
   `&hashtags=${encodeURIComponent(TWEET_HASHTAG)}`
 
 // --- ブランド/外部リンク用アイコン ---
@@ -181,11 +183,10 @@ function HowToPage() {
 /** Xへの投稿（ツイート）。本文・URL・ハッシュタグをプリフィルしてインテントを開く */
 function ShareButton() {
   const handleTweet = () => {
-    const url = window.location.origin
     const intent =
       'https://x.com/intent/post' +
       `?text=${encodeURIComponent(TWEET_TEXT)}` +
-      `&url=${encodeURIComponent(url)}` +
+      `&url=${encodeURIComponent(SITE_URL)}` +
       `&hashtags=${encodeURIComponent(TWEET_HASHTAG)}`
     window.open(intent, '_blank', 'noopener,noreferrer')
   }
