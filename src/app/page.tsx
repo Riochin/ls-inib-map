@@ -68,8 +68,9 @@ export default function MapPage() {
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? ''}>
       <div className="relative w-full h-dvh">
         <FilterBar activeFilter={activeFilter} onFilterChange={handleFilterChange} />
-        {/* 件数・最終更新日時をコンパクトに集約（モバイル：左上）。メタ欠落時は更新日時を省略 */}
-        <div className="absolute top-4 left-4 z-10 flex flex-col gap-0.5 bg-white/85 backdrop-blur-sm rounded-xl px-3 py-1.5 shadow">
+        {/* 件数・最終更新日時をコンパクトに集約。フィルタバー(中央)・検索(右上)と段をずらし、
+            ヘルプボタン(右・top-20)と左右対称の段に置いてモバイルでの重なりを回避。メタ欠落時は更新日時を省略 */}
+        <div className="absolute top-20 left-4 z-10 flex flex-col gap-0.5 bg-white/85 backdrop-blur-sm rounded-xl px-3 py-1.5 shadow">
           <StoreCount
             total={stores.length}
             filtered={filteredStores.length}
