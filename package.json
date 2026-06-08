@@ -28,6 +28,7 @@
     "node-html-parser": "^7.1.0",
     "postcss": "^8.5.8",
     "tailwindcss": "^4.2.1",
+    "tsx": "^4.22.4",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"
   }

@@ -18,21 +18,19 @@ const SOURCE: StoresMeta['source'] = {
 }
 const NOW = '2026-06-08T00:00:00.000Z'
 
-/** 一覧HTMLフィクスチャ（scrape.ts の LIST_SELECTORS と対応） */
+/** 一覧HTMLフィクスチャ（scrape.ts の `parseListHtml`＝dt/dd構造と対応） */
 function fixtureHtml(
   items: Array<{ locId: string; name: string; address: string; machine: string }>,
 ): string {
-  const lis = items
+  const rows = items
     .map(
       (it) => `
-      <li class="location-list__item">
-        <a class="location-list__name" href="detail?loc_id=${it.locId}">${it.name}</a>
-        <p class="location-list__address">${it.address}</p>
-        <p class="location-list__machine">${it.machine}</p>
-      </li>`,
+      <dt><a href="./detail?loc_id=${it.locId}">${it.name}</a></dt>
+      <dd class="address">${it.address}</dd>
+      <dd class="count">${it.machine}</dd>`,
     )
     .join('')
-  return `<html><body><ul class="location-list">${lis}</ul></body></html>`
+  return `<html><body><dl>${rows}</dl></body></html>`
 }
 
 /**
