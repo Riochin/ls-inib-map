@@ -4,14 +4,17 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useMap, useMapsLibrary } from '@vis.gl/react-google-maps'
 import { MarkerClusterer, type Renderer } from '@googlemaps/markerclusterer'
 import type { Store } from '@/types/store'
-import { getThemeKey } from '@/lib/marker-color'
+import { getThemeByKey, getThemeKey } from '@/lib/marker-color'
 import { getMarkerImage } from '@/lib/marker-image'
 
 /** フォーカス時にクラスタを解除して個別マーカーを表示するズームレベル（クラスタラの maxZoom 超） */
 const FOCUS_ZOOM = 17
 
-/** クラスタバブルのブランド色（サイトの「両タイトル」紫に統一） */
-const CLUSTER_COLOR = '#7B2FBE'
+/** クラスタバブルの色。ラスサバを含めば紫、イニブのみなら青（個別ピンの配色に揃える） */
+const CLUSTER_COLOR_WITH_JOJO = getThemeByKey('both').gradientFrom
+const CLUSTER_COLOR_GUNDAM_ONLY = getThemeByKey('gundamOnly').gradientFrom
+
+type AdvancedMarker = google.maps.marker.AdvancedMarkerElement
 
 export interface MarkerDiff {
   /** 新規に生成・追加すべき店舗ID */
@@ -64,8 +67,8 @@ function createMarkerContent(store: Store): HTMLImageElement {
   return el
 }
 
-/** クラスタバブルの DOM。サイトのブランド紫で統一し、件数を中央に表示する */
-function createClusterContent(count: number): HTMLDivElement {
+/** クラスタバブルの DOM。配色（紫/青）を受け取り、件数を中央に表示する */
+function createClusterContent(count: number, color: string): HTMLDivElement {
   const size = count < 10 ? 36 : count < 100 ? 44 : 52
   const el = document.createElement('div')
   el.textContent = String(count)
@@ -76,7 +79,7 @@ function createClusterContent(count: number): HTMLDivElement {
     'align-items:center',
     'justify-content:center',
     'border-radius:50%',
-    `background:${CLUSTER_COLOR}`,
+    `background:${color}`,
     'color:#fff',
     'font-weight:700',
     'font-size:13px',
@@ -86,15 +89,26 @@ function createClusterContent(count: number): HTMLDivElement {
   return el
 }
 
-/** ブランド色のクラスタレンダラを生成する（marker ライブラリ必須） */
-function createClusterRenderer(markerLibrary: google.maps.MarkerLibrary): Renderer {
+/**
+ * クラスタレンダラを生成する（marker ライブラリ必須）。
+ * クラスタ内のいずれかの店舗がラスサバを含めば紫、イニブのみなら青で描画する。
+ */
+function createClusterRenderer(
+  markerLibrary: google.maps.MarkerLibrary,
+  markerHasJojo: WeakMap<AdvancedMarker, boolean>
+): Renderer {
   return {
-    render: (cluster) =>
-      new markerLibrary.AdvancedMarkerElement({
+    render: (cluster) => {
+      const hasJojo = cluster.markers?.some(
+        (m) => markerHasJojo.get(m as AdvancedMarker) ?? false
+      )
+      const color = hasJojo ? CLUSTER_COLOR_WITH_JOJO : CLUSTER_COLOR_GUNDAM_ONLY
+      return new markerLibrary.AdvancedMarkerElement({
         position: cluster.position,
-        content: createClusterContent(cluster.count),
+        content: createClusterContent(cluster.count, color),
         zIndex: 1000 + cluster.count,
-      }),
+      })
+    },
   }
 }
 
@@ -109,8 +123,10 @@ export function useStoreClusterer({ stores, onMarkerClick }: UseStoreClustererPa
   // AdvancedMarkerElement を使うには 'marker' ライブラリのロードが必要（旧 <AdvancedMarker> が内部で行っていた）
   const markerLibrary = useMapsLibrary('marker')
   const [clusterer, setClusterer] = useState<MarkerClusterer | null>(null)
-  const markersRef = useRef<Map<string, google.maps.marker.AdvancedMarkerElement>>(new Map())
+  const markersRef = useRef<Map<string, AdvancedMarker>>(new Map())
   const storesByIdRef = useRef<Map<string, Store>>(new Map())
+  // マーカー→ラスサバ含有フラグ。クラスタ色の判定（紫/青）に用いる
+  const markerHasJojoRef = useRef<WeakMap<AdvancedMarker, boolean>>(new WeakMap())
 
   // クリックハンドラは ref 経由で参照し、ハンドラ差し替えでマーカーを再生成しない
   const onMarkerClickRef = useRef(onMarkerClick)
@@ -121,7 +137,7 @@ export function useStoreClusterer({ stores, onMarkerClick }: UseStoreClustererPa
     if (!map || !markerLibrary) return
     const instance = new MarkerClusterer({
       map,
-      renderer: createClusterRenderer(markerLibrary),
+      renderer: createClusterRenderer(markerLibrary, markerHasJojoRef.current),
     })
     setClusterer(instance)
     return () => {
@@ -143,7 +159,7 @@ export function useStoreClusterer({ stores, onMarkerClick }: UseStoreClustererPa
     const { added, removed } = computeMarkerDiff(cache.keys(), byId.keys())
     if (added.length === 0 && removed.length === 0) return
 
-    const addedMarkers: google.maps.marker.AdvancedMarkerElement[] = []
+    const addedMarkers: AdvancedMarker[] = []
     for (const id of added) {
       const store = byId.get(id)
       if (!store) continue
@@ -153,14 +169,16 @@ export function useStoreClusterer({ stores, onMarkerClick }: UseStoreClustererPa
         gmpClickable: true,
       })
       marker.addListener('gmp-click', () => onMarkerClickRef.current(id))
+      markerHasJojoRef.current.set(marker, store.games.includes('jojo-ls'))
       cache.set(id, marker)
       addedMarkers.push(marker)
     }
 
-    const removedMarkers: google.maps.marker.AdvancedMarkerElement[] = []
+    const removedMarkers: AdvancedMarker[] = []
     for (const id of removed) {
       const marker = cache.get(id)
       if (!marker) continue
+      markerHasJojoRef.current.delete(marker)
       removedMarkers.push(marker)
       cache.delete(id)
     }
