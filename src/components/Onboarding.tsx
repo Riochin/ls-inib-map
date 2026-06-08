@@ -120,7 +120,7 @@ const LEGEND: { theme: MarkerThemeKey; label: string }[] = [
 
 function HelpButton({ onClick }: { onClick: () => void }) {
   return (
-    <div className="absolute top-20 right-4 z-10">
+    <div className="absolute top-4 left-4 z-10">
       <button
         onClick={onClick}
         className="w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center hover:bg-white active:bg-gray-100 transition-colors text-gray-700 text-xl font-bold"
