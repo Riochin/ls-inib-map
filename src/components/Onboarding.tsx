@@ -9,9 +9,12 @@ const AUTHOR_NAME = 'マルハット'
 const X_HANDLE = 'ls_boushi'
 const X_URL = `https://x.com/${X_HANDLE}`
 const REPO_URL = 'https://github.com/Riochin/ls-inib-map'
-const INFO_REPORT_URL = `https://x.com/intent/post?text=${encodeURIComponent(`@${X_HANDLE} 店舗情報の修正・提供：`)}`
 const TWEET_HASHTAG = 'ラストサバイニブ'
 const TWEET_TEXT = 'ラスサバ・イニブの設置店舗マップ📍'
+const INFO_REPORT_URL =
+  'https://x.com/intent/post' +
+  `?text=${encodeURIComponent(`@${X_HANDLE} 店舗情報の修正・提供：`)}` +
+  `&hashtags=${encodeURIComponent(TWEET_HASHTAG)}`
 
 // --- ブランド/外部リンク用アイコン ---
 
