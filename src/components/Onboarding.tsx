@@ -147,7 +147,7 @@ function HowToPage() {
       <h2 className="text-lg font-bold text-gray-800 mb-1">使い方</h2>
       <p className="text-xs text-gray-500 mb-4">ラスサバ・イニブの設置店舗マップへようこそ</p>
 
-      <ul className="flex flex-col gap-3.5 mb-5">
+      <ul className="flex flex-col gap-3.5">
         {STEPS.map((step) => (
           <li key={step.title} className="flex gap-3 items-center">
             {step.visual}
@@ -158,24 +158,30 @@ function HowToPage() {
           </li>
         ))}
       </ul>
+    </>
+  )
+}
 
-      <div className="border-t border-gray-100 pt-4">
-        <p className="text-sm font-semibold text-gray-800 mb-2.5">ピンの見かた</p>
-        <ul className="flex flex-col gap-2.5">
-          {LEGEND.map(({ theme, label }) => {
-            const img = getMarkerImage(theme)
-            return (
-              <li key={theme} className="flex items-center gap-3">
-                <span className="w-10 flex justify-center shrink-0">
-                  {/* 実際のマーカー画像を使った凡例 */}
-                  <img src={img.url} alt="" className="h-7 w-auto" />
-                </span>
-                <span className="text-xs text-gray-700">{label}</span>
-              </li>
-            )
-          })}
-        </ul>
-      </div>
+function LegendPage() {
+  return (
+    <>
+      <h2 className="text-lg font-bold text-gray-800 mb-1">ピンの見かた</h2>
+      <p className="text-xs text-gray-500 mb-4">地図上のピンは色と形で状態を表します。</p>
+
+      <ul className="flex flex-col gap-3.5">
+        {LEGEND.map(({ theme, label }) => {
+          const img = getMarkerImage(theme)
+          return (
+            <li key={theme} className="flex items-center gap-3">
+              <span className="w-10 flex justify-center shrink-0">
+                {/* 実際のマーカー画像を使った凡例 */}
+                <img src={img.url} alt="" className="h-7 w-auto" />
+              </span>
+              <span className="text-xs text-gray-700">{label}</span>
+            </li>
+          )
+        })}
+      </ul>
     </>
   )
 }
@@ -326,7 +332,7 @@ function DataPrivacyPage() {
   )
 }
 
-const PAGES = [HowToPage, AboutPage, DataPrivacyPage]
+const PAGES = [HowToPage, LegendPage, AboutPage, DataPrivacyPage]
 const PAGE_COUNT = PAGES.length
 
 function OnboardingModal({ onClose }: { onClose: () => void }) {
@@ -372,7 +378,7 @@ function OnboardingModal({ onClose }: { onClose: () => void }) {
             ))}
           </div>
 
-          {/* フッターナビゲーション（3ページのウィザード） */}
+          {/* フッターナビゲーション（複数ページのウィザード） */}
           <div className="flex items-center justify-between gap-3 mt-3">
             <button
               onClick={() => setPage((p) => Math.max(0, p - 1))}
