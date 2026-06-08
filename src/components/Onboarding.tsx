@@ -211,7 +211,7 @@ function AboutPage() {
 
       <dl className="flex flex-col gap-3.5 mb-4">
         <div>
-          <dt className="text-xs font-semibold text-gray-500 mb-1">製作者</dt>
+          <dt className="text-xs font-semibold text-gray-500 mb-1">開発者</dt>
           <dd>
             <a
               href={X_URL}
@@ -268,7 +268,7 @@ function AboutPage() {
               #{TWEET_HASHTAG}
             </a>
             <p className="text-[11px] text-gray-500 mt-1 leading-snug">
-              投稿の際はこのタグでつぶやいてください。みんなの投稿も見られます。
+              投稿の際はこのタグでつぶやいてください。開発者がめっちゃ喜びます。みんなの投稿も見られます。
             </p>
           </dd>
         </div>
