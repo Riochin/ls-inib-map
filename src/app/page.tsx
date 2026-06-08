@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo } from 'react'
 import { APIProvider } from '@vis.gl/react-google-maps'
-import { stores } from '@/data/stores'
+import { stores, storesMeta } from '@/data/stores'
 import { filterStoresAll, filterStoresByKeyword } from '@/lib/filter'
 import { buildAddressIndex } from '@/lib/address-parser'
 import { useGeolocation } from '@/hooks/use-geolocation'
@@ -18,12 +18,7 @@ import { LastUpdated } from '@/components/LastUpdated'
 import { Credit } from '@/components/Credit'
 import { Onboarding } from '@/components/Onboarding'
 import type { FilterOption, AddressFilter, Store } from '@/types/store'
-import type { StoresMeta } from '@/types/stores-file'
 import { EMPTY_ADDRESS_FILTER } from '@/types/store'
-
-// メタ情報（最終更新日時・出典・公式総数）は生成物 stores.json から供給される（タスク5でローダ配線）。
-// 未生成の現状は null とし、件数/更新日時表示はグレースフルにデグレードする。
-const storesMeta: StoresMeta | null = null
 
 export default function MapPage() {
   const [activeFilter, setActiveFilter] = useState<FilterOption>('all')
