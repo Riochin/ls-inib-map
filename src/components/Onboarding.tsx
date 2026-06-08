@@ -11,6 +11,7 @@ const X_URL = `https://x.com/${X_HANDLE}`
 const REPO_URL = 'https://github.com/Riochin/ls-inib-map'
 const TWEET_HASHTAG = 'ラストサバイニブ'
 const TWEET_TEXT = 'ラスサバ・イニブの設置店舗マップ📍'
+const HASHTAG_URL = `https://x.com/hashtag/${encodeURIComponent(TWEET_HASHTAG)}`
 const INFO_REPORT_URL =
   'https://x.com/intent/post' +
   `?text=${encodeURIComponent(`@${X_HANDLE} 店舗情報の修正・提供：`)}` +
@@ -251,6 +252,23 @@ function AboutPage() {
             </a>
             <p className="text-[11px] text-gray-500 mt-1 leading-snug">
               閉店・移設・新規設置などの情報をお寄せください。
+            </p>
+          </dd>
+        </div>
+
+        <div>
+          <dt className="text-xs font-semibold text-gray-500 mb-1">ハッシュタグ</dt>
+          <dd>
+            <a
+              href={HASHTAG_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center text-sm font-semibold text-purple-700 hover:underline"
+            >
+              #{TWEET_HASHTAG}
+            </a>
+            <p className="text-[11px] text-gray-500 mt-1 leading-snug">
+              投稿の際はこのタグでつぶやいてください。みんなの投稿も見られます。
             </p>
           </dd>
         </div>
