@@ -48,6 +48,17 @@ describe('parseGeocodeResponse', () => {
     expect(parseGeocodeResponse({ status: 'ZERO_RESULTS', results: [] })).toBeNull()
     expect(parseGeocodeResponse({ status: 'OK', results: [] })).toBeNull()
   })
+
+  it('(0,0) や日本国外の不正座標は null として弾く（キャッシュ汚染防止）', () => {
+    const make = (lat: number, lng: number) => ({
+      status: 'OK',
+      results: [{ geometry: { location: { lat, lng } } }],
+    })
+    expect(parseGeocodeResponse(make(0, 0))).toBeNull()
+    expect(parseGeocodeResponse(make(48.85, 2.35))).toBeNull() // パリ（範囲外）
+    expect(parseGeocodeResponse(make(35.69, 139.7))).toEqual({ lat: 35.69, lng: 139.7 }) // 東京（範囲内）
+    expect(parseGeocodeResponse(make(26.21, 127.68))).toEqual({ lat: 26.21, lng: 127.68 }) // 沖縄（範囲内）
+  })
 })
 
 describe('geocodeStores', () => {

@@ -61,6 +61,22 @@ export function buildGeocodeUrl(address: string, apiKey: string): string {
   return `${GEOCODE_ENDPOINT}?${search.toString()}`
 }
 
+/**
+ * 座標が日本の領域内にあるかを判定する（境界は離島を含む余裕を持たせた緩い矩形）。
+ * 与那国島（東経約122.9）〜南鳥島（東経約154）、沖ノ鳥島（北緯約20.4）〜宗谷岬（北緯約45.5）。
+ * (0,0) や国外センロイドなど明らかに誤ったジオコード結果を弾き、永続キャッシュ汚染を防ぐ。
+ */
+export function isValidJapanCoord(lat: number, lng: number): boolean {
+  return (
+    Number.isFinite(lat) &&
+    Number.isFinite(lng) &&
+    lat >= 20 &&
+    lat <= 46 &&
+    lng >= 122 &&
+    lng <= 154
+  )
+}
+
 /** Google Geocoding APIのレスポンスから先頭結果の座標を取り出す（無ければ null） */
 export function parseGeocodeResponse(body: unknown): GeocodeResult | null {
   const b = body as {
@@ -70,6 +86,8 @@ export function parseGeocodeResponse(body: unknown): GeocodeResult | null {
   if (b?.status !== 'OK') return null
   const loc = b.results?.[0]?.geometry?.location
   if (loc == null || typeof loc.lat !== 'number' || typeof loc.lng !== 'number') return null
+  // 日本国外・(0,0) 等の不正座標は「結果なし」として扱い、キャッシュにも残さない
+  if (!isValidJapanCoord(loc.lat, loc.lng)) return null
   return { lat: loc.lat, lng: loc.lng }
 }
 
