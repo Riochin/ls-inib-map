@@ -1,6 +1,8 @@
 import type { Store, ParsedAddress, AddressIndex } from '@/types/store'
+import { normalizeTextBasics } from '@/lib/text-normalize'
 
-export function parseAddress(address: string): ParsedAddress {
+export function parseAddress(rawAddress: string): ParsedAddress {
+  const address = normalizeTextBasics(rawAddress)
   const prefMatch = address.match(/^(.*?[都道府県])/)
   if (!prefMatch) return { prefecture: '', city: null, ward: null }
 
