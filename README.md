@@ -1,4 +1,4 @@
-# ラストサバイニブ（LS × EXVS マップ）
+# ラストサバイニブ（ジョジョLS × EXVS マップ）
 
 <img width="1376" height="768" alt="image" src="https://github.com/user-attachments/assets/6a8279c9-e9a3-487f-9bca-eaab710cdc29" />
 
