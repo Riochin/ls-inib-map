@@ -48,6 +48,24 @@ export const metadata: Metadata = {
   },
 }
 
+/**
+ * 構造化データ（JSON-LD）。サイト自体を表す WebApplication として宣言し、
+ * リッチリザルト/サイトリンク等の対象になりやすくする。店舗（第三者施設・個別ページ無し）の
+ * LocalBusiness 化はガイドライン上のリスクがあるため意図的に含めない。
+ */
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: SITE_NAME,
+  url: SITE_URL,
+  description: DESCRIPTION,
+  applicationCategory: 'ReferenceApplication',
+  operatingSystem: 'Web',
+  inLanguage: 'ja',
+  isAccessibleForFree: true,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
+}
+
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
@@ -62,6 +80,10 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <SeoContent />
         {children}
       </body>
