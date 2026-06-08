@@ -25,6 +25,7 @@ function asPrev(stores: MergedStore[]): Store[] {
     lat: s.lat ?? 35,
     lng: s.lng ?? 139,
     games: s.games,
+    ...(s.machineCounts ? { machineCounts: s.machineCounts } : {}),
     ...(s.closed ? { closed: true as const } : {}),
     ...(s.delisted ? { delisted: true as const } : {}),
   }))
@@ -212,6 +213,80 @@ describe('mergeStores', () => {
 
     expect(result).toHaveLength(1)
     expect(result[0].delisted).toBeUndefined()
+  })
+
+  it('単一サイト掲載店は当該ゲームの台数のみを持つ', () => {
+    const result = mergeStores({
+      raw: [
+        raw({ site: 'jojols', name: 'namco池袋', address: '東京都豊島区東池袋1-22-10', machineCount: 10 }),
+      ],
+      prev: [],
+      scrapedAreas: allAreas,
+    })
+
+    expect(result).toHaveLength(1)
+    expect(result[0].machineCounts).toEqual({ 'jojo-ls': 10 })
+  })
+
+  it('両サイト掲載店はゲーム別台数を正準順序で合成する', () => {
+    const result = mergeStores({
+      raw: [
+        // あえて gundam を先に投入し、出力が GAME_ORDER 順（jojo-ls→gundam-exvs）になることを確認
+        raw({ site: 'gundam', name: '新宿スポーツランド本館', address: '東京都新宿区新宿3-22-12', machineCount: 4 }),
+        raw({ site: 'jojols', name: '新宿スポーツランド本館', address: '東京都新宿区新宿3-22-12', machineCount: 6 }),
+      ],
+      prev: [],
+      scrapedAreas: allAreas,
+    })
+
+    expect(result).toHaveLength(1)
+    expect(result[0].machineCounts).toEqual({ 'jojo-ls': 6, 'gundam-exvs': 4 })
+    // キー順が GAME_ORDER（jojo-ls が先）に整列していることを確認
+    expect(Object.keys(result[0].machineCounts!)).toEqual(['jojo-ls', 'gundam-exvs'])
+  })
+
+  it('台数不明（0）のタイトルは machineCounts から省略する', () => {
+    const result = mergeStores({
+      raw: [
+        raw({ site: 'jojols', name: '台数不明店', address: '東京都新宿区新宿3-22-12', machineCount: 0 }),
+        raw({ site: 'gundam', name: '台数不明店', address: '東京都新宿区新宿3-22-12', machineCount: 3 }),
+      ],
+      prev: [],
+      scrapedAreas: allAreas,
+    })
+
+    expect(result).toHaveLength(1)
+    expect(result[0].machineCounts).toEqual({ 'gundam-exvs': 3 })
+  })
+
+  it('両サイトとも台数不明（0）なら machineCounts を付与しない', () => {
+    const result = mergeStores({
+      raw: [raw({ site: 'jojols', name: '台数なし', address: '東京都新宿区新宿3-22-12', machineCount: 0 })],
+      prev: [],
+      scrapedAreas: allAreas,
+    })
+
+    expect(result).toHaveLength(1)
+    expect(result[0].machineCounts).toBeUndefined()
+  })
+
+  it('今回スクレイプに無い前回店舗（移設）は前回の台数を引き継ぐ', () => {
+    const prev: Store[] = [
+      {
+        id: 'm',
+        name: '移設候補店',
+        address: '東京都新宿区西新宿1-1-1',
+        lat: 35.6,
+        lng: 139.7,
+        games: ['jojo-ls', 'gundam-exvs'],
+        machineCounts: { 'jojo-ls': 2, 'gundam-exvs': 5 },
+      },
+    ]
+    const result = mergeStores({ raw: [], prev, scrapedAreas: new Set(['JP-13']) })
+
+    expect(result).toHaveLength(1)
+    expect(result[0].delisted).toBe(true)
+    expect(result[0].machineCounts).toEqual({ 'jojo-ls': 2, 'gundam-exvs': 5 })
   })
 
   it('手動の閉店フラグ（closed）はパイプラインで変更されない', () => {

@@ -95,6 +95,22 @@ function canonicalGames(games: Iterable<GameTitle>): [GameTitle, ...GameTitle[]]
   return ordered as [GameTitle, ...GameTitle[]]
 }
 
+/**
+ * ゲーム別台数を正準順序（{@link GAME_ORDER}）のキーで組み立てる。
+ * 0以下・未指定のタイトルは省略し、結果が空なら undefined を返す
+ * （出力JSONのキー順を安定させ、台数不明タイトルを「不明」として落とす）。
+ */
+function buildMachineCounts(
+  counts: Partial<Record<GameTitle, number>>,
+): Partial<Record<GameTitle, number>> | undefined {
+  const result: Partial<Record<GameTitle, number>> = {}
+  for (const game of GAME_ORDER) {
+    const n = counts[game]
+    if (typeof n === 'number' && n > 0) result[game] = n
+  }
+  return Object.keys(result).length > 0 ? result : undefined
+}
+
 export interface MergeInput {
   /** 今回スクレイプで正常取得できた店舗（両サイト混在・未マージ） */
   raw: RawStore[]
@@ -126,10 +142,15 @@ export function mergeStores(input: MergeInput): MergedStore[] {
     const existing = merged.get(key)
     if (existing) {
       existing.games = canonicalGames([...existing.games, game])
+      // もう一方のサイトの台数を合流（台数不明=0は省略）
+      const counts = buildMachineCounts({ ...existing.machineCounts, [game]: r.machineCount })
+      if (counts) existing.machineCounts = counts
+      else delete existing.machineCounts
       continue
     }
 
     const prevMatch = prevByKey.get(key)
+    const machineCounts = buildMachineCounts({ [game]: r.machineCount })
     merged.set(key, {
       id: deriveId(key),
       name: r.name,
@@ -137,6 +158,7 @@ export function mergeStores(input: MergeInput): MergedStore[] {
       normalizedAddress,
       games: canonicalGames([game]),
       area: r.area,
+      ...(machineCounts ? { machineCounts } : {}),
       // closed（手動）は本パイプラインで変更せず前回値を維持する
       ...(prevMatch?.closed ? { closed: true } : {}),
       // 今回も掲載されているため delisted は付与しない（移設フラグの解除）
@@ -158,6 +180,8 @@ export function mergeStores(input: MergeInput): MergedStore[] {
     const area = prefectureToArea(p.address)
     const areaScraped = area !== null && scrapedAreas.has(area)
 
+    // 今回スクレイプに無く台数を再取得できないため、前回の台数を引き継ぐ
+    const machineCounts = p.machineCounts ? buildMachineCounts(p.machineCounts) : undefined
     result.push({
       id: deriveId(key),
       name: p.name,
@@ -165,6 +189,7 @@ export function mergeStores(input: MergeInput): MergedStore[] {
       normalizedAddress,
       games: canonicalGames(p.games),
       area: area ?? '',
+      ...(machineCounts ? { machineCounts } : {}),
       ...(p.closed ? { closed: true } : {}),
       // 正常取得エリアでの消失→移設判定。取得失敗エリアは前回の delisted 状態を維持。
       ...(areaScraped || p.delisted ? { delisted: true } : {}),

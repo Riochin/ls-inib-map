@@ -49,6 +49,10 @@ function toStore(g: GeocodedStore): Store {
     lng: g.lng,
     games: g.games,
   }
+  // ゲーム別台数は非空時のみ保持（マージ段で GAME_ORDER 順に構築済み）
+  if (g.machineCounts && Object.keys(g.machineCounts).length > 0) {
+    store.machineCounts = g.machineCounts
+  }
   // 閉店（手動）/移設（自動）は設定時のみ保持（省略時は営業中）
   if (g.closed) store.closed = true
   if (g.delisted) store.delisted = true

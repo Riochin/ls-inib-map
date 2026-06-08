@@ -57,6 +57,11 @@ export interface MergedStore {
   normalizedAddress: string
   /** 稼働タイトル（合成済み・1つ以上） */
   games: [GameTitle, ...GameTitle[]]
+  /**
+   * ゲーム別の設置台数（任意）。両サイトの `RawStore.machineCount` を
+   * タイトル別に集約したもの。表記の無い（0）タイトルは省略する。
+   */
+  machineCounts?: Partial<Record<GameTitle, number>>
   /** 取得元/導出された地域コード（JP-01〜JP-47） */
   area: string
   /** 手動の閉店フラグ（前回値を維持。本パイプラインでは変更しない） */

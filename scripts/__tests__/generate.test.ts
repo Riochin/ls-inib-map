@@ -70,6 +70,22 @@ describe('generateStoresFile', () => {
     expect(byId.c).not.toHaveProperty('delisted')
   })
 
+  it('machineCounts は非空時のみ保持し、空オブジェクトは省略する', () => {
+    const file = generateStoresFile({
+      stores: [
+        geocodedStore({ id: 'a', machineCounts: { 'gundam-exvs': 3 } }),
+        geocodedStore({ id: 'b', machineCounts: {} }),
+        geocodedStore({ id: 'c' }),
+      ],
+      source: SOURCE,
+      now: '2026-06-08T00:00:00.000Z',
+    })
+    const byId = Object.fromEntries(file.stores.map((s) => [s.id, s]))
+    expect(byId.a.machineCounts).toEqual({ 'gundam-exvs': 3 })
+    expect(byId.b).not.toHaveProperty('machineCounts')
+    expect(byId.c).not.toHaveProperty('machineCounts')
+  })
+
   it('店舗を id 昇順に整列して出力の決定論性を担保する', () => {
     const file = generateStoresFile({
       stores: [geocodedStore({ id: 'c' }), geocodedStore({ id: 'a' }), geocodedStore({ id: 'b' })],

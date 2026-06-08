@@ -15,6 +15,12 @@ export interface Store {
   lng: number
   /** 稼働タイトル（1つ以上） */
   games: [GameTitle, ...GameTitle[]]
+  /**
+   * ゲーム別の設置台数（公式公表値・任意）。各サイトが個別に公表するため
+   * タイトルごとに保持する（例 `{ 'jojo-ls': 3, 'gundam-exvs': 2 }`）。
+   * 公式表記が無い（0）タイトルはキーごと省略する。
+   */
+  machineCounts?: Partial<Record<GameTitle, number>>
   /** 閉店フラグ（恒久閉店・手動判定・🌸表示。省略時は営業中） */
   closed?: boolean
   /**

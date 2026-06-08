@@ -105,15 +105,19 @@ function InfoWindowContent({ store, onClose }: { store: Store; onClose: () => vo
       <h3 className="font-bold text-base leading-snug mb-1 break-words whitespace-normal">{store.name}</h3>
       <p className="text-xs text-gray-600 mb-1">{store.address}</p>
       <div className="flex gap-1 mb-1.5">
-        {store.games.map((game) => (
-          <span
-            key={game}
-            className="text-xs px-2 py-0.5 rounded-full"
-            style={{ backgroundColor: theme.badgeBg, color: theme.badgeText }}
-          >
-            {getGameLabel(game)}
-          </span>
-        ))}
+        {store.games.map((game) => {
+          const count = store.machineCounts?.[game]
+          return (
+            <span
+              key={game}
+              className="text-xs px-2 py-0.5 rounded-full"
+              style={{ backgroundColor: theme.badgeBg, color: theme.badgeText }}
+            >
+              {getGameLabel(game)}
+              {count != null && ` ${count}台`}
+            </span>
+          )
+        })}
       </div>
       <a
         href={`https://www.google.com/maps/dir/?api=1&destination=${store.lat},${store.lng}`}

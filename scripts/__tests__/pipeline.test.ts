@@ -116,14 +116,16 @@ describe('runPipeline', () => {
       expect(Number.isFinite(s.lng)).toBe(true)
     }
 
-    // 両サイト掲載の店A は games が合成される
+    // 両サイト掲載の店A は games が合成され、ゲーム別台数も両サイト分が載る
     const a = file.stores.find((s) => s.name === '店A')
     expect(a?.games).toEqual(['jojo-ls', 'gundam-exvs'])
+    expect(a?.machineCounts).toEqual({ 'jojo-ls': 2, 'gundam-exvs': 2 })
 
-    // 掲載継続の店B は前回座標を引き継ぐ（再ジオコードしない）
+    // 掲載継続の店B は前回座標を引き継ぎ、jojols 側の台数のみを持つ
     const b = file.stores.find((s) => s.name === '店B')
     expect(b).toMatchObject({ lat: 34.7, lng: 135.5 })
     expect(b?.delisted).toBeUndefined()
+    expect(b?.machineCounts).toEqual({ 'jojo-ls': 1 })
 
     // JP-27 で消失した店C は移設判定（前回座標維持）
     const c = file.stores.find((s) => s.name === '店C')
