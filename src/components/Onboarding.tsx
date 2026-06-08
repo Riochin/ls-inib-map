@@ -338,55 +338,64 @@ function OnboardingModal({ onClose }: { onClose: () => void }) {
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-5 relative max-h-[85vh] overflow-y-auto"
+        className="bg-white rounded-2xl shadow-xl max-w-sm w-full relative max-h-[85vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
-          className="sticky top-0 float-right -mt-1 -mr-1 w-7 h-7 flex items-center justify-center text-gray-400 hover:text-gray-600 text-lg leading-none"
+          className="absolute top-3 right-3 z-10 w-7 h-7 flex items-center justify-center text-gray-400 hover:text-gray-600 text-lg leading-none"
           aria-label="閉じる"
         >
           ✕
         </button>
 
-        {(() => {
-          const Page = PAGES[page]
-          return <Page />
-        })()}
-
-        {/* ページインジケータ */}
-        <div className="flex justify-center gap-1.5 mt-5">
-          {Array.from({ length: PAGE_COUNT }, (_, i) => (
-            <span
-              key={i}
-              className={`w-1.5 h-1.5 rounded-full transition-colors ${i === page ? 'bg-gray-800' : 'bg-gray-300'}`}
-            />
-          ))}
+        {/* 本文（ここだけスクロール）。下端のフェードで続きがあることを示す */}
+        <div className="relative flex-1 min-h-0">
+          <div className="h-full overflow-y-auto px-5 pt-5 pb-2">
+            {(() => {
+              const Page = PAGES[page]
+              return <Page />
+            })()}
+          </div>
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-5 bg-gradient-to-t from-white to-transparent" />
         </div>
 
-        {/* フッターナビゲーション（3ページのウィザード） */}
-        <div className="flex items-center justify-between gap-3 mt-3">
-          <button
-            onClick={() => setPage((p) => Math.max(0, p - 1))}
-            className={`text-xs text-gray-500 hover:text-gray-800 transition-colors ${page === 0 ? 'invisible' : ''}`}
-          >
-            ← 戻る
-          </button>
-          {page < PAGE_COUNT - 1 ? (
+        {/* 固定フッター：インジケータ＋ナビゲーション（常に表示） */}
+        <div className="shrink-0 border-t border-gray-100 px-5 pt-3 pb-4">
+          {/* ページインジケータ */}
+          <div className="flex justify-center gap-1.5">
+            {Array.from({ length: PAGE_COUNT }, (_, i) => (
+              <span
+                key={i}
+                className={`w-1.5 h-1.5 rounded-full transition-colors ${i === page ? 'bg-gray-800' : 'bg-gray-300'}`}
+              />
+            ))}
+          </div>
+
+          {/* フッターナビゲーション（3ページのウィザード） */}
+          <div className="flex items-center justify-between gap-3 mt-3">
             <button
-              onClick={() => setPage((p) => Math.min(PAGE_COUNT - 1, p + 1))}
-              className="px-5 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-full hover:bg-gray-700 transition-colors"
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+              className={`text-xs text-gray-500 hover:text-gray-800 transition-colors ${page === 0 ? 'invisible' : ''}`}
             >
-              次へ
+              ← 戻る
             </button>
-          ) : (
-            <button
-              onClick={onClose}
-              className="px-5 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-full hover:bg-gray-700 transition-colors"
-            >
-              閉じる
-            </button>
-          )}
+            {page < PAGE_COUNT - 1 ? (
+              <button
+                onClick={() => setPage((p) => Math.min(PAGE_COUNT - 1, p + 1))}
+                className="px-5 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-full hover:bg-gray-700 transition-colors"
+              >
+                次へ
+              </button>
+            ) : (
+              <button
+                onClick={onClose}
+                className="px-5 py-2.5 bg-gray-900 text-white text-sm font-semibold rounded-full hover:bg-gray-700 transition-colors"
+              >
+                閉じる
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
