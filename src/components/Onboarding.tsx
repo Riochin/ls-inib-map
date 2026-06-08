@@ -79,7 +79,7 @@ const STEPS: { visual: ReactNode; title: string; desc: string }[] = [
   {
     visual: <IconChip><LocateIcon /></IconChip>,
     title: '現在地へ移動',
-    desc: '左下のボタンで現在地を取得し、地図をその位置へ移動します。',
+    desc: '左下のボタンで現在地を取得し、地図をその位置へ移動します。位置情報の許可が必要です。',
   },
   {
     visual: <span className="w-10 shrink-0 flex justify-center"><ClusterMini /></span>,
@@ -91,8 +91,8 @@ const STEPS: { visual: ReactNode; title: string; desc: string }[] = [
 const LEGEND: { theme: MarkerThemeKey; label: string }[] = [
   { theme: 'both', label: '両タイトル（ラスサバ＆イニブ）' },
   { theme: 'gundamOnly', label: 'イニブのみ' },
-  { theme: 'closed', label: '閉店' },
   { theme: 'delisted', label: '移設の可能性（公式一覧から消えた店舗）' },
+  { theme: 'closed', label: '閉店' },
 ]
 
 function HelpButton({ onClick }: { onClick: () => void }) {
