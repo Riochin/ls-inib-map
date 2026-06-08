@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import {
   parseListHtml,
+  cleanScrapedAddress,
   isAreaReliable,
   isNationalTotalAnomalous,
   buildListUrl,
@@ -11,24 +12,23 @@ import {
 import type { RawStore, SiteKey } from '../types'
 
 /**
- * 公式一覧HTMLの想定構造を模した固定フィクスチャ。
- * 1店舗 = `.location-list__item`、店舗名アンカーの href に `loc_id`、
- * 住所と「N台設置」を子要素に持つ（`scrape.ts` の LIST_SELECTORS と対応）。
+ * 公式一覧HTMLの実構造を模した固定フィクスチャ。
+ * 店舗一覧は `<dl>` 内の「`<dt>`（店名アンカー・`detail?loc_id=...`）→
+ * `<dd class="address">` → `<dd class="count">`（`N台設置`）」のフラットな繰り返し
+ * （`scrape.ts` の `parseListHtml` と対応）。
  */
 function fixtureHtml(
   items: Array<{ locId: string; name: string; address: string; machine: string }>,
 ): string {
-  const lis = items
+  const rows = items
     .map(
       (it) => `
-      <li class="location-list__item">
-        <a class="location-list__name" href="detail?loc_id=${it.locId}">${it.name}</a>
-        <p class="location-list__address">${it.address}</p>
-        <p class="location-list__machine">${it.machine}</p>
-      </li>`,
+      <dt><a href="./detail?loc_id=${it.locId}">${it.name}</a></dt>
+      <dd class="address">${it.address}</dd>
+      <dd class="count">${it.machine}</dd>`,
     )
     .join('')
-  return `<html><body><ul class="location-list">${lis}</ul></body></html>`
+  return `<html><body><dl>${rows}</dl></body></html>`
 }
 
 describe('parseListHtml', () => {
@@ -76,24 +76,41 @@ describe('parseListHtml', () => {
 
   it('必須項目（名前/住所/loc_id）を欠く要素はスキップする', () => {
     const broken =
-      '<ul class="location-list">' +
+      '<dl>' +
       // loc_id を欠く（href にクエリなし）
-      '<li class="location-list__item"><a class="location-list__name" href="detail">名無し</a>' +
-      '<p class="location-list__address">東京都新宿区</p><p class="location-list__machine">1台設置</p></li>' +
+      '<dt><a href="./detail">名無し</a></dt>' +
+      '<dd class="address">東京都新宿区</dd><dd class="count">1台設置</dd>' +
       // 住所を欠く
-      '<li class="location-list__item"><a class="location-list__name" href="detail?loc_id=1">店</a>' +
-      '<p class="location-list__machine">1台設置</p></li>' +
-      '</ul>'
+      '<dt><a href="./detail?loc_id=1">店</a></dt>' +
+      '<dd class="count">1台設置</dd>' +
+      '</dl>'
     expect(parseListHtml(broken, 'jojols', 'JP-13')).toEqual([])
   })
 
   it('台数表記が無い場合は machineCount を 0 とする', () => {
     const html =
-      '<ul class="location-list"><li class="location-list__item">' +
-      '<a class="location-list__name" href="detail?loc_id=9">店X</a>' +
-      '<p class="location-list__address">大阪府大阪市北区1-1</p></li></ul>'
+      '<dl><dt><a href="./detail?loc_id=9">店X</a></dt>' +
+      '<dd class="address">大阪府大阪市北区1-1</dd></dl>'
     const [store] = parseListHtml(html, 'gundam', 'JP-27')
     expect(store.machineCount).toBe(0)
+  })
+})
+
+describe('cleanScrapedAddress', () => {
+  it('構成要素間の半角空白を詰め、建物名（全角空白区切り）は半角空白1つで連結する', () => {
+    expect(cleanScrapedAddress('東京都 豊島区 東池袋 1-22-10　ヒューマックスパビリオン1F')).toBe(
+      '東京都豊島区東池袋1-22-10 ヒューマックスパビリオン1F',
+    )
+  })
+
+  it('建物名が無い住所は空白を全て詰める', () => {
+    expect(cleanScrapedAddress('東京都 千代田区 外神田 1-10-9')).toBe('東京都千代田区外神田1-10-9')
+  })
+
+  it('整形後の住所はクライアントの parseAddress が区/市を取得できる形になる', () => {
+    // parseAddress は都道府県以降の先頭空白で取りこぼすため、空白詰めが前提
+    const cleaned = cleanScrapedAddress('神奈川県 横浜市 西区 南幸 1-1-1')
+    expect(cleaned).toBe('神奈川県横浜市西区南幸1-1-1')
   })
 })
 
@@ -231,6 +248,39 @@ describe('scrapeStores', () => {
         sleep: vi.fn().mockResolvedValue(undefined),
       }),
     ).rejects.toBeInstanceOf(ScrapeAbortError)
+  })
+
+  it('area ごとの進捗と完了サマリーを log で通知する', async () => {
+    const log = vi.fn()
+    await scrapeStores({
+      fetcher: buildFetcher(),
+      areas: twoAreas,
+      sleep: vi.fn().mockResolvedValue(undefined),
+      log,
+    })
+
+    const messages = log.mock.calls.map((c) => c[0] as string)
+    // リクエストごとの進捗（件数つき）
+    expect(messages.some((m) => /\(\d+\/\d+\).*JP-01.*jojols.*1件/.test(m))).toBe(true)
+    // 完了サマリー
+    expect(messages.some((m) => /完了: 成功エリア=2\/2, 総店舗=4件/.test(m))).toBe(true)
+  })
+
+  it('フェッチのタイムアウト（例外）はそのエリアを失敗扱いにし log へ記録する', async () => {
+    const log = vi.fn()
+    const timeoutErr = Object.assign(new Error('The operation was aborted due to timeout'), {
+      name: 'TimeoutError',
+    })
+    const result = await scrapeStores({
+      fetcher: buildFetcher({ 'area=JP-02': timeoutErr }),
+      areas: twoAreas,
+      sleep: vi.fn().mockResolvedValue(undefined),
+      log,
+    })
+
+    expect([...result.scrapedAreas]).toEqual(['JP-01'])
+    const messages = log.mock.calls.map((c) => c[0] as string)
+    expect(messages.some((m) => m.includes('JP-02') && m.includes('失敗'))).toBe(true)
   })
 
   it('東京エリアは sw 分割の両方が取得できた場合に scrapedAreas へ含める', async () => {

@@ -1,4 +1,4 @@
-import { parse } from 'node-html-parser'
+import { parse, HTMLElement } from 'node-html-parser'
 import type { RawStore, ScrapeResult, SiteKey } from './types'
 
 /**
@@ -72,15 +72,24 @@ export function buildListUrl(site: SiteKey, target: AreaTarget): string {
 // ---------------------------------------------------------------------------
 
 /**
- * 一覧HTMLのDOMセレクタ。両サイトは同一プラットフォームのため共通の構造を想定する。
- * 公式HTML構造が変化した場合の調整点はここに集約する（変化検知は件数バリデーションが担保）。
+ * 一覧HTMLの店舗構造。両サイトは同一プラットフォームのため共通の構造を持つ。
+ *
+ * 店舗一覧は `<dl>` 内に「`<dt>`（店名アンカー・`detail?loc_id=...`）→
+ * `<dd class="address">`（住所）→ `<dd class="count">`（`N台設置`）」を1店舗とする
+ * フラットな繰り返しで並ぶ（1店舗=1ラッパー要素ではない）。
+ *
+ * 例:
+ * ```html
+ * <dl>
+ *   <dt><a href="./detail?loc_id=XXX">namco池袋</a></dt>
+ *   <dd class="address">東京都 豊島区 東池袋 1-22-10　ヒューマックス…</dd>
+ *   <dd class="count">10台設置</dd>
+ *   …
+ * </dl>
+ * ```
+ * 公式HTML構造が変化した場合の調整点はここ（`parseListHtml`）に集約する
+ * （変化検知＝抽出0件は area 単位の件数バリデーションが不確定として弾く）。
  */
-const LIST_SELECTORS = {
-  item: '.location-list__item',
-  name: '.location-list__name',
-  address: '.location-list__address',
-  machine: '.location-list__machine',
-} as const
 
 /** `detail?loc_id=XXX` 形式の href から loc_id を取り出す */
 function extractLocId(href: string): string | null {
@@ -94,30 +103,79 @@ function extractMachineCount(text: string): number {
 }
 
 /**
+ * 公式一覧の住所を手書きデータと同じ表記へ整形する（表示・住所フィルタ整合）。
+ *
+ * 公式は住所構成要素を半角空白で、建物名を全角空白で区切る
+ * （例 `東京都 豊島区 東池袋 1-22-10　ヒューマックス…`）。クライアントの
+ * `parseAddress` は都道府県以降の先頭空白で市区町村を取りこぼすため、
+ * 構成要素間の空白を詰めて手書きスタイル（`東京都豊島区東池袋1-22-10 建物名`）に揃える。
+ *
+ * - 全角空白（建物名区切り）の前を「住所コア」とし、コア内の空白は全除去。
+ * - 建物名は半角空白1つで連結して可読性を保つ（無ければ付けない）。
+ */
+export function cleanScrapedAddress(raw: string): string {
+  const [core, ...building] = raw.split('　')
+  const cleanedCore = core.replace(/\s+/g, '')
+  const buildingPart = building.join(' ').replace(/\s+/g, ' ').trim()
+  return buildingPart ? `${cleanedCore} ${buildingPart}` : cleanedCore
+}
+
+/** 組み立て中の店舗（`<dt>` で開始し、後続 `<dd>` を集約して確定する） */
+interface PendingStore {
+  name: string
+  locId: string | null
+  address: string
+  machineText: string
+}
+
+/**
  * 1地域の一覧HTMLから店舗を抽出する純関数（副作用なし・テスト可能）。
- * 必須項目（名前/住所/loc_id）を欠く要素はスキップする。
+ *
+ * 店舗は `<dl>` 内の `<dt>`（店名+loc_id）に続く `<dd class="address">` /
+ * `<dd class="count">` を1件として集約する。`<dt>` の出現でその前の店舗を確定し、
+ * `loc_id` を持たない `<dt>` や、名前/住所/loc_id を欠く要素はスキップする。
  */
 export function parseListHtml(html: string, site: SiteKey, area: string): RawStore[] {
   const root = parse(html)
   const stores: RawStore[] = []
 
-  for (const item of root.querySelectorAll(LIST_SELECTORS.item)) {
-    const nameEl = item.querySelector(LIST_SELECTORS.name)
-    const name = nameEl?.text.trim() ?? ''
-    const locId = extractLocId(nameEl?.getAttribute('href') ?? '')
-    const address = item.querySelector(LIST_SELECTORS.address)?.text.trim() ?? ''
-    const machineText = item.querySelector(LIST_SELECTORS.machine)?.text ?? ''
-
-    if (!name || !address || !locId) continue
-
+  const flush = (pending: PendingStore | null): void => {
+    if (!pending || !pending.name || !pending.address || !pending.locId) return
     stores.push({
       site,
-      locId,
-      name,
-      address,
-      machineCount: extractMachineCount(machineText),
+      locId: pending.locId,
+      name: pending.name,
+      address: pending.address,
+      machineCount: extractMachineCount(pending.machineText),
       area,
     })
+  }
+
+  for (const dl of root.querySelectorAll('dl')) {
+    let pending: PendingStore | null = null
+
+    for (const node of dl.childNodes) {
+      if (!(node instanceof HTMLElement)) continue
+
+      if (node.tagName === 'DT') {
+        // 直前の店舗を確定してから次の店舗を開始する
+        flush(pending)
+        const anchor = node.querySelector('a[href*="loc_id="]')
+        pending = {
+          name: anchor?.text.trim() ?? '',
+          locId: extractLocId(anchor?.getAttribute('href') ?? ''),
+          address: '',
+          machineText: '',
+        }
+      } else if (node.tagName === 'DD' && pending) {
+        const cls = node.getAttribute('class') ?? ''
+        if (cls.includes('address')) pending.address = cleanScrapedAddress(node.text.trim())
+        else if (cls.includes('count')) pending.machineText = node.text
+      }
+    }
+
+    // 最後の店舗を確定する
+    flush(pending)
   }
 
   return stores
@@ -175,19 +233,28 @@ export class ScrapeAbortError extends Error {
 // ---------------------------------------------------------------------------
 
 const DEFAULT_DELAY_MS = 1000
+/** 1リクエストのタイムアウト既定値（応答が無い接続でパイプライン全体が固まるのを防ぐ） */
+const DEFAULT_FETCH_TIMEOUT_MS = 15000
 
 /** 公式サイトへの過度な負荷を避けるための待機（既定: setTimeout） */
 function defaultSleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-/** 一覧HTMLを取得する既定フェッチャ。非2xxは例外として area 失敗扱いにする */
-async function defaultFetcher(url: string): Promise<string> {
-  const res = await fetch(url, {
-    headers: { 'User-Agent': 'ls-exvs-map-updater (+https://github.com/)' },
-  })
-  if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`)
-  return res.text()
+/**
+ * 一覧HTMLを取得する既定フェッチャ。非2xxは例外として area 失敗扱いにする。
+ * `timeoutMs` で応答待ちを打ち切り（`AbortSignal.timeout`）、無応答接続による
+ * 無限待ちを防ぐ。タイムアウトは例外として伝播し、当該 area が不確定扱いになる。
+ */
+function defaultFetcher(timeoutMs: number): (url: string) => Promise<string> {
+  return async (url: string) => {
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'ls-exvs-map-updater (+https://github.com/)' },
+      signal: AbortSignal.timeout(timeoutMs),
+    })
+    if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`)
+    return res.text()
+  }
 }
 
 export interface ScrapeDeps {
@@ -197,6 +264,8 @@ export interface ScrapeDeps {
   sleep?: (ms: number) => Promise<void>
   /** リクエスト間隔（ミリ秒） */
   delayMs?: number
+  /** 既定フェッチャの1リクエストタイムアウト（ミリ秒・既定 {@link DEFAULT_FETCH_TIMEOUT_MS}） */
+  timeoutMs?: number
   /** 取得対象エリア（既定: 全国 {@link ALL_AREA_TARGETS}） */
   areas?: AreaTarget[]
   /** 対象サイト（既定: 両サイト） */
@@ -205,6 +274,8 @@ export interface ScrapeDeps {
   prevAreaCounts?: Map<string, number>
   /** 前回データの全国総数（全体異常判定の基準・任意） */
   prevTotal?: number
+  /** 進捗ログ出力（既定: console.log）。area ごとの取得状況を通知する */
+  log?: (msg: string) => void
 }
 
 interface AreaAccumulator {
@@ -225,11 +296,13 @@ interface AreaAccumulator {
  *   既存データを破壊せず中断する（Req2.6）。
  */
 export async function scrapeStores(deps: ScrapeDeps = {}): Promise<ScrapeResult> {
-  const fetcher = deps.fetcher ?? defaultFetcher
+  const timeoutMs = deps.timeoutMs ?? DEFAULT_FETCH_TIMEOUT_MS
+  const fetcher = deps.fetcher ?? defaultFetcher(timeoutMs)
   const sleep = deps.sleep ?? defaultSleep
   const delayMs = deps.delayMs ?? DEFAULT_DELAY_MS
   const targets = deps.areas ?? ALL_AREA_TARGETS
   const sites = deps.sites ?? ALL_SITES
+  const log = deps.log ?? ((msg: string) => console.log(msg))
 
   const perArea = new Map<string, AreaAccumulator>()
   const acc = (area: string): AreaAccumulator => {
@@ -241,20 +314,26 @@ export async function scrapeStores(deps: ScrapeDeps = {}): Promise<ScrapeResult>
     return entry
   }
 
+  // 進捗が見えるよう、ターゲット（area+sw分割）単位で取得状況を逐次ログする
+  let done = 0
+  const totalRequests = targets.length * sites.length
   for (const target of targets) {
+    const label = target.params ? `${target.area}(${new URLSearchParams(target.params)})` : target.area
     for (const site of sites) {
       // 過負荷回避: 各リクエスト前に間隔を空ける
       await sleep(delayMs)
+      done++
       const entry = acc(target.area)
       try {
         const html = await fetcher(buildListUrl(site, target))
         const stores = parseListHtml(html, site, target.area)
         entry.count += stores.length
         entry.stores.push(...stores)
+        log(`[scrape] (${done}/${totalRequests}) ${label} ${site}: ${stores.length}件`)
       } catch (err) {
-        // area 単位の取得失敗 → 当該 area を不確定にマーク
+        // area 単位の取得失敗（タイムアウト含む） → 当該 area を不確定にマーク
         entry.ok = false
-        console.error(`[scrape] failed: ${site} ${target.area}:`, err)
+        log(`[scrape] (${done}/${totalRequests}) ${label} ${site}: 失敗 — ${String(err)}`)
       }
     }
   }
@@ -266,13 +345,15 @@ export async function scrapeStores(deps: ScrapeDeps = {}): Promise<ScrapeResult>
   for (const [area, entry] of perArea) {
     const reliable = entry.ok && isAreaReliable(entry.count, deps.prevAreaCounts?.get(area))
     if (!reliable) {
-      console.warn(`[scrape] area excluded as uncertain: ${area} (count=${entry.count}, ok=${entry.ok})`)
+      log(`[scrape] エリア除外（不確定）: ${area} (count=${entry.count}, ok=${entry.ok})`)
       continue
     }
     scrapedAreas.add(area)
     stores.push(...entry.stores)
     nationalTotal += entry.count
   }
+
+  log(`[scrape] 完了: 成功エリア=${scrapedAreas.size}/${perArea.size}, 総店舗=${nationalTotal}件`)
 
   if (isNationalTotalAnomalous(nationalTotal, deps.prevTotal)) {
     throw new ScrapeAbortError(
