@@ -196,7 +196,7 @@ function ShareButton() {
       className="w-full inline-flex items-center justify-center gap-2 py-2.5 bg-black text-white rounded-full text-sm font-semibold hover:bg-gray-800 transition-colors"
     >
       <XIcon />
-      Xでツイートする
+      Xでシェアする
     </button>
   )
 }
