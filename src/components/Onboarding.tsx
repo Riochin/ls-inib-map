@@ -32,11 +32,12 @@ function LocateIcon() {
   )
 }
 
-/** タイトル絞り込みを表す小さな縦長「ラスサバ」チップ（主要ユーザー層に合わせた代表表示） */
+/** タイトル絞り込みを表す小さな縦長「ラスサバ」チップ（横書き2行・主要ユーザー層に合わせた代表表示） */
 function FilterChipMini() {
   return (
-    <span className="text-[8px] leading-none px-1 py-1.5 rounded-full bg-purple-700 text-white font-semibold [writing-mode:vertical-rl] tracking-wide">
-      ラスサバ
+    <span className="inline-flex flex-col items-center justify-center text-[8px] leading-[1.15] px-1.5 py-1.5 rounded-lg bg-purple-700 text-white font-semibold">
+      <span>ラス</span>
+      <span>サバ</span>
     </span>
   )
 }
