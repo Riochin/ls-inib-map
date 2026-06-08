@@ -1,14 +1,17 @@
 'use client'
 
-import { useCallback, useEffect, useRef } from 'react'
-import { useMap } from '@vis.gl/react-google-maps'
-import { MarkerClusterer } from '@googlemaps/markerclusterer'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useMap, useMapsLibrary } from '@vis.gl/react-google-maps'
+import { MarkerClusterer, type Renderer } from '@googlemaps/markerclusterer'
 import type { Store } from '@/types/store'
 import { getThemeKey } from '@/lib/marker-color'
 import { getMarkerImage } from '@/lib/marker-image'
 
 /** フォーカス時にクラスタを解除して個別マーカーを表示するズームレベル（クラスタラの maxZoom 超） */
 const FOCUS_ZOOM = 17
+
+/** クラスタバブルのブランド色（サイトの「両タイトル」紫に統一） */
+const CLUSTER_COLOR = '#7B2FBE'
 
 export interface MarkerDiff {
   /** 新規に生成・追加すべき店舗ID */
@@ -61,6 +64,40 @@ function createMarkerContent(store: Store): HTMLImageElement {
   return el
 }
 
+/** クラスタバブルの DOM。サイトのブランド紫で統一し、件数を中央に表示する */
+function createClusterContent(count: number): HTMLDivElement {
+  const size = count < 10 ? 36 : count < 100 ? 44 : 52
+  const el = document.createElement('div')
+  el.textContent = String(count)
+  el.style.cssText = [
+    `width:${size}px`,
+    `height:${size}px`,
+    'display:flex',
+    'align-items:center',
+    'justify-content:center',
+    'border-radius:50%',
+    `background:${CLUSTER_COLOR}`,
+    'color:#fff',
+    'font-weight:700',
+    'font-size:13px',
+    'border:2px solid #fff',
+    'box-shadow:0 2px 6px rgba(0,0,0,0.3)',
+  ].join(';')
+  return el
+}
+
+/** ブランド色のクラスタレンダラを生成する（marker ライブラリ必須） */
+function createClusterRenderer(markerLibrary: google.maps.MarkerLibrary): Renderer {
+  return {
+    render: (cluster) =>
+      new markerLibrary.AdvancedMarkerElement({
+        position: cluster.position,
+        content: createClusterContent(cluster.count),
+        zIndex: 1000 + cluster.count,
+      }),
+  }
+}
+
 /**
  * `useMap` 経由で Google Maps 命令APIを隔離し、クラスタとマーカーのライフサイクルを管理する。
  * - 表示対象 `stores` を受け取り、店舗ID単位でマーカーをキャッシュしてクラスタラへ供給（Req1.1, 1.7）
@@ -69,7 +106,9 @@ function createMarkerContent(store: Store): HTMLImageElement {
  */
 export function useStoreClusterer({ stores, onMarkerClick }: UseStoreClustererParams): StoreClustererHandle {
   const map = useMap()
-  const clustererRef = useRef<MarkerClusterer | null>(null)
+  // AdvancedMarkerElement を使うには 'marker' ライブラリのロードが必要（旧 <AdvancedMarker> が内部で行っていた）
+  const markerLibrary = useMapsLibrary('marker')
+  const [clusterer, setClusterer] = useState<MarkerClusterer | null>(null)
   const markersRef = useRef<Map<string, google.maps.marker.AdvancedMarkerElement>>(new Map())
   const storesByIdRef = useRef<Map<string, Store>>(new Map())
 
@@ -77,22 +116,24 @@ export function useStoreClusterer({ stores, onMarkerClick }: UseStoreClustererPa
   const onMarkerClickRef = useRef(onMarkerClick)
   onMarkerClickRef.current = onMarkerClick
 
-  // クラスタラの初期化とアンマウント時のクリーンアップ
+  // クラスタラの初期化とアンマウント時のクリーンアップ（renderer に AdvancedMarkerElement を使うため marker ライブラリ必須）
   useEffect(() => {
-    if (!map) return
-    const clusterer = new MarkerClusterer({ map })
-    clustererRef.current = clusterer
+    if (!map || !markerLibrary) return
+    const instance = new MarkerClusterer({
+      map,
+      renderer: createClusterRenderer(markerLibrary),
+    })
+    setClusterer(instance)
     return () => {
-      clusterer.clearMarkers()
-      clustererRef.current = null
+      instance.clearMarkers()
+      setClusterer(null)
       markersRef.current.clear()
     }
-  }, [map])
+  }, [map, markerLibrary])
 
-  // stores 変化時に差分のみマーカーを追加/削除
+  // クラスタラと marker ライブラリが揃った後、stores 変化時に差分のみマーカーを追加/削除
   useEffect(() => {
-    const clusterer = clustererRef.current
-    if (!clusterer) return
+    if (!clusterer || !markerLibrary) return
 
     const cache = markersRef.current
     const byId = storesByIdRef.current
@@ -106,7 +147,7 @@ export function useStoreClusterer({ stores, onMarkerClick }: UseStoreClustererPa
     for (const id of added) {
       const store = byId.get(id)
       if (!store) continue
-      const marker = new google.maps.marker.AdvancedMarkerElement({
+      const marker = new markerLibrary.AdvancedMarkerElement({
         position: { lat: store.lat, lng: store.lng },
         content: createMarkerContent(store),
         gmpClickable: true,
@@ -127,7 +168,7 @@ export function useStoreClusterer({ stores, onMarkerClick }: UseStoreClustererPa
     if (removedMarkers.length > 0) clusterer.removeMarkers(removedMarkers, true)
     if (addedMarkers.length > 0) clusterer.addMarkers(addedMarkers, true)
     clusterer.render()
-  }, [stores])
+  }, [stores, clusterer, markerLibrary])
 
   const focusMarker = useCallback(
     (storeId: string) => {

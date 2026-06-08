@@ -42,17 +42,22 @@ describe('getMarkerImage', () => {
     expect(decode(getMarkerImage('gundamOnly').url)).toContain('#2563EB')
   })
 
-  it('closed と delisted はどちらもグレー系（#4B5563）を含む', () => {
-    expect(decode(getMarkerImage('closed').url)).toContain('#4B5563')
+  it('delisted はグレー系（#4B5563）のピンを含む', () => {
     expect(decode(getMarkerImage('delisted').url)).toContain('#4B5563')
   })
 
-  it('closed は🌸を埋め込み、delisted は絵文字を埋め込まない', () => {
-    expect(decode(getMarkerImage('closed').url)).toContain('🌸')
+  it('closed は🌸の絵文字のみで、ピン形状（path）もグレー塗りも含まない', () => {
+    const closed = decode(getMarkerImage('closed').url)
+    expect(closed).toContain('🌸')
+    expect(closed).not.toContain('<path')
+    expect(closed).not.toContain('#4B5563')
+  })
+
+  it('delisted は絵文字を埋め込まない', () => {
     expect(decode(getMarkerImage('delisted').url)).not.toContain('🌸')
   })
 
-  it('closed と delisted は同じグレーでも異なる data URI になる（🌸の有無）', () => {
+  it('closed と delisted は異なる data URI になる', () => {
     expect(getMarkerImage('closed').url).not.toBe(getMarkerImage('delisted').url)
   })
 

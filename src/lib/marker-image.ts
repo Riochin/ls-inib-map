@@ -13,42 +13,51 @@ export interface MarkerImage {
   height: number
 }
 
-const WIDTH = 28
-const HEIGHT = 36
+const PIN_WIDTH = 28
+const PIN_HEIGHT = 36
+/** 閉店マーカー（🌸のみ）のサイズ。旧 StoreMarker の絵文字表示に揃える */
+const CLOSED_SIZE = 40
 
 /**
- * テーマ別のピン SVG 文字列を生成する純関数。
- * - both/gundamOnly: グラデ塗り＋中央の白丸
- * - closed: グレーグラデ＋🌸（SVG text として埋め込み）
- * - delisted: グレーグラデ＋白丸（絵文字なし）
- * グラデは各 SVG 内に閉じた `<defs>` として埋め込み、自己完結させる（DOM 非依存・SSR 安全）。
+ * ピン型 SVG 文字列を生成する純関数（both/gundamOnly/delisted）。
+ * グラデ塗り＋中央の白丸。グラデは各 SVG 内に閉じた `<defs>` として埋め込み、
+ * 自己完結させる（DOM 非依存・SSR 安全）。
  */
-function buildSvg(theme: MarkerThemeKey): string {
+function buildPinSvg(theme: MarkerThemeKey): string {
   const { gradientFrom, gradientTo } = getThemeByKey(theme)
   const gradId = `grad-${theme}`
-  const pin = `<path d="M14 0C6.268 0 0 6.268 0 14c0 7.732 14 22 14 22s14-14.268 14-22C28 6.268 21.732 0 14 0z" fill="url(#${gradId})"/>`
-  const center =
-    theme === 'closed'
-      ? `<text x="14" y="14" font-size="13" text-anchor="middle" dominant-baseline="central">🌸</text>`
-      : `<circle cx="14" cy="14" r="5" fill="white"/>`
   return (
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${WIDTH}" height="${HEIGHT}" viewBox="0 0 ${WIDTH} ${HEIGHT}">` +
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${PIN_WIDTH}" height="${PIN_HEIGHT}" viewBox="0 0 ${PIN_WIDTH} ${PIN_HEIGHT}">` +
     `<defs><linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">` +
     `<stop offset="0%" stop-color="${gradientFrom}"/>` +
     `<stop offset="100%" stop-color="${gradientTo}"/>` +
     `</linearGradient></defs>` +
-    pin +
-    center +
+    `<path d="M14 0C6.268 0 0 6.268 0 14c0 7.732 14 22 14 22s14-14.268 14-22C28 6.268 21.732 0 14 0z" fill="url(#${gradId})"/>` +
+    `<circle cx="14" cy="14" r="5" fill="white"/>` +
     `</svg>`
   )
 }
 
+/**
+ * 閉店マーカーの SVG。ピン型ではなく🌸の絵文字のみ（旧 StoreMarker と同じ見た目）。
+ */
+function buildClosedSvg(): string {
+  return (
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${CLOSED_SIZE}" height="${CLOSED_SIZE}" viewBox="0 0 ${CLOSED_SIZE} ${CLOSED_SIZE}">` +
+    `<text x="20" y="21" font-size="34" text-anchor="middle" dominant-baseline="central">🌸</text>` +
+    `</svg>`
+  )
+}
+
+function dataUri(svg: string): string {
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`
+}
+
 function toMarkerImage(theme: MarkerThemeKey): MarkerImage {
-  return {
-    url: `data:image/svg+xml,${encodeURIComponent(buildSvg(theme))}`,
-    width: WIDTH,
-    height: HEIGHT,
+  if (theme === 'closed') {
+    return { url: dataUri(buildClosedSvg()), width: CLOSED_SIZE, height: CLOSED_SIZE }
   }
+  return { url: dataUri(buildPinSvg(theme)), width: PIN_WIDTH, height: PIN_HEIGHT }
 }
 
 /**
