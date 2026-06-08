@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { GoogleAnalytics } from '@next/third-parties/google'
+import { SeoContent } from '@/components/SeoContent'
 import './globals.css'
 
 const SITE_URL = 'https://ls-inib-map.vercel.app'
@@ -60,7 +61,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
-      <body>{children}</body>
+      <body>
+        <SeoContent />
+        {children}
+      </body>
       <GoogleAnalytics gaId="G-9VVXLS9KMZ" />
     </html>
   )
