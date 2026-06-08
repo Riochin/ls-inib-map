@@ -2,7 +2,7 @@ import type { Store } from '@/types/store'
 import type { StoresFile, StoresMeta } from '@/types/stores-file'
 import { DEFAULT_DATA_SOURCE } from '@/lib/info-display'
 import { scrapeStores, type ScrapeDeps } from './scrape'
-import { mergeStores } from './merge'
+import { mergeStores, prefectureToArea } from './merge'
 import {
   geocodeStores,
   loadCache,
@@ -41,8 +41,6 @@ export interface PipelineDeps {
   geocode?: GeocoderDeps
   /** データ出典URL（生成メタ・Req5.1） */
   source: StoresMeta['source']
-  /** 公式が公表する設置店舗総数（網羅率算出用・任意） */
-  officialTotals?: StoresMeta['officialTotals']
   /** 最終更新日時として埋め込む生成時刻（ISO 8601・呼び出し側が注入） */
   now: string
 }
@@ -87,11 +85,35 @@ export async function runPipeline(deps: PipelineDeps): Promise<PipelineResult> {
   const file = generateStoresFile({
     stores: geocoded,
     source: deps.source,
-    officialTotals: deps.officialTotals,
     now: deps.now,
   })
 
   return { file, cache, scrapedAreas, geocodedCount, skipped }
+}
+
+/**
+ * 前回 `stores.json` から、スクレイプ急減ガード（Req2.6）の比較基準を組み立てる。
+ *
+ * スクレイパの全国総数・area別件数は「サイトごとの生掲載数」（両対応店は2サイト分=2件）で
+ * 数えるため、前回店舗も `games.length` で重み付けして同じ尺度に揃える。
+ * 公式一覧から既に消えている店舗（`delisted`）や手動閉店（`closed`）は今回も掲載されない
+ * 想定なので基準から除外し、ガードが正規の更新を誤って中断しない保守的な下限とする。
+ */
+export function computePrevBaseline(prev: Store[]): {
+  prevAreaCounts: Map<string, number>
+  prevTotal: number
+} {
+  const prevAreaCounts = new Map<string, number>()
+  let prevTotal = 0
+  for (const p of prev) {
+    if (p.closed || p.delisted) continue
+    const area = prefectureToArea(p.address)
+    if (area === null) continue
+    const weight = p.games.length
+    prevAreaCounts.set(area, (prevAreaCounts.get(area) ?? 0) + weight)
+    prevTotal += weight
+  }
+  return { prevAreaCounts, prevTotal }
 }
 
 // ---------------------------------------------------------------------------
@@ -103,8 +125,6 @@ export interface RunOptions {
   now?: string
   /** データ出典URL。既定: {@link DEFAULT_DATA_SOURCE} */
   source?: StoresMeta['source']
-  /** 公式総数（任意） */
-  officialTotals?: StoresMeta['officialTotals']
   /** ログ出力（既定: console.log） */
   log?: (msg: string) => void
 }
@@ -136,11 +156,16 @@ export async function runPipelineToFiles(options: RunOptions = {}): Promise<RunF
 
   log(`[pipeline] 開始: 前回店舗=${prev.length}件, キャッシュ=${Object.keys(cache).length}件`)
 
+  // 前回データを急減ガード（Req2.6）の比較基準として注入する。これが無いと
+  // scrape.ts の area別/全国総数バリデーションが基準なし扱いで素通りし、公式サイトの
+  // HTML 構造変化で取得が激減しても中断されず、痩せ細った stores.json を上書きしてしまう。
+  const { prevAreaCounts, prevTotal } = computePrevBaseline(prev)
+
   const result = await runPipeline({
     prev,
+    scrape: { prevAreaCounts, prevTotal },
     geocode: { cache },
     source,
-    officialTotals: options.officialTotals,
     now,
   })
 
@@ -165,7 +190,10 @@ export async function runPipelineToFiles(options: RunOptions = {}): Promise<RunF
 
 /** このモジュールが直接実行されたか（テスト import 時は main を起動しない） */
 function isMainModule(): boolean {
-  const entry = process.argv[1] ?? ''
+  const entry = process.argv[1]
+  // argv[1] が無い実行コンテキスト（worker/REPL 等）では、`endsWith('')` が常に真と
+  // なって import だけで実スクレイプ・実ジオコードが走るのを防ぐため、未確定なら false。
+  if (!entry) return false
   return import.meta.url === `file://${entry}` || import.meta.url.endsWith(entry)
 }
 

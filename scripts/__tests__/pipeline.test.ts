@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { runPipeline } from '../pipeline'
+import { runPipeline, computePrevBaseline } from '../pipeline'
 import type { GeocodeResult } from '../geocode'
 import type { Store } from '@/types/store'
 import type { StoresMeta } from '@/types/stores-file'
@@ -200,5 +200,39 @@ describe('runPipeline', () => {
     const hk = result.file.stores.find((s) => s.name === '店HK')
     expect(hk).toBeDefined()
     expect(hk?.delisted).toBeUndefined()
+  })
+})
+
+describe('computePrevBaseline', () => {
+  const store = (overrides: Partial<Store>): Store => ({
+    id: overrides.id ?? 'x',
+    name: overrides.name ?? '店',
+    address: overrides.address ?? '東京都新宿区新宿3-1',
+    lat: overrides.lat ?? 35.69,
+    lng: overrides.lng ?? 139.7,
+    games: overrides.games ?? ['gundam-exvs'],
+    ...overrides,
+  })
+
+  it('area別/全国総数を games.length で重み付けし、scrape の生掲載数と同じ尺度に揃える', () => {
+    const { prevAreaCounts, prevTotal } = computePrevBaseline([
+      store({ address: '東京都新宿区新宿3-1', games: ['jojo-ls', 'gundam-exvs'] }), // 2件分
+      store({ address: '東京都渋谷区渋谷1-1', games: ['gundam-exvs'] }), // 1件分
+      store({ address: '大阪府大阪市北区梅田1-1', games: ['jojo-ls'] }), // 1件分
+    ])
+    expect(prevAreaCounts.get('JP-13')).toBe(3) // 東京の2店舗 = 2 + 1
+    expect(prevAreaCounts.get('JP-27')).toBe(1) // 大阪
+    expect(prevTotal).toBe(4)
+  })
+
+  it('閉店・移設・都道府県不明の店舗は基準から除外する（ガードの誤中断防止）', () => {
+    const { prevAreaCounts, prevTotal } = computePrevBaseline([
+      store({ address: '東京都新宿区新宿3-1', closed: true }),
+      store({ address: '東京都新宿区新宿3-2', delisted: true }),
+      store({ address: '海外某所1-1' }), // prefectureToArea が null
+      store({ address: '東京都新宿区新宿3-3' }), // 唯一の有効店舗
+    ])
+    expect(prevTotal).toBe(1)
+    expect(prevAreaCounts.get('JP-13')).toBe(1)
   })
 })
