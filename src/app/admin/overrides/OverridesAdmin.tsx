@@ -4,7 +4,9 @@ import { useEffect, useMemo, useState } from 'react'
 import { stores } from '@/data/stores'
 import { filterStoresByKeyword } from '@/lib/filter'
 import { getGameLabel, getCountSourceInfo, getThemeByKey } from '@/lib/marker-color'
+import { toJstYmd } from '@/lib/pair-schedule'
 import { CountBadge } from '@/components/CountBadge'
+import { PairSchedulePanel } from '@/components/PairSchedulePanel'
 import type { GameTitle, Provenance, Store } from '@/types/store'
 import type { OverrideEntry, OverridesFile } from '@/types/overrides'
 
@@ -120,6 +122,15 @@ export function OverridesAdmin() {
 
   const storeById = useMemo(() => new Map(stores.map((s) => [s.id, s])), [])
 
+  // ペア戦日程プレビュー: 任意の「今日」を指定して地図の帯の見え方を確認する
+  const [previewDate, setPreviewDate] = useState(() => toJstYmd(new Date()).iso)
+  // 選んだ日付の JST 正午を「今日」として注入（タイムゾーンによる日ズレを避ける）
+  const previewNow = useMemo(() => new Date(`${previewDate}T12:00:00+09:00`), [previewDate])
+  const previewHeadLabel = useMemo(() => {
+    const [, m, d] = previewDate.split('-')
+    return `${Number(m)}/${Number(d)}`
+  }, [previewDate])
+
   useEffect(() => {
     fetch('/api/overrides')
       .then((r) => r.json())
@@ -214,6 +225,36 @@ export function OverridesAdmin() {
         </div>
         <p className="text-[10px] text-gray-400 mt-1">
           運営が確認した台数だけ通常色（確定）。それ以外（公式・みんなの報告・自動取得）は薄い（未確認）。
+        </p>
+      </section>
+
+      {/* ペア戦開催日程プレビュー（dev確認用・地図のラスサバ帯と同じチップを再利用） */}
+      <section className="mb-6">
+        <h2 className="text-xs font-semibold text-gray-600 mb-2">
+          ペア戦開催日程プレビュー（地図ではラスサバ選択中に左上の帯で表示）
+        </h2>
+        <label className="flex items-center gap-2 text-xs text-gray-600 mb-2">
+          プレビュー日付
+          <input
+            type="date"
+            value={previewDate}
+            onChange={(e) => setPreviewDate(e.target.value)}
+            className="border border-gray-300 rounded px-2 py-1"
+          />
+          <button
+            type="button"
+            onClick={() => setPreviewDate(toJstYmd(new Date()).iso)}
+            className="text-purple-700 hover:underline"
+          >
+            今日に戻す
+          </button>
+        </label>
+        {/* 地図と同じ開閉チップ。畳んだ状態から開閉でき、日付を変えると見え方が変わる */}
+        <div className="max-w-sm">
+          <PairSchedulePanel now={previewNow} expandedWidthClassName="w-full" headLabel={previewHeadLabel} />
+        </div>
+        <p className="text-[10px] text-gray-400 mt-1 leading-snug">
+          日付を変えると、その日が地図でどう表示されるか確認できます（畳んだ状態からタップで展開）。
         </p>
       </section>
 
