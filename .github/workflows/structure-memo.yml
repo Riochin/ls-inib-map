@@ -1,0 +1,55 @@
+name: Structure memo issue
+
+# ヒアリング生メモIssue（memoラベル）が開かれたら、Claudeが構造化Issueに変換し、
+# 元メモをクローズする。スマホからメモを1個openするだけで運用が回る想定。
+
+on:
+  issues:
+    types: [opened]
+
+jobs:
+  structure:
+    # 3つのガード:
+    #  1) ループ防止: memoラベル付きのみ対象（生成する構造化Issueにはmemoを付けない）
+    #  2) オーナー限定: 他人のIssueでAIを乱用させない
+    #  3) シークレットはActions secrets（CLAUDE_CODE_OAUTH_TOKEN）
+    if: >-
+      github.event.issue.author_association == 'OWNER' &&
+      contains(github.event.issue.labels.*.name, 'memo')
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ github.token }}
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            あなたはリポジトリ ${{ github.repository }} のメンテナ補助です。
+            Issue #${{ github.event.issue.number }} はヒアリングの生メモです
+            （「店舗情報の報告」か「機能要望」のどちらか）。
+            次を実行してください（gh CLI が利用できます）:
+
+            1. メモ本文を読み、種別（店舗情報 / 機能要望）を判定して構造化する。
+            2. `gh issue create` で新しい構造化Issueを作成する:
+               - 【店舗情報の場合】
+                 - タイトル: 「[店舗報告] <店名> — <要点>」
+                 - 本文: 店名 / タイトル(ラスサバ・イニブ・両方) / 報告種別(台数修正・閉店・移設・設備・その他) /
+                   台数(ライブモニター込みかの注記があれば残す) / 出どころ(自分で確認・SNS・又聞き) /
+                   原文メモの引用 / 推定 store-id（分かれば）
+                 - ラベル: `要反映`
+               - 【機能要望の場合】
+                 - タイトル: 「[要望] <要点>」
+                 - 本文: 要望（やりたいこと） / 背景・きっかけ / 想定ユーザー / 原文メモの引用
+                 - ラベル: `改善要望`
+               - 生成Issueに `memo` は付けない。使うラベルが無ければ
+                 `gh label create <名前>` で作成してから付与する。
+            3. 元の Issue #${{ github.event.issue.number }} に、作成した新Issueへのリンクをコメントし、
+               `gh issue close ${{ github.event.issue.number }}` でクローズする。
+
+            重要: データファイルの編集・コミット・PR作成は行わないこと。
+            Issueの作成・コメント・クローズのみを行う（自動でデータは変更しない）。

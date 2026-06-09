@@ -1,0 +1,23 @@
+name: ヒアリングメモ
+description: 店舗ヒアリングの生メモ（管理者用・AIが構造化Issueに変換します）
+title: "[memo] "
+labels: [memo]
+body:
+  - type: input
+    id: store
+    attributes:
+      label: 店名
+      placeholder: 例）GiGO 秋葉原3号館
+    validations:
+      required: false
+  - type: textarea
+    id: memo
+    attributes:
+      label: メモ
+      description: 箇条書きでOK。台数・閉店・移設・設備など気づいたことを自由に。
+      placeholder: |
+        - イニブ7台（公式は9だがライブモニター込み）
+        - 喫煙所は3F
+        - 交代台あり 18:00〜
+    validations:
+      required: true
