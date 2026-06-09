@@ -7,6 +7,12 @@ import { CountBadge } from './CountBadge'
 
 const STORAGE_KEY = 'ls-exvs-onboarded'
 
+// 新機能告知のバージョン管理。再訪ユーザーに「未読の新バージョン」がある時だけ
+// 新機能ページから自動オープンする（初回ユーザーのチュートリアルは邪魔しない）。
+// 新機能ページの内容を更新したら NEWS_VERSION を上げること。
+const NEWS_VERSION = '2.1'
+const NEWS_SEEN_KEY = 'ls-exvs-news-seen'
+
 // オンボーディングの見出し系に使う丸ゴシック（M PLUS Rounded 1c）。
 // フォント本体は layout.tsx で該当文言のみ &text= サブセット読み込み。
 // キャッチフレーズは 700、各セクション見出しは 500 で軽めに。
@@ -345,11 +351,46 @@ function DataPrivacyPage() {
   )
 }
 
-const PAGES = [HowToPage, LegendPage, AboutPage, DataPrivacyPage]
-const PAGE_COUNT = PAGES.length
+/** 新機能告知ページ。再訪ユーザーへ ver アップの目玉機能を伝える（初回ユーザーには末尾で控えめに） */
+function NewsPage() {
+  return (
+    <>
+      <span className="inline-flex items-center gap-1.5 bg-purple-700 text-white text-[11px] font-bold px-2.5 py-1 rounded-full mb-2">
+        新機能 ver {NEWS_VERSION}
+      </span>
+      <h2 className="text-xl text-gray-900 mb-1 tracking-tight" style={CATCH_FONT_STYLE}>
+        <span className="whitespace-nowrap">その台数、</span>
+        <span className="whitespace-nowrap">
+          <span className="text-purple-700">「信じていい？」</span>がわかる。
+        </span>
+      </h2>
+      <p className="text-xs text-gray-500 mb-4">前回からのアップデート</p>
 
-function OnboardingModal({ onClose }: { onClose: () => void }) {
-  const [page, setPage] = useState(0)
+      <ul className="flex flex-col gap-3">
+        <li className="rounded-xl border border-purple-100 bg-purple-50/50 p-3">
+          <p className="text-[11px] font-bold text-purple-700 mb-1">台数の出どころ表示</p>
+          <p className="text-xs text-gray-700 leading-snug">
+            台数バッジの色の濃さで「確からしさ」がひと目で分かるように。タップすると、その台数の出どころ（公式サイト・現地での確認など）も見られます。
+          </p>
+        </li>
+        <li className="rounded-xl border border-purple-100 bg-purple-50/50 p-3">
+          <p className="text-[11px] font-bold text-purple-700 mb-1">ペア戦カレンダー</p>
+          <p className="text-xs text-gray-700 leading-snug">
+            ラスサバの対戦モード（ペア戦／個人戦）を地図のチップと月間カレンダーで確認できるようになりました。
+          </p>
+        </li>
+      </ul>
+    </>
+  )
+}
+
+const PAGES = [HowToPage, LegendPage, AboutPage, DataPrivacyPage, NewsPage]
+const PAGE_COUNT = PAGES.length
+// 新機能ページは末尾。再訪ユーザーの自動オープン時はここから開く。
+const NEWS_PAGE_INDEX = PAGES.length - 1
+
+function OnboardingModal({ initialPage = 0, onClose }: { initialPage?: number; onClose: () => void }) {
+  const [page, setPage] = useState(initialPage)
 
   return (
     <div
@@ -420,20 +461,40 @@ function OnboardingModal({ onClose }: { onClose: () => void }) {
 
 export function Onboarding() {
   const [isOpen, setIsOpen] = useState(false)
+  const [initialPage, setInitialPage] = useState(0)
 
   // localStorage 参照は副作用フェーズ限定（SSR/hydration安全・ちらつき防止・Req6.2）
   useEffect(() => {
     try {
-      if (!localStorage.getItem(STORAGE_KEY)) setIsOpen(true)
+      const onboarded = localStorage.getItem(STORAGE_KEY)
+      const newsSeen = localStorage.getItem(NEWS_SEEN_KEY)
+      if (!onboarded) {
+        // 初回ユーザー: チュートリアル先頭から（新機能告知は邪魔しない）
+        setInitialPage(0)
+        setIsOpen(true)
+      } else if (newsSeen !== NEWS_VERSION) {
+        // 再訪ユーザー＆新機能が未読: 新機能ページから自動オープン
+        setInitialPage(NEWS_PAGE_INDEX)
+        setIsOpen(true)
+      }
+      // 新機能を既読の再訪ユーザーには自動表示しない（「?」からはいつでも閲覧可）
     } catch {
       // localStorage 不可（プライベートモード等）の場合は自動表示しない
     }
   }, [])
 
+  // 「?」ボタンからの手動表示は常に先頭から
+  const openFromHelp = () => {
+    setInitialPage(0)
+    setIsOpen(true)
+  }
+
   const handleClose = () => {
     setIsOpen(false)
     try {
       localStorage.setItem(STORAGE_KEY, '1')
+      // 現バージョンの新機能を既読として記録（次回からは自動ポップしない）
+      localStorage.setItem(NEWS_SEEN_KEY, NEWS_VERSION)
     } catch {
       // 永続化できなくても表示自体は閉じる
     }
@@ -441,8 +502,8 @@ export function Onboarding() {
 
   return (
     <>
-      <HelpButton onClick={() => setIsOpen(true)} />
-      {isOpen && <OnboardingModal onClose={handleClose} />}
+      <HelpButton onClick={openFromHelp} />
+      {isOpen && <OnboardingModal initialPage={initialPage} onClose={handleClose} />}
     </>
   )
 }
