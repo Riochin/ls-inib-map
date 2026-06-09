@@ -25,6 +25,11 @@ const INFO_REPORT_URL =
   `?text=${encodeURIComponent(`@${X_HANDLE} 店舗情報の修正・提供：`)}` +
   `&url=${encodeURIComponent(SITE_URL)}` +
   `&hashtags=${encodeURIComponent(TWEET_HASHTAG)}`
+const SHARE_URL =
+  'https://x.com/intent/post' +
+  `?text=${encodeURIComponent(TWEET_TEXT)}` +
+  `&url=${encodeURIComponent(SITE_URL)}` +
+  `&hashtags=${encodeURIComponent(TWEET_HASHTAG)}`
 
 // --- ブランド/外部リンク用アイコン ---
 
@@ -196,14 +201,14 @@ function LegendPage() {
             <span className="shrink-0">
               <CountBadge game="gundam-exvs" count={7} theme={getThemeByKey('gundamOnly')} confirmed />
             </span>
-            <span className="text-xs text-gray-700">運営が現地で確認した台数（はっきり表示）</span>
+            <span className="text-xs text-gray-700">現地ユーザーからの確認あり✔︎（はっきり表示）</span>
           </li>
           <li className="flex items-center gap-3">
             <span className="shrink-0">
               <CountBadge game="gundam-exvs" count={9} theme={getThemeByKey('gundamOnly')} confirmed={false} />
             </span>
             <span className="text-xs text-gray-700">
-              未確認の台数（公式・みんなの報告など）。タップすると出どころが見られます
+              公式サイト・自動取得の台数。タップすると出どころが見られます
             </span>
           </li>
         </ul>
@@ -216,25 +221,21 @@ function LegendPage() {
   )
 }
 
-/** Xへの投稿（ツイート）。本文・URL・ハッシュタグをプリフィルしてインテントを開く */
+/**
+ * Xへの投稿（ツイート）。本文・URL・ハッシュタグをプリフィルしてインテントを開く。
+ * window.open() などのJS起動だとiOS/AndroidのUniversal Links/App Linksが発火せず
+ * ブラウザ（未ログインのin-app browser）に落ちるため、本物の<a>タップで開く。
+ */
 function ShareButton() {
-  const handleTweet = () => {
-    const intent =
-      'https://x.com/intent/post' +
-      `?text=${encodeURIComponent(TWEET_TEXT)}` +
-      `&url=${encodeURIComponent(SITE_URL)}` +
-      `&hashtags=${encodeURIComponent(TWEET_HASHTAG)}`
-    window.open(intent, '_blank', 'noopener,noreferrer')
-  }
-
   return (
-    <button
-      onClick={handleTweet}
+    <a
+      href={SHARE_URL}
+      rel="noopener noreferrer"
       className="w-full inline-flex items-center justify-center gap-2 py-2.5 bg-black text-white rounded-full text-sm font-semibold hover:bg-gray-800 transition-colors"
     >
       <XIcon />
       Xでシェアする
-    </button>
+    </a>
   )
 }
 
@@ -252,7 +253,6 @@ function AboutPage() {
           <dd>
             <a
               href={X_URL}
-              target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-sm text-gray-800 hover:text-purple-700"
             >
@@ -268,7 +268,7 @@ function AboutPage() {
           <dt className="text-xs font-semibold text-gray-500 mb-1">お問い合わせ</dt>
           <dd className="text-xs text-gray-700 leading-snug">
             不具合・ご要望など、X（
-            <a href={X_URL} target="_blank" rel="noopener noreferrer" className="text-purple-700 hover:underline">
+            <a href={X_URL} rel="noopener noreferrer" className="text-purple-700 hover:underline">
               @{X_HANDLE}
             </a>
             ）までお気軽にどうぞ。お問い合わせ待ってます！
@@ -280,7 +280,6 @@ function AboutPage() {
           <dd>
             <a
               href={INFO_REPORT_URL}
-              target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-purple-200 rounded-full text-xs font-semibold text-purple-700 hover:bg-purple-50 transition-colors"
             >
@@ -298,7 +297,6 @@ function AboutPage() {
           <dd>
             <a
               href={HASHTAG_URL}
-              target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center text-sm font-semibold text-purple-700 hover:underline"
             >
