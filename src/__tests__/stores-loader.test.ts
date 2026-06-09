@@ -1,6 +1,10 @@
 import { describe, it, expect } from 'vitest'
 import { stores, storesMeta } from '@/data/stores'
 import storesJson from '@/data/stores.json'
+import overridesJson from '@/data/overrides.json'
+import { applyOverrides } from '@/lib/apply-overrides'
+import type { Store } from '@/types/store'
+import type { OverridesFile } from '@/types/overrides'
 
 describe('stores ローダ（生成 JSON 読込）', () => {
   it('店舗配列を生成 JSON から型安全に公開する', () => {
@@ -17,7 +21,11 @@ describe('stores ローダ（生成 JSON 読込）', () => {
     expect(storesMeta.source.gundam).toMatch(/^https:\/\//)
   })
 
-  it('ローダは生成 JSON の stores と同一内容を返す（read-only 再公開）', () => {
-    expect(stores).toEqual(storesJson.stores)
+  it('ローダは生成 JSON に手動オーバーライドを適用して再公開する', () => {
+    const expected = applyOverrides(
+      storesJson.stores as Store[],
+      overridesJson as OverridesFile,
+    )
+    expect(stores).toEqual(expected)
   })
 })
