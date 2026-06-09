@@ -55,7 +55,7 @@ jobs:
             --slurpfile bef /tmp/before.json \
             --slurpfile aft /tmp/after.json \
             --slurpfile st  src/data/stores.json "
-              ($st[0].stores | map({key:.id, value:.name}) | from_entries) as \$names
+              (\$st[0].stores | map({key:.id, value:.name}) | from_entries) as \$names
               | $JQ_CHANGED
               | map(
                   (\$names[.key] // .key) as \$nm
