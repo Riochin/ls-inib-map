@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ラストサバイニブ ver 2.1 紹介</title>
+
+<!--
+  X（旧Twitter）投稿用の紹介画像。スクリーンショットして使う想定。
+  枠 (#flyer) は 1200×675（16:9）固定。ブラウザで開き、#flyer をそのまま撮影する。
+  配色・フォントは本体サイトのテーマを踏襲:
+    - メインカラー紫 #7B2FBE / 薄紫 #F3E8FF（ペア戦・両タイトル）
+    - イニブ青 #2563EB / 薄青 #DBEAFE
+    - 見出しフォント: M PLUS Rounded 1c（丸ゴシック）、本文はシステムフォント
+  見出し文言を変えたら、本体 layout.tsx のフォントサブセットとは別物なので全文読み込みでOK。
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --purple: #7B2FBE;
+    --purple-soft: #F3E8FF;
+    --purple-light: #C4A0E8;
+    --blue: #2563EB;
+    --blue-soft: #DBEAFE;
+    --ink: #1f2433;
+    --ink-soft: #5b6376;
+    --round: "M PLUS Rounded 1c", system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #cdd3e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 40px;
+    font-family: system-ui, -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    color: var(--ink);
+  }
+
+  /* ===== 撮影枠 ===== */
+  #flyer {
+    position: relative;
+    width: 1200px;
+    height: 675px;
+    overflow: hidden;
+    border-radius: 28px;
+    background:
+      radial-gradient(1100px 520px at 88% -8%, rgba(123,47,190,0.18), transparent 60%),
+      radial-gradient(900px 520px at 0% 110%, rgba(37,99,235,0.14), transparent 55%),
+      linear-gradient(160deg, #fbfaff 0%, #f4f1fb 100%);
+  }
+
+  /* 地図グリッドの薄い背景パターン */
+  #flyer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(123,47,190,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(123,47,190,0.05) 1px, transparent 1px);
+    background-size: 46px 46px;
+    mask-image: radial-gradient(circle at 50% 40%, #000 55%, transparent 100%);
+  }
+
+  /* 飾りのマップピン（メインカラー紫の雫形） */
+  .deco-pin {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    background: linear-gradient(135deg, var(--purple), var(--purple-light));
+    box-shadow: 0 8px 16px rgba(123,47,190,0.25);
+    opacity: 0.5;
+  }
+  .deco-pin::after {
+    content: "";
+    position: absolute;
+    inset: 9px;
+    background: #fff;
+    border-radius: 50%;
+  }
+  .deco-pin.p1 { top: 70px; right: 250px; transform: rotate(-45deg) scale(0.8); }
+  .deco-pin.p2 { top: 150px; right: 90px; }
+  .deco-pin.p3 { bottom: 120px; right: 320px; transform: rotate(-45deg) scale(0.7); opacity: 0.35; }
+  .deco-pin.b { background: linear-gradient(135deg, var(--blue), #93c5fd); box-shadow: 0 8px 16px rgba(37,99,235,0.22); }
+
+  .inner {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    padding: 52px 56px 44px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ===== ヘッダー ===== */
+  header { display: flex; align-items: flex-start; justify-content: space-between; }
+
+  .ver-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--purple);
+    color: #fff;
+    font-family: var(--round);
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: 0.02em;
+    padding: 8px 18px;
+    border-radius: 999px;
+    box-shadow: 0 10px 24px rgba(123,47,190,0.28);
+  }
+  .ver-pill .dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; opacity: 0.9; }
+
+  .title {
+    font-family: var(--round);
+    font-weight: 800;
+    font-size: 50px;
+    line-height: 1.12;
+    letter-spacing: 0.01em;
+    margin-top: 22px;
+  }
+  .title .accent { color: var(--purple); }
+  .subtitle {
+    margin-top: 12px;
+    font-size: 19px;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+
+  .app-tag {
+    text-align: right;
+    font-family: var(--round);
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .app-tag .name { font-size: 21px; }
+  .app-tag .meta { font-size: 13px; color: var(--ink-soft); font-weight: 500; margin-top: 4px; }
+
+  /* ===== 機能カード ===== */
+  .cards {
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .card {
+    background: rgba(255,255,255,0.82);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(123,47,190,0.10);
+    border-radius: 20px;
+    padding: 22px 22px 24px;
+    box-shadow: 0 18px 40px rgba(70,40,110,0.12);
+    display: flex;
+    flex-direction: column;
+  }
+  .card .kicker {
+    font-family: var(--round);
+    font-weight: 700;
+    font-size: 12.5px;
+    color: var(--purple);
+    background: var(--purple-soft);
+    align-self: flex-start;
+    padding: 4px 11px;
+    border-radius: 999px;
+    letter-spacing: 0.03em;
+  }
+  .card h3 {
+    font-family: var(--round);
+    font-weight: 700;
+    font-size: 20px;
+    margin-top: 14px;
+    line-height: 1.35;
+    color: var(--ink);
+  }
+  .card p {
+    margin-top: 8px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+
+  /* カード内の実UIプレビュー枠 */
+  .preview {
+    margin-top: 16px;
+    background: #fff;
+    border: 1px solid #eef0f6;
+    border-radius: 14px;
+    padding: 14px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+  }
+
+  /* 台数バッジ（本体 CountBadge を再現） */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 3px 11px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .badge.confirmed { background: var(--blue); color: #fff; }
+  .badge.soft { background: var(--blue-soft); color: var(--blue); }
+  .badge-row { display: flex; align-items: center; gap: 9px; }
+  .badge-row + .badge-row { margin-top: 11px; }
+  .badge-note { font-size: 11.5px; color: var(--ink-soft); line-height: 1.4; }
+  .badge-note b { color: var(--ink); font-weight: 700; }
+
+  /* ペア戦チップ（本体 PairSchedulePanel を再現） */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    background: rgba(255,255,255,0.92);
+    border: 1px solid #eef0f6;
+    border-radius: 12px;
+    padding: 8px 12px;
+    box-shadow: 0 4px 10px rgba(70,40,110,0.08);
+  }
+  .chip .lead { font-size: 11px; color: var(--purple); }
+  .chip .mode { font-size: 16px; font-weight: 800; color: var(--purple); font-family: var(--round); }
+  .chip .caret { margin-left: 6px; color: #9aa1b2; font-size: 10px; }
+  .mini-cal { display: flex; gap: 5px; margin-top: 12px; }
+  .mini-cal span {
+    font-size: 11px; font-weight: 700; width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center; border-radius: 8px;
+    font-family: var(--round);
+  }
+  .mini-cal .pair { background: var(--purple); color: #fff; }
+  .mini-cal .solo { background: #eef0f6; color: var(--ink-soft); }
+
+  /* オンボーディング・キャッチコピー */
+  .catch {
+    font-family: var(--round);
+    font-weight: 800;
+    font-size: 22px;
+    line-height: 1.3;
+    color: var(--ink);
+    text-align: center;
+    padding: 6px 0 2px;
+  }
+  .catch .sec { color: var(--purple); }
+  .catch-sub { text-align: center; font-size: 11.5px; color: var(--ink-soft); margin-top: 8px; }
+
+  /* ===== フッター ===== */
+  footer {
+    margin-top: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .url {
+    font-family: var(--round);
+    font-weight: 700;
+    font-size: 18px;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+  }
+  .url .globe {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--purple); color: #fff;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+  .hashtag {
+    font-family: var(--round);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--purple);
+    background: var(--purple-soft);
+    padding: 7px 16px;
+    border-radius: 999px;
+  }
+</style>
+</head>
+<body>
+  <div id="flyer">
+    <span class="deco-pin p1"></span>
+    <span class="deco-pin p2 b"></span>
+    <span class="deco-pin p3"></span>
+
+    <div class="inner">
+      <header>
+        <div>
+          <span class="ver-pill"><span class="dot"></span>新機能 ver 2.1</span>
+          <h1 class="title">設置店マップが、<br><span class="accent">もっと頼れる</span>3つの新機能。</h1>
+          <p class="subtitle">ラスサバ・イニブの設置店舗マップ アップデート</p>
+        </div>
+        <div class="app-tag">
+          <div class="name">ラストサバイニブ</div>
+          <div class="meta">全国47都道府県・約760店舗</div>
+        </div>
+      </header>
+
+      <div class="cards">
+        <!-- 1. 台数の確からしさ -->
+        <div class="card">
+          <span class="kicker">台数の出どころ表示</span>
+          <h3>その台数、<br>どれくらい確か？</h3>
+          <p>バッジの色の濃さで確からしさを表示。タップで出どころが見られます。</p>
+          <div class="preview">
+            <div class="badge-row">
+              <span class="badge confirmed">イニブ 7台</span>
+              <span class="badge-note"><b>現地ユーザーからの確認あり✔︎</b></span>
+            </div>
+            <div class="badge-row">
+              <span class="badge soft">イニブ 9台</span>
+              <span class="badge-note">公式サイト・自動取得
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. ペア戦日程 -->
+        <div class="card">
+          <span class="kicker">ペア戦カレンダー</span>
+          <h3>ラスサバ勢、待望。</h3>
+          <p>ラスサバの対戦モードを地図にチップ表示。月間の日程もひと目で。</p>
+          <div class="preview">
+            <span class="chip">
+              <span class="lead">今日</span>
+              <span class="mode">ペア戦</span>
+              <span class="caret">▼</span>
+            </span>
+            <div class="mini-cal">
+              <span class="pair">月</span>
+              <span class="solo">火</span>
+              <span class="pair">水</span>
+              <span class="solo">木</span>
+              <span class="pair">金</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. オンボーディング刷新 -->
+        <div class="card">
+          <span class="kicker">使い方ガイド刷新</span>
+          <h3>はじめてでも、<br>10秒で戦場選び。</h3>
+          <p>キャッチコピーと「見かた」凡例を一新。丸ゴシックでやさしく。</p>
+          <div class="preview">
+            <div class="catch">戦場選びを<br>サクッと<span class="sec">10秒</span>に。</div>
+            <div class="catch-sub">ラスサバ・イニブの設置店舗マップへようこそ</div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <span class="url"><span class="globe">▶</span>ls-inib-map.vercel.app</span>
+        <span class="hashtag">#ラストサバイニブ</span>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>
