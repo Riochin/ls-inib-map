@@ -2,6 +2,8 @@
 
 import { useEffect, useState, type ReactNode } from 'react'
 import { getMarkerImage, type MarkerThemeKey } from '@/lib/marker-image'
+import { getThemeByKey } from '@/lib/marker-color'
+import { CountBadge } from './CountBadge'
 
 const STORAGE_KEY = 'ls-exvs-onboarded'
 
@@ -136,9 +138,9 @@ function HowToPage() {
   return (
     <>
       <h2 className="text-lg font-bold text-gray-800 mb-1">使い方</h2>
-      <p className="text-xs text-gray-500 mb-4">ラスサバ・イニブの設置店舗マップへようこそ</p>
+      <p className="text-xs text-gray-500 mb-3">ラスサバ・イニブの設置店舗マップへようこそ</p>
 
-      <ul className="flex flex-col gap-3.5">
+      <ul className="flex flex-col gap-2">
         {STEPS.map((step) => (
           <li key={step.title} className="flex gap-3 items-center">
             {step.visual}
@@ -157,9 +159,9 @@ function LegendPage() {
   return (
     <>
       <h2 className="text-lg font-bold text-gray-800 mb-1">ピンの見かた</h2>
-      <p className="text-xs text-gray-500 mb-4">地図上のピンは色と形で状態を表します。</p>
+      <p className="text-xs text-gray-500 mb-3">地図上のピンは色と形で状態を表します。</p>
 
-      <ul className="flex flex-col gap-3.5">
+      <ul className="flex flex-col gap-2">
         {LEGEND.map(({ theme, label }) => {
           const img = getMarkerImage(theme)
           return (
@@ -173,6 +175,32 @@ function LegendPage() {
           )
         })}
       </ul>
+
+      <div className="mt-5 pt-4 border-t border-gray-100">
+        <h2 className="text-lg font-bold text-gray-800 mb-1">台数の見かた</h2>
+        <p className="text-xs text-gray-500 mb-3">台数バッジは色の濃さで確からしさを表します。</p>
+
+        <ul className="flex flex-col gap-2">
+          <li className="flex items-center gap-3">
+            <span className="shrink-0">
+              <CountBadge game="gundam-exvs" count={7} theme={getThemeByKey('gundamOnly')} confirmed />
+            </span>
+            <span className="text-xs text-gray-700">運営が現地で確認した台数（はっきり表示）</span>
+          </li>
+          <li className="flex items-center gap-3">
+            <span className="shrink-0">
+              <CountBadge game="gundam-exvs" count={9} theme={getThemeByKey('gundamOnly')} confirmed={false} />
+            </span>
+            <span className="text-xs text-gray-700">
+              未確認の台数（公式・みんなの報告など）。タップすると出どころが見られます
+            </span>
+          </li>
+        </ul>
+
+        <p className="text-[11px] text-gray-500 mt-3 leading-snug">
+          ※イニブの公式サイトは「ライブモニター」を含めて台数を表示するため、実際の設置台数より多い場合があります。
+        </p>
+      </div>
     </>
   )
 }
@@ -203,11 +231,11 @@ function AboutPage() {
   return (
     <>
       <h2 className="text-lg font-bold text-gray-800 mb-1">このアプリについて</h2>
-      <p className="text-xs text-gray-500 mb-4 leading-snug">
+      <p className="text-xs text-gray-500 mb-3 leading-snug">
         ラスサバ・イニブの設置店舗を地図でまとめて確認できる非公式の個人開発アプリです。
       </p>
 
-      <dl className="flex flex-col gap-3.5 mb-4">
+      <dl className="flex flex-col gap-3 mb-3">
         <div>
           <dt className="text-xs font-semibold text-gray-500 mb-1">開発者</dt>
           <dd>
@@ -280,9 +308,9 @@ function AboutPage() {
 function DataPrivacyPage() {
   return (
     <>
-      <h2 className="text-lg font-bold text-gray-800 mb-4">データとプライバシー</h2>
+      <h2 className="text-lg font-bold text-gray-800 mb-3">データとプライバシー</h2>
 
-      <dl className="flex flex-col gap-4">
+      <dl className="flex flex-col gap-3">
         <div>
           <dt className="text-sm font-semibold text-gray-800 mb-1">データについて</dt>
           <dd className="text-xs text-gray-600 leading-relaxed">
@@ -320,7 +348,7 @@ function OnboardingModal({ onClose }: { onClose: () => void }) {
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl shadow-xl max-w-sm w-full relative max-h-[85vh] flex flex-col"
+        className="bg-white rounded-2xl shadow-xl max-w-sm w-full relative max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -331,31 +359,18 @@ function OnboardingModal({ onClose }: { onClose: () => void }) {
           ✕
         </button>
 
-        {/* 本文（ここだけスクロール）。下端のフェードで続きがあることを示す */}
-        <div className="relative flex-1 min-h-0">
-          <div className="h-full overflow-y-auto px-5 pt-5 pb-2">
-            {(() => {
-              const Page = PAGES[page]
-              return <Page />
-            })()}
-          </div>
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-5 bg-gradient-to-t from-white to-transparent" />
+        {/* 本文（ここだけスクロール） */}
+        <div className="flex-1 min-h-0 overflow-y-auto px-5 pt-5 pb-2">
+          {(() => {
+            const Page = PAGES[page]
+            return <Page />
+          })()}
         </div>
 
-        {/* 固定フッター：インジケータ＋ナビゲーション（常に表示） */}
-        <div className="shrink-0 border-t border-gray-100 px-5 pt-3 pb-4">
-          {/* ページインジケータ */}
-          <div className="flex justify-center gap-1.5">
-            {Array.from({ length: PAGE_COUNT }, (_, i) => (
-              <span
-                key={i}
-                className={`w-1.5 h-1.5 rounded-full transition-colors ${i === page ? 'bg-gray-800' : 'bg-gray-300'}`}
-              />
-            ))}
-          </div>
-
+        {/* 固定フッター：ナビゲーション＋ページインジケータ（常に表示） */}
+        <div className="shrink-0 px-5 pt-3 pb-4">
           {/* フッターナビゲーション（複数ページのウィザード） */}
-          <div className="flex items-center justify-between gap-3 mt-3">
+          <div className="flex items-center justify-between gap-3">
             <button
               onClick={() => setPage((p) => Math.max(0, p - 1))}
               className={`text-xs text-gray-500 hover:text-gray-800 transition-colors ${page === 0 ? 'invisible' : ''}`}
@@ -377,6 +392,16 @@ function OnboardingModal({ onClose }: { onClose: () => void }) {
                 閉じる
               </button>
             )}
+          </div>
+
+          {/* ページインジケータ（最下部） */}
+          <div className="flex justify-center gap-1.5 mt-3">
+            {Array.from({ length: PAGE_COUNT }, (_, i) => (
+              <span
+                key={i}
+                className={`w-1.5 h-1.5 rounded-full transition-colors ${i === page ? 'bg-gray-800' : 'bg-gray-300'}`}
+              />
+            ))}
           </div>
         </div>
       </div>
