@@ -82,6 +82,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
+      <head>
+        {/*
+          オンボーディングのキャッチフレーズ1行だけに使う表示用フォント（M PLUS Rounded 1c / 丸ゴシック・700）。
+          使用文字（戦場選びを、サクッと10秒に。）のみを &text= でサブセットし、
+          数KBに絞って読み込む。本文・UI はシステムフォントのまま。
+        */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700&text=%E6%88%A6%E5%A0%B4%E9%81%B8%E3%81%B3%E3%82%92%E3%80%81%E3%82%B5%E3%82%AF%E3%83%83%E3%81%A810%E7%A7%92%E3%81%AB%E3%80%82&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body>
         <script
           type="application/ld+json"

@@ -137,8 +137,13 @@ function HelpButton({ onClick }: { onClick: () => void }) {
 function HowToPage() {
   return (
     <>
-      <h2 className="text-lg font-bold text-gray-800 mb-1">使い方</h2>
-      <p className="text-xs text-gray-500 mb-3">ラスサバ・イニブの設置店舗マップへようこそ</p>
+      <h2
+        className="text-xl text-gray-900 mb-1 tracking-tight"
+        style={{ fontFamily: "'M PLUS Rounded 1c', sans-serif", fontWeight: 700 }}
+      >
+        戦場選びをサクッと<span className="text-purple-700">10秒</span>に。
+      </h2>
+      <p className="text-xs text-gray-500 mb-6">ラスサバ・イニブの設置店舗マップへようこそ</p>
 
       <ul className="flex flex-col gap-2">
         {STEPS.map((step) => (
