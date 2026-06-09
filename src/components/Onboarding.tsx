@@ -7,6 +7,12 @@ import { CountBadge } from './CountBadge'
 
 const STORAGE_KEY = 'ls-exvs-onboarded'
 
+// オンボーディングの見出し系に使う丸ゴシック（M PLUS Rounded 1c）。
+// フォント本体は layout.tsx で該当文言のみ &text= サブセット読み込み。
+// キャッチフレーズは 700、各セクション見出しは 500 で軽めに。
+const HEADING_FONT_STYLE = { fontFamily: "'M PLUS Rounded 1c', sans-serif", fontWeight: 500 } as const
+const CATCH_FONT_STYLE = { fontFamily: "'M PLUS Rounded 1c', sans-serif", fontWeight: 700 } as const
+
 const AUTHOR_NAME = 'マルハット'
 const X_HANDLE = 'ls_boushi'
 const X_URL = `https://x.com/${X_HANDLE}`
@@ -139,7 +145,7 @@ function HowToPage() {
     <>
       <h2
         className="text-xl text-gray-900 mb-1 tracking-tight"
-        style={{ fontFamily: "'M PLUS Rounded 1c', sans-serif", fontWeight: 700 }}
+        style={CATCH_FONT_STYLE}
       >
         戦場選びをサクッと<span className="text-purple-700">10秒</span>に。
       </h2>
@@ -163,7 +169,7 @@ function HowToPage() {
 function LegendPage() {
   return (
     <>
-      <h2 className="text-lg font-bold text-gray-800 mb-1">ピンの見かた</h2>
+      <h2 className="text-lg text-gray-800 mb-1" style={HEADING_FONT_STYLE}>ピンの見かた</h2>
       <p className="text-xs text-gray-500 mb-3">地図上のピンは色と形で状態を表します。</p>
 
       <ul className="flex flex-col gap-2">
@@ -182,7 +188,7 @@ function LegendPage() {
       </ul>
 
       <div className="mt-5 pt-4 border-t border-gray-100">
-        <h2 className="text-lg font-bold text-gray-800 mb-1">台数の見かた</h2>
+        <h2 className="text-lg text-gray-800 mb-1" style={HEADING_FONT_STYLE}>台数の見かた</h2>
         <p className="text-xs text-gray-500 mb-3">台数バッジは色の濃さで確からしさを表します。</p>
 
         <ul className="flex flex-col gap-2">
@@ -235,7 +241,7 @@ function ShareButton() {
 function AboutPage() {
   return (
     <>
-      <h2 className="text-lg font-bold text-gray-800 mb-1">このアプリについて</h2>
+      <h2 className="text-lg text-gray-800 mb-1" style={HEADING_FONT_STYLE}>このアプリについて</h2>
       <p className="text-xs text-gray-500 mb-3 leading-snug">
         ラスサバ・イニブの設置店舗を地図でまとめて確認できる非公式の個人開発アプリです。
       </p>
@@ -313,7 +319,7 @@ function AboutPage() {
 function DataPrivacyPage() {
   return (
     <>
-      <h2 className="text-lg font-bold text-gray-800 mb-3">データとプライバシー</h2>
+      <h2 className="text-lg text-gray-800 mb-3" style={HEADING_FONT_STYLE}>データとプライバシー</h2>
 
       <dl className="flex flex-col gap-3">
         <div>
