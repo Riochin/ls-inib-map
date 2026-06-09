@@ -2,9 +2,10 @@
 
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { Map, useMap, InfoWindow } from '@vis.gl/react-google-maps'
-import type { Store } from '@/types/store'
+import type { Store, GameTitle } from '@/types/store'
 import { CurrentLocationMarker } from './CurrentLocationMarker'
-import { getMarkerTheme, getGameLabel, getStoreStatusLabel } from '@/lib/marker-color'
+import { getMarkerTheme, getGameLabel, getStoreStatusLabel, getCountSourceInfo } from '@/lib/marker-color'
+import { CountBadge } from './CountBadge'
 import { useStoreClusterer } from '@/hooks/use-store-clusterer'
 
 interface MapViewProps {
@@ -96,6 +97,8 @@ function InfoWindowContent({ store, onClose }: { store: Store; onClose: () => vo
   const theme = getMarkerTheme(store)
   // 閉店（🌸）・移設（公式一覧から消失）はグレー背景＋状態ラベルで通常店舗と区別する
   const statusLabel = getStoreStatusLabel(store)
+  // タップされた台数バッジの出どころ説明を表示する（ノンテック層向け・アイコン不使用）
+  const [openSource, setOpenSource] = useState<GameTitle | null>(null)
   return (
     <div className={`p-1 min-w-[200px] max-w-[260px] relative pr-5${statusLabel ? ' bg-gray-100 rounded' : ''}`}>
       <button
@@ -106,21 +109,28 @@ function InfoWindowContent({ store, onClose }: { store: Store; onClose: () => vo
       </button>
       <h3 className="font-bold text-base leading-snug mb-1 break-words whitespace-normal">{store.name}</h3>
       <p className="text-xs text-gray-600 mb-1">{store.address}</p>
-      <div className="flex gap-1 mb-1.5">
+      <div className="flex flex-wrap gap-1 mb-1">
         {store.games.map((game) => {
-          const count = store.machineCounts?.[game]
+          // 運営確認のみ確定（通常色）、それ以外は薄い。タップで出どころ表示
+          const info = getCountSourceInfo(store.countSources?.[game])
           return (
-            <span
+            <CountBadge
               key={game}
-              className="text-xs px-2 py-0.5 rounded-full"
-              style={{ backgroundColor: theme.badgeBg, color: theme.badgeText }}
-            >
-              {getGameLabel(game)}
-              {count != null && ` ${count}台`}
-            </span>
+              game={game}
+              count={store.machineCounts?.[game]}
+              theme={theme}
+              confirmed={info.confirmed}
+              onClick={() => setOpenSource((cur) => (cur === game ? null : game))}
+              title="タップで台数の出どころを表示"
+            />
           )
         })}
       </div>
+      {openSource && (
+        <p className="text-[11px] text-gray-500 mb-1.5 leading-snug">
+          {getGameLabel(openSource)}：{getCountSourceInfo(store.countSources?.[openSource]).label}
+        </p>
+      )}
       <a
         href={`https://www.google.com/maps/dir/?api=1&destination=${store.lat},${store.lng}`}
         target="_blank"
