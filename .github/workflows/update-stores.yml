@@ -9,9 +9,10 @@ on:
     - cron: '0 0 * * 3'
   workflow_dispatch:
 
-# stores.json / ジオコードキャッシュの commit & push に必要（Req2.5）
+# stores.json / ジオコードキャッシュの commit & push、失敗時のIssue作成に必要（Req2.5）
 permissions:
   contents: write
+  issues: write
 
 # 同時実行を直列化し、push 競合を防ぐ（実行中ジョブはキャンセルしない）
 concurrency:
@@ -25,14 +26,19 @@ jobs:
       - name: リポジトリをチェックアウト
         uses: actions/checkout@v4
 
+      - name: pnpm をセットアップ
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Node.js をセットアップ
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
+          cache: pnpm
 
       - name: 依存関係をインストール
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       # スクレイプ→マージ→ジオコード→生成を連結。失敗時は process.exitCode=1 で
       # このステップが失敗し、後続のコミット段へ進まない（既存データを破壊しない・Req2.6）。
@@ -40,7 +46,7 @@ jobs:
         env:
           # 地図表示用とは分離したジオコーディング専用キー（CI Secret 管理）
           GOOGLE_GEOCODING_API_KEY: ${{ secrets.GOOGLE_GEOCODING_API_KEY }}
-        run: npx tsx scripts/pipeline.ts
+        run: pnpm exec tsx scripts/pipeline.ts
 
       # 実体差分がある場合のみコミット・プッシュする。差分ゲートにより stores.json は
       # 実体差分が無ければ書き換わらないため、git の差分検知で「差分なし＝コミットなし」を
@@ -57,3 +63,8 @@ jobs:
           git commit -m 'chore: 設置店舗データを自動更新'
           git push
           echo '[workflow] 設置店舗データを更新しました'
+
+      # いずれかのステップが失敗したらIssueを作成（急減ガード中断・取得失敗の見逃し防止）
+      - name: 失敗したらIssueを作成
+        if: failure()
+        uses: ./.github/actions/report-failure

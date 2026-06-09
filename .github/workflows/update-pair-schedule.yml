@@ -1,0 +1,67 @@
+name: ペア戦開催日程 自動更新
+
+# 定期スケジュールと手動起動で、公式「ラスサバnet」のペア戦開催日程を取得し、
+# 生成物 src/data/pair-schedule.json を再生成して差分がある場合のみコミット・プッシュする。
+# push 成功で Vercel の自動デプロイが発火する（ランタイムAPI/DBは導入しない）。
+on:
+  schedule:
+    # 毎週木曜 09:00 JST（= 00:00 UTC）。来月分の告知が出ていれば取得する
+    - cron: '0 0 * * 4'
+  workflow_dispatch:
+
+# pair-schedule.json の commit & push、失敗時のIssue作成に必要
+permissions:
+  contents: write
+  issues: write
+
+# 同時実行を直列化し、push 競合を防ぐ（実行中ジョブはキャンセルしない）
+concurrency:
+  group: update-pair-schedule
+  cancel-in-progress: false
+
+jobs:
+  update-pair-schedule:
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: pnpm をセットアップ
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Node.js をセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: 依存関係をインストール
+        run: pnpm install --frozen-lockfile
+
+      # 一覧→各詳細を取得しペア戦告知をパース。失敗時は process.exitCode=1 で
+      # このステップが失敗し、後続のコミット段へ進まない（既存データを破壊しない）。
+      - name: ペア戦開催日程を取得
+        run: pnpm exec tsx scripts/scrape-pair-schedule.ts
+
+      # 実体差分がある場合のみコミット・プッシュする。差分ゲート（updatedAt/fetchedAt 除外）
+      # により pair-schedule.json は実体差分が無ければ書き換わらないため、git の差分検知で
+      # 「差分なし＝コミットなし」を担保する。
+      - name: 差分があればコミット・プッシュ
+        run: |
+          if [ -z "$(git status --porcelain src/data/pair-schedule.json)" ]; then
+            echo '[workflow] 実体差分なし: コミットをスキップします'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/data/pair-schedule.json
+          git commit -m 'chore: ペア戦開催日程を自動更新'
+          git push
+          echo '[workflow] ペア戦開催日程を更新しました'
+
+      # いずれかのステップが失敗したらIssueを作成（取得失敗・構造変化の見逃し防止）
+      - name: 失敗したらIssueを作成
+        if: failure()
+        uses: ./.github/actions/report-failure

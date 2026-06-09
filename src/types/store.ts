@@ -1,6 +1,15 @@
 /** ゲームタイトル識別子 */
 export type GameTitle = 'jojo-ls' | 'gundam-exvs'
 
+/**
+ * 台数情報の出どころ（provenance）。
+ * - `official`: 公式公表値（既定。`countSources` にキーが無い状態と同義）
+ * - `auto-scrape`: 自動取得（未確認・将来のチェーン店設備抽出用に予約）
+ * - `user-report`: ユーザー報告（未確認）
+ * - `admin`: 管理者が確認済み
+ */
+export type Provenance = 'official' | 'auto-scrape' | 'user-report' | 'admin'
+
 /** 設置店舗 */
 export interface Store {
   /** 一意な店舗ID */
@@ -21,6 +30,12 @@ export interface Store {
    * 公式表記が無い（0）タイトルはキーごと省略する。
    */
   machineCounts?: Partial<Record<GameTitle, number>>
+  /**
+   * ゲーム別台数の出どころ（任意）。手動オーバーライドで `machineCounts` を
+   * 上書きしたゲームにのみ記録する。キー無し＝公式公表値（`official`）。
+   * 表示側はこれを見てユーザー報告/未確認の見た目を変える。
+   */
+  countSources?: Partial<Record<GameTitle, Provenance>>
   /** 閉店フラグ（恒久閉店・手動判定・🌸表示。省略時は営業中） */
   closed?: boolean
   /**

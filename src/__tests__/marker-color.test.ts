@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getMarkerColor, getMarkerTheme, getFilterActiveColor, getGameLabel, getThemeKey, getThemeByKey, getStoreStatusLabel, getMarkerEmoji } from '@/lib/marker-color'
+import { getMarkerColor, getMarkerTheme, getFilterActiveColor, getGameLabel, getThemeKey, getThemeByKey, getStoreStatusLabel, getMarkerEmoji, getCountSourceInfo } from '@/lib/marker-color'
 import type { Store } from '@/types/store'
 
 function makeStore(games: Store['games'], extra: Partial<Store> = {}): Store {
@@ -151,5 +151,29 @@ describe('getGameLabel', () => {
 
   it('gundam-exvsに対して「イニブ」を返す', () => {
     expect(getGameLabel('gundam-exvs')).toBe('イニブ')
+  })
+})
+
+describe('getCountSourceInfo', () => {
+  it('admin（運営確認）のみ確定（confirmed=true）', () => {
+    const info = getCountSourceInfo('admin')
+    expect(info.confirmed).toBe(true)
+    expect(info.label).toContain('運営')
+  })
+
+  it('official・未指定は未確認扱い（confirmed=false）', () => {
+    expect(getCountSourceInfo('official').confirmed).toBe(false)
+    expect(getCountSourceInfo(undefined).confirmed).toBe(false)
+    expect(getCountSourceInfo(undefined).label).toContain('公式')
+  })
+
+  it('user-report は未確認扱いで「みんなの報告」ラベル', () => {
+    const info = getCountSourceInfo('user-report')
+    expect(info.confirmed).toBe(false)
+    expect(info.label).toContain('みんなの報告')
+  })
+
+  it('auto-scrape は未確認扱い', () => {
+    expect(getCountSourceInfo('auto-scrape').confirmed).toBe(false)
   })
 })

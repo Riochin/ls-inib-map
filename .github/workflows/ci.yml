@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# 失敗時のIssue作成に必要
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Type check
+        run: pnpm exec tsc --noEmit
+      - name: Test
+        run: pnpm test
+
+      # main への push で失敗したらIssueを作成。PR上の失敗はPRのチェックで見えるので
+      # ノイズ回避のため対象外（必要なら github.event_name 条件を外して全イベント対象にできる）
+      - name: 失敗したらIssueを作成
+        if: failure() && github.event_name == 'push'
+        uses: ./.github/actions/report-failure

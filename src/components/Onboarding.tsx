@@ -2,8 +2,22 @@
 
 import { useEffect, useState, type ReactNode } from 'react'
 import { getMarkerImage, type MarkerThemeKey } from '@/lib/marker-image'
+import { getThemeByKey } from '@/lib/marker-color'
+import { CountBadge } from './CountBadge'
 
 const STORAGE_KEY = 'ls-exvs-onboarded'
+
+// 新機能告知のバージョン管理。再訪ユーザーに「未読の新バージョン」がある時だけ
+// 新機能ページから自動オープンする（初回ユーザーのチュートリアルは邪魔しない）。
+// 新機能ページの内容を更新したら NEWS_VERSION を上げること。
+const NEWS_VERSION = '2.1'
+const NEWS_SEEN_KEY = 'ls-exvs-news-seen'
+
+// オンボーディングの見出し系に使う丸ゴシック（M PLUS Rounded 1c）。
+// フォント本体は layout.tsx で該当文言のみ &text= サブセット読み込み。
+// キャッチフレーズは 700、各セクション見出しは 500 で軽めに。
+const HEADING_FONT_STYLE = { fontFamily: "'M PLUS Rounded 1c', sans-serif", fontWeight: 500 } as const
+const CATCH_FONT_STYLE = { fontFamily: "'M PLUS Rounded 1c', sans-serif", fontWeight: 700 } as const
 
 const AUTHOR_NAME = 'マルハット'
 const X_HANDLE = 'ls_boushi'
@@ -15,6 +29,11 @@ const HASHTAG_URL = `https://x.com/hashtag/${encodeURIComponent(TWEET_HASHTAG)}`
 const INFO_REPORT_URL =
   'https://x.com/intent/post' +
   `?text=${encodeURIComponent(`@${X_HANDLE} 店舗情報の修正・提供：`)}` +
+  `&url=${encodeURIComponent(SITE_URL)}` +
+  `&hashtags=${encodeURIComponent(TWEET_HASHTAG)}`
+const SHARE_URL =
+  'https://x.com/intent/post' +
+  `?text=${encodeURIComponent(TWEET_TEXT)}` +
   `&url=${encodeURIComponent(SITE_URL)}` +
   `&hashtags=${encodeURIComponent(TWEET_HASHTAG)}`
 
@@ -135,10 +154,15 @@ function HelpButton({ onClick }: { onClick: () => void }) {
 function HowToPage() {
   return (
     <>
-      <h2 className="text-lg font-bold text-gray-800 mb-1">使い方</h2>
-      <p className="text-xs text-gray-500 mb-4">ラスサバ・イニブの設置店舗マップへようこそ</p>
+      <h2
+        className="text-xl text-gray-900 mb-1 tracking-tight"
+        style={CATCH_FONT_STYLE}
+      >
+        戦場選びをサクッと<span className="text-purple-700">10秒</span>に。
+      </h2>
+      <p className="text-xs text-gray-500 mb-6">ラスサバ・イニブの設置店舗マップへようこそ</p>
 
-      <ul className="flex flex-col gap-3.5">
+      <ul className="flex flex-col gap-2">
         {STEPS.map((step) => (
           <li key={step.title} className="flex gap-3 items-center">
             {step.visual}
@@ -156,10 +180,10 @@ function HowToPage() {
 function LegendPage() {
   return (
     <>
-      <h2 className="text-lg font-bold text-gray-800 mb-1">ピンの見かた</h2>
-      <p className="text-xs text-gray-500 mb-4">地図上のピンは色と形で状態を表します。</p>
+      <h2 className="text-lg text-gray-800 mb-1" style={HEADING_FONT_STYLE}>ピンの見かた</h2>
+      <p className="text-xs text-gray-500 mb-3">地図上のピンは色と形で状態を表します。</p>
 
-      <ul className="flex flex-col gap-3.5">
+      <ul className="flex flex-col gap-2">
         {LEGEND.map(({ theme, label }) => {
           const img = getMarkerImage(theme)
           return (
@@ -173,47 +197,68 @@ function LegendPage() {
           )
         })}
       </ul>
+
+      <div className="mt-5 pt-4 border-t border-gray-100">
+        <h2 className="text-lg text-gray-800 mb-1" style={HEADING_FONT_STYLE}>台数の見かた</h2>
+        <p className="text-xs text-gray-500 mb-3">台数バッジは色の濃さで確からしさを表します。</p>
+
+        <ul className="flex flex-col gap-2">
+          <li className="flex items-center gap-3">
+            <span className="shrink-0">
+              <CountBadge game="gundam-exvs" count={7} theme={getThemeByKey('gundamOnly')} confirmed />
+            </span>
+            <span className="text-xs text-gray-700">現地ユーザーからの確認あり✔︎（はっきり表示）</span>
+          </li>
+          <li className="flex items-center gap-3">
+            <span className="shrink-0">
+              <CountBadge game="gundam-exvs" count={9} theme={getThemeByKey('gundamOnly')} confirmed={false} />
+            </span>
+            <span className="text-xs text-gray-700">
+              公式サイト・自動取得の台数。タップすると出どころが見られます
+            </span>
+          </li>
+        </ul>
+
+        <p className="text-[11px] text-gray-500 mt-3 leading-snug">
+          ※イニブの公式サイトは「ライブモニター」を含めて台数を表示するため、実際の設置台数より多い場合があります。
+        </p>
+      </div>
     </>
   )
 }
 
-/** Xへの投稿（ツイート）。本文・URL・ハッシュタグをプリフィルしてインテントを開く */
+/**
+ * Xへの投稿（ツイート）。本文・URL・ハッシュタグをプリフィルしてインテントを開く。
+ * window.open() などのJS起動だとiOS/AndroidのUniversal Links/App Linksが発火せず
+ * ブラウザ（未ログインのin-app browser）に落ちるため、本物の<a>タップで開く。
+ */
 function ShareButton() {
-  const handleTweet = () => {
-    const intent =
-      'https://x.com/intent/post' +
-      `?text=${encodeURIComponent(TWEET_TEXT)}` +
-      `&url=${encodeURIComponent(SITE_URL)}` +
-      `&hashtags=${encodeURIComponent(TWEET_HASHTAG)}`
-    window.open(intent, '_blank', 'noopener,noreferrer')
-  }
-
   return (
-    <button
-      onClick={handleTweet}
+    <a
+      href={SHARE_URL}
+      rel="noopener noreferrer"
       className="w-full inline-flex items-center justify-center gap-2 py-2.5 bg-black text-white rounded-full text-sm font-semibold hover:bg-gray-800 transition-colors"
     >
       <XIcon />
       Xでシェアする
-    </button>
+    </a>
   )
 }
 
 function AboutPage() {
   return (
     <>
-      <h2 className="text-lg font-bold text-gray-800 mb-1">このアプリについて</h2>
-      <p className="text-xs text-gray-500 mb-4 leading-snug">
+      <h2 className="text-lg text-gray-800 mb-1" style={HEADING_FONT_STYLE}>このアプリについて</h2>
+      <p className="text-xs text-gray-500 mb-3 leading-snug">
         ラスサバ・イニブの設置店舗を地図でまとめて確認できる非公式の個人開発アプリです。
       </p>
 
-      <dl className="flex flex-col gap-3.5 mb-4">
+      <dl className="flex flex-col gap-3 mb-3">
         <div>
           <dt className="text-xs font-semibold text-gray-500 mb-1">開発者</dt>
           <dd>
             <a
               href={X_URL}
-              target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-sm text-gray-800 hover:text-purple-700"
             >
@@ -229,7 +274,7 @@ function AboutPage() {
           <dt className="text-xs font-semibold text-gray-500 mb-1">お問い合わせ</dt>
           <dd className="text-xs text-gray-700 leading-snug">
             不具合・ご要望など、X（
-            <a href={X_URL} target="_blank" rel="noopener noreferrer" className="text-purple-700 hover:underline">
+            <a href={X_URL} rel="noopener noreferrer" className="text-purple-700 hover:underline">
               @{X_HANDLE}
             </a>
             ）までお気軽にどうぞ。お問い合わせ待ってます！
@@ -241,7 +286,6 @@ function AboutPage() {
           <dd>
             <a
               href={INFO_REPORT_URL}
-              target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-purple-200 rounded-full text-xs font-semibold text-purple-700 hover:bg-purple-50 transition-colors"
             >
@@ -259,7 +303,6 @@ function AboutPage() {
           <dd>
             <a
               href={HASHTAG_URL}
-              target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center text-sm font-semibold text-purple-700 hover:underline"
             >
@@ -280,9 +323,9 @@ function AboutPage() {
 function DataPrivacyPage() {
   return (
     <>
-      <h2 className="text-lg font-bold text-gray-800 mb-4">データとプライバシー</h2>
+      <h2 className="text-lg text-gray-800 mb-3" style={HEADING_FONT_STYLE}>データとプライバシー</h2>
 
-      <dl className="flex flex-col gap-4">
+      <dl className="flex flex-col gap-3">
         <div>
           <dt className="text-sm font-semibold text-gray-800 mb-1">データについて</dt>
           <dd className="text-xs text-gray-600 leading-relaxed">
@@ -308,11 +351,46 @@ function DataPrivacyPage() {
   )
 }
 
-const PAGES = [HowToPage, LegendPage, AboutPage, DataPrivacyPage]
-const PAGE_COUNT = PAGES.length
+/** 新機能告知ページ。再訪ユーザーへ ver アップの目玉機能を伝える（初回ユーザーには末尾で控えめに） */
+function NewsPage() {
+  return (
+    <>
+      <span className="inline-flex items-center gap-1.5 bg-purple-700 text-white text-[11px] font-bold px-2.5 py-1 rounded-full mb-2">
+        新機能 ver {NEWS_VERSION}
+      </span>
+      <h2 className="text-xl text-gray-900 mb-1 tracking-tight" style={CATCH_FONT_STYLE}>
+        <span className="whitespace-nowrap">その台数、</span>
+        <span className="whitespace-nowrap">
+          <span className="text-purple-700">「信じていい？」</span>がわかる。
+        </span>
+      </h2>
+      <p className="text-xs text-gray-500 mb-4">前回からのアップデート</p>
 
-function OnboardingModal({ onClose }: { onClose: () => void }) {
-  const [page, setPage] = useState(0)
+      <ul className="flex flex-col gap-3">
+        <li className="rounded-xl border border-purple-100 bg-purple-50/50 p-3">
+          <p className="text-[11px] font-bold text-purple-700 mb-1">台数の出どころ表示</p>
+          <p className="text-xs text-gray-700 leading-snug">
+            台数バッジの色の濃さで「確からしさ」がひと目で分かるように。タップすると、その台数の出どころ（公式サイト・現地での確認など）も見られます。
+          </p>
+        </li>
+        <li className="rounded-xl border border-purple-100 bg-purple-50/50 p-3">
+          <p className="text-[11px] font-bold text-purple-700 mb-1">ペア戦カレンダー</p>
+          <p className="text-xs text-gray-700 leading-snug">
+            ラスサバの対戦モード（ペア戦／個人戦）を地図のチップと月間カレンダーで確認できるようになりました。
+          </p>
+        </li>
+      </ul>
+    </>
+  )
+}
+
+const PAGES = [HowToPage, LegendPage, AboutPage, DataPrivacyPage, NewsPage]
+const PAGE_COUNT = PAGES.length
+// 新機能ページは末尾。再訪ユーザーの自動オープン時はここから開く。
+const NEWS_PAGE_INDEX = PAGES.length - 1
+
+function OnboardingModal({ initialPage = 0, onClose }: { initialPage?: number; onClose: () => void }) {
+  const [page, setPage] = useState(initialPage)
 
   return (
     <div
@@ -320,7 +398,7 @@ function OnboardingModal({ onClose }: { onClose: () => void }) {
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl shadow-xl max-w-sm w-full relative max-h-[85vh] flex flex-col"
+        className="bg-white rounded-2xl shadow-xl max-w-sm w-full relative max-h-[90vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -331,31 +409,18 @@ function OnboardingModal({ onClose }: { onClose: () => void }) {
           ✕
         </button>
 
-        {/* 本文（ここだけスクロール）。下端のフェードで続きがあることを示す */}
-        <div className="relative flex-1 min-h-0">
-          <div className="h-full overflow-y-auto px-5 pt-5 pb-2">
-            {(() => {
-              const Page = PAGES[page]
-              return <Page />
-            })()}
-          </div>
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-5 bg-gradient-to-t from-white to-transparent" />
+        {/* 本文（ここだけスクロール） */}
+        <div className="flex-1 min-h-0 overflow-y-auto px-5 pt-5 pb-2">
+          {(() => {
+            const Page = PAGES[page]
+            return <Page />
+          })()}
         </div>
 
-        {/* 固定フッター：インジケータ＋ナビゲーション（常に表示） */}
-        <div className="shrink-0 border-t border-gray-100 px-5 pt-3 pb-4">
-          {/* ページインジケータ */}
-          <div className="flex justify-center gap-1.5">
-            {Array.from({ length: PAGE_COUNT }, (_, i) => (
-              <span
-                key={i}
-                className={`w-1.5 h-1.5 rounded-full transition-colors ${i === page ? 'bg-gray-800' : 'bg-gray-300'}`}
-              />
-            ))}
-          </div>
-
+        {/* 固定フッター：ナビゲーション＋ページインジケータ（常に表示） */}
+        <div className="shrink-0 px-5 pt-3 pb-4">
           {/* フッターナビゲーション（複数ページのウィザード） */}
-          <div className="flex items-center justify-between gap-3 mt-3">
+          <div className="flex items-center justify-between gap-3">
             <button
               onClick={() => setPage((p) => Math.max(0, p - 1))}
               className={`text-xs text-gray-500 hover:text-gray-800 transition-colors ${page === 0 ? 'invisible' : ''}`}
@@ -378,6 +443,16 @@ function OnboardingModal({ onClose }: { onClose: () => void }) {
               </button>
             )}
           </div>
+
+          {/* ページインジケータ（最下部） */}
+          <div className="flex justify-center gap-1.5 mt-3">
+            {Array.from({ length: PAGE_COUNT }, (_, i) => (
+              <span
+                key={i}
+                className={`w-1.5 h-1.5 rounded-full transition-colors ${i === page ? 'bg-gray-800' : 'bg-gray-300'}`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -386,20 +461,40 @@ function OnboardingModal({ onClose }: { onClose: () => void }) {
 
 export function Onboarding() {
   const [isOpen, setIsOpen] = useState(false)
+  const [initialPage, setInitialPage] = useState(0)
 
   // localStorage 参照は副作用フェーズ限定（SSR/hydration安全・ちらつき防止・Req6.2）
   useEffect(() => {
     try {
-      if (!localStorage.getItem(STORAGE_KEY)) setIsOpen(true)
+      const onboarded = localStorage.getItem(STORAGE_KEY)
+      const newsSeen = localStorage.getItem(NEWS_SEEN_KEY)
+      if (!onboarded) {
+        // 初回ユーザー: チュートリアル先頭から（新機能告知は邪魔しない）
+        setInitialPage(0)
+        setIsOpen(true)
+      } else if (newsSeen !== NEWS_VERSION) {
+        // 再訪ユーザー＆新機能が未読: 新機能ページから自動オープン
+        setInitialPage(NEWS_PAGE_INDEX)
+        setIsOpen(true)
+      }
+      // 新機能を既読の再訪ユーザーには自動表示しない（「?」からはいつでも閲覧可）
     } catch {
       // localStorage 不可（プライベートモード等）の場合は自動表示しない
     }
   }, [])
 
+  // 「?」ボタンからの手動表示は常に先頭から
+  const openFromHelp = () => {
+    setInitialPage(0)
+    setIsOpen(true)
+  }
+
   const handleClose = () => {
     setIsOpen(false)
     try {
       localStorage.setItem(STORAGE_KEY, '1')
+      // 現バージョンの新機能を既読として記録（次回からは自動ポップしない）
+      localStorage.setItem(NEWS_SEEN_KEY, NEWS_VERSION)
     } catch {
       // 永続化できなくても表示自体は閉じる
     }
@@ -407,8 +502,8 @@ export function Onboarding() {
 
   return (
     <>
-      <HelpButton onClick={() => setIsOpen(true)} />
-      {isOpen && <OnboardingModal onClose={handleClose} />}
+      <HelpButton onClick={openFromHelp} />
+      {isOpen && <OnboardingModal initialPage={initialPage} onClose={handleClose} />}
     </>
   )
 }

@@ -1,0 +1,28 @@
+name: 機能要望メモ
+description: 機能要望・改善アイデアの生メモ（管理者用・AIが構造化Issueに変換します）
+title: "[memo] "
+labels: [memo]
+body:
+  - type: input
+    id: summary
+    attributes:
+      label: 要望（やりたいこと）
+      placeholder: 例）電子マネー対応で店舗を絞り込みたい
+    validations:
+      required: true
+  - type: textarea
+    id: detail
+    attributes:
+      label: 背景・きっかけ（任意）
+      description: 誰のどんな困りごとか、どんな場面で出た話か等
+      placeholder: |
+        - 現地でユーザーから「PayPay使える店だけ見たい」と言われた
+    validations:
+      required: false
+  - type: input
+    id: voice
+    attributes:
+      label: 誰の声か（任意）
+      placeholder: 例）自分で気づいた / ユーザーから / SNS
+    validations:
+      required: false

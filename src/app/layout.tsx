@@ -82,6 +82,22 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ja">
+      <head>
+        {/*
+          オンボーディングの見出し系に使う表示用フォント（M PLUS Rounded 1c / 丸ゴシック）。
+          キャッチフレーズは 700、各セクション見出しは 500。
+          固定文言（戦場選びを、サクッと10秒に。／ピンの見かた／台数の見かた／
+          このアプリについて／データとプライバシー／その台数、「信じていい？」がわかる。）の使用文字のみを &text= でサブセットし、
+          数KBに絞って読み込む。本文・UI はシステムフォントのまま。
+          ※見出しの文言を変更したら、この &text= も合わせて更新すること。
+        */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700&text=%E6%88%A6%E5%A0%B4%E9%81%B8%E3%81%B3%E3%82%92%E3%80%81%E3%82%B5%E3%82%AF%E3%83%83%E3%81%A810%E7%A7%92%E3%81%AB%E3%80%82%E3%83%94%E3%83%B3%E3%81%AE%E8%A6%8B%E3%81%8B%E3%81%9F%E5%8F%B0%E6%95%B0%E3%81%AE%E8%A6%8B%E3%81%8B%E3%81%9F%E3%81%93%E3%81%AE%E3%82%A2%E3%83%97%E3%83%AA%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6%E3%83%87%E3%83%BC%E3%82%BF%E3%81%A8%E3%83%97%E3%83%A9%E3%82%A4%E3%83%90%E3%82%B7%E3%83%BC%E3%81%9D%E3%81%AE%E5%8F%B0%E6%95%B0%E3%80%81%E3%80%8C%E4%BF%A1%E3%81%98%E3%81%A6%E3%81%84%E3%81%84%EF%BC%9F%E3%80%8D%E3%81%8C%E3%82%8F%E3%81%8B%E3%82%8B%E3%80%82&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body>
         <script
           type="application/ld+json"
