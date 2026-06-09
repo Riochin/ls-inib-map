@@ -131,8 +131,8 @@ const STEPS: { visual: ReactNode; title: string; desc: string }[] = [
 ]
 
 const LEGEND: { theme: MarkerThemeKey; label: string }[] = [
-  { theme: 'both', label: 'ラスサバ設置店（イニブ併設含む）' },
-  { theme: 'gundamOnly', label: 'イニブのみ' },
+  { theme: 'both', label: 'ラスサバ設置店' },
+  { theme: 'gundamOnly', label: 'イニブ設置店' },
   { theme: 'delisted', label: '移設の可能性（公式一覧から消えた店舗）' },
   { theme: 'closed', label: '閉店' },
 ]
