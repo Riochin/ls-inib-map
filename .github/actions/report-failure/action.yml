@@ -1,0 +1,40 @@
+name: 'ワークフロー失敗をIssue化'
+description: >-
+  ワークフローが失敗したときにIssueを作成する。同じワークフローの open Issue が
+  既にあればコメントで集約し、Issueが増殖しないようにする（直ったら手動クローズ）。
+
+# 各ワークフローの最後に `if: failure()` ステップとして呼ぶ共通アクション。
+# トークンは GITHUB_TOKEN（github.token）を使うため、呼び出し側のジョブに
+# `permissions: issues: write` が必要。
+
+runs:
+  using: 'composite'
+  steps:
+    - name: 失敗Issueを作成/集約
+      shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        set -euo pipefail
+        label='ci-failure'
+        title="🔴 ワークフロー失敗: ${GITHUB_WORKFLOW}"
+        run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+
+        # ラベルが無ければ作成（既存ならスキップ）
+        gh label create "$label" --color B60205 --description 'GitHub Actions の失敗通知' >/dev/null 2>&1 || true
+
+        # 同じワークフローの open Issue を探す（ワークフローごとに1件へ集約）
+        existing=$(gh issue list --state open --label "$label" --limit 50 \
+          --json number,title --jq "map(select(.title==\"$title\")) | .[0].number // empty")
+
+        details=$(printf -- '- 実行ログ: %s\n- ワークフロー: `%s`\n- ref: `%s`\n- コミット: `%s`\n- イベント: `%s`' \
+          "$run_url" "$GITHUB_WORKFLOW" "$GITHUB_REF_NAME" "$GITHUB_SHA" "$GITHUB_EVENT_NAME")
+
+        if [ -n "$existing" ]; then
+          gh issue comment "$existing" --body "$(printf '🔁 再発しました。\n\n%s' "$details")"
+          echo "既存Issue #$existing にコメントしました"
+        else
+          gh issue create --title "$title" --label "$label" \
+            --body "$(printf 'ワークフロー **%s** が失敗しました。ログを確認してください。\n\n%s\n\n---\n同じワークフローの再失敗は本Issueにコメントで集約します。原因を解消したら手動でクローズしてください。' "$GITHUB_WORKFLOW" "$details")"
+          echo "新規Issueを作成しました"
+        fi

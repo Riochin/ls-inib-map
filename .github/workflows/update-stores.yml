@@ -9,9 +9,10 @@ on:
     - cron: '0 0 * * 3'
   workflow_dispatch:
 
-# stores.json / ジオコードキャッシュの commit & push に必要（Req2.5）
+# stores.json / ジオコードキャッシュの commit & push、失敗時のIssue作成に必要（Req2.5）
 permissions:
   contents: write
+  issues: write
 
 # 同時実行を直列化し、push 競合を防ぐ（実行中ジョブはキャンセルしない）
 concurrency:
@@ -62,3 +63,8 @@ jobs:
           git commit -m 'chore: 設置店舗データを自動更新'
           git push
           echo '[workflow] 設置店舗データを更新しました'
+
+      # いずれかのステップが失敗したらIssueを作成（急減ガード中断・取得失敗の見逃し防止）
+      - name: 失敗したらIssueを作成
+        if: failure()
+        uses: ./.github/actions/report-failure

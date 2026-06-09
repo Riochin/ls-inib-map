@@ -53,3 +53,8 @@ jobs:
 
             重要: データファイルの編集・コミット・PR作成は行わないこと。
             Issueの作成・コメント・クローズのみを行う（自動でデータは変更しない）。
+
+      # 構造化に失敗したらIssueを作成（メモの取りこぼし防止）
+      - name: 失敗したらIssueを作成
+        if: failure()
+        uses: ./.github/actions/report-failure
