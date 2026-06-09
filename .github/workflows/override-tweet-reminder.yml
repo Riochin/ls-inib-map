@@ -6,6 +6,8 @@ name: Override tweet reminder
 #   - 2ツイート目: 今回 push の差分から「変化した台数・閉店」を店舗名つきで自動生成
 #   - 3ツイート目: お礼の定型（@メンションは公開の場由来のみ＝人手で。提供メモを参考表示）
 #   - 同じ未対応Issueが開いていればコメントで集約（投稿後に手動クローズ→次の更新で新規作成）
+#   - さらに当月の updates/override-reports/YYYY-MM.md へ下書きを自動追記し main に直コミット
+#     （override-reports は paths 対象外＋[skip ci] で再発火しない。同一コミットは二重追記しない）
 
 on:
   push:
@@ -14,7 +16,7 @@ on:
       - src/data/overrides.json
 
 permissions:
-  contents: read
+  contents: write
   issues: write
 
 jobs:
@@ -121,6 +123,57 @@ jobs:
               --body "$(printf 'overrides.json が更新されました（%s）。下記の修正ツイートを確認して投稿してください。投稿したらこのIssueを閉じてください。\n\n%s' "$commit_url" "$draft")"
             echo "新規Issueを作成しました"
           fi
+
+          # ---- 当月の override-reports/YYYY-MM.md へ自動追記して main に直コミット ----
+          month=$(date +%Y-%m)
+          today=$(date +%Y-%m-%d)
+          short="${GITHUB_SHA:0:7}"
+          file="updates/override-reports/${month}.md"
+
+          # 同一コミットは二重追記しない
+          if [ -f "$file" ] && grep -q "$short" "$file"; then
+            echo "コミット ${short} は ${file} に記録済み。追記をスキップします。"
+            exit 0
+          fi
+
+          report=$(printf '%s\n' \
+            "" \
+            "---" \
+            "" \
+            "## ${today} 追加分（自動記録 / コミット ${short}）" \
+            "" \
+            "親ポスト:" \
+            '```' \
+            "【台数情報修正】" \
+            "" \
+            "下記の台数を修正しました。" \
+            "" \
+            "$lines" \
+            "" \
+            "#ラストサバイニブ" \
+            '```' \
+            "" \
+            "ぶら下げリプ:" \
+            '```' \
+            "情報提供ありがとうございました🙏 変化があればまたお知らせください。" \
+            "@xxx" \
+            '```' \
+            "" \
+            "> メンションは公開の場由来のみ（DM由来は伏せる）。提供メモ参考: ${providers:-（なし）}")
+
+          if [ ! -f "$file" ]; then
+            printf '# 台数オーバーライド 反映報告（%s ドラフト）\n\n`templates/override-report.md` の型で override-tweet-reminder が自動記録。\n' "$month" > "$file"
+          fi
+          printf '%s\n' "$report" >> "$file"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$file"
+          git commit -m "docs(updates): ${month} 台数修正報告に自動追記（${short}）[skip ci]"
+          git fetch origin main -q
+          git rebase origin/main
+          git push origin HEAD:main
+          echo "${file} へ追記して main に push しました。"
 
       - name: 失敗したらIssueを作成
         if: failure()
