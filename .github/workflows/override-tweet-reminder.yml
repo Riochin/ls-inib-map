@@ -1,0 +1,127 @@
+name: Override tweet reminder
+
+# src/data/overrides.json が更新（台数オーバーライドの書き込み）されたら、
+# 修正ツイート（Xテンプレの2ツイート目＝【台数情報修正】／3ツイート目＝お礼＋メンション）の
+# 下書きをIssueに出して、投稿し忘れを防ぐ軽量ワークフロー。AIは使わず jq + gh だけで組み立てる。
+#   - 2ツイート目: 今回 push の差分から「変化した台数・閉店」を店舗名つきで自動生成
+#   - 3ツイート目: お礼の定型（@メンションは公開の場由来のみ＝人手で。提供メモを参考表示）
+#   - 同じ未対応Issueが開いていればコメントで集約（投稿後に手動クローズ→次の更新で新規作成）
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - src/data/overrides.json
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 修正ツイート下書きをIssue化
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+
+          # push 前後の overrides.json を用意（before が取れなければ空とみなす）
+          cp src/data/overrides.json /tmp/after.json
+          if [ -n "${BEFORE:-}" ] && git cat-file -e "${BEFORE}:src/data/overrides.json" 2>/dev/null; then
+            git show "${BEFORE}:src/data/overrides.json" > /tmp/before.json
+          else
+            echo '{"overrides":{}}' > /tmp/before.json
+          fi
+
+          # 台数(machineCounts) か 閉店(closed) が変化した店舗の行を組み立て。
+          # ゲームキー: jojo-ls→ラスサバ / gundam-exvs→イニブ。店名は stores.json の id→name で解決。
+          JQ_CHANGED='
+            ($bef[0].overrides // {}) as $ao
+            | ($aft[0].overrides // {}) | to_entries
+            | map(select(
+                (.value.machineCounts // null) != (($ao[.key] // {}).machineCounts // null)
+                or (.value.closed // false)     != (($ao[.key] // {}).closed // false)
+              ))
+          '
+
+          lines=$(jq -rn \
+            --slurpfile bef /tmp/before.json \
+            --slurpfile aft /tmp/after.json \
+            --slurpfile st  src/data/stores.json "
+              ($st[0].stores | map({key:.id, value:.name}) | from_entries) as \$names
+              | $JQ_CHANGED
+              | map(
+                  (\$names[.key] // .key) as \$nm
+                  | if (.value.closed // false)
+                    then \"・\(\$nm)：閉店\"
+                    else \"・\(\$nm)：\" + ([ .value.machineCounts // {} | to_entries[]
+                         | (if .key==\"jojo-ls\" then \"ラスサバ\" elif .key==\"gundam-exvs\" then \"イニブ\" else .key end) + \"\(.value)台\"
+                       ] | join(\" / \"))
+                    end
+                )
+              | .[]
+          ")
+
+          if [ -z "$lines" ]; then
+            echo "台数・閉店の変化なし（note等のみの更新）。Issueは作成しません。"
+            exit 0
+          fi
+
+          # 提供メモ（note）を参考表示用に集約（@メンションの当て先ヒント）
+          providers=$(jq -rn \
+            --slurpfile bef /tmp/before.json \
+            --slurpfile aft /tmp/after.json "
+              ($JQ_CHANGED | map(.value.note // empty) | unique | join(\", \"))
+          ")
+
+          # 2・3ツイート目の下書き（バッククォートは単一引用で素通し）
+          draft=$(printf '%s\n' \
+            "**2ツイート目（【台数情報修正】）**" \
+            '```' \
+            "【台数情報修正】" \
+            "" \
+            "下記の台数を修正しました。" \
+            "" \
+            "$lines" \
+            "" \
+            "#ラストサバイニブ" \
+            '```' \
+            "" \
+            "**3ツイート目（ぶら下げリプ＝お礼＋メンション）**" \
+            '```' \
+            "情報提供ありがとうございました🙏 変化があればまたお知らせください。" \
+            "@xxx @yyy @zzz" \
+            '```' \
+            "" \
+            "> メンションは公開の場（リプ・引用等）で情報をくれた人のみ。DM等の個人的なやりとり由来は名前を出さない。" \
+            "> 提供メモ（参考）: ${providers:-（なし）}")
+
+          commit_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}"
+          label='要修正ツイート'
+          title='🔧 台数修正ツイートの下書き'
+          gh label create "$label" --color FBCA04 --description '台数オーバーライド更新→修正ツイート要' >/dev/null 2>&1 || true
+
+          # 未対応(open)の同名Issueがあればコメントで集約、なければ新規作成
+          existing=$(gh issue list --state open --label "$label" --limit 20 \
+            --json number,title --jq "map(select(.title==\"$title\")) | .[0].number // empty")
+
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" \
+              --body "$(printf '🔁 overrides.json がさらに更新されました（%s）。\n\n%s' "$commit_url" "$draft")"
+            echo "既存Issue #$existing にコメントしました"
+          else
+            gh issue create --title "$title" --label "$label" \
+              --body "$(printf 'overrides.json が更新されました（%s）。下記の修正ツイートを確認して投稿してください。投稿したらこのIssueを閉じてください。\n\n%s' "$commit_url" "$draft")"
+            echo "新規Issueを作成しました"
+          fi
+
+      - name: 失敗したらIssueを作成
+        if: failure()
+        uses: ./.github/actions/report-failure

@@ -1,0 +1,39 @@
+name: PR title lint
+
+# main へ向かう PR のタイトルをバージョン表記に固定する。
+#   合格: verN.N（例 ver2.2 / 機能リリース＝告知あり）
+#         N.N.N（例 2.1.1 / パッチ＝告知なし）
+#   表記ゆれ不可: スペースや先頭 v だけ（v2.2 / ver 2.2）は弾く。
+#   免除: head が *-release のPR（告知ドラフトPR）はチェック対象外。
+# 不合格はチェック失敗としてマージをブロックする。
+
+on:
+  pull_request:
+    # base=main は branches フィルタで担保。タイトル変更を拾うため edited も対象。
+    types: [opened, edited, synchronize, reopened]
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    # 告知ドラフト（自動生成の *-release ブランチ）はバージョン名にしないので免除。
+    if: ${{ !endsWith(github.event.pull_request.head.ref, '-release') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: タイトル検証
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          echo "PR title: $TITLE"
+          if printf '%s' "$TITLE" | grep -Eq '^ver[0-9]+\.[0-9]+$'; then
+            echo "✅ 機能リリース表記 (verN.N) です。マージ後に告知チェックリストが発行されます。"
+            exit 0
+          fi
+          if printf '%s' "$TITLE" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+            echo "✅ パッチ表記 (N.N.N) です。"
+            exit 0
+          fi
+          echo "::error::PRタイトルは 'verN.N'（例 ver2.2／機能リリース）または 'N.N.N'（例 2.1.1／パッチ）にしてください。スペースや先頭 v 単体は不可。現在: '$TITLE'"
+          exit 1

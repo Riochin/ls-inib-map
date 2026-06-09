@@ -7,6 +7,14 @@
         "gundam-exvs": 8
       }
     },
+    "4225cbfd493f": {
+      "source": "admin",
+      "note": "オアシスさん",
+      "machineCounts": {
+        "jojo-ls": 4,
+        "gundam-exvs": 9
+      }
+    },
     "6701f6561319": {
       "source": "admin",
       "note": "SBGさん",
@@ -14,11 +22,31 @@
         "jojo-ls": 3
       }
     },
+    "74a661a26350": {
+      "source": "admin",
+      "note": "タイトーFステーション吉祥寺JOY",
+      "closed": true
+    },
     "a4bf5a4b8d0b": {
       "source": "admin",
       "note": "Yリオンさん",
       "machineCounts": {
         "jojo-ls": 2
+      }
+    },
+    "b2c469a9c6c6": {
+      "source": "admin",
+      "note": "オアシスさん",
+      "machineCounts": {
+        "jojo-ls": 4,
+        "gundam-exvs": 9
+      }
+    },
+    "ec36fcabd4d3": {
+      "source": "admin",
+      "note": "オアシスさん",
+      "machineCounts": {
+        "gundam-exvs": 9
       }
     }
   }
