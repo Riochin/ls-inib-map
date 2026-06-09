@@ -1,0 +1,133 @@
+name: Release announcement
+
+# verN.N の PR が main にマージされたら告知準備を自動化する。
+#   1) 告知チェックリスト Issue を作成
+#   2) Claude が X（スレッド）/ Discord の下書きを生成して Issue にコメント
+#   3) updates/vN.N/post.md・discord.md にcommitし、verN.N-release ブランチでPRを作成
+# N.N.N パッチや、*-release ブランチ由来の告知ドラフトPRでは発火しない。
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  announce:
+    # 粗フィルタ:
+    #  1) マージされたPRのみ（close だけは除外）
+    #  2) タイトルが ver で始まる（厳密な verN.N 判定は parse ステップで実施）
+    #  3) オーナーのPRのみ（他人のPRでAIを動かさない）
+    if: >-
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.author_association == 'OWNER' &&
+      startsWith(github.event.pull_request.title, 'ver')
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: write
+      pull-requests: write
+      id-token: write
+    steps:
+      # タイトルを厳密判定（^verN.N$）し、バージョン番号 N.N を取り出す。
+      # verN.N でなければ match=false にして以降を丸ごとスキップ（パッチ等を除外）。
+      - id: parse
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          if printf '%s' "$TITLE" | grep -Eq '^ver[0-9]+\.[0-9]+$'; then
+            VER="${TITLE#ver}"
+            echo "match=true" >> "$GITHUB_OUTPUT"
+            echo "version=$VER" >> "$GITHUB_OUTPUT"
+            echo "✅ 告知対象リリース ver$VER"
+          else
+            echo "match=false" >> "$GITHUB_OUTPUT"
+            echo "ℹ️ '$TITLE' は verN.N ではないため告知をスキップします。"
+          fi
+
+      - if: steps.parse.outputs.match == 'true'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - if: steps.parse.outputs.match == 'true'
+        uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ github.token }}
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            あなたはリポジトリ ${{ github.repository }} のリリース告知担当です。
+            機能リリース **ver${{ steps.parse.outputs.version }}**（PR #${{ github.event.pull_request.number }}）が
+            main にマージされました。告知の準備を行います。gh CLI と git が使えます。
+
+            前提・素材（必ず先に読む）:
+            - 告知素材の運用ルール: `updates/README.md`
+            - X 投稿テンプレ（親ポスト＋スレッド構成）: `updates/templates/announcement.md`
+            - X 台数修正テンプレ（リプ1/リプ2）: `updates/templates/override-report.md`
+            - Discord テンプレ: `updates/templates/discord.md`
+            - 直近の実例: `updates/v2.1/post.md`, `updates/v2.0/post.md`
+            - このリリースの差分: `gh pr diff ${{ github.event.pull_request.number }}`
+              （特に `src/data/overrides.json` の差分に注目。台数修正が含まれるか確認する）
+            - 店舗名の解決元: `src/data/stores.json`（store-id → name）
+
+            手順:
+            1. 告知チェックリスト Issue を作成する（`gh issue create`）。
+               - タイトル: `📣 ver${{ steps.parse.outputs.version }} 告知チェックリスト`
+               - 本文（このチェックリストをそのまま）:
+                 ```
+                 ## 📣 ver${{ steps.parse.outputs.version }} 告知チェックリスト
+                 関連PR: #${{ github.event.pull_request.number }}
+
+                 - [ ] サイト内の告知画像（新機能告知ページ）を作成
+                 - [ ] X投稿文面を作成・確定＋紹介画像 flyer.html を作成（文面下書きは↓コメント / updates/v${{ steps.parse.outputs.version }}/post.md・flyer.html を仕上げ 1200×675 をスクショ）
+                 - [ ] 本番環境の最終確認
+                 - [ ] Xポスト文面の最終確認
+                 - [ ] Xでポスト → Discordコミュニティへ告知
+
+                 参考: updates/README.md / updates/templates/
+                 ```
+               - ラベル `告知` を付与（無ければ `gh label create 告知 --color 1D76DB` で作成してから）。
+               - 作成された Issue 番号を控える（以降のコメント先）。
+
+            2. X 下書き（1スレッド）を作る。`announcement.md` の型に従い:
+               - 親ポスト: 【ver${{ steps.parse.outputs.version }}】リリース告知。今回の目玉・熱量・URL・固定タグ
+                 （`#ラストサバイニブ #ジョジョLS #イニブ`）。URL は https://ls-inib-map.vercel.app 。
+               - `overrides.json` に台数修正が含まれる場合のみ、リプ1=【台数情報修正】（店舗名は stores.json で解決、
+                 台数は overrides.json の machineCounts）、リプ2=お礼＋@メンションを付ける（`override-report.md` の作法に厳密に従う）。
+                 ★メンションは公開の場（リプ・引用等）で情報をくれた人のみ。DM等の個人的なやりとり由来は名前を出さず伏せる。
+                 提供者表記は overrides の note を尊重し、不明なハンドルは `@xxx` のままにせず外すか伏せる。
+               - 台数修正が無ければ親ポスト単体。
+               - 目玉や数字が確信を持てない箇所は断定せず `［要確認: …］` と注記して人手に委ねる。
+               - 完成したスレッド下書きを Issue に `gh issue comment` でコメントする（親/リプ1/リプ2 が分かる体裁で）。
+
+            3. Discord 下書きを作る。`discord.md` の型に従い（`:shortcode:` 絵文字・`##`/`-#` 記法・URLは https://lsib.world/ ・
+               ハッシュタグ無し・落ち着いたトーン）。完成文を Issue に `gh issue comment` でコメントする。
+
+            4. 下書きをファイルに保存する。
+               - `updates/v${{ steps.parse.outputs.version }}/post.md`（X スレッド全体。`v2.1/post.md` の体裁に合わせる）
+               - `updates/v${{ steps.parse.outputs.version }}/discord.md`（Discord 文面）
+               - `updates/v${{ steps.parse.outputs.version }}/flyer.html`（紹介画像。`updates/templates/flyer.html` をコピーし、
+                 [差し替え] 箇所＝バージョン番号・メイン見出し・店舗数・機能カード×3 を今回のリリース内容で埋める。
+                 確信が持てない数値や文言は無理に断定せず `［要確認: …］` を残す。
+                 ★flyer.html は Issue コメントには出さない。ファイルとしてブランチに commit するだけにする。）
+
+            5. ブランチ `ver${{ steps.parse.outputs.version }}-release` を切って 4 のファイルをcommit・pushし、PRを作成する。
+               - `git config user.name "github-actions[bot]"` /
+                 `git config user.email "41898282+github-actions[bot]@users.noreply.github.com"`
+               - `git switch -c ver${{ steps.parse.outputs.version }}-release`
+               - commit メッセージ: `chore(updates): ver${{ steps.parse.outputs.version }} 告知素材ドラフトを追加`
+               - PR タイトル（★バージョン名にしない。verN.N にすると再び本ワークフローが発火するため）:
+                 `chore(updates): ver${{ steps.parse.outputs.version }} 告知素材ドラフト`
+               - PR 本文に、1 で作ったチェックリスト Issue へのリンク（`Closes #<Issue番号>` ではなく参照リンク）を入れる。
+               - base は main。
+
+            重要な制約:
+            - データファイル（stores.json / overrides.json 等）やアプリのコードは変更しない。触ってよいのは
+              `updates/v${{ steps.parse.outputs.version }}/` 配下の新規ファイルのみ。
+            - PR タイトルは絶対に `verN.N` 形式にしない（無限ループ防止）。`*-release` ブランチなので PR title lint は免除される。
+            - 不確かな情報は断定せず注記で残し、最終確認は人手に委ねる。
+
+      # 失敗したら取りこぼし防止に Issue 化（structure-memo と同様）
+      - name: 失敗したらIssueを作成
+        if: failure() && steps.parse.outputs.match == 'true'
+        uses: ./.github/actions/report-failure
