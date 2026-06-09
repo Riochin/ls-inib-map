@@ -1,3 +1,25 @@
 {
-  "overrides": {}
+  "overrides": {
+    "311e765f09c9": {
+      "source": "admin",
+      "note": "蟹貴さんより提供",
+      "machineCounts": {
+        "gundam-exvs": 8
+      }
+    },
+    "6701f6561319": {
+      "source": "admin",
+      "note": "SBGさん",
+      "machineCounts": {
+        "jojo-ls": 3
+      }
+    },
+    "a4bf5a4b8d0b": {
+      "source": "admin",
+      "note": "Yリオンさん",
+      "machineCounts": {
+        "jojo-ls": 2
+      }
+    }
+  }
 }
