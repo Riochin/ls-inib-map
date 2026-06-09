@@ -37,3 +37,6 @@ updates/
 ## 台数オーバーライド反映報告を出すとき
 
 - `templates/override-report.md` をコピーして `override-reports/YYYY-MM.md` を作り、反映した台数と提供者を埋める
+- `src/data/overrides.json` を main に更新すると `.github/workflows/override-tweet-reminder.yml` が発火し、
+  差分から **修正ツイートの2・3ツイート目の下書き**（店舗名・台数つき）をIssueに自動で出す（AI不使用）。
+  Issueの下書きを確認して投稿し、済んだらクローズする。
