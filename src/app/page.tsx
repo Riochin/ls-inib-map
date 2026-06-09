@@ -17,6 +17,7 @@ import { StoreCount } from '@/components/StoreCount'
 import { LastUpdated } from '@/components/LastUpdated'
 import { Credit } from '@/components/Credit'
 import { Onboarding } from '@/components/Onboarding'
+import { PairSchedulePanel } from '@/components/PairSchedulePanel'
 import type { FilterOption, AddressFilter, Store } from '@/types/store'
 import { EMPTY_ADDRESS_FILTER } from '@/types/store'
 
@@ -63,15 +64,20 @@ export default function MapPage() {
     <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ?? ''}>
       <div className="relative w-full h-dvh">
         <FilterBar activeFilter={activeFilter} onFilterChange={handleFilterChange} />
-        {/* 件数・最終更新日時をコンパクトに集約。フィルタバー(中央)・検索(右上)と段をずらし、
-            ヘルプボタン(右・top-20)と左右対称の段に置いてモバイルでの重なりを回避。メタ欠落時は更新日時を省略 */}
-        <div className="absolute top-20 left-4 z-10 flex flex-col gap-0.5 bg-white/85 backdrop-blur-sm rounded-xl px-3 py-1.5 shadow">
-          <StoreCount
-            total={stores.length}
-            filtered={filteredStores.length}
-            isFiltered={isFiltered}
-          />
-          <LastUpdated lastUpdated={storesMeta?.lastUpdated} />
+        {/* 件数・最終更新日時＋（ラスサバ時）ペア戦案内を左上に縦に集約。フィルタバー(中央)・
+            検索(右上)と段をずらし、メタ欠落時は更新日時を省略。ペア戦案内は件数カードの下に
+            重ならず並べ、同じ見た目・サイズで統一する */}
+        <div className="absolute top-20 left-4 z-10 flex flex-col gap-2 items-start">
+          <div className="flex flex-col gap-0.5 bg-white/85 backdrop-blur-sm rounded-xl px-3 py-1.5 shadow">
+            <StoreCount
+              total={stores.length}
+              filtered={filteredStores.length}
+              isFiltered={isFiltered}
+            />
+            <LastUpdated lastUpdated={storesMeta?.lastUpdated} />
+          </div>
+          {/* ラスサバ選択中のみ、今日のペア戦/ソロ戦を折りたたみチップで表示（タップで日程展開） */}
+          {activeFilter === 'jojo-ls' && <PairSchedulePanel />}
         </div>
         <SearchButton
           isActive={isSearchOpen}
