@@ -1,6 +1,6 @@
 # ver2.1 告知投稿（ドラフト）
 
-添付画像は `updates/ver2.1.flyer.html` をスクショ。テンプレは `announcement-template.md`。
+添付画像は `updates/v2.1/flyer.html` をスクショ。テンプレは `templates/announcement.md`。
 
 ```
 【ver2.1】

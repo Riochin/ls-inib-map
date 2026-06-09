@@ -1,6 +1,6 @@
 # ver2.0 告知投稿（アーカイブ）
 
-実際にXへ投稿した本文。テンプレ（`announcement-template.md`）の原型。
+実際にXへ投稿した本文。テンプレ（`templates/announcement.md`）の原型。
 
 ```
 【ver2.0】
