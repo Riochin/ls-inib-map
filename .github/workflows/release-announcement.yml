@@ -55,6 +55,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # gh / git / ファイル編集を明示許可しないと、Issue作成・コメント・
+          # 下書きcommit・PR作成がすべて権限拒否され空振りする。
+          claude_args: |
+            --allowedTools "Read,Glob,Grep,Write,Edit,Bash(gh issue create:*),Bash(gh issue comment:*),Bash(gh label create:*),Bash(gh label list:*),Bash(gh pr create:*),Bash(gh pr diff:*),Bash(git config:*),Bash(git switch:*),Bash(git checkout:*),Bash(git add:*),Bash(git commit:*),Bash(git push:*),Bash(cp:*)"
           prompt: |
             あなたはリポジトリ ${{ github.repository }} のリリース告知担当です。
             機能リリース **ver${{ steps.parse.outputs.version }}**（PR #${{ github.event.pull_request.number }}）が
