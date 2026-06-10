@@ -976,6 +976,11 @@
     "precision": "APPROXIMATE",
     "partialMatch": true
   },
+  "山形県長井市時庭1960": {
+    "lat": 38.0767873,
+    "lng": 140.039484,
+    "precision": "ROOFTOP"
+  },
   "山形県鶴岡市文下字広野1-1": {
     "lat": 38.7584358,
     "lng": 139.8439915,
