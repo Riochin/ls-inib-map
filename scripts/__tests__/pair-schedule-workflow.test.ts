@@ -9,7 +9,7 @@ import { resolve } from 'node:path'
  * 専用YAMLパーサ依存を増やさずテキスト検査で検証する。
  *
  * 契約:
- * - 毎週木曜 09:00 JST（= 00:00 UTC, cron `0 0 * * 4`）＋手動起動で起動する。
+ * - 毎週木曜 09:24 JST（= 00:24 UTC, cron `24 0 * * 4`）＋手動起動で起動する。
  * - pnpm でセットアップ・インストールし、`scripts/scrape-pair-schedule.ts` を実行する。
  * - 実体差分（`pair-schedule.json`）がある場合のみコミット・プッシュする。
  * - コミットメッセージは既存規約（`chore:` + 日本語要約）、push 権限（`contents: write`）を持つ。
@@ -26,10 +26,11 @@ describe('update-pair-schedule ワークフロー', () => {
     expect(existsSync(WORKFLOW_PATH)).toBe(true)
   })
 
-  it('毎週木曜 00:00 UTC（09:00 JST）の cron スケジュールで起動する', () => {
+  it('毎週木曜 00:24 UTC（09:24 JST）の cron スケジュールで起動する', () => {
     const yml = readWorkflow()
     expect(yml).toMatch(/schedule:/)
-    expect(yml).toMatch(/cron:\s*['"]0 0 \* \* 4['"]/)
+    // 真夜中UTCぴったり（0 0）は遅延・欠落しやすいため分をずらしている
+    expect(yml).toMatch(/cron:\s*['"]24 0 \* \* 4['"]/)
   })
 
   it('手動起動（workflow_dispatch）が可能である', () => {

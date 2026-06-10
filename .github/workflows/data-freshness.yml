@@ -1,0 +1,79 @@
+name: データ鮮度監視
+
+# 自動更新（update-stores / update-pair-schedule）が「沈黙して発火しなかった」ケースを検知する。
+# 既存の report-failure は "動いて失敗" しか拾えないため、生成物の最終更新日の経過を毎日チェックし、
+# 閾値を超えていたら集約Issueで通知する（cron欠落・見逃された失敗の最後の網）。
+
+on:
+  schedule:
+    # 毎日 10:37 JST（= 01:37 UTC）。真夜中UTC/毎時00分の混雑を避けた非ピーク分
+    - cron: '37 1 * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  freshness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 鮮度チェック（閾値超でIssue集約）
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          now=$(date -u +%s)
+          stale=()
+
+          # $1=表示名 $2=ファイル $3=jqパス $4=閾値日数
+          check () {
+            local name="$1" file="$2" jqpath="$3" limit="$4"
+            if [ ! -f "$file" ]; then
+              stale+=("- \`$file\`: ファイルが見つかりません")
+              return
+            fi
+            local ts age_d
+            ts=$(jq -r "$jqpath // empty" "$file")
+            if [ -z "$ts" ] || [ "$ts" = "null" ]; then
+              stale+=("- \`$file\`: 更新日時($jqpath)を取得できません")
+              return
+            fi
+            age_d=$(( (now - $(date -u -d "$ts" +%s)) / 86400 ))
+            echo "$name: $ts （${age_d}日経過 / 閾値 ${limit}日）"
+            if [ "$age_d" -ge "$limit" ]; then
+              stale+=("- \`$file\`（$name）: 最終更新 ${ts}・**${age_d}日経過**（閾値${limit}日）")
+            fi
+          }
+
+          check 設置店舗データ src/data/stores.json '.lastUpdated' 8
+          check ペア戦日程 src/data/pair-schedule.json '.updatedAt' 9
+
+          if [ ${#stale[@]} -eq 0 ]; then
+            echo "鮮度OK。Issueは作成しません。"
+            exit 0
+          fi
+
+          label='データ鮮度低下'
+          title='🟠 データ自動更新が止まっている可能性'
+          gh label create "$label" --color D93F0B \
+            --description 'stores/pair-schedule が閾値以上更新されていない' >/dev/null 2>&1 || true
+
+          details=$(printf '%s\n' "${stale[@]}")
+          body=$(printf '次のデータが閾値以上更新されていません。週次の自動更新ワークフロー（update-stores / update-pair-schedule）の cron が発火していない、または失敗が見逃された可能性があります。\n\n%s\n\n---\n対応（手動 workflow_dispatch で再実行 → 更新確認）後に、このIssueを手動でクローズしてください。再検知は本Issueにコメントで集約します。' "$details")
+
+          existing=$(gh issue list --state open --label "$label" --limit 20 \
+            --json number,title --jq "map(select(.title==\"$title\")) | .[0].number // empty")
+
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "$(printf '🔁 まだ鮮度低下が続いています（%s 時点）。\n\n%s' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$details")"
+          else
+            gh issue create --title "$title" --label "$label" --body "$body"
+          fi
+
+      # チェック自体が失敗したら（jq/権限など）取りこぼし防止に通知
+      - name: 失敗したらIssueを作成
+        if: failure()
+        uses: ./.github/actions/report-failure

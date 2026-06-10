@@ -10,7 +10,7 @@ import { resolve } from 'node:path'
  * テキストとして読み、契約上の必須要素を検査する。
  *
  * 契約:
- * - 毎週水曜 09:00 JST（= 00:00 UTC, cron `0 0 * * 3`）で起動する（Req2.5）。
+ * - 毎週水曜 09:24 JST（= 00:24 UTC, cron `24 0 * * 3`）で起動する（Req2.5）。
  * - 手動起動（`workflow_dispatch`）も可能である。
  * - ジオコーディングAPIキーをシークレットから環境変数へ渡す（鍵をリポジトリに残さない）。
  * - パイプライン（`scripts/pipeline.ts`）を実行する。スクリプト失敗時はコミット段へ進まない
@@ -32,10 +32,11 @@ describe('update-stores ワークフロー', () => {
     expect(existsSync(WORKFLOW_PATH)).toBe(true)
   })
 
-  it('毎週水曜 00:00 UTC（09:00 JST）の cron スケジュールで起動する', () => {
+  it('毎週水曜 00:24 UTC（09:24 JST）の cron スケジュールで起動する', () => {
     const yml = readWorkflow()
     expect(yml).toMatch(/schedule:/)
-    expect(yml).toMatch(/cron:\s*['"]0 0 \* \* 3['"]/)
+    // 真夜中UTCぴったり（0 0）は遅延・欠落しやすいため分をずらしている
+    expect(yml).toMatch(/cron:\s*['"]24 0 \* \* 3['"]/)
   })
 
   it('手動起動（workflow_dispatch）が可能である', () => {
