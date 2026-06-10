@@ -51,6 +51,12 @@ export interface Store {
    * 表示側はこれを見て「おおよその位置」注記を出す。
    */
   approximateLocation?: boolean
+  /**
+   * この店舗情報を運営が最後に更新した日時（ISO 8601・任意）。手動オーバーライドの
+   * `updatedAt` を runtime で写したもの。override が無い店では未設定。表示側は店舗単位の
+   * 「情報更新: 日付」として使う（地図全体のスクレイプ最終更新日とは別物）。
+   */
+  infoUpdatedAt?: string
 }
 
 /** フィルタ選択肢 */

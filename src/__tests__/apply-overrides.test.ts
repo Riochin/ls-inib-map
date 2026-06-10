@@ -76,6 +76,26 @@ describe('applyOverrides', () => {
     expect(store.approximateLocation).toBe(true)
   })
 
+  it('updatedAt は infoUpdatedAt として Store に載る', () => {
+    const stores = [makeStore()]
+    const file: OverridesFile = {
+      overrides: {
+        abc123: { source: 'admin', updatedAt: '2026-06-10T00:00:00.000Z', machineCounts: { 'jojo-ls': 3 } },
+      },
+    }
+    const [store] = applyOverrides(stores, file)
+    expect(store.infoUpdatedAt).toBe('2026-06-10T00:00:00.000Z')
+  })
+
+  it('updatedAt が無ければ infoUpdatedAt は未設定', () => {
+    const stores = [makeStore()]
+    const file: OverridesFile = {
+      overrides: { abc123: { source: 'admin', machineCounts: { 'jojo-ls': 3 } } },
+    }
+    const [store] = applyOverrides(stores, file)
+    expect(store.infoUpdatedAt).toBeUndefined()
+  })
+
   it('複数ゲームの台数を同時に上書きできる', () => {
     const stores = [makeStore()]
     const file: OverridesFile = {

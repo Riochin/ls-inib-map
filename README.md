@@ -66,7 +66,15 @@ NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID=your-map-id
 
 # データ生成パイプライン用（地図表示用とは別キーを推奨）
 GOOGLE_GEOCODING_API_KEY=your-geocoding-api-key
+
+# ユーザー報告フォーム（/api/report → GitHub Issue）用・サーバー専用
+# fine-grained PAT（対象リポジトリのみ・Issues:write のみ＝最小権限）を推奨
+GITHUB_REPORT_TOKEN=your-github-fine-grained-pat
+GITHUB_REPORT_REPO=owner/repo
 ```
+
+> `GITHUB_REPORT_*` は本番（Vercel）の環境変数にも登録する。未設定だと報告フォームは 503 を返す（送信不可）。
+> 報告は `ユーザー報告` ラベルの Issue として作成され、運営が確認して反映する（自動構造化はしない）。
 
 ### インストール・起動
 

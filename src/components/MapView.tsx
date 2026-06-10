@@ -5,6 +5,8 @@ import { Map, useMap, InfoWindow } from '@vis.gl/react-google-maps'
 import type { Store, GameTitle } from '@/types/store'
 import { CurrentLocationMarker } from './CurrentLocationMarker'
 import { ApproximateCircle } from './ApproximateCircle'
+import { ReportModal } from './ReportModal'
+import { formatDateJst } from '@/lib/info-display'
 import { getMarkerTheme, getGameLabel, getStoreStatusLabel, getCountSourceInfo } from '@/lib/marker-color'
 import { CountBadge } from './CountBadge'
 import { useStoreClusterer } from '@/hooks/use-store-clusterer'
@@ -23,6 +25,7 @@ const DEFAULT_ZOOM = 15
 export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onMapClick }: MapViewProps) {
   const map = useMap()
   const [openStoreId, setOpenStoreId] = useState<string | null>(null)
+  const [reportStore, setReportStore] = useState<Store | null>(null)
   const prevLocationRef = useRef<{ lat: number; lng: number } | null>(null)
 
   const handleOpen = useCallback((storeId: string) => {
@@ -66,6 +69,7 @@ export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onM
   )
 
   return (
+    <>
     <Map
       defaultCenter={DEFAULT_CENTER}
       defaultZoom={DEFAULT_ZOOM}
@@ -90,16 +94,30 @@ export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onM
           position={{ lat: openStore.lat, lng: openStore.lng }}
           headerDisabled
         >
-          <InfoWindowContent store={openStore} onClose={handleClose} />
+          <InfoWindowContent
+            store={openStore}
+            onClose={handleClose}
+            onReport={() => setReportStore(openStore)}
+          />
         </InfoWindow>
       )}
 
       {userLocation && <CurrentLocationMarker position={userLocation} />}
     </Map>
+    {reportStore && <ReportModal store={reportStore} onClose={() => setReportStore(null)} />}
+    </>
   )
 }
 
-function InfoWindowContent({ store, onClose }: { store: Store; onClose: () => void }) {
+function InfoWindowContent({
+  store,
+  onClose,
+  onReport,
+}: {
+  store: Store
+  onClose: () => void
+  onReport: () => void
+}) {
   const theme = getMarkerTheme(store)
   // 閉店（🌸）・移設（公式一覧から消失）はグレー背景＋状態ラベルで通常店舗と区別する
   const statusLabel = getStoreStatusLabel(store)
@@ -142,17 +160,29 @@ function InfoWindowContent({ store, onClose }: { store: Store; onClose: () => vo
           {getGameLabel(openSource)}：{getCountSourceInfo(store.countSources?.[openSource]).label}
         </p>
       )}
-      <a
-        href={`https://www.google.com/maps/dir/?api=1&destination=${store.lat},${store.lng}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
-          <path d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 002.144-1.64A19.253 19.253 0 0018.75 14C18.75 8.787 14.713 4.75 9.5 4.75S.25 8.787.25 14c0 2.154.848 4.29 2.216 6.11a19.253 19.253 0 004.144 3.601 16.975 16.975 0 002.144 1.64zM9.5 16.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" transform="translate(2.5 -2.5) scale(0.95)" />
-        </svg>
-        経路
-      </a>
+      <div className="flex items-center justify-between gap-2">
+        <a
+          href={`https://www.google.com/maps/dir/?api=1&destination=${store.lat},${store.lng}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
+            <path d="M11.54 22.351l.07.04.028.016a.76.76 0 00.723 0l.028-.015.071-.041a16.975 16.975 0 002.144-1.64A19.253 19.253 0 0018.75 14C18.75 8.787 14.713 4.75 9.5 4.75S.25 8.787.25 14c0 2.154.848 4.29 2.216 6.11a19.253 19.253 0 004.144 3.601 16.975 16.975 0 002.144 1.64zM9.5 16.25a2.25 2.25 0 100-4.5 2.25 2.25 0 000 4.5z" transform="translate(2.5 -2.5) scale(0.95)" />
+          </svg>
+          経路
+        </a>
+        <button
+          type="button"
+          onClick={onReport}
+          className="text-[11px] text-gray-500 hover:text-gray-700 hover:underline"
+        >
+          情報の修正を報告
+        </button>
+      </div>
+      {store.infoUpdatedAt && (
+        <p className="text-[10px] text-gray-400 mt-1">情報更新: {formatDateJst(store.infoUpdatedAt)}</p>
+      )}
       {statusLabel && (
         <span className="absolute bottom-1 right-1 text-xs text-gray-400 font-medium">{statusLabel}</span>
       )}

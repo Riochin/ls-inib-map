@@ -37,3 +37,18 @@ export function formatLastUpdated(iso: string): string | null {
     timeZone: 'Asia/Tokyo',
   }).format(date)
 }
+
+/**
+ * ISO 8601 を JST の「年月日」だけに整形する（時刻は出さない）。空・不正は null。
+ * 店舗単位の「情報更新日」など、日付の粒度で十分な表示に使う。JST固定の理由は
+ * {@link formatLastUpdated} と同じ（SSR/クライアントの不一致回避）。
+ */
+export function formatDateJst(iso: string): string | null {
+  if (!iso) return null
+  const date = new Date(iso)
+  if (Number.isNaN(date.getTime())) return null
+  return new Intl.DateTimeFormat('ja-JP', {
+    dateStyle: 'medium',
+    timeZone: 'Asia/Tokyo',
+  }).format(date)
+}
