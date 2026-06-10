@@ -249,7 +249,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 13
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "0545a3e052cc",
@@ -541,7 +542,8 @@
       "machineCounts": {
         "jojo-ls": 3,
         "gundam-exvs": 10
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "0a71b5eae84e",
@@ -580,7 +582,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 5
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "0b4e6f1d1241",
@@ -770,7 +773,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 9
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "10c79880c2c7",
@@ -1077,7 +1081,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 5
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "168ae129c41b",
@@ -1431,7 +1436,8 @@
       "machineCounts": {
         "jojo-ls": 2,
         "gundam-exvs": 12
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "1e805d042a2d",
@@ -1524,7 +1530,8 @@
       "machineCounts": {
         "jojo-ls": 3,
         "gundam-exvs": 14
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "21116dece6f1",
@@ -1634,7 +1641,8 @@
       "machineCounts": {
         "jojo-ls": 4,
         "gundam-exvs": 12
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "2380eb9ab2af",
@@ -1649,7 +1657,8 @@
       "machineCounts": {
         "jojo-ls": 6,
         "gundam-exvs": 14
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "24327c83cc0c",
@@ -1882,7 +1891,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 5
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "2bf3bc641e16",
@@ -2124,7 +2134,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 7
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "34101dcbe2ea",
@@ -2331,7 +2342,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 9
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "3c2292734bf1",
@@ -2415,7 +2427,8 @@
       "machineCounts": {
         "jojo-ls": 2,
         "gundam-exvs": 18
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "3ee8c384fabd",
@@ -2930,7 +2943,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 7
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "4a2b598ee2c6",
@@ -3064,7 +3078,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 5
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "4d42eae90d23",
@@ -3161,7 +3176,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 5
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "4fc1900ad6c7",
@@ -3245,7 +3261,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 5
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "535e5d9fc6f6",
@@ -3796,7 +3813,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 7
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "62b90a28806d",
@@ -3999,7 +4017,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 5
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "688d746ed1ad",
@@ -4150,7 +4169,8 @@
       ],
       "machineCounts": {
         "jojo-ls": 5
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "6e5bb3bc1416",
@@ -4342,7 +4362,8 @@
       "machineCounts": {
         "jojo-ls": 3,
         "gundam-exvs": 5
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "72d216a2c063",
@@ -4819,7 +4840,8 @@
       "machineCounts": {
         "jojo-ls": 4,
         "gundam-exvs": 9
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "7d5b035fa72f",
@@ -5093,7 +5115,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 9
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "811c186e5a67",
@@ -5188,7 +5211,8 @@
       "machineCounts": {
         "jojo-ls": 3,
         "gundam-exvs": 9
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "8493cb057a7b",
@@ -5397,7 +5421,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 5
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "89d00bf929d7",
@@ -5727,7 +5752,8 @@
       "machineCounts": {
         "jojo-ls": 4,
         "gundam-exvs": 5
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "8fdc5d906a74",
@@ -6267,7 +6293,8 @@
       "machineCounts": {
         "jojo-ls": 3,
         "gundam-exvs": 9
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "9c7b65b3739f",
@@ -6280,7 +6307,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 9
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "9cea49f324c8",
@@ -6375,7 +6403,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 13
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "a058136bfe65",
@@ -6565,7 +6594,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 5
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "a4bf5a4b8d0b",
@@ -6716,7 +6746,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 5
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "a8a3608a3c2c",
@@ -6817,7 +6848,8 @@
       "machineCounts": {
         "jojo-ls": 4,
         "gundam-exvs": 11
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "a9b8ca98ecaa",
@@ -7211,7 +7243,8 @@
       "machineCounts": {
         "jojo-ls": 3,
         "gundam-exvs": 10
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "b25dbfd38d07",
@@ -7332,7 +7365,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 5
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "b3c641454b6f",
@@ -7360,7 +7394,8 @@
       "machineCounts": {
         "jojo-ls": 6,
         "gundam-exvs": 10
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "b4bd24e9492d",
@@ -7412,7 +7447,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 13
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "b5b63d606ad7",
@@ -7494,7 +7530,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 5
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "b78f34c106e6",
@@ -7684,7 +7721,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 16
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "bd2380b4ed21",
@@ -8329,7 +8367,8 @@
       "machineCounts": {
         "jojo-ls": 2,
         "gundam-exvs": 5
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "ca8d6fdd9999",
@@ -9106,7 +9145,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 5
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "dd7d81ea5408",
@@ -9145,7 +9185,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 7
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "df2d9d8ed78b",
@@ -9251,7 +9292,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 7
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "e285ee4e5b56",
@@ -9361,7 +9403,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 9
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "e6b5bf886a96",
@@ -9514,7 +9557,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 18
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "ea224c19340f",
@@ -10214,7 +10258,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 5
-      }
+      },
+      "approximateLocation": true
     },
     {
       "id": "fa59e3d137c3",
