@@ -518,12 +518,13 @@ function ScrollArea({ children }: { children: ReactNode }) {
       <div ref={scrollRef} className="no-native-scrollbar h-full overflow-y-auto px-5 pt-5 pb-2">
         <div ref={contentRef}>{children}</div>
       </div>
-      {/* 独自スクロールバー（中身が溢れる時だけ表示）。トラック高さ＝clientHeight に合わせる */}
+      {/* 独自スクロールバー（中身が溢れる時だけ表示）。サイトのテーマ色（紫）に合わせる。
+          トラック高さ＝clientHeight に合わせる */}
       {thumb.visible && (
-        <div className="pointer-events-none absolute inset-y-0 right-1 w-1.5 rounded-full bg-gray-200/60">
+        <div className="pointer-events-none absolute inset-y-0 right-1 w-1.5 rounded-full bg-purple-100/70">
           <div
             onPointerDown={onThumbDown}
-            className="pointer-events-auto absolute right-0 w-1.5 rounded-full bg-gray-400/70 hover:bg-gray-500/90 active:bg-gray-600 transition-colors cursor-grab active:cursor-grabbing touch-none"
+            className="pointer-events-auto absolute right-0 w-1.5 rounded-full bg-purple-400/80 hover:bg-purple-500 active:bg-purple-600 transition-colors cursor-grab active:cursor-grabbing touch-none"
             style={{ height: thumb.height, top: thumb.top }}
             aria-hidden="true"
           />
@@ -544,7 +545,7 @@ function OnboardingModal({ initialPage = 0, onClose }: { initialPage?: number; o
       <div
         // 高さを全ページで統一（footer=「次へ」の位置が固定され、溢れる分は本文が独自スクロール）。
         // 高さは1枚目（操作案内）がちょうど収まる値に合わせている。短い画面では 85vh で頭打ち。
-        className="bg-white rounded-2xl shadow-xl max-w-sm w-full relative h-[480px] max-h-[85vh] flex flex-col"
+        className="bg-white rounded-2xl shadow-xl max-w-sm w-full relative h-[500px] max-h-[85vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <button
