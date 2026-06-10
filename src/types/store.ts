@@ -43,6 +43,20 @@ export interface Store {
    * `closed`（閉店）とは別状態。両者が重なる場合は `closed` を優先表示する。
    */
   delisted?: boolean
+  /**
+   * ピン位置がおおよそであることを示すフラグ（任意）。住所のジオコード精度が
+   * 低い（Google の `location_type=APPROXIMATE` または `partial_match`）場合に
+   * 生成器が付与する。「字＋地番」住所などで建物まで特定できずエリア重心へ
+   * フォールバックした店舗が該当。省略時はピン位置が概ね確からしい。
+   * 表示側はこれを見て「おおよその位置」注記を出す。
+   */
+  approximateLocation?: boolean
+  /**
+   * この店舗情報を運営が最後に更新した日時（ISO 8601・任意）。手動オーバーライドの
+   * `updatedAt` を runtime で写したもの。override が無い店では未設定。表示側は店舗単位の
+   * 「情報更新: 日付」として使う（地図全体のスクレイプ最終更新日とは別物）。
+   */
+  infoUpdatedAt?: string
 }
 
 /** フィルタ選択肢 */

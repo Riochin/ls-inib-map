@@ -10,6 +10,12 @@ export interface OverrideEntry {
   source: Provenance
   /** 人間用メモ（店名・報告元など。IDが変わって効かなくなった時の手がかり） */
   note?: string
+  /**
+   * このオーバーライドを最後に更新した日時（ISO 8601・任意）。
+   * 管理GUIの保存時に内容が変わったエントリへ自動で打たれる。表示では店舗単位の
+   * 「情報更新日」として使う（地図全体のスクレイプ最終更新日とは別物）。
+   */
+  updatedAt?: string
   /** ゲーム別台数の上書き（指定したゲームのみ置換する） */
   machineCounts?: Partial<Record<GameTitle, number>>
   closed?: boolean

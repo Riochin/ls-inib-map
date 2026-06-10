@@ -5,8 +5,8 @@ name: 設置店舗データ自動更新
 # 差分がある場合のみコミット・プッシュする。push 成功で Vercel の自動デプロイが発火する。
 on:
   schedule:
-    # 毎週水曜 09:00 JST（= 00:00 UTC）
-    - cron: '0 0 * * 3'
+    # 毎週水曜 09:24 JST（= 00:24 UTC）。真夜中UTCぴったりは遅延・欠落しやすいため分をずらす
+    - cron: '24 0 * * 3'
   workflow_dispatch:
 
 # stores.json / ジオコードキャッシュの commit & push、失敗時のIssue作成に必要（Req2.5）

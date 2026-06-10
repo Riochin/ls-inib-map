@@ -1,0 +1,2072 @@
+{
+  "approximate": [
+    {
+      "id": "05186c16d310",
+      "name": "スポラ菊陽",
+      "address": "熊本県菊池郡菊陽町津久礼駄飼代2617-2",
+      "precision": "APPROXIMATE",
+      "partialMatch": true
+    },
+    {
+      "id": "0a3697626fe5",
+      "name": "アピナ長岡",
+      "address": "新潟県長岡市堺東町22",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    },
+    {
+      "id": "0b281277790a",
+      "name": "ウェアハウス上尾",
+      "address": "埼玉県上尾市二ツ宮1044",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    },
+    {
+      "id": "109445ce7400",
+      "name": "GiGO 生桑",
+      "address": "三重県四日市市生桑町字川原崎299-1",
+      "precision": "APPROXIMATE",
+      "partialMatch": true
+    },
+    {
+      "id": "167b3d14d531",
+      "name": "GiGO 石岡",
+      "address": "茨城県石岡市東大橋中峯1976-1",
+      "precision": "APPROXIMATE",
+      "partialMatch": true
+    },
+    {
+      "id": "1df270030ad7",
+      "name": "GiGO 札幌駅西口",
+      "address": "北海道札幌市北区北六条西6 JR高架下",
+      "precision": "APPROXIMATE",
+      "partialMatch": true
+    },
+    {
+      "id": "20a5efd3c27f",
+      "name": "バイパスレジャーランド加賀",
+      "address": "石川県加賀市箱宮町ヲ1-1",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    },
+    {
+      "id": "2380365065f6",
+      "name": "ラウンドワンスタジアム堺中央環状",
+      "address": "大阪府堺市東区石原町2-241",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    },
+    {
+      "id": "2380eb9ab2af",
+      "name": "トヤマレジャーランド呉羽",
+      "address": "富山県富山市高木字貝塚2054",
+      "precision": "APPROXIMATE",
+      "partialMatch": true
+    },
+    {
+      "id": "2bed4a19db1a",
+      "name": "GiGO 甲西",
+      "address": "滋賀県湖南市夏見二ツ橋356-1",
+      "precision": "APPROXIMATE",
+      "partialMatch": true
+    },
+    {
+      "id": "33fa7a93fe27",
+      "name": "メジャーロード白根",
+      "address": "新潟県新潟市南区上下諏訪木字論地948-2",
+      "precision": "APPROXIMATE",
+      "partialMatch": true
+    },
+    {
+      "id": "3b38a9415ed0",
+      "name": "ゲームスポットアップル",
+      "address": "富山県魚津市吉島2-407-1",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    },
+    {
+      "id": "3ec1f3534a2a",
+      "name": "福井レジャーランド板垣",
+      "address": "福井県福井市下馬3-112",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    },
+    {
+      "id": "4a2584a30078",
+      "name": "ラウンドワンスタジアム札幌北21条",
+      "address": "北海道札幌市東区北二十一条東1-1-21",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    },
+    {
+      "id": "4ce462b628ed",
+      "name": "G-pala 日田",
+      "address": "大分県日田市友田字萩鶴986-1",
+      "precision": "APPROXIMATE",
+      "partialMatch": true
+    },
+    {
+      "id": "4f71fc981f60",
+      "name": "アミパラ鈴鹿",
+      "address": "三重県鈴鹿市西條町字東澤430-1",
+      "precision": "APPROXIMATE",
+      "partialMatch": true
+    },
+    {
+      "id": "531c529224e7",
+      "name": "ラウンドワンスタジアム札幌・白石本通",
+      "address": "北海道札幌市白石区本通16-北1-50",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    },
+    {
+      "id": "61a03a4d5131",
+      "name": "ダイナソアエイジ",
+      "address": "愛知県大府市東新町3-88",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    },
+    {
+      "id": "6882a5a81997",
+      "name": "Amusementcity G-STA",
+      "address": "鹿児島県薩摩川内市向田本町49",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    },
+    {
+      "id": "6da3b1c2ee87",
+      "name": "大垣メトロポリス",
+      "address": "岐阜県大垣市三塚町字西沼523-1",
+      "precision": "APPROXIMATE",
+      "partialMatch": true
+    },
+    {
+      "id": "72a85aa852b7",
+      "name": "トライセン萩原",
+      "address": "大分県大分市萩原4-227-7 ACS3F",
+      "precision": "APPROXIMATE",
+      "partialMatch": true
+    },
+    {
+      "id": "7d21181bbb3d",
+      "name": "ラウンドワン姫路飾磨",
+      "address": "兵庫県姫路市飾磨区中島1-254",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    },
+    {
+      "id": "8107ea281ca8",
+      "name": "キャロム坂戸",
+      "address": "埼玉県坂戸市関間2-151-1",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    },
+    {
+      "id": "83b41e611ba5",
+      "name": "バイパスレジャーランド藤江本館",
+      "address": "石川県金沢市藤江南2-41",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    },
+    {
+      "id": "898cdf200a04",
+      "name": "楽市楽座福重",
+      "address": "福岡県福岡市西区石丸4-263-1",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    },
+    {
+      "id": "8fa39515bde4",
+      "name": "namco豊岡",
+      "address": "兵庫県豊岡市中陰字大工617 3F",
+      "precision": "APPROXIMATE",
+      "partialMatch": true
+    },
+    {
+      "id": "9c423b0a88cc",
+      "name": "群馬レジャーランド渋川",
+      "address": "群馬県渋川市八木原1364",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    },
+    {
+      "id": "9c7b65b3739f",
+      "name": "GiGO 小山",
+      "address": "栃木県小山市東城南1-1-18",
+      "precision": "APPROXIMATE",
+      "partialMatch": true
+    },
+    {
+      "id": "a04de522f483",
+      "name": "ラウンドワンスタジアム浜松",
+      "address": "静岡県浜松市中央区天王町字諏訪1981-17",
+      "precision": "APPROXIMATE",
+      "partialMatch": true
+    },
+    {
+      "id": "a47f67caaaf1",
+      "name": "アミパラ垂水",
+      "address": "兵庫県神戸市垂水区名谷町字室山1400-18",
+      "precision": "APPROXIMATE",
+      "partialMatch": true
+    },
+    {
+      "id": "a8889dbedb76",
+      "name": "サープラ佐世保あそびタウン",
+      "address": "長崎県佐世保市田原町38-1",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    },
+    {
+      "id": "a9a9da2beb7b",
+      "name": "ラウンドワン静岡・駿河",
+      "address": "静岡県静岡市駿河区手越75",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    },
+    {
+      "id": "b1beab2d2432",
+      "name": "アミューズメントワールド メトロポリス小牧",
+      "address": "愛知県小牧市間々片山181-1",
+      "precision": "APPROXIMATE",
+      "partialMatch": true
+    },
+    {
+      "id": "b3773bd784b7",
+      "name": "MEGAGET釧路",
+      "address": "北海道釧路郡釧路町木場2-1",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    },
+    {
+      "id": "b411c47f8770",
+      "name": "プラサカプコン甲府",
+      "address": "山梨県中巨摩郡昭和町西条字北河原3717",
+      "precision": "APPROXIMATE",
+      "partialMatch": true
+    },
+    {
+      "id": "b53613b3f23f",
+      "name": "メジャーロード見附 WEST",
+      "address": "新潟県見附市上新田町字下野沖516-1",
+      "precision": "APPROXIMATE",
+      "partialMatch": true
+    },
+    {
+      "id": "b757181dd273",
+      "name": "アピナ飯田",
+      "address": "長野県飯田市座光寺3728-1",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    },
+    {
+      "id": "bd07c894c753",
+      "name": "埼玉レジャーランド春日部",
+      "address": "埼玉県春日部市増富字谷際163-1",
+      "precision": "APPROXIMATE",
+      "partialMatch": true
+    },
+    {
+      "id": "c9a124c84a37",
+      "name": "アミパラここじゃ",
+      "address": "広島県東広島市西条町下見6-10-19",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    },
+    {
+      "id": "dcaa47dc4d30",
+      "name": "GiGO 米沢",
+      "address": "山形県米沢市花沢字タナコ原177",
+      "precision": "APPROXIMATE",
+      "partialMatch": true
+    },
+    {
+      "id": "df12de235d44",
+      "name": "GiGO 旭",
+      "address": "千葉県旭市ニ字野場3150-1",
+      "precision": "APPROXIMATE",
+      "partialMatch": true
+    },
+    {
+      "id": "e26db3d4e4b0",
+      "name": "アポロゲームセンター沖洲",
+      "address": "徳島県徳島市南沖洲1-93-1",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    },
+    {
+      "id": "e63f5f03c5b3",
+      "name": "あそVIVAゲームセンター",
+      "address": "京都府福知山市堀上高田2146-1 あそVIVA1F",
+      "precision": "APPROXIMATE",
+      "partialMatch": true
+    },
+    {
+      "id": "ea1cf31565a5",
+      "name": "タイトーFステーション郡山オリエントパーク",
+      "address": "福島県郡山市郡山市安積町荒井字大久保35-1",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    },
+    {
+      "id": "fa17f404aa1b",
+      "name": "フレスパランドカッタの湯",
+      "address": "山口県宇部市海南町1675",
+      "precision": "APPROXIMATE",
+      "partialMatch": false
+    }
+  ],
+  "partialMatchInfo": [
+    {
+      "id": "00456c4ef216",
+      "name": "GiGO 会津若松",
+      "address": "福島県会津若松市町北町上荒久田字宮下142",
+      "precision": "GEOMETRIC_CENTER",
+      "partialMatch": true
+    },
+    {
+      "id": "010a8c828e51",
+      "name": "ユーズランド倉敷",
+      "address": "岡山県倉敷市水江1 イオンモール倉敷2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "01323c8fcc98",
+      "name": "アドアーズ中野",
+      "address": "東京都中野区中野5-52-15 中野ブロードウェイ1F 185",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "02026a12d2f3",
+      "name": "GiGO 水沢",
+      "address": "岩手県奥州市水沢区佐倉河字鐙田4-1",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "022cd04b9a72",
+      "name": "アミパラ橿原",
+      "address": "奈良県橿原市十市町1222-1 ツインゲート橿原1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "033719f50f22",
+      "name": "アピナ鈴鹿",
+      "address": "三重県鈴鹿市庄野羽山4-20-1 イオンタウン鈴鹿2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "035b5ef8ae2d",
+      "name": "プラサカプコン大曲",
+      "address": "秋田県大仙市和合字坪立177 イオンモール大曲2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "03e1326697c5",
+      "name": "ユーズランド越谷",
+      "address": "埼玉県越谷市レイクタウン4-2-2 イオンレイクタウンkaze3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "0436734e39ce",
+      "name": "GiGO 大阪第4ビル",
+      "address": "大阪府大阪市北区梅田1-11-4 駅前第4ビルB1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "0467c7af22c1",
+      "name": "ソユーファミリーゲームフィールド花巻",
+      "address": "岩手県花巻市高木第16地割68-6 銀河モール花巻1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "0506c9b35d92",
+      "name": "ゲームランド新さっぽろ",
+      "address": "北海道札幌市厚別区厚別中央二条5-7 新さっぽろアークシティ カテプリ新さっぽろ3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "05fe48d7f2b7",
+      "name": "GiGO 新杉田",
+      "address": "神奈川県横浜市磯子区杉田1-1-1 らびすた新杉田2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "06065b2fc530",
+      "name": "タイトーFステーション山口メルクス",
+      "address": "山口県山口市黒川82-1 ハイパーモールメルクス山口内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "069b3e6134d7",
+      "name": "GiGO イオン仙台中山",
+      "address": "宮城県仙台市泉区南中山1-35-57 イオン仙台中山SC イオン仙台中山店別館3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "06f7516f2afc",
+      "name": "アミパラ倉敷",
+      "address": "岡山県倉敷市西中新田624-1 アミパラボウル1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "087c950e5d5d",
+      "name": "ラウンドワンさいたま・上里",
+      "address": "埼玉県児玉郡上里町金久保394-1 イオンタウン上里内",
+      "precision": "GEOMETRIC_CENTER",
+      "partialMatch": true
+    },
+    {
+      "id": "08fbd8311dd1",
+      "name": "タイトーFステーションオークワロマンシティ御坊",
+      "address": "和歌山県御坊市湯川町財部181 オークワロマンシティ御坊店3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "0987e3210f8d",
+      "name": "シルクハット川崎モアーズ",
+      "address": "神奈川県川崎市川崎区駅前本町7 川崎モアーズ1・2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "0a71b5eae84e",
+      "name": "タイトーステーション仙台ベガロポリス",
+      "address": "宮城県仙台市太白区西多賀5-24-1 ベガロポリス内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "0a7f21256d39",
+      "name": "GiGO 南越谷ラクーン",
+      "address": "埼玉県越谷市南越谷1-15-1 南越谷ラクーン2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "0b4e6f1d1241",
+      "name": "アドアーズ浅草",
+      "address": "東京都台東区浅草1-42-4 パシフィックコート浅草B1・1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "0c0bc9561f96",
+      "name": "プラサカプコン成田",
+      "address": "千葉県成田市ウイング土屋24 イオンモール成田2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "0c29f3dbeeee",
+      "name": "エースレーン守山",
+      "address": "滋賀県守山市播磨田町231-4 ACT守山3番館2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "100af157754f",
+      "name": "プラサカプコン石巻",
+      "address": "宮城県石巻市茜平4-104 イオンモール石巻2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "10253e111fd1",
+      "name": "スタジオプリモ本八幡",
+      "address": "千葉県市川市八幡2-15-10 パティオ5F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "10c79880c2c7",
+      "name": "GiGO新宿西口",
+      "address": "東京都新宿区西新宿1-12-5 西口三平ビル",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "11ec67ad1dcc",
+      "name": "ゲームピコ鵜沼",
+      "address": "岐阜県各務原市鵜沼西町3-309 イオンタウン各務原鵜沼内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "1225ebb4fc36",
+      "name": "アミューズメントゾーン北上",
+      "address": "岩手県北上市本通り2-2-1 さくら野百貨店北上店4F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "1385e3a4bbbe",
+      "name": "アピナ富谷",
+      "address": "宮城県富谷市大清水1-33-1 イオンモール富谷別棟109シネマズ富谷1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "142dcf2a066a",
+      "name": "アミパラ久御山",
+      "address": "京都府久世郡久御山町森大内337 イオンタウン久御山内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "15221ecd6288",
+      "name": "イミグランデ溝口2",
+      "address": "神奈川県川崎市高津区溝口1-14-7 第2カスタムビル1～4F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "17de75c74099",
+      "name": "楽市楽座イオンモール宮崎",
+      "address": "宮崎県宮崎市新別府町江口862-1 イオンモール宮崎2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "186d727ca9ac",
+      "name": "サープラ京都あそびタウン",
+      "address": "京都府京都市中京区西ノ京栂尾町107 BiVi二条2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "1a6649991dce",
+      "name": "ラウンドワン守口",
+      "address": "大阪府守口市佐太東町2-6-14 ジャガーグリーン2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "1b178f50182b",
+      "name": "キャッツアイ八千代",
+      "address": "千葉県八千代市緑が丘西2-13-3 ism緑が丘内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "1c0f5630a118",
+      "name": "モーリーファンタジーとなみ",
+      "address": "富山県砺波市中神1-174 イオンモールとなみ2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "1d618f1abafc",
+      "name": "GiGO センター南",
+      "address": "神奈川県横浜市都筑区茅ケ崎中央3-25 aune港北1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "1d7386312bec",
+      "name": "ユーズランド春日部",
+      "address": "埼玉県春日部市下柳420-1 イオンモール春日部2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "1f0397dbb485",
+      "name": "アドアーズ仙川",
+      "address": "東京都調布市仙川町2-21-12 VICビル7 1～3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "2018e32f2ef7",
+      "name": "Feedy Diner＆Arcade 茨木",
+      "address": "大阪府茨木市松ケ本町8-30-5 イオンモール茨木4F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "21706ec1edf5",
+      "name": "ゲームプラザセントラル浦安",
+      "address": "千葉県浦安市北栄1-16-15 第四セントラルビル",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "21d1145039bd",
+      "name": "namco松戸",
+      "address": "千葉県松戸市松戸1230-1 ピアザ松戸1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "22f8dd51f3e6",
+      "name": "サープラ下通りあそびタウン",
+      "address": "熊本県熊本市中央区手取本町4-12 ザ･ファインビル",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "24327c83cc0c",
+      "name": "namcoイオンレイクタウンmori北",
+      "address": "埼玉県越谷市レイクタウン3-1-1 イオンレイクタウンmori3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "25b951e74596",
+      "name": "モーリーファンタジーf 岐阜",
+      "address": "岐阜県岐阜市正木中1-2-1 マーサ21北館3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "263f6cc77fe1",
+      "name": "ゲーム最後の5ドル",
+      "address": "福岡県糟屋郡粕屋町仲原2706 仲原Jボウル2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "2800610307a7",
+      "name": "GiGO 中筋",
+      "address": "広島県広島市安佐南区中筋4-11-7 フタバ図書MEGA祇園中筋店2F レンタルコーナー奥",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "28626643e0da",
+      "name": "バンダイナムコ Cross Store 京都",
+      "address": "京都府京都市南区西九条鳥居口町1 イオンモールKYOTO Sakura館4F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "2b705b86fd37",
+      "name": "スタジオプリモ宇都宮",
+      "address": "栃木県宇都宮市曲師町2-8 宇都宮フェスタB1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "2b7946698cc0",
+      "name": "アドアーズ船橋",
+      "address": "千葉県船橋市本町1-31-26 セブン船橋B1～4F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "2e3de8e66af0",
+      "name": "ゲームパニックつくば",
+      "address": "茨城県土浦市中村東1-1-1 サンタスワールド内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "2e85e469ed2b",
+      "name": "GiGO フレスポ東大阪",
+      "address": "大阪府東大阪市稲田新町3-9-64 フレスポ東大阪2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "2e8c2d2c2f53",
+      "name": "ソユーゲームフィールド盛岡南",
+      "address": "岩手県盛岡市本宮7-1-1 イオンモール盛岡南2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "2f703d16adf0",
+      "name": "アピナ富山南",
+      "address": "富山県富山市堀川町355-3 マイプラザ内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "30ee0a020e46",
+      "name": "ゲームマインズ",
+      "address": "宮崎県宮崎市高千穂通1-3-22 エースランド2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "3162b3fbe0aa",
+      "name": "ユーズランド東浦",
+      "address": "愛知県知多郡東浦町大字緒川字旭13-2 イオンモール東浦2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "33425b384329",
+      "name": "Hey",
+      "address": "東京都千代田区外神田1-10-5 廣瀬本社ビル",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "34101dcbe2ea",
+      "name": "あそVIVA阪急茨木",
+      "address": "大阪府茨木市永代町6-2 スポーツプラザ茨木2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "34a3dd7a0288",
+      "name": "GiGO 福岡天神",
+      "address": "福岡県福岡市中央区天神2-7-6 DADAビル1～3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "359c70bba538",
+      "name": "M'sPARK豊田",
+      "address": "愛知県豊田市寿町3-21・22 トヨタグランドビル",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "371a68f4bc3a",
+      "name": "アミューズメントパフェパレパレ稲毛長沼",
+      "address": "千葉県千葉市稲毛区長沼原町737-25 フレスポ稲毛A棟-4",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "38f78fd7228c",
+      "name": "namco宇都宮",
+      "address": "栃木県宇都宮市簗瀬町1606-1 フェドラP＆D UTSUNOMIYA",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "3a1c5006d51a",
+      "name": "GiGO 武生",
+      "address": "福井県越前市新町3字13-4 シピィタウン内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "3a5c004c4c22",
+      "name": "プラサカプコン徳重",
+      "address": "愛知県名古屋市緑区鳴海町字徳重18-44 ヒルズウォーク徳重ガーデンズ ガーデンズ棟2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "3e2ac28ad02c",
+      "name": "GiGO デイズタウンつくば",
+      "address": "茨城県つくば市竹園1-9-2 デイズタウンつくば店B1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "3f0b64616829",
+      "name": "ラウンドワンららぽーと湘南平塚",
+      "address": "神奈川県平塚市天沼10-1 ららぽーと湘南平塚3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "3f6718e74ee9",
+      "name": "ソユーゲームフィールド八戸",
+      "address": "青森県八戸市沼館4-7-112 ピアドゥB棟2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "3ff49a04041d",
+      "name": "GiGO イオン新浦安ショッピングセンター",
+      "address": "千葉県浦安市入船1-4-1 イオン新浦安SC イオンスタイル新浦安店4F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "404147b3e549",
+      "name": "パスカワールド宇土",
+      "address": "熊本県宇土市善道寺町綾織95 宇土シティモール内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "40744a927189",
+      "name": "FESTA山鹿",
+      "address": "熊本県山鹿市方保田字鳥越3468-1 MrMax山鹿店内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "420e66ac88ad",
+      "name": "namco池袋",
+      "address": "東京都豊島区東池袋1-22-10 ヒューマックスパビリオン池袋サンシャイン60通り1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "4225cbfd493f",
+      "name": "プラサカプコン吉祥寺",
+      "address": "東京都武蔵野市吉祥寺本町1-10-1 いなりやビルB1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "426ad07265fc",
+      "name": "アミパラ光明池",
+      "address": "大阪府和泉市室堂町824-36 コムボックス光明池2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "430b0e09fd63",
+      "name": "サープラ八潮あそびタウン",
+      "address": "埼玉県八潮市大瀬1-1-3 フレスポ八潮3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "443b5f5c7fe5",
+      "name": "ラウンドワンスタジアムららぽーと新三郷",
+      "address": "埼玉県三郷市新三郷ららシティ3-1-1 ららぽーと新三郷2F 20000番",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "4672b6b0e377",
+      "name": "アクション草津",
+      "address": "滋賀県草津市野路3-1-11 ACT草津2号館",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "4690875ce11c",
+      "name": "GiGO 万代シテイバスセンタービル",
+      "address": "新潟県新潟市中央区万代1-6-1 万代シテイバスセンタービル2・3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "46cc408616c6",
+      "name": "タイトーFステーション三宮西館",
+      "address": "兵庫県神戸市中央区三宮町2-11-1 センタープラザ西館3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "48c3a80bbbc8",
+      "name": "namcoモラージュ佐賀",
+      "address": "佐賀県佐賀市巨勢町大字牛島730 モラージュ佐賀1・2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "48f623c8d7bf",
+      "name": "GiGO イオン新浦安SC",
+      "address": "千葉県浦安市入船1-4-1 イオン新浦安SC イオンスタイル新浦安店4F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "4944704c1bee",
+      "name": "GiGO サントムーン柿田川",
+      "address": "静岡県駿東郡清水町玉川61-2 サントムーン柿田川本館2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "4c56b487c69e",
+      "name": "アミューズメントパークジアス上大岡",
+      "address": "神奈川県横浜市港南区上大岡西2-1-28 アカフーパーク1・2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "4c5f90e8c550",
+      "name": "アピナ名古屋栄",
+      "address": "愛知県名古屋市中区錦3-17-15 ドン・キホーテ栄本店B1～B3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "4cbd3529b6aa",
+      "name": "namcoイオンモール広島府中",
+      "address": "広島県安芸郡府中町大須2-1-1 イオンモール広島府中3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "4f4147ecfa90",
+      "name": "GiGO イオン札幌手稲駅前ショッピングセンター",
+      "address": "北海道札幌市手稲区前田一条11 イオン札幌手稲駅前SC3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "4fc1900ad6c7",
+      "name": "タイトーステーション札幌狸小路2丁目",
+      "address": "北海道札幌市中央区南三条西2-14 ニコービル",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "51daa4ab2fad",
+      "name": "ゲームランド岡崎",
+      "address": "愛知県岡崎市戸崎町字外山38-5 イオンモール岡崎シネマ館3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "535e5d9fc6f6",
+      "name": "PALO久慈",
+      "address": "岩手県久慈市長内町第30地割32-2 久慈SC1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "548500a857a6",
+      "name": "ゲームニュートン志村",
+      "address": "東京都板橋区志村3-24-3 高橋ビル1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "56fae2083cec",
+      "name": "タイトーステーション広島本通",
+      "address": "広島県広島市中区本通3-5 せらかぐ本通ビル",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "5808244e0890",
+      "name": "ラウンドワンスタジアム所沢",
+      "address": "埼玉県所沢市東町5-22 TOCOTOCOSQUARE所沢6F･7F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "5c1e85bbf113",
+      "name": "GiGO トナリエ四日市",
+      "address": "三重県四日市市安島1-3-31 トナリエ四日市5F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "5c9e81cb6874",
+      "name": "GiGO 新庄",
+      "address": "山形県新庄市金沢沖1068 ZEST新庄店内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "5e75af87c8bc",
+      "name": "MIRAINOイオンモール土岐",
+      "address": "岐阜県土岐市土岐津町土岐口中山1372-1 イオンモール土岐2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "5eaac74d1c29",
+      "name": "ムー大陸西尾",
+      "address": "愛知県西尾市下町御城下23-1 おしろタウンシャオ2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "5f07e818fe5d",
+      "name": "タイトーFステーション柏中央",
+      "address": "千葉県柏市十余二249-5 M.E.M.1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "5fd536d47f7f",
+      "name": "GiGO 幕張",
+      "address": "千葉県千葉市美浜区ひび野1-8 メッセ・アミューズ・モール1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "60a0ff908860",
+      "name": "ラウンドワンさいか屋横須賀",
+      "address": "神奈川県横須賀市大滝町1-13 さいか屋横須賀店内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "62b90a28806d",
+      "name": "ソユーゲームフィールド旭川駅前",
+      "address": "北海道旭川市宮下通7-2-5 イオンモール旭川駅前4F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "64740e824dc4",
+      "name": "ユーズランド三光",
+      "address": "大分県中津市三光佐知1032 イオンモール三光2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "665dd3c28bed",
+      "name": "サープラ福島あそびタウン",
+      "address": "福島県福島市栄町1-1 パワーシティピボット内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "6701f6561319",
+      "name": "GiGO 相模大野",
+      "address": "神奈川県相模原市南区相模大野3-13-2 東和ビル2・3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "688dc4e04256",
+      "name": "GiGO あべのアポロ3F",
+      "address": "大阪府大阪市阿倍野区阿倍野筋1-5-31 アポロビル3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "6944a44567cf",
+      "name": "アミパラ津山",
+      "address": "岡山県津山市河辺1000-1 イオンモール津山2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "6b82399d0787",
+      "name": "アミューズメントパークMG 東予周布",
+      "address": "愛媛県西条市周布715-1 フジ東予店別館",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "6cf27e62f60c",
+      "name": "ソユースペースファンタジーインフィニ",
+      "address": "青森県弘前市城東北3-10-1 さくら野百貨店弘前店4F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "6e5bb3bc1416",
+      "name": "GiGO そよら今治馬越",
+      "address": "愛媛県今治市馬越町4-8-1 そよら今治馬越3F 300-1区画",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "6e9787a3f146",
+      "name": "GiGO アルパーク北棟",
+      "address": "広島県広島市西区草津南4-7-1 アルパーク北棟2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "6f7ac90adbc0",
+      "name": "タイトーステーション所沢",
+      "address": "埼玉県所沢市日吉町3-7 スカイビュウビル1・2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "70e77777ed02",
+      "name": "ジョイランド敦賀",
+      "address": "福井県敦賀市木崎40 土三田12",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "7120d8f9ecb5",
+      "name": "サープラ長野あそびタウン",
+      "address": "長野県長野市鶴賀権堂町1506-3 長電権堂第2ビル1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "7154f387083b",
+      "name": "ラウンドワン京都河原町",
+      "address": "京都府京都市中京区河原町通三条下る山崎町250",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "739a9db955eb",
+      "name": "GiGO 大森",
+      "address": "東京都大田区山王2-1-5 大森駅ララビル2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "73b12d54c7e5",
+      "name": "アドアーズ蕨",
+      "address": "埼玉県蕨市塚越1-4-4 ラ・セーヌビル2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "741c5248c32c",
+      "name": "GiGO フェニックスプラザ摩耶",
+      "address": "兵庫県神戸市灘区味泥町6-1 フェニックスプラザ1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "763c42af17ad",
+      "name": "タイトーFステーション上越",
+      "address": "新潟県上越市富岡3524 J-MAXシアター内1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "7851e6e0da0b",
+      "name": "プラサカプコン高知",
+      "address": "高知県高知市秦南町1-4-8 イオンモール高知2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "78e4de4638b9",
+      "name": "namco大阪日本橋",
+      "address": "大阪府大阪市浪速区難波中2-1-17 コスモビル1～3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "78f7440a8bde",
+      "name": "フリスポ佐原",
+      "address": "千葉県香取市佐原イ4200 佐原ミナミボウルゲームコーナー",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "7ac530566cb9",
+      "name": "アミパラ丸亀",
+      "address": "香川県丸亀市飯野町西分字川縁甲584-1 ハローズ棟内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "7c4be4d15a9a",
+      "name": "楽市楽座湘南藤沢",
+      "address": "神奈川県藤沢市辻堂新町4-3-5 MrMax湘南藤沢SC2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "7c4ce4d75e5f",
+      "name": "namcoイオンタウン読谷SC",
+      "address": "沖縄県中頭郡読谷村古堅740 イオンタウン読谷SC内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "7c77a6263b59",
+      "name": "遊スペーススプラ",
+      "address": "兵庫県加古川市尾上町安田351-1 ホームランスタジアムメガコート2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "7d82155af816",
+      "name": "サープラ静岡あそびタウン",
+      "address": "静岡県静岡市葵区伝馬町6-1 けやきプラザ 3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "7d9819755a42",
+      "name": "ラウンドワンスタジアム奈良ミ・ナーラ",
+      "address": "奈良県奈良市二条大路南1-3-1 ミ・ナーラ5F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "7df6de0ed323",
+      "name": "GiGO 布施",
+      "address": "大阪府東大阪市長堂1-1-1 ロンモール布施内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "7e0559e8968f",
+      "name": "GiGO ドリームタウン白樺",
+      "address": "北海道帯広市白樺十六条西2 ドリームタウン白樺内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "7edf22f637e9",
+      "name": "タイトーFステーションイオン近江八幡",
+      "address": "滋賀県近江八幡市鷹飼町南3-7 イオン近江八幡SC2番街 イオン近江八幡店1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "7f96c9c21366",
+      "name": "GiGO 水戸",
+      "address": "茨城県水戸市宮町1-7-44 コムボックス310 3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "7fe925f86f0f",
+      "name": "アピナ印西",
+      "address": "千葉県印西市原1-2 ビッグホップガーデンモール印西2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "804affcf7545",
+      "name": "GiGO 相模原ラクーン",
+      "address": "神奈川県相模原市中央区小山1-1-14 相模原ラクーン1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "829b8a8c85be",
+      "name": "アピナ川越",
+      "address": "埼玉県川越市泉町1-1 ウニクス南古谷シネマ棟1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "82e49b793581",
+      "name": "GiGO 渋谷宮益坂",
+      "address": "東京都渋谷区渋谷1-14-14 EST渋谷東口会館1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "8399836afb3f",
+      "name": "ゲームランドつがる柏",
+      "address": "青森県つがる市柏稲盛幾世41 イオンモールつがる柏本館2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "8493cb057a7b",
+      "name": "GiGO 成増",
+      "address": "東京都板橋区成増2-17-24 五曠第6ビル",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "8835e8a89d0c",
+      "name": "タイトーステーション町田",
+      "address": "東京都町田市原町田6-21-23 松山ビル",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "88cd9f969795",
+      "name": "モンキートリック",
+      "address": "大阪府寝屋川市香里南之町32-5 YNレジデンス香里2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "89d00bf929d7",
+      "name": "namco博多バスターミナル",
+      "address": "福岡県福岡市博多区博多駅中央街2-1 博多バスターミナルビル7F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "8ae2c042f786",
+      "name": "Amusement＆Game MAGHREB",
+      "address": "東京都多摩市落合1-39-2 マグレブビル1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "8b295260831d",
+      "name": "G-stage小倉",
+      "address": "福岡県北九州市小倉北区浅野2-14-5 あるあるCity2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "8b6426e3afdb",
+      "name": "ユーズランド大河原",
+      "address": "宮城県柴田郡大河原町小島2-1 フォルテくらし館2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "8bde48e87a16",
+      "name": "ラウンドワンスタジアムアリオ柏",
+      "address": "千葉県柏市大島田1-6-1 セブンパークアリオ柏 1070",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "8c76f9be9be5",
+      "name": "namco新潟",
+      "address": "新潟県新潟市中央区南笹口1-1-1 ひもろぎビル2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "8f9862006708",
+      "name": "namcoイオンタウン大館西",
+      "address": "秋田県大館市根下戸新町18-121 イオンタウン大館西内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "90b6bed96ec7",
+      "name": "タイトーステーションフェドラ大須",
+      "address": "愛知県名古屋市中区大須3-30-31 萬松寺駐車場ビル1・2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "9265bb417cee",
+      "name": "楽市楽座行橋",
+      "address": "福岡県行橋市西泉6-1-1 コスタ行橋アミューズ棟2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "95ff5b8fbf26",
+      "name": "サープラ鹿児島あそびタウン",
+      "address": "鹿児島県鹿児島市与次郎1-11-1 フレスポジャングルパーク2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "96756c10398c",
+      "name": "タイトーFステーションクレアモール川越",
+      "address": "埼玉県川越市新富町2-1-13 カシーラ本川越1～4F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "96a5540b4797",
+      "name": "タイトーFステーション市川妙典",
+      "address": "千葉県市川市妙典4-1-1 イオン市川妙典2番街2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "994aeeab3dfd",
+      "name": "タイトーステーション渋谷",
+      "address": "東京都渋谷区渋谷1-24-12 渋谷東映プラザビルB1・1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "99bf381ca07a",
+      "name": "プラサカプコン広島",
+      "address": "広島県広島市佐伯区石内東4-1-1 ジ・アウトレット広島1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "99f280e60853",
+      "name": "GiGO 仙台利府",
+      "address": "宮城県宮城郡利府町加瀬字新前谷地55-1 利府ペアガーデン内",
+      "precision": "GEOMETRIC_CENTER",
+      "partialMatch": true
+    },
+    {
+      "id": "9bae50b8934f",
+      "name": "GiGO ビバモール埼玉大井",
+      "address": "埼玉県ふじみ野市西鶴ケ岡1-3-15 ビバモール埼玉大井2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "9bbef2e3bd7f",
+      "name": "ソユーゲームフィールド青森",
+      "address": "青森県青森市浜田1-14-1 CiiNA CiiNA青森2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "9bced433a87c",
+      "name": "namcoウイングベイ小樽",
+      "address": "北海道小樽市築港11-5 ウイングベイ小樽5番街2・3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "9c38fc365049",
+      "name": "楽市楽座003楽市街道箱崎",
+      "address": "福岡県福岡市東区箱崎5-1-8 楽市街道箱崎2・3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "9e447655f838",
+      "name": "シルクハット川崎ダイス",
+      "address": "神奈川県川崎市川崎区駅前本町8 ダイスビルB2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "a11206eebf81",
+      "name": "アミューズメントエース津田沼",
+      "address": "千葉県船橋市前原西2-15-1 ファミービル1～3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "a1f1c8721f41",
+      "name": "VIVAZONE糸魚川",
+      "address": "新潟県糸魚川市寺島3-2-40 ヴィラオレッタ糸魚川2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "a2aeaf7948a9",
+      "name": "アピナ上尾",
+      "address": "埼玉県上尾市緑丘3-3-11-2 P･A･P･A上尾ショッピングアベニュー プリンセス棟別棟",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "a3345c644127",
+      "name": "ラウンドワンスタジアムダイバーシティ東京プラザ",
+      "address": "東京都江東区青海1-1-10 ダイバーシティ東京プラザ6F 61000番",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "a36f9855d8ce",
+      "name": "namco熊谷",
+      "address": "埼玉県熊谷市銀座2-97 カルパビル1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "a41b2109e2a3",
+      "name": "キャッツアイ新札幌",
+      "address": "北海道札幌市厚別区厚別東五条1 ホーマックスーパーデポ厚別東店横",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "a47a7bd7ae9a",
+      "name": "ゲームサファリ大山",
+      "address": "東京都板橋区大山東町60-10 やすだ大山駅前店2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "a4fb25a3dcef",
+      "name": "テクノワールド",
+      "address": "岩手県奥州市江刺区愛宕字梁川127-1",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "a58feb6bd99c",
+      "name": "ラウンドワンモレラ岐阜",
+      "address": "岐阜県本巣市三橋1100 モレラ岐阜2Fスノープラザ",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "a908c28f028a",
+      "name": "アピナ姫路",
+      "address": "兵庫県姫路市東郷町1454-3 姫路リオス2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "a974d09d2903",
+      "name": "ポート24幸田",
+      "address": "愛知県額田郡幸田町高力字沖原15 カメリアガーデン幸田内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "a9d228016c0f",
+      "name": "ユーズランド日の出",
+      "address": "東京都西多摩郡日の出町平井字三吉野桜木237-3 イオンモール日の出3F",
+      "precision": "GEOMETRIC_CENTER",
+      "partialMatch": true
+    },
+    {
+      "id": "aa9932623d18",
+      "name": "ソユーエンターテイメントスタジオ須賀川",
+      "address": "福島県須賀川市古河105 イオンタウン須賀川B棟内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "aafc9c48f6e1",
+      "name": "GiGO 尾西",
+      "address": "愛知県一宮市篭屋3-9-7 アソビックスびさい1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "ac1fd6f7b61f",
+      "name": "ゲームサファリ池袋",
+      "address": "東京都豊島区東池袋1-42-3 やすだ東池袋店2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "ac67c0651f17",
+      "name": "アミパラ神辺",
+      "address": "広島県福山市神辺町新道上1-2-1 フジグラン神辺向かい",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "aca30cd2e852",
+      "name": "タイトーステーションBIGBOX高田馬場",
+      "address": "東京都新宿区高田馬場1-35-3 BIG BOX高田馬場6F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "ae99c03b1679",
+      "name": "神奈川レジャーランド厚木",
+      "address": "神奈川県厚木市戸室5-31-1 アツギ・トレリス2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "b28c4477ffe1",
+      "name": "ゲームガリバー柏",
+      "address": "千葉県柏市柏1-1-11 ファミリかしわB1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "b2910489e0b2",
+      "name": "モーリーファンタジーf 新瑞橋",
+      "address": "愛知県名古屋市南区菊住1-7-10 イオンモール新瑞橋 イオン新瑞橋店3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "b33e537a847a",
+      "name": "namcoマグスミノエ",
+      "address": "大阪府大阪市住之江区泉1-1-82 マグスミノエ1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "b4bd24e9492d",
+      "name": "GiGO 町田",
+      "address": "東京都町田市原町田6-13-17 アーバンミサワビルB1・1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "b5325a8ffe83",
+      "name": "ラウンドワンスタジアム浜大津アーカス",
+      "address": "滋賀県大津市浜町2-1 浜大津アーカス内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "b5d0074ead94",
+      "name": "タイトーFステーションオリナス錦糸町",
+      "address": "東京都墨田区太平4-1-2 オリナスモールB1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "b78f34c106e6",
+      "name": "アミューズメントワールドららぽーと沼津",
+      "address": "静岡県沼津市東椎路東荒301-3 ららぽーと沼津3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "b8357c70d537",
+      "name": "アピナ野田七光台",
+      "address": "千葉県野田市七光台4-2 イオンタウン野田七光台内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "b887139b7465",
+      "name": "タイトーステーション錦糸町楽天地",
+      "address": "東京都墨田区江東橋4-27-14 楽天地ビルB1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "ba89fd73b812",
+      "name": "GiGO 柏",
+      "address": "千葉県柏市柏1-1-11 ファミリかしわB1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "bcbff8839732",
+      "name": "ソユーゲームフィールド札幌発寒",
+      "address": "北海道札幌市西区発寒八条12-1-1 イオンモール札幌発寒3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "bcd2be52a11c",
+      "name": "サープラ沼津あそびタウン",
+      "address": "静岡県沼津市大手町1-1-5 BiVi沼津3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "bd9bcbfc86fa",
+      "name": "エースレーン近江八幡",
+      "address": "滋賀県近江八幡市出町736 ACT近江八番2番館1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "c02c40183b56",
+      "name": "GiGO 豊科",
+      "address": "長野県安曇野市豊科南穂高1115 スワンガーデン安曇野内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "c18dde1794bf",
+      "name": "アピナ橋本",
+      "address": "神奈川県相模原市緑区西橋本5-1-1 ラ・フロール駐車場棟1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "c1a099e3b474",
+      "name": "アミューズメントスペースASO:VIBA！",
+      "address": "東京都渋谷区恵比寿1-10-5 三恵エビスビル2・3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "c2a6953ae8f9",
+      "name": "GiGO スマーク伊勢崎",
+      "address": "群馬県伊勢崎市西小保方町368 スマーク伊勢崎内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "c3a4528bb887",
+      "name": "ユーズランド水戸内原",
+      "address": "茨城県水戸市内原2-1 イオンモール水戸内原2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "c40f0a9d7091",
+      "name": "プラサカプコン新居浜",
+      "address": "愛媛県新居浜市前田町8-8 イオンモール新居浜2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "c4b290b6e1d8",
+      "name": "シルクハット本厚木",
+      "address": "神奈川県厚木市中町3-4-22 第二会田ビル2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "c5b4f52a1239",
+      "name": "ユーズランド高崎",
+      "address": "群馬県高崎市棟高町1400 イオンモール高崎2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "c5cf6ac3661e",
+      "name": "フクイレジャーランドワイプラザ",
+      "address": "福井県福井市新保北1-303 パワーシティフクイワイプラザB棟2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "c618ee9dbaba",
+      "name": "アピナ八王子みなみ野",
+      "address": "東京都八王子市みなみ野1-2-1 アクロスモール3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "c710e4cc7737",
+      "name": "サープラ横浜あそびタウン",
+      "address": "神奈川県横浜市都筑区中川中央1-25-1 ノースポート・モール6F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "c76bfde98aac",
+      "name": "ファンタジードーム八戸",
+      "address": "青森県八戸市江陽2-14-1 ラピア別棟",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "c8e1a6a0521b",
+      "name": "カプコサーカス新潟東",
+      "address": "新潟県新潟市東区大形本町3-1-2 イオン新潟東店内ゲームコーナー",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "cb53f873bb25",
+      "name": "namcoららぽーと福岡",
+      "address": "福岡県福岡市博多区那珂6-23-1 ららぽーと福岡内4F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "cb7e3bde8225",
+      "name": "楽市楽座イオンタウン姶良",
+      "address": "鹿児島県姶良市西餠田264-1 イオンタウン姶良2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "cbe46b0495f1",
+      "name": "ユーズランド太田",
+      "address": "群馬県太田市石原町81 イオンモール太田2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "cce2a9ae44c1",
+      "name": "ゲームパニック新宿歌舞伎町",
+      "address": "東京都新宿区歌舞伎町1-20-1 ヒューマックスパビリオン新宿歌舞伎町1F・2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "cce48c564be4",
+      "name": "namcoパルティ・フジ西条玉津",
+      "address": "愛媛県西条市玉津564-1 フジ西条玉津店2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "cd8a1315163c",
+      "name": "アドアーズイサゴ",
+      "address": "神奈川県川崎市川崎区砂子2-5-5 岡田屋2BKビル1・2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "cfe01c2a5d33",
+      "name": "タイトーステーション上野御徒町",
+      "address": "東京都台東区上野4-6-9 湯島商事ビル",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "d163538242af",
+      "name": "プラサカプコン横須賀",
+      "address": "神奈川県横須賀市若松町2-30 横須賀モアーズシティ4F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "d2a265b217f4",
+      "name": "ゲームフィールド十文字",
+      "address": "秋田県横手市十文字町仁井田字東22-1 スーパーモールラッキー内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "d3d5ea015d5f",
+      "name": "ユーズランド高岡",
+      "address": "富山県高岡市下伏間江383 イオンモール高岡2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "d4f4c162fcee",
+      "name": "アルファー柏",
+      "address": "千葉県柏市柏1-1-11 ファミリかしわB1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "d5591d05d925",
+      "name": "タイトーFステーション静岡",
+      "address": "静岡県静岡市葵区呉服町2-5-4 ふしみや第2ビル",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "d66178eb6b8a",
+      "name": "namco中野",
+      "address": "東京都中野区中野5-52-15 中野ブロードウェイ別館",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "d705b1a45399",
+      "name": "BOX.Q3",
+      "address": "愛知県名古屋市中村区則武1-16-8 第1コーポ1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "d84f0ea61a78",
+      "name": "シルクハット大森",
+      "address": "東京都大田区山王2-4-1 大森駅前ビル2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "d89162fa4738",
+      "name": "ViViD蟹江",
+      "address": "愛知県海部郡蟹江町桜1-212 ヨシヅヤJR蟹江駅前店2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "d8e5e4264a85",
+      "name": "プラサカプコン稲沢",
+      "address": "愛知県稲沢市長野7-1-2 リーフウォーク稲沢 モール棟2F 区画No.201",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "d8f9e6839a1a",
+      "name": "シルクハット伊勢佐木町",
+      "address": "神奈川県横浜市中区伊勢佐木町3-96 日活会館3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "d98006a93498",
+      "name": "アドアーズ和光",
+      "address": "埼玉県和光市本町3-5 MillionAnnex和光1～3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "da65f47f670a",
+      "name": "ラウンドワン南砂",
+      "address": "東京都江東区南砂6-7-15 南砂町SCトピレックプラザ4F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "db876e3b5c88",
+      "name": "ミラクルイン中村橋",
+      "address": "東京都練馬区貫井1-1-2 YKビル2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "dfea4a45ffc6",
+      "name": "GIGO マーケットスクエアささしま",
+      "address": "愛知県名古屋市中村区平池町4-60-14 マーケットスクエアささしま1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "e43cc4f21878",
+      "name": "GiGO 立川",
+      "address": "東京都立川市柴崎町3-2-1 サザンビル1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "e6b5bf886a96",
+      "name": "タイトーFステーション小山",
+      "address": "栃木県小山市喜沢1475 おやまゆうえんハーヴェストウォークSC棟",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "e82e345ba738",
+      "name": "ゲームスタジオキューブ高円寺",
+      "address": "東京都杉並区高円寺南4-26-12 福丸ビルB1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "e8346307cd56",
+      "name": "アミパラ周南久米",
+      "address": "山口県周南市久米2834 イオンタウン周南久米内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "ea1633867e64",
+      "name": "タイトーステーション池袋ロサ",
+      "address": "東京都豊島区西池袋1-37-12 ロサ会館1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "ea4f1e5edfd9",
+      "name": "アミューズメントフィールドバイヨン",
+      "address": "埼玉県ふじみ野市うれし野2-16-1 LCモールうれし野2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "ee2f672989ec",
+      "name": "ファンタジープラザ名古屋",
+      "address": "愛知県名古屋市北区玄馬町234-1 CROSS TOWN ドン・キホーテ名古屋本店2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "eeae7e97725b",
+      "name": "PEP中津口",
+      "address": "福岡県北九州市小倉北区中津口2-2-16 ASOBOX3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "efad89d27876",
+      "name": "東京レジャーランド池袋",
+      "address": "東京都豊島区東池袋1-29-1 サントロペ池袋2・3F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "eff12fbf0242",
+      "name": "アミューズメントスペース遊ランド春光",
+      "address": "北海道旭川市春光一条7-2-25 第2ダイワビル2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "f0d7fd49e11b",
+      "name": "埼玉レジャーランド大宮ラクーン",
+      "address": "埼玉県さいたま市大宮区宮町1-60 大宮ラクーン5F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "f1e095ee77d2",
+      "name": "ゲームセンターWILL WGC",
+      "address": "東京都立川市羽衣町2-4-13 羽衣長田ビル101 WGC",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "f20e508e7b68",
+      "name": "楽市楽座サンストリート浜北",
+      "address": "静岡県浜松市浜名区平口2861 サンストリート浜北2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "f2d8ac20c54a",
+      "name": "ラウンドワン池袋",
+      "address": "東京都豊島区東池袋1-14-1 池袋スクエア内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "f311a6e1f731",
+      "name": "namcoBiVi仙台駅東口",
+      "address": "宮城県仙台市宮城野区榴岡2-1-25 BiVi仙台駅東口内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "f4381f060a62",
+      "name": "ユーズランド和歌山",
+      "address": "和歌山県和歌山市ふじと台23 イオンモール和歌山2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "f5e7412aec1e",
+      "name": "GiGO 明石",
+      "address": "兵庫県明石市魚住町清水2464-1 ドライブインながさわ内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "f5eda5b39ceb",
+      "name": "GiGO 姫路駅前",
+      "address": "兵庫県姫路市駅前町254 姫路OSビルB1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "f60388a5c022",
+      "name": "GiGO 帯広稲田",
+      "address": "北海道帯広市稲田町南8線西12-1 帯広スズランボウル内",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "f68ca1684b0f",
+      "name": "GiGO 高田馬場",
+      "address": "東京都新宿区高田馬場4-7-5 高田馬場グランド東京ビル",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "f692e2a009d4",
+      "name": "アドアーズ札幌北42条",
+      "address": "北海道札幌市東区北四十二条東7-1-1 ドン・キホーテ北42条店2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "f79112c20a16",
+      "name": "GiGO 中間",
+      "address": "福岡県中間市上蓮花寺3-1-1 プラザモールなかま1・2F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "f805dfe8e425",
+      "name": "ゲームコーナー東部",
+      "address": "宮城県仙台市若林区六丁の目中町26-60 斎喜東部ビル",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "f915ceecc8ca",
+      "name": "ソユーフォレストハンター松前",
+      "address": "愛媛県伊予郡松前町筒井850 エミフルMASAKI エミアミューズ1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "fc2c9fd20201",
+      "name": "タイトーステーション新宿東口",
+      "address": "東京都新宿区新宿3-22-7 指田ビル",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "fcc5699c9f0b",
+      "name": "シルクハット川口",
+      "address": "埼玉県川口市栄町3-1-16 イート川口ビル4F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    },
+    {
+      "id": "fd63e1eb3ea5",
+      "name": "アミューズメントパークMGキスケ",
+      "address": "愛媛県松山市宮田町4 キスケボックス内1F",
+      "precision": "ROOFTOP",
+      "partialMatch": true
+    }
+  ],
+  "failed": []
+}

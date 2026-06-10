@@ -5,8 +5,8 @@ name: ペア戦開催日程 自動更新
 # push 成功で Vercel の自動デプロイが発火する（ランタイムAPI/DBは導入しない）。
 on:
   schedule:
-    # 毎週木曜 09:00 JST（= 00:00 UTC）。来月分の告知が出ていれば取得する
-    - cron: '0 0 * * 4'
+    # 毎週木曜 09:24 JST（= 00:24 UTC）。真夜中UTCぴったりは遅延・欠落しやすいため分をずらす
+    - cron: '24 0 * * 4'
   workflow_dispatch:
 
 # pair-schedule.json の commit & push、失敗時のIssue作成に必要

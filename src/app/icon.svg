@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <!--
+    サイトの象徴であるマップピン（src/lib/marker-image.ts の buildPinSvg と同形）を
+    正方形に収めた favicon。配色はアイコン専用の紫→青グラデ（#7B2FBE→#2563EB）。
+    紫=両対応・青=イニブのブランド色を繋ぎ、2タイトルを扱うマップを象徴する。
+    ピン本体は 28x36。0.83 倍に縮小し中央寄せして 32x32 の枠に収めている。
+  -->
+  <defs>
+    <linearGradient id="favicon-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7B2FBE"/>
+      <stop offset="30%" stop-color="#7B2FBE"/>
+      <stop offset="100%" stop-color="#2563EB"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(4.4 1.1) scale(0.83)">
+    <path d="M14 0C6.268 0 0 6.268 0 14c0 7.732 14 22 14 22s14-14.268 14-22C28 6.268 21.732 0 14 0z" fill="url(#favicon-grad)"/>
+    <circle cx="14" cy="14" r="5" fill="white"/>
+  </g>
+</svg>

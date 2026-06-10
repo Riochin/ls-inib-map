@@ -47,8 +47,30 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid overrides payload' }, { status: 400 })
   }
 
-  await writeOverrides(file)
-  return NextResponse.json({ ok: true, file })
+  // 内容が変わった（or 新規）エントリにだけ更新日時を打つ。無変更は既存の updatedAt を保持。
+  const current = await readOverrides()
+  const stamped = stampUpdatedAt(file, current, new Date().toISOString())
+
+  await writeOverrides(stamped)
+  return NextResponse.json({ ok: true, file: stamped })
+}
+
+/** updatedAt を除いたエントリ内容が等しいか（正規化済み前提でキー順は決定論的）。 */
+function entryContentEqual(a: OverrideEntry, b: OverrideEntry): boolean {
+  const strip = ({ updatedAt: _omit, ...rest }: OverrideEntry) => rest
+  return JSON.stringify(strip(a)) === JSON.stringify(strip(b))
+}
+
+/** 変更/新規エントリへ now を打ち、無変更は現行の updatedAt を維持した新ファイルを返す。 */
+function stampUpdatedAt(next: OverridesFile, current: OverridesFile, now: string): OverridesFile {
+  const overrides: Record<string, OverrideEntry> = {}
+  for (const [id, entry] of Object.entries(next.overrides)) {
+    const cur = current.overrides[id]
+    const unchanged = cur != null && entryContentEqual(cur, entry)
+    const updatedAt = unchanged ? cur.updatedAt : now
+    overrides[id] = updatedAt ? { ...entry, updatedAt } : entry
+  }
+  return { overrides }
 }
 
 async function readOverrides(): Promise<OverridesFile> {
@@ -95,6 +117,7 @@ function validateEntry(raw: unknown): OverrideEntry | null {
   const entry: OverrideEntry = { source: r.source as Provenance }
 
   if (typeof r.note === 'string' && r.note.trim()) entry.note = r.note
+  if (typeof r.updatedAt === 'string' && r.updatedAt.trim()) entry.updatedAt = r.updatedAt
 
   if (r.machineCounts && typeof r.machineCounts === 'object') {
     const counts: Partial<Record<GameTitle, number>> = {}

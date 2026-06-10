@@ -65,5 +65,11 @@ function applyEntry(store: Store, entry: OverrideEntry): Store {
   if (entry.lat !== undefined) next.lat = entry.lat
   if (entry.lng !== undefined) next.lng = entry.lng
 
+  // 位置を手動補正した場合は運営確認済み＝確定とみなし、「おおよその位置」表示を解除する
+  if (entry.lat !== undefined || entry.lng !== undefined) next.approximateLocation = false
+
+  // 店舗単位の「情報更新日」を表示に載せる（override の更新日時）
+  if (entry.updatedAt !== undefined) next.infoUpdatedAt = entry.updatedAt
+
   return next
 }

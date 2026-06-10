@@ -70,6 +70,25 @@ describe('generateStoresFile', () => {
     expect(byId.c).not.toHaveProperty('delisted')
   })
 
+  it('精度が APPROXIMATE の店舗にだけ approximateLocation を付与する', () => {
+    const file = generateStoresFile({
+      stores: [
+        geocodedStore({ id: 'a', precision: 'APPROXIMATE' }),
+        geocodedStore({ id: 'b', precision: 'ROOFTOP' }),
+        geocodedStore({ id: 'c', precision: 'ROOFTOP', partialMatch: true }),
+        geocodedStore({ id: 'd' }),
+      ],
+      source: SOURCE,
+      now: '2026-06-08T00:00:00.000Z',
+    })
+    const byId = Object.fromEntries(file.stores.map((s) => [s.id, s]))
+    expect(byId.a.approximateLocation).toBe(true)
+    expect(byId.b).not.toHaveProperty('approximateLocation')
+    // partial_match だけでは付けない（ビル名付き住所の誤検知防止）
+    expect(byId.c).not.toHaveProperty('approximateLocation')
+    expect(byId.d).not.toHaveProperty('approximateLocation')
+  })
+
   it('machineCounts は非空時のみ保持し、空オブジェクトは省略する', () => {
     const file = generateStoresFile({
       stores: [
