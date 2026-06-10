@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useEffect } from 'react'
 import { APIProvider } from '@vis.gl/react-google-maps'
 import { stores, storesMeta } from '@/data/stores'
 import { filterStoresAll, filterStoresByKeyword } from '@/lib/filter'
@@ -21,6 +21,10 @@ import { PairSchedulePanel } from '@/components/PairSchedulePanel'
 import type { FilterOption, AddressFilter, Store } from '@/types/store'
 import { EMPTY_ADDRESS_FILTER } from '@/types/store'
 
+// 前回開いていたフィルタタブを記憶するキー（localStorage）
+const FILTER_STORAGE_KEY = 'ls-exvs-filter'
+const VALID_FILTERS: FilterOption[] = ['all', 'jojo-ls', 'gundam-exvs']
+
 export default function MapPage() {
   const [activeFilter, setActiveFilter] = useState<FilterOption>('all')
   const [addressFilter, setAddressFilter] = useState<AddressFilter>(EMPTY_ADDRESS_FILTER)
@@ -32,8 +36,26 @@ export default function MapPage() {
 
   const addressIndex = useMemo(() => buildAddressIndex(stores), [])
 
+  // 前回開いていたタブを復元（localStorage 不可環境では既定の「すべて」のまま）。
+  // SSR とのハイドレーション不一致を避けるため、初期描画後に反映する。
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(FILTER_STORAGE_KEY)
+      if (saved && VALID_FILTERS.includes(saved as FilterOption)) {
+        setActiveFilter(saved as FilterOption)
+      }
+    } catch {
+      // localStorage 不可（プライベートモード等）の場合は既定値のまま
+    }
+  }, [])
+
   const handleFilterChange = useCallback((filter: FilterOption) => {
     setActiveFilter(filter)
+    try {
+      localStorage.setItem(FILTER_STORAGE_KEY, filter)
+    } catch {
+      // 永続化できなくても選択自体は反映する
+    }
   }, [])
 
   const filteredStores = useMemo(

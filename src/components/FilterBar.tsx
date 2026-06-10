@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState, useCallback } from 'react'
 import type { FilterOption } from '@/types/store'
+import { HEADING_FONT_STYLE } from '@/lib/heading-font'
 
 interface FilterBarProps {
   activeFilter: FilterOption
@@ -113,6 +114,7 @@ export function FilterBar({ activeFilter, onFilterChange }: FilterBarProps) {
               if (el) buttonRefs.current.set(value, el)
             }}
             onClick={() => onFilterChange(value)}
+            style={{ fontFamily: HEADING_FONT_STYLE.fontFamily }}
             className={`relative z-[1] px-4 py-2 rounded-full text-sm font-medium min-h-[44px] min-w-[44px] transition-colors duration-250 ${
               isActive ? 'text-white' : 'text-gray-600 hover:bg-gray-100/60'
             }`}
