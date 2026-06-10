@@ -88,8 +88,11 @@ export function ReportModal({
 
         {status === 'done' ? (
           <div>
+            <h3 className="text-lg text-gray-800 mb-1" style={HEADING_FONT_STYLE}>
+              ありがとうございます！
+            </h3>
             <p className="text-sm mb-4">
-              ありがとうございます！報告を受け付けました🙏
+              報告を受け付けました🙏
               <br />
               内容を確認のうえ反映します（即時ではありません）。
             </p>
