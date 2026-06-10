@@ -22,7 +22,9 @@ export function ReportModal({
   const [type, setType] = useState<ReportType>(REPORT_TYPES[0])
   const [text, setText] = useState('')
   const [reporter, setReporter] = useState('')
+  const [noMention, setNoMention] = useState(false)
   const [website, setWebsite] = useState('') // honeypot（bot用・人は空のまま）
+  const hasSns = reporter.trim() !== ''
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
 
@@ -46,6 +48,7 @@ export function ReportModal({
           type,
           text,
           reporter,
+          noMention: hasSns ? noMention : false,
           website,
         }),
       })
@@ -135,16 +138,32 @@ export function ReportModal({
               />
             </label>
 
-            <label className="block mb-4">
-              <span className="text-xs font-semibold text-gray-600">お名前（任意）</span>
+            <label className="block mb-1">
+              <span className="text-xs font-semibold text-gray-600">SNS ID（X / Twitter 等・任意）</span>
               <input
                 value={reporter}
                 onChange={(e) => setReporter(e.target.value)}
                 maxLength={80}
-                placeholder="SNSのID等（任意）"
+                placeholder="@your_id"
                 className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
               />
             </label>
+            <p className="text-[10px] text-gray-400 mb-3 leading-snug">
+              SNS IDをいただくと、運営が確認のうえ「確定情報」として掲載できる場合があります。
+              未記入の場合は「みんなの報告（未確認）」としての掲載になります。
+            </p>
+
+            {hasSns && (
+              <label className="flex items-start gap-1.5 mb-4 text-xs text-gray-600">
+                <input
+                  type="checkbox"
+                  checked={noMention}
+                  onChange={(e) => setNoMention(e.target.checked)}
+                  className="mt-0.5"
+                />
+                <span>お礼のツイート（メンション付き）はしないでほしい</span>
+              </label>
+            )}
 
             {status === 'error' && <p className="text-xs text-red-600 mb-3">{errorMsg}</p>}
 

@@ -17,8 +17,13 @@ export interface ReportInput {
   type: ReportType
   /** 自由記述（必須・整形済みを渡す） */
   text: string
-  /** 報告者名（任意） */
+  /**
+   * 報告者の SNS ID（任意）。提供があれば運営確認のうえ「確定」情報にできる余地がある。
+   * 未記入の場合は出どころを追えないため「みんなの報告（未確認）」扱いに留まる。
+   */
   reporter?: string
+  /** お礼ツイートでメンションされたくない（SNS ID提供時のみ意味を持つ） */
+  noMention?: boolean
 }
 
 export interface ReportIssue {
@@ -28,7 +33,15 @@ export interface ReportIssue {
 
 /** 報告内容を GitHub Issue（タイトル・本文）へ整形する。手動トリアージで人が読む体裁。 */
 export function buildReportIssue(r: ReportInput): ReportIssue {
-  const reporter = r.reporter && r.reporter.trim() ? r.reporter.trim() : '（未記入）'
+  const hasSns = !!(r.reporter && r.reporter.trim())
+  const sns = hasSns ? r.reporter!.trim() : '（未記入）'
+  // SNS ID の有無で、確定情報にできるか／ユーザー投稿扱いかを運営向けに明示する
+  const provenance = hasSns
+    ? 'SNS ID提供あり → 運営確認のうえ「確定」にできる'
+    : 'SNS ID未記入 → 「みんなの報告（未確認）」扱い（確定不可）'
+  // お礼ツイートのメンション可否（SNS ID提供時のみ意味を持つ）
+  const mention = hasSns ? (r.noMention ? '不可（メンション希望なし）' : '可') : '—'
+
   const title = `[ユーザー報告] ${r.storeName} — ${r.type}`
   const body = [
     '[自動投稿] アプリ内「情報の修正を報告」フォームからの報告です。',
@@ -37,7 +50,9 @@ export function buildReportIssue(r: ReportInput): ReportIssue {
     `- 店名: ${r.storeName}`,
     `- 住所: ${r.storeAddress}`,
     `- 報告種別: ${r.type}`,
-    `- 報告者: ${reporter}`,
+    `- SNS ID: ${sns}`,
+    `- 確定可否: ${provenance}`,
+    `- お礼ツイート: ${mention}`,
     '',
     '## メモ（原文）',
     r.text,

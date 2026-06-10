@@ -94,5 +94,6 @@ function validateReport(r: Record<string, unknown>): ReportInput | null {
     type: r.type as ReportType,
     text,
     reporter: reporter || undefined,
+    noMention: r.noMention === true,
   }
 }

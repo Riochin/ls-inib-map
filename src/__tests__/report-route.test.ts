@@ -64,7 +64,14 @@ describe('POST /api/report', () => {
     expect(sent.labels).toEqual(['ユーザー報告'])
     expect(sent.title).toContain('テスト店')
     expect(sent.body).toContain('store-id: abc123')
-    expect(sent.body).toContain('報告者: なまえ')
+    expect(sent.body).toContain('SNS ID: なまえ')
+  })
+
+  it('noMention=true は本文の「お礼ツイート」が不可になる', async () => {
+    await POST(req({ ...valid, noMention: true }))
+    const [, init] = (fetch as unknown as { mock: { calls: [string, RequestInit][] } }).mock.calls[0]
+    const sent = JSON.parse(init.body as string)
+    expect(sent.body).toContain('お礼ツイート: 不可')
   })
 
   it('token/repo 未設定なら503（GitHubへ送らない）', async () => {
@@ -76,7 +83,7 @@ describe('POST /api/report', () => {
 })
 
 describe('buildReportIssue', () => {
-  it('報告者未記入は（未記入）になる', () => {
+  it('SNS ID未記入は「みんなの報告（未確認）」扱いで確定不可', () => {
     const { body } = buildReportIssue({
       storeId: 'x',
       storeName: 'y',
@@ -84,6 +91,22 @@ describe('buildReportIssue', () => {
       type: 'その他',
       text: 't',
     })
-    expect(body).toContain('報告者: （未記入）')
+    expect(body).toContain('SNS ID: （未記入）')
+    expect(body).toContain('確定可否: SNS ID未記入')
+    expect(body).toContain('お礼ツイート: —')
+  })
+
+  it('SNS ID提供ありは確定可・お礼ツイート可（noMention未指定）', () => {
+    const { body } = buildReportIssue({
+      storeId: 'x',
+      storeName: 'y',
+      storeAddress: 'z',
+      type: 'その他',
+      text: 't',
+      reporter: '@id',
+    })
+    expect(body).toContain('SNS ID: @id')
+    expect(body).toContain('確定可否: SNS ID提供あり')
+    expect(body).toContain('お礼ツイート: 可')
   })
 })
