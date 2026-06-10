@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect, useRef, useMemo } from 'react'
 import { Map, useMap, InfoWindow } from '@vis.gl/react-google-maps'
 import type { Store, GameTitle } from '@/types/store'
 import { CurrentLocationMarker } from './CurrentLocationMarker'
+import { ApproximateCircle } from './ApproximateCircle'
 import { getMarkerTheme, getGameLabel, getStoreStatusLabel, getCountSourceInfo } from '@/lib/marker-color'
 import { CountBadge } from './CountBadge'
 import { useStoreClusterer } from '@/hooks/use-store-clusterer'
@@ -77,6 +78,11 @@ export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onM
       style={{ width: '100%', height: '100%' }}
     >
       {/* マーカーは useStoreClusterer が命令的に描画する（クラスタリング） */}
+
+      {/* 選択中の店がジオコード低精度なら「おおよその範囲」円を描く */}
+      {openStore?.approximateLocation && (
+        <ApproximateCircle position={{ lat: openStore.lat, lng: openStore.lng }} />
+      )}
 
       {/* Single InfoWindow for the selected store */}
       {openStore && (

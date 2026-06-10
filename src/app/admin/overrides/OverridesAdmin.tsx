@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { stores } from '@/data/stores'
 import { filterStoresByKeyword } from '@/lib/filter'
 import { getGameLabel, getCountSourceInfo, getThemeByKey } from '@/lib/marker-color'
@@ -121,6 +121,9 @@ export function OverridesAdmin() {
   const [saving, setSaving] = useState(false)
 
   const storeById = useMemo(() => new Map(stores.map((s) => [s.id, s])), [])
+  const formRef = useRef<HTMLDivElement | null>(null)
+  // ピン位置がおおよそ（ジオコード低精度）な要確認店。override で位置補正すると実行時に外れる
+  const approximateStores = useMemo(() => stores.filter((s) => s.approximateLocation), [])
 
   // ペア戦日程プレビュー: 任意の「今日」を指定して地図の帯の見え方を確認する
   const [previewDate, setPreviewDate] = useState(() => toJstYmd(new Date()).iso)
@@ -145,11 +148,14 @@ export function OverridesAdmin() {
 
   const selected = selectedId ? storeById.get(selectedId) ?? null : null
 
-  function selectStore(store: Store) {
+  function selectStore(store: Store, scroll = false) {
     setSelectedId(store.id)
     const existing = file.overrides[store.id]
     setForm(existing ? formFromEntry(existing) : emptyForm())
     setStatus('')
+    if (scroll) {
+      requestAnimationFrame(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
+    }
   }
 
   async function persist(next: OverridesFile, message: string) {
@@ -289,9 +295,45 @@ export function OverridesAdmin() {
         )}
       </section>
 
+      {/* ピン位置 要確認リスト（ジオコード低精度・おおよその位置） */}
+      <section className="mb-6">
+        <h2 className="text-xs font-semibold text-gray-600 mb-1">
+          ピン位置 要確認（おおよその位置・{approximateStores.length}件）
+        </h2>
+        <p className="text-[10px] text-gray-400 mb-2 leading-snug">
+          「字＋地番」住所などで建物まで特定できずエリア重心に置かれた店舗。座標を override で
+          補正すると一覧から外れ、地図の「おおよその位置」表示も消えます。
+        </p>
+        {approximateStores.length === 0 ? (
+          <p className="text-xs text-gray-500">該当なし。</p>
+        ) : (
+          <ul className="border border-gray-200 rounded divide-y max-h-72 overflow-y-auto">
+            {approximateStores.map((s) => (
+              <li key={s.id} className="flex items-center justify-between gap-2 px-3 py-2">
+                <button onClick={() => selectStore(s, true)} className="text-left flex-1">
+                  <span className="font-medium">{s.name}</span>
+                  {file.overrides[s.id] && (
+                    <span className="ml-2 text-[10px] text-amber-600 font-semibold">override有</span>
+                  )}
+                  <span className="block text-xs text-gray-500">{s.address}</span>
+                </button>
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${s.name} ${s.address}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[11px] text-blue-600 hover:underline whitespace-nowrap"
+                >
+                  地図で確認
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
       {/* 編集フォーム */}
       {selected && (
-        <section className="mb-8 border border-gray-200 rounded p-4">
+        <section ref={formRef} className="mb-8 border border-gray-200 rounded p-4">
           <h2 className="font-bold mb-1">{selected.name}</h2>
           <p className="text-xs text-gray-500 mb-3">
             {selected.address}（id: <code>{selected.id}</code>）
