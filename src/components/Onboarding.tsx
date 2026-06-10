@@ -443,6 +443,7 @@ const NEWS_PAGE_INDEX = PAGES.length - 1
  * 常時見えるサム（つまみ）を自前で重ねる。中身の高さが変わっても（新機能の開閉など）追従する。
  */
 const MIN_THUMB = 28 // つまみが小さくなりすぎないための下限(px)
+const TRACK_INSET = 16 // 角丸に合わせ、トラックを上下から内側に寄せる量(px)
 
 function ScrollArea({ children }: { children: ReactNode }) {
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -459,7 +460,7 @@ function ScrollArea({ children }: { children: ReactNode }) {
       setThumb((t) => (t.visible ? { height: 0, top: 0, visible: false } : t))
       return
     }
-    const track = clientHeight
+    const track = clientHeight - 2 * TRACK_INSET
     const height = Math.max(MIN_THUMB, (clientHeight / scrollHeight) * track)
     const maxTop = track - height
     const top = (scrollTop / (scrollHeight - clientHeight)) * maxTop
@@ -489,8 +490,9 @@ function ScrollArea({ children }: { children: ReactNode }) {
       const d = drag.current
       if (!el || !d) return
       const { scrollHeight, clientHeight } = el
-      const height = Math.max(MIN_THUMB, (clientHeight / scrollHeight) * clientHeight)
-      const maxTop = clientHeight - height
+      const track = clientHeight - 2 * TRACK_INSET
+      const height = Math.max(MIN_THUMB, (clientHeight / scrollHeight) * track)
+      const maxTop = track - height
       if (maxTop <= 0) return
       const perPx = (scrollHeight - clientHeight) / maxTop
       el.scrollTop = d.startScroll + (e.clientY - d.startY) * perPx
@@ -521,10 +523,13 @@ function ScrollArea({ children }: { children: ReactNode }) {
       {/* 独自スクロールバー（中身が溢れる時だけ表示）。サイトのテーマ色（紫）に合わせる。
           トラック高さ＝clientHeight に合わせる */}
       {thumb.visible && (
-        <div className="pointer-events-none absolute inset-y-0 right-1 w-1.5 rounded-full bg-purple-100/70">
+        <div
+          className="pointer-events-none absolute right-1 w-2 rounded-full bg-purple-100/70"
+          style={{ top: TRACK_INSET, bottom: TRACK_INSET }}
+        >
           <div
             onPointerDown={onThumbDown}
-            className="pointer-events-auto absolute right-0 w-1.5 rounded-full bg-purple-400/80 hover:bg-purple-500 active:bg-purple-600 transition-colors cursor-grab active:cursor-grabbing touch-none"
+            className="pointer-events-auto absolute right-0 w-2 rounded-full bg-purple-400/80 hover:bg-purple-500 active:bg-purple-600 transition-colors cursor-grab active:cursor-grabbing touch-none"
             style={{ height: thumb.height, top: thumb.top }}
             aria-hidden="true"
           />
