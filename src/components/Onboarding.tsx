@@ -6,19 +6,21 @@ import { getThemeByKey } from '@/lib/marker-color'
 import { CountBadge } from './CountBadge'
 // 見出し系の丸ゴシック（M PLUS Rounded 1c）。送信フォーム等と共有しトーンを揃える。
 import { HEADING_FONT_STYLE, CATCH_FONT_STYLE } from '@/lib/heading-font'
+// 新機能ページの内容は src/data/releases.ts に集約（追加はそこへ1エントリ足すだけ）。
+import { releases, latestRelease, type Release, type ReleaseHighlight } from '@/data/releases'
 
 const STORAGE_KEY = 'ls-exvs-onboarded'
 
 // 新機能告知のバージョン管理。再訪ユーザーに「未読の新バージョン」がある時だけ
 // 新機能ページから自動オープンする（初回ユーザーのチュートリアルは邪魔しない）。
-// 新機能ページの内容を更新したら NEWS_VERSION を上げること。
-const NEWS_VERSION = '2.1'
+// 最新版は releases.ts の先頭で決まる（releases に新エントリを足せば自動で上がる）。
+const NEWS_VERSION = latestRelease.version
 const NEWS_SEEN_KEY = 'ls-exvs-news-seen'
 
 const AUTHOR_NAME = 'マルハット'
 const X_HANDLE = 'ls_boushi'
 const X_URL = `https://x.com/${X_HANDLE}`
-const SITE_URL = 'https://ls-inib-map.vercel.app/'
+const SITE_URL = 'https://lsib.world/'
 const TWEET_HASHTAG = 'ラストサバイニブ'
 const TWEET_TEXT = 'ラスサバ・イニブの設置店舗マップ📍'
 const HASHTAG_URL = `https://x.com/hashtag/${encodeURIComponent(TWEET_HASHTAG)}`
@@ -347,35 +349,85 @@ function DataPrivacyPage() {
   )
 }
 
-/** 新機能告知ページ。再訪ユーザーへ ver アップの目玉機能を伝える（初回ユーザーには末尾で控えめに） */
+/** 最新版の目玉機能カード（紫枠・新機能ページの主役） */
+function HighlightCards({ highlights }: { highlights: ReleaseHighlight[] }) {
+  return (
+    <ul className="flex flex-col gap-3">
+      {highlights.map((h) => (
+        <li key={h.title} className="rounded-xl border border-purple-100 bg-purple-50/50 p-3">
+          <p className="text-[11px] font-bold text-purple-700 mb-1">{h.title}</p>
+          <p className="text-xs text-gray-700 leading-snug">{h.body}</p>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+/** 過去バージョン1件（「これまでのアップデート」内のコンパクト表示） */
+function PastReleaseItem({ release }: { release: Release }) {
+  return (
+    <div>
+      <div className="flex items-baseline gap-2 mb-1.5">
+        <span className="text-sm font-bold text-gray-800">ver {release.version}</span>
+        {release.date && <span className="text-[10px] text-gray-400">{release.date}</span>}
+      </div>
+      <ul className="flex flex-col gap-1.5">
+        {release.highlights.map((h) => (
+          <li key={h.title} className="text-xs text-gray-600 leading-snug">
+            <span className="font-semibold text-gray-700">{h.title}</span>
+            <span className="text-gray-400"> — </span>
+            {h.body}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+/**
+ * 新機能告知ページ。最新版の目玉を伝えつつ、下に「これまでのアップデート」を畳んで置く。
+ * 内容はすべて releases.ts 由来（このコンポーネントは表示のみ）。
+ */
 function NewsPage() {
+  const [showPast, setShowPast] = useState(false)
+  const { headline, highlights } = latestRelease
+  const past = releases.slice(1)
+
   return (
     <>
       <span className="inline-flex items-center gap-1.5 bg-purple-700 text-white text-[11px] font-bold px-2.5 py-1 rounded-full mb-2">
-        新機能 ver {NEWS_VERSION}
+        新機能 ver {latestRelease.version}
       </span>
       <h2 className="text-xl text-gray-900 mb-1 tracking-tight" style={CATCH_FONT_STYLE}>
-        <span className="whitespace-nowrap">その台数、</span>
-        <span className="whitespace-nowrap">
-          <span className="text-purple-700">「信じていい？」</span>がわかる。
-        </span>
+        {headline.lead}
+        <span className="text-purple-700">{headline.accent}</span>
+        {headline.tail}
       </h2>
       <p className="text-xs text-gray-500 mb-4">前回からのアップデート</p>
 
-      <ul className="flex flex-col gap-3">
-        <li className="rounded-xl border border-purple-100 bg-purple-50/50 p-3">
-          <p className="text-[11px] font-bold text-purple-700 mb-1">台数の出どころ表示</p>
-          <p className="text-xs text-gray-700 leading-snug">
-            台数バッジの色の濃さで「確からしさ」がひと目で分かるように。タップすると、その台数の出どころ（公式サイト・現地での確認など）も見られます。
-          </p>
-        </li>
-        <li className="rounded-xl border border-purple-100 bg-purple-50/50 p-3">
-          <p className="text-[11px] font-bold text-purple-700 mb-1">ペア戦カレンダー</p>
-          <p className="text-xs text-gray-700 leading-snug">
-            ラスサバの対戦モード（ペア戦／個人戦）を地図のチップと月間カレンダーで確認できるようになりました。
-          </p>
-        </li>
-      </ul>
+      <HighlightCards highlights={highlights} />
+
+      {past.length > 0 && (
+        <div className="mt-5 pt-4 border-t border-gray-100">
+          <button
+            onClick={() => setShowPast((v) => !v)}
+            className="flex items-center gap-1 text-xs font-semibold text-gray-600 hover:text-gray-900 transition-colors"
+            aria-expanded={showPast}
+          >
+            これまでのアップデート（ver {past[0].version} 以前）
+            <span className={`transition-transform ${showPast ? 'rotate-180' : ''}`} aria-hidden="true">
+              ▾
+            </span>
+          </button>
+          {showPast && (
+            <div className="mt-3 flex flex-col gap-4">
+              {past.map((r) => (
+                <PastReleaseItem key={r.version} release={r} />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </>
   )
 }

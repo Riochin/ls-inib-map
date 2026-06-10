@@ -69,7 +69,8 @@ jobs:
             - X 投稿テンプレ（親ポスト＋スレッド構成）: `updates/templates/announcement.md`
             - X 台数修正テンプレ（リプ1/リプ2）: `updates/templates/override-report.md`
             - Discord テンプレ: `updates/templates/discord.md`
-            - 直近の実例: `updates/v2.1/post.md`, `updates/v2.0/post.md`
+            - サイト内お知らせテンプレ: `updates/templates/news.md`（新機能ページ＝`src/data/releases.ts` に対応）
+            - 直近の実例: `updates/v2.1/post.md`, `updates/v2.0/post.md`, `updates/v2.1/news.md`
             - このリリースの差分: `gh pr diff ${{ github.event.pull_request.number }}`
               （特に `src/data/overrides.json` の差分に注目。台数修正が含まれるか確認する）
             - 店舗名の解決元: `src/data/stores.json`（store-id → name）
@@ -82,7 +83,7 @@ jobs:
                  ## 📣 ver${{ steps.parse.outputs.version }} 告知チェックリスト
                  関連PR: #${{ github.event.pull_request.number }}
 
-                 - [ ] サイト内の告知画像（新機能告知ページ）を作成
+                 - [ ] サイト内お知らせ機能を更新（updates/v${{ steps.parse.outputs.version }}/news.md を清書 → src/data/releases.ts の先頭に反映）
                  - [ ] X投稿文面を作成・確定＋紹介画像 flyer.html を作成（文面下書きは↓コメント / updates/v${{ steps.parse.outputs.version }}/post.md・flyer.html を仕上げ 1200×675 をスクショ）
                  - [ ] 本番環境の最終確認
                  - [ ] Xポスト文面の最終確認
@@ -95,7 +96,7 @@ jobs:
 
             2. X 下書き（1スレッド）を作る。`announcement.md` の型に従い:
                - 親ポスト: 【ver${{ steps.parse.outputs.version }}】リリース告知。今回の目玉・熱量・URL・固定タグ
-                 （`#ラストサバイニブ #ジョジョLS #イニブ`）。URL は https://ls-inib-map.vercel.app 。
+                 （`#ラストサバイニブ #ジョジョLS #イニブ`）。URL は `🔗 lsib.world`（独自ドメイン）。
                - `overrides.json` に台数修正が含まれる場合のみ、リプ1=【台数情報修正】（店舗名は stores.json で解決、
                  台数は overrides.json の machineCounts）、リプ2=お礼＋@メンションを付ける（`override-report.md` の作法に厳密に従う）。
                  ★メンションは公開の場（リプ・引用等）で情報をくれた人のみ。DM等の個人的なやりとり由来は名前を出さず伏せる。
@@ -110,8 +111,12 @@ jobs:
             4. 下書きをファイルに保存する。
                - `updates/v${{ steps.parse.outputs.version }}/post.md`（X スレッド全体。`v2.1/post.md` の体裁に合わせる）
                - `updates/v${{ steps.parse.outputs.version }}/discord.md`（Discord 文面）
+               - `updates/v${{ steps.parse.outputs.version }}/news.md`（サイト内お知らせ＝新機能ページの下書き。
+                 `updates/templates/news.md` の形式に従い、`v2.1/news.md` の体裁に合わせる。
+                 キャッチ（一部を紫強調）＋目玉機能を「機能名＋平易な説明1〜2文」で。確信が持てない点は `［要確認: …］` を残す。
+                 ★これは下書き。サイト反映（`src/data/releases.ts` への転記）は人手で行う＝チェックリストの該当項目。）
                - `updates/v${{ steps.parse.outputs.version }}/flyer.html`（紹介画像。`updates/templates/flyer.html` をコピーし、
-                 [差し替え] 箇所＝バージョン番号・メイン見出し・店舗数・機能カード×3 を今回のリリース内容で埋める。
+                 ★[差し替え] 箇所＝バージョン番号・メイン見出し・機能カード×3 を今回のリリース内容で埋める。
                  確信が持てない数値や文言は無理に断定せず `［要確認: …］` を残す。
                  ★flyer.html は Issue コメントには出さない。ファイルとしてブランチに commit するだけにする。）
 
