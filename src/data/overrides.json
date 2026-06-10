@@ -84,6 +84,21 @@
       "machineCounts": {
         "gundam-exvs": 8
       }
+    },
+    "2380eb9ab2af": {
+      "source": "admin",
+      "note": "トヤマレジャーランド呉羽 ピン位置修正（Issue #51, 報告者が実店舗位置を画像提示）。Googleマップ実位置に補正（約370mズレていた）。",
+      "lat": 36.7154173,
+      "lng": 137.1579387
+    },
+    "4ce462b628ed": {
+      "source": "admin",
+      "note": "G-pala 日田 ピン位置修正＋イニブ4台（Issue #52）。登録済みだったがピンが約2km西にズレており未登録と誤認されていた。Googleマップ実位置に補正。",
+      "machineCounts": {
+        "gundam-exvs": 4
+      },
+      "lat": 33.3251978,
+      "lng": 130.9114515
     }
   }
 }
