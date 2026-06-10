@@ -2,16 +2,18 @@ name: 設置店舗データ自動更新
 
 # 定期スケジュールと手動起動で、ビルド前の静的データ生成パイプラインを実行する（Req2.5）。
 # ランタイムのAPIサーバー/データベースは導入せず、生成物 stores.json を再生成して
-# 差分がある場合のみコミット・プッシュする。push 成功で Vercel の自動デプロイが発火する。
+# 差分がある場合のみ PR を作成する。main への直 push はせず、人がレビュー・マージした
+# 時点で Vercel の本番デプロイが発火する（自動更新が無確認で本番へ出るのを防ぐ）。
 on:
   schedule:
     # 毎週水曜 09:24 JST（= 00:24 UTC）。真夜中UTCぴったりは遅延・欠落しやすいため分をずらす
     - cron: '24 0 * * 3'
   workflow_dispatch:
 
-# stores.json / ジオコードキャッシュの commit & push、失敗時のIssue作成に必要（Req2.5）
+# PR 作成（ブランチ push + Pull Request 作成）、失敗時のIssue作成に必要（Req2.5）
 permissions:
   contents: write
+  pull-requests: write
   issues: write
 
 # 同時実行を直列化し、push 競合を防ぐ（実行中ジョブはキャンセルしない）
@@ -47,21 +49,28 @@ jobs:
           GOOGLE_GEOCODING_API_KEY: ${{ secrets.GOOGLE_GEOCODING_API_KEY }}
         run: pnpm exec tsx scripts/pipeline.ts
 
-      # 実体差分がある場合のみコミット・プッシュする。差分ゲートにより stores.json は
-      # 実体差分が無ければ書き換わらないため、git の差分検知で「差分なし＝コミットなし」を
-      # 担保する（Req2.7）。ジオコードキャッシュの追記分も合わせてコミット対象に含める。
-      - name: 差分があればコミット・プッシュ
-        run: |
-          if [ -z "$(git status --porcelain src/data/stores.json scripts/cache/geocode.json)" ]; then
-            echo '[workflow] 実体差分なし: コミットをスキップします'
-            exit 0
-          fi
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add src/data/stores.json scripts/cache/geocode.json
-          git commit -m 'chore: 設置店舗データを自動更新'
-          git push
-          echo '[workflow] 設置店舗データを更新しました'
+      # 実体差分がある場合のみ PR を作成・更新する。差分ゲートにより stores.json は
+      # 実体差分が無ければ書き換わらないため、変更が無ければ create-pull-request は
+      # 何もせず PR を作らない（Req2.7）。ジオコードキャッシュの追記分も対象に含める。
+      # 固定ブランチ auto/update-stores を使い回すため、再実行のたびに PR が乱立せず
+      # 同じ PR が更新される。レビュー・マージは人が行う。
+      - name: 差分があればPRを作成
+        uses: peter-evans/create-pull-request@v7
+        with:
+          add-paths: |
+            src/data/stores.json
+            scripts/cache/geocode.json
+          commit-message: 'chore: 設置店舗データを自動更新'
+          branch: auto/update-stores
+          delete-branch: true
+          title: 'chore: 設置店舗データの自動更新'
+          body: |
+            設置店舗データ自動更新ワークフローが検出した差分です。
+
+            - `src/data/stores.json`
+            - `scripts/cache/geocode.json`
+
+            内容を確認のうえ問題なければマージしてください。マージで Vercel の本番デプロイが発火します。
 
       # いずれかのステップが失敗したらIssueを作成（急減ガード中断・取得失敗の見逃し防止）
       - name: 失敗したらIssueを作成
