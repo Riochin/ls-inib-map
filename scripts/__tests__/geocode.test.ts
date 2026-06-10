@@ -168,6 +168,26 @@ describe('geocodeStores', () => {
     expect(result.stores[0]).toMatchObject({ lat: 1, lng: 2, delisted: true })
   })
 
+  it('前回値引き継ぎでも精度メタ（precision/partialMatch）をキャッシュから補完する', async () => {
+    // 座標を引き継ぐ店舗で precision を捨てると、generate 段で approximateLocation を
+    // 再現できず再生成のたびにフラグが剥がれる回帰を防ぐ。
+    const geocodeFn = vi.fn()
+    const carried = mergedStore({ normalizedAddress: '住所X', lat: 1, lng: 2 })
+    const cache: GeocodeCache = {
+      住所X: { lat: 9, lng: 9, precision: 'APPROXIMATE', partialMatch: true },
+    }
+    const result = await geocodeStores([carried], { cache, geocodeFn, apiKey: 'KEY' })
+
+    expect(geocodeFn).not.toHaveBeenCalled()
+    // 座標は引き継ぎ値を維持（キャッシュ座標では上書きしない）、精度メタのみ補完する
+    expect(result.stores[0]).toMatchObject({
+      lat: 1,
+      lng: 2,
+      precision: 'APPROXIMATE',
+      partialMatch: true,
+    })
+  })
+
   it('個別ジオコード失敗時は当該店舗をスキップしログ記録して継続する', async () => {
     const log = vi.fn()
     const geocodeFn = vi

@@ -210,9 +210,19 @@ export async function geocodeStores(
   let apiCalls = 0
 
   for (const store of stores) {
-    // 1. 前回値の引き継ぎ（移設店舗など）はそのまま維持
+    // 1. 前回値の引き継ぎ（移設店舗など）は座標をそのまま維持する。
+    //    ただし精度メタ（precision/partialMatch）はキャッシュから補完する。これを怠ると
+    //    generate 段で approximateLocation を再現できず、再生成のたびに「おおよその位置」
+    //    フラグが全店から剥がれてしまう（キャッシュには精度が残っているのに失われる）。
     if (typeof store.lat === 'number' && typeof store.lng === 'number') {
-      out.push({ ...store, lat: store.lat, lng: store.lng })
+      const meta = cache[store.normalizedAddress]
+      out.push({
+        ...store,
+        lat: store.lat,
+        lng: store.lng,
+        precision: meta?.precision,
+        partialMatch: meta?.partialMatch,
+      })
       continue
     }
 
