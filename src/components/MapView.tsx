@@ -131,7 +131,14 @@ function InfoWindowContent({
       >
         ✕
       </button>
-      <h3 className="font-bold text-base leading-snug mb-1 break-words whitespace-normal">{store.name}</h3>
+      <div className="flex items-start gap-1.5 mb-1">
+        <h3 className="font-bold text-base leading-snug break-words whitespace-normal">{store.name}</h3>
+        {statusLabel && (
+          <span className="shrink-0 mt-0.5 text-[11px] text-gray-500 font-medium whitespace-nowrap">
+            {statusLabel}
+          </span>
+        )}
+      </div>
       <p className="text-xs text-gray-600 mb-1">{store.address}</p>
       {store.approximateLocation && (
         <p className="text-[11px] text-amber-700 mb-1 leading-snug">
@@ -182,9 +189,6 @@ function InfoWindowContent({
       </div>
       {store.infoUpdatedAt && (
         <p className="text-[10px] text-gray-400 mt-1">情報更新: {formatDateJst(store.infoUpdatedAt)}</p>
-      )}
-      {statusLabel && (
-        <span className="absolute bottom-1 right-1 text-xs text-gray-400 font-medium">{statusLabel}</span>
       )}
     </div>
   )
