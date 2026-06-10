@@ -11,8 +11,9 @@ import { resolve } from 'node:path'
  * 契約:
  * - 毎週木曜 09:24 JST（= 00:24 UTC, cron `24 0 * * 4`）＋手動起動で起動する。
  * - pnpm でセットアップ・インストールし、`scripts/scrape-pair-schedule.ts` を実行する。
- * - 実体差分（`pair-schedule.json`）がある場合のみコミット・プッシュする。
- * - コミットメッセージは既存規約（`chore:` + 日本語要約）、push 権限（`contents: write`）を持つ。
+ * - 実体差分（`pair-schedule.json`）がある場合のみ PR を作成する（main へ直 push しない）。
+ * - コミットメッセージは既存規約（`chore:` + 日本語要約）、PR 作成権限
+ *   （`contents: write` / `pull-requests: write`）を持つ。
  */
 
 const WORKFLOW_PATH = resolve(__dirname, '../../.github/workflows/update-pair-schedule.yml')
@@ -47,20 +48,25 @@ describe('update-pair-schedule ワークフロー', () => {
     expect(readWorkflow()).toMatch(/pnpm exec tsx scripts\/scrape-pair-schedule\.ts/)
   })
 
-  it('差分検知に pair-schedule.json を含める', () => {
+  it('PR の対象パスに pair-schedule.json を含める', () => {
     const yml = readWorkflow()
     expect(yml).toMatch(/src\/data\/pair-schedule\.json/)
-    expect(yml).toMatch(/git status --porcelain/)
+    // create-pull-request の差分検知で差分有無を判定する（差分なしは PR を作らない）
+    expect(yml).toMatch(/peter-evans\/create-pull-request/)
+    expect(yml).toMatch(/add-paths:/)
   })
 
-  it('既存規約に従うコミットメッセージ（chore: + 日本語要約）でコミットする', () => {
+  it('既存規約に従うコミットメッセージ（chore: + 日本語要約）で PR を作成する', () => {
     const yml = readWorkflow()
-    expect(yml).toMatch(/git commit -m ["']chore: .+["']/)
-    expect(yml).toMatch(/git push/)
+    expect(yml).toMatch(/commit-message:\s*["']chore: .+["']/)
+    // main へ直 push はしない（PR を作成する）
+    expect(yml).not.toMatch(/git push/)
   })
 
-  it('push のための contents: write 権限を持つ', () => {
-    expect(readWorkflow()).toMatch(/contents:\s*write/)
+  it('PR 作成のための contents: write / pull-requests: write 権限を持つ', () => {
+    const yml = readWorkflow()
+    expect(yml).toMatch(/contents:\s*write/)
+    expect(yml).toMatch(/pull-requests:\s*write/)
   })
 })
 

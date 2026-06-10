@@ -1,17 +1,19 @@
 name: ペア戦開催日程 自動更新
 
 # 定期スケジュールと手動起動で、公式「ラスサバnet」のペア戦開催日程を取得し、
-# 生成物 src/data/pair-schedule.json を再生成して差分がある場合のみコミット・プッシュする。
-# push 成功で Vercel の自動デプロイが発火する（ランタイムAPI/DBは導入しない）。
+# 生成物 src/data/pair-schedule.json を再生成して差分がある場合のみ PR を作成する。
+# main への直 push はせず、人がレビュー・マージした時点で Vercel の本番デプロイが
+# 発火する（ランタイムAPI/DBは導入しない）。
 on:
   schedule:
     # 毎週木曜 09:24 JST（= 00:24 UTC）。真夜中UTCぴったりは遅延・欠落しやすいため分をずらす
     - cron: '24 0 * * 4'
   workflow_dispatch:
 
-# pair-schedule.json の commit & push、失敗時のIssue作成に必要
+# PR 作成（ブランチ push + Pull Request 作成）、失敗時のIssue作成に必要
 permissions:
   contents: write
+  pull-requests: write
   issues: write
 
 # 同時実行を直列化し、push 競合を防ぐ（実行中ジョブはキャンセルしない）
@@ -44,21 +46,24 @@ jobs:
       - name: ペア戦開催日程を取得
         run: pnpm exec tsx scripts/scrape-pair-schedule.ts
 
-      # 実体差分がある場合のみコミット・プッシュする。差分ゲート（updatedAt/fetchedAt 除外）
-      # により pair-schedule.json は実体差分が無ければ書き換わらないため、git の差分検知で
-      # 「差分なし＝コミットなし」を担保する。
-      - name: 差分があればコミット・プッシュ
-        run: |
-          if [ -z "$(git status --porcelain src/data/pair-schedule.json)" ]; then
-            echo '[workflow] 実体差分なし: コミットをスキップします'
-            exit 0
-          fi
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add src/data/pair-schedule.json
-          git commit -m 'chore: ペア戦開催日程を自動更新'
-          git push
-          echo '[workflow] ペア戦開催日程を更新しました'
+      # 実体差分がある場合のみ PR を作成・更新する。差分ゲート（updatedAt/fetchedAt 除外）
+      # により pair-schedule.json は実体差分が無ければ書き換わらないため、変更が無ければ
+      # create-pull-request は何もせず PR を作らない。固定ブランチ auto/update-pair-schedule
+      # を使い回すため再実行で PR が乱立せず、同じ PR が更新される。マージは人が行う。
+      - name: 差分があればPRを作成
+        uses: peter-evans/create-pull-request@v7
+        with:
+          add-paths: src/data/pair-schedule.json
+          commit-message: 'chore: ペア戦開催日程を自動更新'
+          branch: auto/update-pair-schedule
+          delete-branch: true
+          title: 'chore: ペア戦開催日程の自動更新'
+          body: |
+            ペア戦開催日程 自動更新ワークフローが検出した差分です。
+
+            - `src/data/pair-schedule.json`
+
+            内容を確認のうえ問題なければマージしてください。マージで Vercel の本番デプロイが発火します。
 
       # いずれかのステップが失敗したらIssueを作成（取得失敗・構造変化の見逃し防止）
       - name: 失敗したらIssueを作成
