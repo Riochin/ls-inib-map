@@ -443,8 +443,8 @@ const NEWS_PAGE_INDEX = PAGES.length - 1
  * 常時見えるサム（つまみ）を自前で重ねる。中身の高さが変わっても（新機能の開閉など）追従する。
  */
 const MIN_THUMB = 28 // つまみが小さくなりすぎないための下限(px)
-// トラックの上下インセット(px)。上は見出し＋説明より下から始めるため大きめ、下は角丸ぶん。
-const TRACK_INSET_TOP = 96
+// トラックの上下インセット(px)。上は見出し（タイトル）の下から始める程度、下は角丸ぶん。
+const TRACK_INSET_TOP = 64
 const TRACK_INSET_BOTTOM = 16
 
 function ScrollArea({ children }: { children: ReactNode }) {
