@@ -5,7 +5,8 @@
       "note": "蟹貴さんより提供",
       "machineCounts": {
         "gundam-exvs": 8
-      }
+      },
+      "updatedAt": "2026-06-09"
     },
     "4225cbfd493f": {
       "source": "admin",
@@ -13,26 +14,30 @@
       "machineCounts": {
         "jojo-ls": 4,
         "gundam-exvs": 9
-      }
+      },
+      "updatedAt": "2026-06-09"
     },
     "6701f6561319": {
       "source": "admin",
       "note": "SBGさん",
       "machineCounts": {
         "jojo-ls": 3
-      }
+      },
+      "updatedAt": "2026-06-09"
     },
     "74a661a26350": {
       "source": "admin",
       "note": "タイトーFステーション吉祥寺JOY",
-      "closed": true
+      "closed": true,
+      "updatedAt": "2026-06-09"
     },
     "a4bf5a4b8d0b": {
       "source": "admin",
       "note": "Yリオンさん",
       "machineCounts": {
         "jojo-ls": 2
-      }
+      },
+      "updatedAt": "2026-06-09"
     },
     "b2c469a9c6c6": {
       "source": "admin",
@@ -40,28 +45,32 @@
       "machineCounts": {
         "jojo-ls": 4,
         "gundam-exvs": 9
-      }
+      },
+      "updatedAt": "2026-06-09"
     },
     "ec36fcabd4d3": {
       "source": "admin",
       "note": "オアシスさん",
       "machineCounts": {
         "gundam-exvs": 9
-      }
+      },
+      "updatedAt": "2026-06-09"
     },
     "7dabb1a2bb08": {
       "source": "admin",
       "note": "インターワールド伊勢崎 イニブ10台（Issue #49）。@UrUshihara_M。",
       "machineCounts": {
         "gundam-exvs": 10
-      }
+      },
+      "updatedAt": "2026-06-10"
     },
     "c63f86f0b751": {
       "source": "admin",
       "note": "群馬レジャーランド伊勢崎 イニブ8台（Issue #48）。@UrUshihara_M。。",
       "machineCounts": {
         "gundam-exvs": 8
-      }
+      },
+      "updatedAt": "2026-06-10"
     },
     "e8fae899bfa0": {
       "source": "admin",
@@ -69,27 +78,31 @@
       "machineCounts": {
         "jojo-ls": 3,
         "gundam-exvs": 8
-      }
+      },
+      "updatedAt": "2026-06-10"
     },
     "3e3410623889": {
       "source": "admin",
       "note": "namco王子サンスクエア イニブ6台（2台+4台のキモ配置, Issue #64）。出どころ: ぬまくん。古めの商業施設で非常に広い、喫煙所はイニブと別階層。",
       "machineCounts": {
         "gundam-exvs": 6
-      }
+      },
+      "updatedAt": "2026-06-10"
     },
     "14d32850a2a1": {
       "source": "admin",
       "note": "GiGO赤羽駅前 イニブ8台（片面4台並びで計8, 3F, Issue #63）。報告者: ぬまくん。設備: 喫煙所は同階層(3F)、手洗い場はイニブ筐体の真後ろ、電子マネー対応。",
       "machineCounts": {
         "gundam-exvs": 8
-      }
+      },
+      "updatedAt": "2026-06-10"
     },
     "2380eb9ab2af": {
       "source": "admin",
       "note": "トヤマレジャーランド呉羽 ピン位置修正（Issue #51, 報告者が実店舗位置を画像提示）。Googleマップ実位置に補正（約370mズレていた）。",
       "lat": 36.7154173,
-      "lng": 137.1579387
+      "lng": 137.1579387,
+      "updatedAt": "2026-06-10"
     },
     "4ce462b628ed": {
       "source": "admin",
@@ -98,7 +111,8 @@
         "gundam-exvs": 4
       },
       "lat": 33.3251978,
-      "lng": 130.9114515
+      "lng": 130.9114515,
+      "updatedAt": "2026-06-10"
     },
     "c2a6953ae8f9": {
       "source": "admin",

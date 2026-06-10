@@ -7,6 +7,7 @@ import { CurrentLocationMarker } from './CurrentLocationMarker'
 import { ApproximateCircle } from './ApproximateCircle'
 import { ReportModal } from './ReportModal'
 import { formatDateJst } from '@/lib/info-display'
+import { storesMeta } from '@/data/stores'
 import { getMarkerTheme, getGameLabel, getStoreStatusLabel, getCountSourceInfo } from '@/lib/marker-color'
 import { CountBadge } from './CountBadge'
 import { useStoreClusterer } from '@/hooks/use-store-clusterer'
@@ -123,6 +124,8 @@ function InfoWindowContent({
   const statusLabel = getStoreStatusLabel(store)
   // タップされた台数バッジの出どころ説明を表示する（ノンテック層向け・アイコン不使用）
   const [openSource, setOpenSource] = useState<GameTitle | null>(null)
+  // 店舗単位の情報更新日。override（手動確定）の日付を優先し、無ければ全体の自動更新日。
+  const infoDateLabel = formatDateJst(store.infoUpdatedAt ?? storesMeta.lastUpdated)
   return (
     <div className={`p-1 min-w-[200px] max-w-[260px] relative pr-5${statusLabel ? ' bg-gray-100 rounded' : ''}`}>
       <button
@@ -167,6 +170,11 @@ function InfoWindowContent({
           {getGameLabel(openSource)}：{getCountSourceInfo(store.countSources?.[openSource]).label}
         </p>
       )}
+      {/* 店舗単位の情報更新日。override（手動確定）があればその日付、無ければ全体の自動更新日。 */}
+      {infoDateLabel && (
+        <p className="text-[10px] text-gray-400 mb-1.5">情報更新: {infoDateLabel}</p>
+      )}
+      {/* 経路・報告は最下部に置く（報告導線が一番手に取りやすい位置） */}
       <div className="flex items-center justify-between gap-2">
         <a
           href={`https://www.google.com/maps/dir/?api=1&destination=${store.lat},${store.lng}`}
@@ -187,9 +195,6 @@ function InfoWindowContent({
           情報の修正を報告
         </button>
       </div>
-      {store.infoUpdatedAt && (
-        <p className="text-[10px] text-gray-400 mt-1">情報更新: {formatDateJst(store.infoUpdatedAt)}</p>
-      )}
     </div>
   )
 }
