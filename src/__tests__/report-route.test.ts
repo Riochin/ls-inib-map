@@ -103,10 +103,27 @@ describe('buildReportIssue', () => {
       storeAddress: 'z',
       type: 'その他',
       text: 't',
-      reporter: '@id',
+      reporter: 'myid',
     })
-    expect(body).toContain('SNS ID: @id')
+    expect(body).toContain('SNS ID: myid')
     expect(body).toContain('確定可否: SNS ID提供あり')
     expect(body).toContain('お礼ツイート: 可')
+  })
+
+  it('本文の @メンション / #Issue参照を無効化する（通知スパム防止）', () => {
+    const { body, title } = buildReportIssue({
+      storeId: 'x',
+      storeName: '@org',
+      storeAddress: 'z',
+      type: 'その他',
+      text: 'cc @victim 直してほしい #1',
+      reporter: '@me',
+    })
+    // 連続した @mention / #ref は本文・タイトルに残らない（直後にゼロ幅スペースが入る）
+    expect(body).not.toContain('@victim')
+    expect(body).not.toContain('@me')
+    expect(body).not.toContain('#1')
+    expect(title).not.toContain('@org')
+    expect(body).toContain('@​')
   })
 })
