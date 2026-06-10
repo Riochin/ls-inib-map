@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from 'react'
 import type { Store } from '@/types/store'
 import { REPORT_TYPES, type ReportType } from '@/lib/report'
+import { HEADING_FONT_STYLE } from '@/lib/heading-font'
 
 /**
  * 店舗情報の「修正を報告」フォーム（モーダル）。地図の InfoWindow から開く。
@@ -69,18 +70,20 @@ export function ReportModal({
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-xl shadow-xl w-full max-w-sm p-5 text-sm text-gray-800 relative"
+        className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-5 text-sm text-gray-800 relative"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}
           aria-label="閉じる"
-          className="absolute top-3 right-3 w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600"
+          className="absolute top-3 right-3 z-10 w-7 h-7 flex items-center justify-center text-gray-400 hover:text-gray-600 text-lg leading-none"
         >
           ✕
         </button>
 
-        <h2 className="font-bold text-base mb-0.5">情報の修正を報告</h2>
+        <h2 className="text-lg text-gray-800 mb-0.5" style={HEADING_FONT_STYLE}>
+          情報の修正を報告
+        </h2>
         <p className="text-xs text-gray-500 mb-4 break-words">{store.name}</p>
 
         {status === 'done' ? (
@@ -92,7 +95,7 @@ export function ReportModal({
             </p>
             <button
               onClick={onClose}
-              className="w-full px-4 py-2 bg-gray-900 text-white rounded font-semibold"
+              className="w-full px-5 py-2.5 bg-gray-900 text-white rounded-full text-sm font-semibold hover:bg-gray-700 transition-colors"
             >
               閉じる
             </button>
@@ -170,7 +173,7 @@ export function ReportModal({
             <button
               type="submit"
               disabled={status === 'sending'}
-              className="w-full px-4 py-2 bg-gray-900 text-white rounded font-semibold disabled:opacity-50"
+              className="w-full px-5 py-2.5 bg-gray-900 text-white rounded-full text-sm font-semibold hover:bg-gray-700 transition-colors disabled:opacity-50"
             >
               {status === 'sending' ? '送信中…' : '送信する'}
             </button>

@@ -4,6 +4,8 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { getMarkerImage, type MarkerThemeKey } from '@/lib/marker-image'
 import { getThemeByKey } from '@/lib/marker-color'
 import { CountBadge } from './CountBadge'
+// 見出し系の丸ゴシック（M PLUS Rounded 1c）。送信フォーム等と共有しトーンを揃える。
+import { HEADING_FONT_STYLE, CATCH_FONT_STYLE } from '@/lib/heading-font'
 
 const STORAGE_KEY = 'ls-exvs-onboarded'
 
@@ -12,12 +14,6 @@ const STORAGE_KEY = 'ls-exvs-onboarded'
 // 新機能ページの内容を更新したら NEWS_VERSION を上げること。
 const NEWS_VERSION = '2.1'
 const NEWS_SEEN_KEY = 'ls-exvs-news-seen'
-
-// オンボーディングの見出し系に使う丸ゴシック（M PLUS Rounded 1c）。
-// フォント本体は layout.tsx で該当文言のみ &text= サブセット読み込み。
-// キャッチフレーズは 700、各セクション見出しは 500 で軽めに。
-const HEADING_FONT_STYLE = { fontFamily: "'M PLUS Rounded 1c', sans-serif", fontWeight: 500 } as const
-const CATCH_FONT_STYLE = { fontFamily: "'M PLUS Rounded 1c', sans-serif", fontWeight: 700 } as const
 
 const AUTHOR_NAME = 'マルハット'
 const X_HANDLE = 'ls_boushi'
