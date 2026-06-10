@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-06-08T08:11:49.125Z",
+  "lastUpdated": "2026-06-10T11:49:23.029Z",
   "source": {
     "jojols": "https://bandainamco-am.co.jp/am/vg/jojols/location/",
     "gundam": "https://gundam-vs.jp/extreme/ac2ib/location/"
@@ -1948,6 +1948,19 @@
       "machineCounts": {
         "jojo-ls": 4,
         "gundam-exvs": 19
+      }
+    },
+    {
+      "id": "2e4bc845a58d",
+      "name": "人類遊び研究所・山形H棟",
+      "address": "山形県長井市時庭1960",
+      "lat": 38.0767873,
+      "lng": 140.039484,
+      "games": [
+        "gundam-exvs"
+      ],
+      "machineCounts": {
+        "gundam-exvs": 3
       }
     },
     {
