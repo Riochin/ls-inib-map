@@ -399,6 +399,12 @@
     "lng": 144.4096347,
     "precision": "APPROXIMATE"
   },
+  "千葉県旭市ニ字野場3150-1": {
+    "lat": 35.72357,
+    "lng": 140.63956,
+    "precision": "APPROXIMATE",
+    "partialMatch": true
+  },
   "千葉県浦安市入船1-4-1": {
     "lat": 35.649228,
     "lng": 139.9147031,
@@ -420,6 +426,22 @@
     "lat": 33.897649,
     "lng": 135.148816,
     "precision": "ROOFTOP",
+    "partialMatch": true
+  },
+  "埼玉県上尾市二ツ宮1044": {
+    "lat": 35.981297,
+    "lng": 139.599838,
+    "precision": "APPROXIMATE"
+  },
+  "埼玉県坂戸市関間2-151-1": {
+    "lat": 35.952607,
+    "lng": 139.398555,
+    "precision": "APPROXIMATE"
+  },
+  "埼玉県春日部市増富字谷際163-1": {
+    "lat": 35.959502,
+    "lng": 139.728928,
+    "precision": "APPROXIMATE",
     "partialMatch": true
   },
   "大分県中津市三光佐知1032": {
