@@ -543,8 +543,8 @@ function OnboardingModal({ initialPage = 0, onClose }: { initialPage?: number; o
     >
       <div
         // 高さを全ページで統一（footer=「次へ」の位置が固定され、溢れる分は本文が独自スクロール）。
-        // 端末に追従しつつ上限を設ける（短い画面では 85vh、大きい画面でも 600px で頭打ち）。
-        className="bg-white rounded-2xl shadow-xl max-w-sm w-full relative h-[85vh] max-h-[600px] flex flex-col"
+        // 高さは1枚目（操作案内）がちょうど収まる値に合わせている。短い画面では 85vh で頭打ち。
+        className="bg-white rounded-2xl shadow-xl max-w-sm w-full relative h-[480px] max-h-[85vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <button
