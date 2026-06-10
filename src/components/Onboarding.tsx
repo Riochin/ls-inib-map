@@ -443,7 +443,9 @@ const NEWS_PAGE_INDEX = PAGES.length - 1
  * 常時見えるサム（つまみ）を自前で重ねる。中身の高さが変わっても（新機能の開閉など）追従する。
  */
 const MIN_THUMB = 28 // つまみが小さくなりすぎないための下限(px)
-const TRACK_INSET = 16 // 角丸に合わせ、トラックを上下から内側に寄せる量(px)
+// トラックの上下インセット(px)。上は見出し＋説明より下から始めるため大きめ、下は角丸ぶん。
+const TRACK_INSET_TOP = 96
+const TRACK_INSET_BOTTOM = 16
 
 function ScrollArea({ children }: { children: ReactNode }) {
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -460,7 +462,7 @@ function ScrollArea({ children }: { children: ReactNode }) {
       setThumb((t) => (t.visible ? { height: 0, top: 0, visible: false } : t))
       return
     }
-    const track = clientHeight - 2 * TRACK_INSET
+    const track = clientHeight - TRACK_INSET_TOP - TRACK_INSET_BOTTOM
     const height = Math.max(MIN_THUMB, (clientHeight / scrollHeight) * track)
     const maxTop = track - height
     const top = (scrollTop / (scrollHeight - clientHeight)) * maxTop
@@ -490,7 +492,7 @@ function ScrollArea({ children }: { children: ReactNode }) {
       const d = drag.current
       if (!el || !d) return
       const { scrollHeight, clientHeight } = el
-      const track = clientHeight - 2 * TRACK_INSET
+      const track = clientHeight - TRACK_INSET_TOP - TRACK_INSET_BOTTOM
       const height = Math.max(MIN_THUMB, (clientHeight / scrollHeight) * track)
       const maxTop = track - height
       if (maxTop <= 0) return
@@ -525,7 +527,7 @@ function ScrollArea({ children }: { children: ReactNode }) {
       {thumb.visible && (
         <div
           className="pointer-events-none absolute right-1 w-2 rounded-full bg-purple-100/70"
-          style={{ top: TRACK_INSET, bottom: TRACK_INSET }}
+          style={{ top: TRACK_INSET_TOP, bottom: TRACK_INSET_BOTTOM }}
         >
           <div
             onPointerDown={onThumbDown}
