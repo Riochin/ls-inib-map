@@ -7,22 +7,28 @@
 
 <!--
   ▼ これは紹介画像フライヤーの「テンプレ（コピー元）」です。
-    新バージョンを出すときは updates/v○.○/flyer.html にコピーし、下記 [差し替え] を埋める。
-    CSS（配色・フォント・カード/バッジ/チップ等の部品）は本体サイトのテーマで、基本そのまま使う。
+    新バージョンは updates/v○.○/flyer.html にコピーし、本文中の ★[差し替え] だけ埋める。
+    レイアウト（配色・フォント・サイズ・部品）は本体テーマ準拠なので原則そのまま使う。
 
   X（旧Twitter）投稿用の紹介画像。スクリーンショットして使う想定。
-  枠 (#flyer) は 1200×675（16:9）固定。ブラウザで開き、#flyer をそのまま撮影する。
-  配色・フォントは本体サイトのテーマを踏襲:
-    - メインカラー紫 #7B2FBE / 薄紫 #F3E8FF（ペア戦・両タイトル）
-    - イニブ青 #2563EB / 薄青 #DBEAFE
-    - 見出しフォント: M PLUS Rounded 1c（丸ゴシック）、本文はシステムフォント
+  枠 (#flyer) は 1200×675（16:9）固定。ブラウザ／プレビューで開き、#flyer をそのまま撮影する。
 
-  [差し替え] する場所（本文側に ★ コメントで明示）:
+  ★[差し替え] する場所:
     1. ver-pill のバージョン番号
-    2. メイン見出し（title）＝今回の目玉を一撃で
-    3. app-tag の店舗数メタ
-    4. 機能カード×3（kicker / 見出し / 説明 / preview）＝今回の新機能に合わせる
-       preview は下の「部品カタログ」から選んで差し替える
+    2. メイン見出し（title）＝今回の目玉を一撃で。強調は <span class="accent">（紫）
+    3. 機能カード×3（kicker / 見出し / 説明 / preview）＝今回の新機能に合わせる
+       preview は末尾「UI再現 部品カタログ」から選んで差し替える
+    4. フッターの公開URL（独自ドメイン lsib.world）
+
+  ★守ること（はみ出し防止／ブランド統一）:
+    - 主要パネル(.card / .preview)は高さ固定＋overflow:hidden。中身を増やしても枠は崩れない。
+      文言を増やして溢れる時は、文字サイズより先に .inner 冒頭の「高さ収支」を見直す。
+    - ロゴ（右上）は src/app/icon.svg と同形のピンを大きく1つ。アプリ名テキストは載せない
+      （右下のハッシュタグが名前を兼ねる）。
+    - カード本文(.card p)は文の区切り「。」で <br> 改行すると読みやすい。
+    - UIの再現色は本体実装に必ず合わせる（例: おおよその位置は青ではなく amber #b45309/#f59e0b）。
+    - ユーザーが実際にはクリックできない情報（データ品質など）は、操作UIに似せず
+      “スライド風インフォグラフィック”で見せる（クリックできると誤解されないため）。
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -96,16 +102,24 @@
     background: #fff;
     border-radius: 50%;
   }
-  .deco-pin.p1 { top: 70px; right: 250px; transform: rotate(-45deg) scale(0.8); }
-  .deco-pin.p2 { top: 150px; right: 90px; }
-  .deco-pin.p3 { bottom: 120px; right: 320px; transform: rotate(-45deg) scale(0.7); opacity: 0.35; }
+  /* ロゴ（右上）を囲むように配置した飾りピン。ロゴより背面（.inner が z-index:2）。 */
+  .deco-pin.p1 { top: 34px; right: 206px; transform: rotate(-45deg) scale(0.8); opacity: 0.5; }
+  .deco-pin.p2 { top: 158px; right: 192px; opacity: 0.5; }
+  .deco-pin.p3 { top: 120px; right: 36px; transform: rotate(-45deg) scale(0.6); opacity: 0.3; }
   .deco-pin.b { background: linear-gradient(135deg, var(--blue), #93c5fd); box-shadow: 0 8px 16px rgba(37,99,235,0.22); }
 
+  /*
+    レイアウトは 1200×675 の撮影枠に「必ず収める」前提で各ブロックの高さを固定する。
+    増減すると枠外にはみ出す（#flyer は overflow:hidden なので静かに切れる）。
+    高さ収支（コンテンツ領域 = 675 - 上下padding 84 = 591px）:
+      ヘッダー ≒ 141（見出し1行）／≒197（2行） ＋ カード行 335 ＋ フッター ≒ 44 ≦ 591
+    新しい文言を入れて溢れる場合は、文字サイズではなくこの収支を先に見直すこと。
+  */
   .inner {
     position: relative;
     z-index: 2;
     height: 100%;
-    padding: 52px 56px 44px;
+    padding: 44px 52px 40px;
     display: flex;
     flex-direction: column;
   }
@@ -135,25 +149,30 @@
     font-size: 50px;
     line-height: 1.12;
     letter-spacing: 0.01em;
-    margin-top: 22px;
+    margin-top: 18px;
   }
   .accent { color: var(--purple); }
   .subtitle {
-    margin-top: 12px;
+    margin-top: 10px;
     font-size: 19px;
     color: var(--ink-soft);
     font-weight: 600;
   }
 
-  .app-tag {
-    text-align: right;
-    font-family: var(--round);
-    font-weight: 700;
-    color: var(--ink);
-    line-height: 1.3;
+  /* ブランドロゴ（全バージョン共通・サイトの新ロゴ = src/app/icon.svg と同形） */
+  .brand {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding-left: 24px;
+    margin-right: 12px;
   }
-  .app-tag .name { font-size: 21px; }
-  .app-tag .meta { font-size: 13px; color: var(--ink-soft); font-weight: 500; margin-top: 4px; }
+  .brand-pin {
+    width: 116px;
+    height: auto;
+    margin-top: 6px;
+    filter: drop-shadow(0 14px 26px rgba(123,47,190,0.34));
+  }
 
   /* ===== 機能カード ===== */
   .cards {
@@ -163,11 +182,13 @@
     gap: 20px;
   }
   .card {
+    /* 高さ固定（はみ出し防止の要）。中身を増やしても枠は伸びない。 */
+    height: 335px;
     background: rgba(255,255,255,0.82);
     backdrop-filter: blur(6px);
     border: 1px solid rgba(123,47,190,0.10);
     border-radius: 20px;
-    padding: 22px 22px 24px;
+    padding: 20px 20px 20px;
     box-shadow: 0 18px 40px rgba(70,40,110,0.12);
     display: flex;
     flex-direction: column;
@@ -186,29 +207,38 @@
   .card h3 {
     font-family: var(--round);
     font-weight: 700;
-    font-size: 20px;
-    margin-top: 14px;
-    line-height: 1.35;
+    font-size: 19px;
+    margin-top: 12px;
+    line-height: 1.3;
     color: var(--ink);
   }
   .card p {
     margin-top: 8px;
-    font-size: 13px;
-    line-height: 1.6;
+    font-size: 12.5px;
+    line-height: 1.55;
     color: var(--ink-soft);
   }
 
-  /* カード内の実UIプレビュー枠 */
+  /*
+    主要機能パネル（カード内プレビュー）。高さ固定＋overflow:hidden で「はみ出させない」。
+    中身（.report-form / .approx-demo / .quality など）が増えても枠は崩れず、
+    あふれた分は静かに切れる。新パネルもこの 130px・約106px の中身領域に収める前提で作る。
+  */
   .preview {
-    margin-top: 16px;
+    height: 130px;
+    overflow: hidden;
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     background: #fff;
     border: 1px solid #eef0f6;
     border-radius: 14px;
-    padding: 14px;
+    padding: 12px;
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
   }
 
-  /* テンプレの未差し替えスロット（ここに実UIの再現を入れる。差し替え必須の目印） */
+  /* テンプレの未差し替えスロット */
   .ui-slot {
     display: flex; align-items: center; justify-content: center; text-align: center;
     min-height: 92px; padding: 12px;
@@ -216,6 +246,129 @@
     color: var(--ink-soft); font-size: 12px; line-height: 1.6;
   }
 
+  /* 報告フォーム（ReportModal）の実UI再現 */
+  .report-form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .report-form .rf-title {
+    font-family: var(--round);
+    font-weight: 700;
+    font-size: 13.5px;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .report-form .rf-store {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    margin-left: 4px;
+  }
+  .report-form .rf-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    margin-bottom: -2px;
+  }
+  .report-form .rf-field {
+    background: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    padding: 7px 9px 16px;
+    font-size: 11px;
+    color: var(--ink);
+  }
+  .report-form .rf-placeholder { color: #9aa0ad; }
+  .report-form .rf-submit {
+    background: #111827;
+    color: #fff;
+    text-align: center;
+    font-size: 11.5px;
+    font-weight: 700;
+    font-family: var(--round);
+    padding: 7px;
+    border-radius: 999px;
+    margin-top: 2px;
+  }
+
+  /* データ品質：スライド風インフォグラフィック（UI再現ではない） */
+  .quality { display: flex; flex-direction: column; gap: 10px; padding: 4px 2px; }
+  .quality-stat { display: flex; align-items: baseline; gap: 7px; }
+  .quality-stat .num {
+    font-family: var(--round);
+    font-weight: 800;
+    font-size: 34px;
+    line-height: 1;
+    color: var(--purple);
+  }
+  .quality-stat .unit { font-size: 13px; font-weight: 700; color: var(--ink); }
+  .quality-bar {
+    display: flex;
+    height: 12px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: #eef0f6;
+  }
+  .quality-bar .ok { background: var(--blue); }
+  .quality-bar .flag { background: var(--purple); }
+  .quality-legend { display: flex; gap: 16px; font-size: 11px; color: var(--ink-soft); font-weight: 600; }
+  .quality-legend i {
+    display: inline-block;
+    width: 9px; height: 9px;
+    border-radius: 50%;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+  .quality-legend .dot-ok { background: var(--blue); }
+  .quality-legend .dot-flag { background: var(--purple); }
+
+  /* ピン精度サークルの簡易再現 */
+  .approx-demo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: 92px;
+  }
+  /* 実装の「おおよその位置」円に合わせた色（amber-500 塗り / amber-700 線） */
+  .approx-ring {
+    position: absolute;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba(245,158,11,0.14);
+    border: 2px dashed rgba(180,83,9,0.55);
+  }
+  .approx-pin {
+    position: relative;
+    width: 18px;
+    height: 18px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    background: var(--purple);
+    box-shadow: 0 4px 10px rgba(123,47,190,0.35);
+    z-index: 1;
+  }
+  .approx-pin::after {
+    content: "";
+    position: absolute;
+    inset: 5px;
+    background: #fff;
+    border-radius: 50%;
+  }
+  .approx-label {
+    position: absolute;
+    bottom: 8px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #b45309;
+    background: #fef3c7;
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+
+  /* ===== UI再現 部品の追加カタログ（過去バージョンで使用・必要なら .preview に流用）===== */
   /* 台数バッジ（本体 CountBadge を再現） */
   .badge {
     display: inline-flex;
@@ -271,7 +424,7 @@
 
   /* ===== フッター ===== */
   footer {
-    margin-top: 22px;
+    margin-top: 18px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -279,18 +432,18 @@
   .url {
     font-family: var(--round);
     font-weight: 700;
-    font-size: 18px;
+    font-size: 19px;
     color: var(--ink);
     display: inline-flex;
     align-items: center;
     gap: 9px;
   }
-  .url .globe {
-    width: 26px; height: 26px; border-radius: 50%;
-    background: var(--purple); color: #fff;
+  .url .link-mark {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--purple);
     display: inline-flex; align-items: center; justify-content: center;
-    font-size: 14px;
   }
+  .url .link-mark svg { width: 15px; height: 15px; }
   .hashtag {
     font-family: var(--round);
     font-weight: 700;
@@ -313,25 +466,37 @@
         <div>
           <!-- ★[差し替え1] バージョン番号 -->
           <span class="ver-pill"><span class="dot"></span>新機能 ver ○.○</span>
-          <!-- ★[差し替え2] メイン見出し＝今回の目玉。<br>で2行、強調は <span class="accent"> -->
-          <h1 class="title">［見出し1行目］、<br><span class="accent">［強調する目玉］</span>。</h1>
+          <!-- ★[差し替え2] メイン見出し＝今回の目玉を一撃で。強調は <span class="accent">（紫）。
+               1行でも2行でも可（2行は <br>）。短い方が映える -->
+          <h1 class="title">もっと「<span class="accent">正しい</span>場所」に。</h1>
           <p class="subtitle">ラスサバ・イニブの設置店舗マップ アップデート</p>
         </div>
-        <div class="app-tag">
-          <div class="name">ラストサバイニブ</div>
-          <!-- ★[差し替え3] 最新の店舗数 -->
-          <div class="meta">全国47都道府県・約○○○店舗</div>
+        <!-- ブランドロゴ（全バージョン共通・サイトの新ロゴ = src/app/icon.svg と同形） -->
+        <div class="brand">
+          <svg class="brand-pin" viewBox="0 0 28 36" xmlns="http://www.w3.org/2000/svg" aria-label="ラストサバイニブ ロゴ">
+            <defs>
+              <linearGradient id="brand-grad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#7B2FBE"/>
+                <stop offset="30%" stop-color="#7B2FBE"/>
+                <stop offset="100%" stop-color="#2563EB"/>
+              </linearGradient>
+            </defs>
+            <path d="M14 0C6.268 0 0 6.268 0 14c0 7.732 14 22 14 22s14-14.268 14-22C28 6.268 21.732 0 14 0z" fill="url(#brand-grad)"/>
+            <circle cx="14" cy="14" r="5" fill="white"/>
+          </svg>
         </div>
       </header>
 
       <!--
-        ★[差し替え4] 機能カード×3。1枚の構成は上から:
+        ★[差し替え3] 機能カード×3。1枚の構成は上から:
           1) kicker  … 機能名タグ
           2) h3      … カード見出し（強調は <span class="accent">）
-          3) p       … 説明文
-          4) .preview … ★実際のサイトUIの再現部分★（本体の画面パーツを縮小して再現する枠）
-        今回の新機能に合わせて 1〜3 を差し替え、4 の .preview は下の「UI再現 部品カタログ」から
-        その機能の実画面に近いものを選んで入れる（再現できる実UIが無ければ .preview ごと省略可）。
+          3) p       … 説明文（1〜2文。文の区切り「。」で <br> 改行すると読みやすい）
+          4) .preview … 高さ固定パネル。末尾「UI再現 部品カタログ」から該当機能に近い部品を入れる。
+                        ・実際にユーザーが操作する画面は“実物そっくり”に再現してOK（例: 報告フォーム）
+                        ・ユーザーが触れない情報（データ品質など）は操作UIに似せず、
+                          スライド風インフォグラフィック(F)で。色は本体実装に必ず合わせる。
+                        ・該当する実UIが無ければ .preview ごと省略可。
       -->
       <div class="cards">
         <!-- カード1 -->
@@ -340,45 +505,55 @@
           <h3>［カード見出し］<br><span class="accent">［強調語］</span>。</h3>
           <p>［この機能の説明を1〜2文で。ノンテック層にやさしく］</p>
           <div class="preview">
-            <!-- ★実UIの再現部分。本体サイトの該当画面パーツを再現して入れる。下の「UI再現 部品カタログ」から選ぶ -->
-            <div class="ui-slot">［実UIの再現をここに］<br>例: 台数バッジ（出どころ表示）</div>
+            <!-- ★末尾カタログから該当部品を貼る（例: D 報告フォーム） -->
+            <div class="ui-slot">［実UIの再現／インフォグラフィックをここに］</div>
           </div>
         </div>
 
         <!-- カード2 -->
         <div class="card">
           <span class="kicker">［キッカー：機能名タグ］</span>
-          <h3>［カード見出し］</h3>
+          <h3>［カード見出し］<br><span class="accent">［強調語］</span>。</h3>
           <p>［この機能の説明を1〜2文で］</p>
           <div class="preview">
-            <!-- ★実UIの再現部分。本体サイトの該当画面パーツを再現して入れる。下の「UI再現 部品カタログ」から選ぶ -->
-            <div class="ui-slot">［実UIの再現をここに］<br>例: ペア戦チップ＋ミニカレンダー</div>
+            <!-- ★末尾カタログから該当部品を貼る（例: E おおよその位置サークル） -->
+            <div class="ui-slot">［実UIの再現／インフォグラフィックをここに］</div>
           </div>
         </div>
 
         <!-- カード3 -->
         <div class="card">
           <span class="kicker">［キッカー：機能名タグ］</span>
-          <h3>［カード見出し］</h3>
+          <h3>［カード見出し］<br><span class="accent">［強調語］</span>。</h3>
           <p>［この機能の説明を1〜2文で］</p>
           <div class="preview">
-            <!-- ★実UIの再現部分。本体サイトの該当画面パーツを再現して入れる。下の「UI再現 部品カタログ」から選ぶ -->
-            <div class="ui-slot">［実UIの再現をここに］<br>例: オンボーディングのキャッチコピー</div>
+            <!-- ★末尾カタログから該当部品を貼る（例: F データ品質インフォグラフィック） -->
+            <div class="ui-slot">［実UIの再現／インフォグラフィックをここに］</div>
           </div>
         </div>
       </div>
 
       <footer>
-        <span class="url"><span class="globe">▶</span>ls-inib-map.vercel.app</span>
+        <!-- ★[差し替え4] 公開URL。独自ドメインは固定 lsib.world（基本そのまま） -->
+        <span class="url">
+          <span class="link-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"/>
+              <path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"/>
+            </svg>
+          </span>
+          lsib.world
+        </span>
         <span class="hashtag">#ラストサバイニブ</span>
       </footer>
     </div>
   </div>
 
   <!--
-    ===== UI再現 部品カタログ（カード内 .preview ＝実サイトUIの再現部分に入れて使う・コピー元）=====
+    ===== UI再現 部品カタログ（カード内 .preview に貼って使う・コピー元）=====
+    .preview は高さ固定（約106px の中身領域）。下の部品はその中に収まる前提で作ってある。
 
-    A) 台数バッジ（出どころ表示）:
+    A) 台数バッジ（出どころ表示・CountBadge）:
        <div class="badge-row">
          <span class="badge confirmed">イニブ 7台</span>
          <span class="badge-note"><b>現地ユーザーからの確認あり✔︎</b></span>
@@ -388,16 +563,46 @@
          <span class="badge-note">公式サイト・自動取得</span>
        </div>
 
-    B) ペア戦チップ＋ミニカレンダー:
+    B) ペア戦チップ＋ミニカレンダー（PairSchedulePanel）:
        <span class="chip"><span class="lead">今日</span><span class="mode">ペア戦</span><span class="caret">▼</span></span>
        <div class="mini-cal">
          <span class="pair">月</span><span class="solo">火</span><span class="pair">水</span>
          <span class="solo">木</span><span class="pair">金</span>
        </div>
 
-    C) キャッチコピー:
+    C) キャッチコピー（Onboarding）:
        <div class="catch">戦場選びを<br>サクッと<span class="sec">10秒</span>に。</div>
        <div class="catch-sub">ラスサバ・イニブの設置店舗マップへようこそ</div>
+
+    D) 報告フォーム（ReportModal・実物そっくり再現／送信ボタンは黒 #111827）:
+       <div class="report-form">
+         <div class="rf-title">情報の修正を報告 <span class="rf-store">○○店</span></div>
+         <div class="rf-label">内容（必須）</div>
+         <div class="rf-field rf-placeholder">例）イニブは実際8台です</div>
+         <div class="rf-submit">送信する</div>
+       </div>
+
+    E) おおよその位置サークル（ApproximateCircle・色は実装の amber に一致:
+       塗り #f59e0b / 線 #b45309。青にしないこと）:
+       <div class="approx-demo">
+         <div class="approx-ring"></div>
+         <div class="approx-pin"></div>
+         <div class="approx-label">おおよその位置</div>
+       </div>
+
+    F) データ品質インフォグラフィック（“スライド風”。クリックUIに似せない。
+       数値・帯の比率は実データに合わせる）:
+       <div class="quality">
+         <div class="quality-stat"><span class="num">○○○</span><span class="unit">店を再点検</span></div>
+         <div class="quality-bar">
+           <span class="ok" style="flex:○○○"></span>
+           <span class="flag" style="flex:○○"></span>
+         </div>
+         <div class="quality-legend">
+           <span><i class="dot-ok"></i>○○○店 OK</span>
+           <span><i class="dot-flag"></i>○○店 要確認</span>
+         </div>
+       </div>
   -->
 </body>
 </html>
