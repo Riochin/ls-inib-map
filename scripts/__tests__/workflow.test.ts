@@ -15,10 +15,12 @@ import { resolve } from 'node:path'
  * - ジオコーディングAPIキーをシークレットから環境変数へ渡す（鍵をリポジトリに残さない）。
  * - パイプライン（`scripts/pipeline.ts`）を実行する。スクリプト失敗時はコミット段へ進まない
  *   （差分コミット段はパイプライン段の成功に依存する）。
- * - 実体差分（`stores.json` / ジオコードキャッシュ）がある場合のみコミット・プッシュし、
- *   差分が無ければコミットしない（Req2.7 を git の差分検知で担保）。
+ * - 実体差分（`stores.json` / ジオコードキャッシュ）がある場合のみ PR を作成し、
+ *   差分が無ければ PR を作らない（Req2.7 を create-pull-request の差分検知で担保）。
  * - コミットメッセージは既存規約（`chore:` + 日本語要約）に従う。
- * - push 権限（`contents: write`）を持ち、ランタイムAPI/DBを導入しない（ビルド前生成のみ・Req2.8）。
+ * - main へ直 push せず PR を作成する（無確認で本番デプロイへ出るのを防ぐ）。
+ * - PR 作成権限（`contents: write` / `pull-requests: write`）を持ち、ランタイムAPI/DBを
+ *   導入しない（ビルド前生成のみ・Req2.8）。
  */
 
 const WORKFLOW_PATH = resolve(__dirname, '../../.github/workflows/update-stores.yml')
@@ -52,21 +54,25 @@ describe('update-stores ワークフロー', () => {
     expect(readWorkflow()).toMatch(/scripts\/pipeline\.ts/)
   })
 
-  it('差分検知に stores.json とジオコードキャッシュを含める', () => {
+  it('PR の対象パスに stores.json とジオコードキャッシュを含める', () => {
     const yml = readWorkflow()
     expect(yml).toMatch(/src\/data\/stores\.json/)
     expect(yml).toMatch(/scripts\/cache\/geocode\.json/)
-    // git の差分検知で差分有無を判定する（差分なしはコミットしない・Req2.7）
-    expect(yml).toMatch(/git status --porcelain/)
+    // create-pull-request の差分検知で差分有無を判定する（差分なしは PR を作らない・Req2.7）
+    expect(yml).toMatch(/peter-evans\/create-pull-request/)
+    expect(yml).toMatch(/add-paths:/)
   })
 
-  it('既存規約に従うコミットメッセージ（chore: + 日本語要約）でコミットする', () => {
+  it('既存規約に従うコミットメッセージ（chore: + 日本語要約）で PR を作成する', () => {
     const yml = readWorkflow()
-    expect(yml).toMatch(/git commit -m ["']chore: .+["']/)
-    expect(yml).toMatch(/git push/)
+    expect(yml).toMatch(/commit-message:\s*["']chore: .+["']/)
+    // main へ直 push はしない（PR を作成する）
+    expect(yml).not.toMatch(/git push/)
   })
 
-  it('push のための contents: write 権限を持つ', () => {
-    expect(readWorkflow()).toMatch(/contents:\s*write/)
+  it('PR 作成のための contents: write / pull-requests: write 権限を持つ', () => {
+    const yml = readWorkflow()
+    expect(yml).toMatch(/contents:\s*write/)
+    expect(yml).toMatch(/pull-requests:\s*write/)
   })
 })
