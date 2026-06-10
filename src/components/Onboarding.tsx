@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react'
 import { getMarkerImage, type MarkerThemeKey } from '@/lib/marker-image'
 import { getThemeByKey } from '@/lib/marker-color'
 import { CountBadge } from './CountBadge'
@@ -437,6 +437,102 @@ const PAGE_COUNT = PAGES.length
 // 新機能ページは末尾。再訪ユーザーの自動オープン時はここから開く。
 const NEWS_PAGE_INDEX = PAGES.length - 1
 
+/**
+ * 独自スクロールバー付きのスクロール領域。
+ * モバイル Safari 等ではネイティブのスクロールバーが消えて「スクロールできると気づけない」ため、
+ * 常時見えるサム（つまみ）を自前で重ねる。中身の高さが変わっても（新機能の開閉など）追従する。
+ */
+const MIN_THUMB = 28 // つまみが小さくなりすぎないための下限(px)
+
+function ScrollArea({ children }: { children: ReactNode }) {
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
+  const [thumb, setThumb] = useState({ height: 0, top: 0, visible: false })
+  // ドラッグ開始時のポインタ位置と scrollTop を保持（ドラッグ中の追従に使う）
+  const drag = useRef<{ startY: number; startScroll: number } | null>(null)
+
+  const update = useCallback(() => {
+    const el = scrollRef.current
+    if (!el) return
+    const { scrollTop, scrollHeight, clientHeight } = el
+    if (scrollHeight <= clientHeight + 1) {
+      setThumb((t) => (t.visible ? { height: 0, top: 0, visible: false } : t))
+      return
+    }
+    const track = clientHeight
+    const height = Math.max(MIN_THUMB, (clientHeight / scrollHeight) * track)
+    const maxTop = track - height
+    const top = (scrollTop / (scrollHeight - clientHeight)) * maxTop
+    setThumb({ height, top, visible: true })
+  }, [])
+
+  // スクロール／リサイズ／中身の高さ変化（開閉）に追従
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+    update()
+    el.addEventListener('scroll', update, { passive: true })
+    // el = ビューポート高さの変化（端末リサイズ）、content = 中身の高さ変化（開閉・ページ切替）に追従
+    const ro = new ResizeObserver(update)
+    ro.observe(el)
+    if (contentRef.current) ro.observe(contentRef.current)
+    return () => {
+      el.removeEventListener('scroll', update)
+      ro.disconnect()
+    }
+  }, [update])
+
+  // つまみのドラッグでスクロール（ポインタ移動を scrollTop に換算）
+  useEffect(() => {
+    function onMove(e: globalThis.PointerEvent) {
+      const el = scrollRef.current
+      const d = drag.current
+      if (!el || !d) return
+      const { scrollHeight, clientHeight } = el
+      const height = Math.max(MIN_THUMB, (clientHeight / scrollHeight) * clientHeight)
+      const maxTop = clientHeight - height
+      if (maxTop <= 0) return
+      const perPx = (scrollHeight - clientHeight) / maxTop
+      el.scrollTop = d.startScroll + (e.clientY - d.startY) * perPx
+    }
+    function onUp() {
+      drag.current = null
+    }
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointerup', onUp)
+    return () => {
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onUp)
+    }
+  }, [])
+
+  const onThumbDown = (e: ReactPointerEvent) => {
+    const el = scrollRef.current
+    if (!el) return
+    drag.current = { startY: e.clientY, startScroll: el.scrollTop }
+    e.preventDefault()
+  }
+
+  return (
+    <div className="relative flex-1 min-h-0">
+      <div ref={scrollRef} className="no-native-scrollbar h-full overflow-y-auto px-5 pt-5 pb-2">
+        <div ref={contentRef}>{children}</div>
+      </div>
+      {/* 独自スクロールバー（中身が溢れる時だけ表示）。トラック高さ＝clientHeight に合わせる */}
+      {thumb.visible && (
+        <div className="pointer-events-none absolute inset-y-0 right-1 w-1.5 rounded-full bg-gray-200/60">
+          <div
+            onPointerDown={onThumbDown}
+            className="pointer-events-auto absolute right-0 w-1.5 rounded-full bg-gray-400/70 hover:bg-gray-500/90 active:bg-gray-600 transition-colors cursor-grab active:cursor-grabbing touch-none"
+            style={{ height: thumb.height, top: thumb.top }}
+            aria-hidden="true"
+          />
+        </div>
+      )}
+    </div>
+  )
+}
+
 function OnboardingModal({ initialPage = 0, onClose }: { initialPage?: number; onClose: () => void }) {
   const [page, setPage] = useState(initialPage)
 
@@ -457,13 +553,13 @@ function OnboardingModal({ initialPage = 0, onClose }: { initialPage?: number; o
           ✕
         </button>
 
-        {/* 本文（ここだけスクロール） */}
-        <div className="flex-1 min-h-0 overflow-y-auto px-5 pt-5 pb-2">
+        {/* 本文（ここだけスクロール・独自スクロールバー付き） */}
+        <ScrollArea>
           {(() => {
             const Page = PAGES[page]
             return <Page />
           })()}
-        </div>
+        </ScrollArea>
 
         {/* 固定フッター：ナビゲーション＋ページインジケータ（常に表示） */}
         <div className="shrink-0 px-5 pt-3 pb-4">

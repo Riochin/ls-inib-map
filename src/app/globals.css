@@ -8,3 +8,15 @@ body {
   width: 100%;
   overflow: hidden;
 }
+
+/* ネイティブのスクロールバーを隠す（独自スクロールバーを重ねる要素で使う）。
+   モバイル Safari は ::-webkit-scrollbar、Firefox は scrollbar-width で消す。 */
+.no-native-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* 旧 Edge/IE */
+}
+.no-native-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none; /* WebKit (Chrome/Safari/iOS) */
+}
