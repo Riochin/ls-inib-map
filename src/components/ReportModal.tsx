@@ -81,18 +81,13 @@ export function ReportModal({
           ✕
         </button>
 
-        <h2 className="text-lg text-gray-800 mb-0.5" style={HEADING_FONT_STYLE}>
-          情報の修正を報告
-        </h2>
-        <p className="text-xs text-gray-500 mb-4 break-words">{store.name}</p>
-
         {status === 'done' ? (
           <div>
             <h3 className="text-lg text-gray-800 mb-1" style={HEADING_FONT_STYLE}>
               ありがとうございます！
             </h3>
             <p className="text-sm mb-4">
-              報告を受け付けました🙏
+              「{store.name}」の情報、受け付けました🙏
               <br />
               内容を確認のうえ反映します（即時ではありません）。
             </p>
@@ -105,6 +100,10 @@ export function ReportModal({
           </div>
         ) : (
           <form onSubmit={submit}>
+            <h2 className="text-lg text-gray-800 mb-0.5" style={HEADING_FONT_STYLE}>
+              情報の修正を報告
+            </h2>
+            <p className="text-xs text-gray-500 mb-4 break-words">{store.name}</p>
             {/* honeypot: 視覚的に隠す。bot が埋めたらサーバーで破棄 */}
             <input
               type="text"
