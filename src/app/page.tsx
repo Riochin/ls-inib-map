@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useMemo, useEffect, useLayoutEffect } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { APIProvider } from '@vis.gl/react-google-maps'
 import { stores, storesMeta } from '@/data/stores'
 import { filterStoresAll, filterStoresByKeyword } from '@/lib/filter'
@@ -21,10 +21,7 @@ import { PairSchedulePanel } from '@/components/PairSchedulePanel'
 import type { FilterOption, AddressFilter, Store } from '@/types/store'
 import { EMPTY_ADDRESS_FILTER } from '@/types/store'
 import { loadSavedFilter, saveFilter } from '@/lib/filter-storage'
-
-// SSR では useLayoutEffect が警告を出すため useEffect にフォールバックする。
-const useIsomorphicLayoutEffect =
-  typeof window !== 'undefined' ? useLayoutEffect : useEffect
+import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect'
 
 export default function MapPage() {
   const [activeFilter, setActiveFilter] = useState<FilterOption>('all')
