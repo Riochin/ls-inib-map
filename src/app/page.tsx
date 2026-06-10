@@ -20,6 +20,8 @@ import { Onboarding } from '@/components/Onboarding'
 import { PairSchedulePanel } from '@/components/PairSchedulePanel'
 import type { FilterOption, AddressFilter, Store } from '@/types/store'
 import { EMPTY_ADDRESS_FILTER } from '@/types/store'
+import { loadSavedFilter, saveFilter } from '@/lib/filter-storage'
+import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect'
 
 export default function MapPage() {
   const [activeFilter, setActiveFilter] = useState<FilterOption>('all')
@@ -32,8 +34,17 @@ export default function MapPage() {
 
   const addressIndex = useMemo(() => buildAddressIndex(stores), [])
 
+  // 前回開いていたタブを復元（localStorage 不可環境では既定の「すべて」のまま）。
+  // 初回ハイドレーションは SSR と同じ 'all' で一致させ、描画前に走る useLayoutEffect で
+  // 保存タブへ差し替えることで、'すべて'→保存タブの一瞬のちらつき（FOUC）を防ぐ。
+  useIsomorphicLayoutEffect(() => {
+    const saved = loadSavedFilter()
+    if (saved) setActiveFilter(saved)
+  }, [])
+
   const handleFilterChange = useCallback((filter: FilterOption) => {
     setActiveFilter(filter)
+    saveFilter(filter)
   }, [])
 
   const filteredStores = useMemo(
