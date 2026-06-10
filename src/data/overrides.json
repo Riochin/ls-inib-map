@@ -99,6 +99,14 @@
       },
       "lat": 33.3251978,
       "lng": 130.9114515
+    },
+    "c2a6953ae8f9": {
+      "source": "admin",
+      "note": "GiGO スマーク伊勢崎 イニブ台数修正（マップ3台→実際2台, Issue #75）。@UrUshihara_M。",
+      "machineCounts": {
+        "gundam-exvs": 2
+      },
+      "updatedAt": "2026-06-10"
     }
   }
 }

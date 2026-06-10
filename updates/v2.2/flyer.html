@@ -3,32 +3,11 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>ラストサバイニブ ver ○.○ 紹介</title>
+<title>ラストサバイニブ ver 2.2 紹介</title>
 
 <!--
-  ▼ これは紹介画像フライヤーの「テンプレ（コピー元）」です。
-    新バージョンは updates/v○.○/flyer.html にコピーし、本文中の ★[差し替え] だけ埋める。
-    レイアウト（配色・フォント・サイズ・部品）は本体テーマ準拠なので原則そのまま使う。
-
   X（旧Twitter）投稿用の紹介画像。スクリーンショットして使う想定。
-  枠 (#flyer) は 1200×675（16:9）固定。ブラウザ／プレビューで開き、#flyer をそのまま撮影する。
-
-  ★[差し替え] する場所:
-    1. ver-pill のバージョン番号
-    2. メイン見出し（title）＝今回の目玉を一撃で。強調は <span class="accent">（紫）
-    3. 機能カード×3（kicker / 見出し / 説明 / preview）＝今回の新機能に合わせる
-       preview は末尾「UI再現 部品カタログ」から選んで差し替える
-    4. フッターの公開URL（独自ドメイン lsib.world）
-
-  ★守ること（はみ出し防止／ブランド統一）:
-    - 主要パネル(.card / .preview)は高さ固定＋overflow:hidden。中身を増やしても枠は崩れない。
-      文言を増やして溢れる時は、文字サイズより先に .inner 冒頭の「高さ収支」を見直す。
-    - ロゴ（右上）は src/app/icon.svg と同形のピンを大きく1つ。アプリ名テキストは載せない
-      （右下のハッシュタグが名前を兼ねる）。
-    - カード本文(.card p)は文の区切り「。」で <br> 改行すると読みやすい。
-    - UIの再現色は本体実装に必ず合わせる（例: おおよその位置は青ではなく amber #b45309/#f59e0b）。
-    - ユーザーが実際にはクリックできない情報（データ品質など）は、操作UIに似せず
-      “スライド風インフォグラフィック”で見せる（クリックできると誤解されないため）。
+  枠 (#flyer) は 1200×675（16:9）固定。ブラウザで開き、#flyer をそのまま撮影する。
 -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -368,60 +347,6 @@
     border-radius: 999px;
   }
 
-  /* ===== UI再現 部品の追加カタログ（過去バージョンで使用・必要なら .preview に流用）===== */
-  /* 台数バッジ（本体 CountBadge を再現） */
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    font-size: 12.5px;
-    font-weight: 600;
-    padding: 3px 11px;
-    border-radius: 999px;
-    white-space: nowrap;
-  }
-  .badge.confirmed { background: var(--blue); color: #fff; }
-  .badge.soft { background: var(--blue-soft); color: var(--blue); }
-  .badge-row { display: flex; align-items: center; gap: 9px; }
-  .badge-row + .badge-row { margin-top: 11px; }
-  .badge-note { font-size: 11.5px; color: var(--ink-soft); line-height: 1.4; }
-  .badge-note b { color: var(--ink); font-weight: 700; }
-
-  /* ペア戦チップ（本体 PairSchedulePanel を再現） */
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    background: rgba(255,255,255,0.92);
-    border: 1px solid #eef0f6;
-    border-radius: 12px;
-    padding: 8px 12px;
-    box-shadow: 0 4px 10px rgba(70,40,110,0.08);
-  }
-  .chip .lead { font-size: 11px; color: var(--purple); }
-  .chip .mode { font-size: 16px; font-weight: 800; color: var(--purple); font-family: var(--round); }
-  .chip .caret { margin-left: 6px; color: #9aa1b2; font-size: 10px; }
-  .mini-cal { display: flex; gap: 5px; margin-top: 12px; }
-  .mini-cal span {
-    font-size: 11px; font-weight: 700; width: 30px; height: 30px;
-    display: flex; align-items: center; justify-content: center; border-radius: 8px;
-    font-family: var(--round);
-  }
-  .mini-cal .pair { background: var(--purple); color: #fff; }
-  .mini-cal .solo { background: #eef0f6; color: var(--ink-soft); }
-
-  /* オンボーディング・キャッチコピー */
-  .catch {
-    font-family: var(--round);
-    font-weight: 800;
-    font-size: 22px;
-    line-height: 1.3;
-    color: var(--ink);
-    text-align: center;
-    padding: 6px 0 2px;
-  }
-  .catch .sec { color: var(--purple); }
-  .catch-sub { text-align: center; font-size: 11.5px; color: var(--ink-soft); margin-top: 8px; }
-
   /* ===== フッター ===== */
   footer {
     margin-top: 18px;
@@ -465,9 +390,8 @@
       <header>
         <div>
           <!-- ★[差し替え1] バージョン番号 -->
-          <span class="ver-pill"><span class="dot"></span>新機能 ver ○.○</span>
-          <!-- ★[差し替え2] メイン見出し＝今回の目玉を一撃で。強調は <span class="accent">（紫）。
-               1行でも2行でも可（2行は <br>）。短い方が映える -->
+          <span class="ver-pill"><span class="dot"></span>新機能 ver 2.2</span>
+          <!-- ★[差し替え2] メイン見出し -->
           <h1 class="title">もっと「<span class="accent">正しい</span>場所」に。</h1>
           <p class="subtitle">ラスサバ・イニブの設置店舗マップ アップデート</p>
         </div>
@@ -487,54 +411,60 @@
         </div>
       </header>
 
-      <!--
-        ★[差し替え3] 機能カード×3。1枚の構成は上から:
-          1) kicker  … 機能名タグ
-          2) h3      … カード見出し（強調は <span class="accent">）
-          3) p       … 説明文（1〜2文。文の区切り「。」で <br> 改行すると読みやすい）
-          4) .preview … 高さ固定パネル。末尾「UI再現 部品カタログ」から該当機能に近い部品を入れる。
-                        ・実際にユーザーが操作する画面は“実物そっくり”に再現してOK（例: 報告フォーム）
-                        ・ユーザーが触れない情報（データ品質など）は操作UIに似せず、
-                          スライド風インフォグラフィック(F)で。色は本体実装に必ず合わせる。
-                        ・該当する実UIが無ければ .preview ごと省略可。
-      -->
+      <!-- ★[差し替え4] 機能カード×3 -->
       <div class="cards">
-        <!-- カード1 -->
+        <!-- カード1：ユーザー報告フォーム -->
         <div class="card">
-          <span class="kicker">［キッカー：機能名タグ］</span>
-          <h3>［カード見出し］<br><span class="accent">［強調語］</span>。</h3>
-          <p>［この機能の説明を1〜2文で。ノンテック層にやさしく］</p>
+          <span class="kicker">報告フォーム</span>
+          <h3>マップ内から直接、<br><span class="accent">情報提供</span>が可能に。</h3>
+          <p>台数・設備などの情報を、マップを見ながらそのまま送信できます。</p>
           <div class="preview">
-            <!-- ★末尾カタログから該当部品を貼る（例: D 報告フォーム） -->
-            <div class="ui-slot">［実UIの再現／インフォグラフィックをここに］</div>
+            <div class="report-form">
+              <div class="rf-title">情報の修正を報告 <span class="rf-store">namco巣鴨店</span></div>
+              <div class="rf-label">内容（必須）</div>
+              <div class="rf-field rf-placeholder">例）イニブは実際8台です</div>
+              <div class="rf-submit">送信する</div>
+            </div>
           </div>
         </div>
 
-        <!-- カード2 -->
+        <!-- カード2：ピン「おおよそ」位置表示 -->
         <div class="card">
-          <span class="kicker">［キッカー：機能名タグ］</span>
-          <h3>［カード見出し］<br><span class="accent">［強調語］</span>。</h3>
-          <p>［この機能の説明を1〜2文で］</p>
+          <span class="kicker">ピン精度</span>
+          <h3>不確かなピンが、<br><span class="accent">一目でわかる</span>ように。</h3>
+          <p>位置精度が低い店舗に「おおよそ」のサークルを表示。<br>ピンの信頼度が一目でわかります。</p>
           <div class="preview">
-            <!-- ★末尾カタログから該当部品を貼る（例: E おおよその位置サークル） -->
-            <div class="ui-slot">［実UIの再現／インフォグラフィックをここに］</div>
+            <div class="approx-demo">
+              <div class="approx-ring"></div>
+              <div class="approx-pin"></div>
+              <div class="approx-label">おおよその位置</div>
+            </div>
           </div>
         </div>
 
-        <!-- カード3 -->
+        <!-- カード3：ピン位置精度 一括監査 -->
         <div class="card">
-          <span class="kicker">［キッカー：機能名タグ］</span>
-          <h3>［カード見出し］<br><span class="accent">［強調語］</span>。</h3>
-          <p>［この機能の説明を1〜2文で］</p>
+          <span class="kicker">データ品質</span>
+          <h3>位置が不確かな店舗を<br><span class="accent">洗い出しました。</span></h3>
+          <p>全761店のピンを再点検。<br>要確認の45店を特定し、1件ずつ現地を確かめて直していきます。</p>
           <div class="preview">
-            <!-- ★末尾カタログから該当部品を貼る（例: F データ品質インフォグラフィック） -->
-            <div class="ui-slot">［実UIの再現／インフォグラフィックをここに］</div>
+            <div class="quality">
+              <div class="quality-stat"><span class="num">761</span><span class="unit">店を再点検</span></div>
+              <div class="quality-bar">
+                <span class="ok" style="flex:716"></span>
+                <span class="flag" style="flex:45"></span>
+              </div>
+              <div class="quality-legend">
+                <span><i class="dot-ok"></i>716店 OK</span>
+                <span><i class="dot-flag"></i>45店 要確認</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       <footer>
-        <!-- ★[差し替え4] 公開URL。独自ドメインは固定 lsib.world（基本そのまま） -->
+        <!-- ★[差し替え5] 公開URL（独自ドメイン） -->
         <span class="url">
           <span class="link-mark">
             <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -548,61 +478,5 @@
       </footer>
     </div>
   </div>
-
-  <!--
-    ===== UI再現 部品カタログ（カード内 .preview に貼って使う・コピー元）=====
-    .preview は高さ固定（約106px の中身領域）。下の部品はその中に収まる前提で作ってある。
-
-    A) 台数バッジ（出どころ表示・CountBadge）:
-       <div class="badge-row">
-         <span class="badge confirmed">イニブ 7台</span>
-         <span class="badge-note"><b>現地ユーザーからの確認あり✔︎</b></span>
-       </div>
-       <div class="badge-row">
-         <span class="badge soft">イニブ 9台</span>
-         <span class="badge-note">公式サイト・自動取得</span>
-       </div>
-
-    B) ペア戦チップ＋ミニカレンダー（PairSchedulePanel）:
-       <span class="chip"><span class="lead">今日</span><span class="mode">ペア戦</span><span class="caret">▼</span></span>
-       <div class="mini-cal">
-         <span class="pair">月</span><span class="solo">火</span><span class="pair">水</span>
-         <span class="solo">木</span><span class="pair">金</span>
-       </div>
-
-    C) キャッチコピー（Onboarding）:
-       <div class="catch">戦場選びを<br>サクッと<span class="sec">10秒</span>に。</div>
-       <div class="catch-sub">ラスサバ・イニブの設置店舗マップへようこそ</div>
-
-    D) 報告フォーム（ReportModal・実物そっくり再現／送信ボタンは黒 #111827）:
-       <div class="report-form">
-         <div class="rf-title">情報の修正を報告 <span class="rf-store">○○店</span></div>
-         <div class="rf-label">内容（必須）</div>
-         <div class="rf-field rf-placeholder">例）イニブは実際8台です</div>
-         <div class="rf-submit">送信する</div>
-       </div>
-
-    E) おおよその位置サークル（ApproximateCircle・色は実装の amber に一致:
-       塗り #f59e0b / 線 #b45309。青にしないこと）:
-       <div class="approx-demo">
-         <div class="approx-ring"></div>
-         <div class="approx-pin"></div>
-         <div class="approx-label">おおよその位置</div>
-       </div>
-
-    F) データ品質インフォグラフィック（“スライド風”。クリックUIに似せない。
-       数値・帯の比率は実データに合わせる）:
-       <div class="quality">
-         <div class="quality-stat"><span class="num">○○○</span><span class="unit">店を再点検</span></div>
-         <div class="quality-bar">
-           <span class="ok" style="flex:○○○"></span>
-           <span class="flag" style="flex:○○"></span>
-         </div>
-         <div class="quality-legend">
-           <span><i class="dot-ok"></i>○○○店 OK</span>
-           <span><i class="dot-flag"></i>○○店 要確認</span>
-         </div>
-       </div>
-  -->
 </body>
 </html>

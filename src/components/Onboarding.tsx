@@ -1,24 +1,26 @@
 'use client'
 
-import { useEffect, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react'
 import { getMarkerImage, type MarkerThemeKey } from '@/lib/marker-image'
 import { getThemeByKey } from '@/lib/marker-color'
 import { CountBadge } from './CountBadge'
 // 見出し系の丸ゴシック（M PLUS Rounded 1c）。送信フォーム等と共有しトーンを揃える。
 import { HEADING_FONT_STYLE, CATCH_FONT_STYLE } from '@/lib/heading-font'
+// 新機能ページの内容は src/data/releases.ts に集約（追加はそこへ1エントリ足すだけ）。
+import { releases, latestRelease, type Release, type ReleaseHighlight } from '@/data/releases'
 
 const STORAGE_KEY = 'ls-exvs-onboarded'
 
 // 新機能告知のバージョン管理。再訪ユーザーに「未読の新バージョン」がある時だけ
 // 新機能ページから自動オープンする（初回ユーザーのチュートリアルは邪魔しない）。
-// 新機能ページの内容を更新したら NEWS_VERSION を上げること。
-const NEWS_VERSION = '2.1'
+// 最新版は releases.ts の先頭で決まる（releases に新エントリを足せば自動で上がる）。
+const NEWS_VERSION = latestRelease.version
 const NEWS_SEEN_KEY = 'ls-exvs-news-seen'
 
 const AUTHOR_NAME = 'マルハット'
 const X_HANDLE = 'ls_boushi'
 const X_URL = `https://x.com/${X_HANDLE}`
-const SITE_URL = 'https://ls-inib-map.vercel.app/'
+const SITE_URL = 'https://lsib.world/'
 const TWEET_HASHTAG = 'ラストサバイニブ'
 const TWEET_TEXT = 'ラスサバ・イニブの設置店舗マップ📍'
 const HASHTAG_URL = `https://x.com/hashtag/${encodeURIComponent(TWEET_HASHTAG)}`
@@ -347,35 +349,85 @@ function DataPrivacyPage() {
   )
 }
 
-/** 新機能告知ページ。再訪ユーザーへ ver アップの目玉機能を伝える（初回ユーザーには末尾で控えめに） */
+/** 最新版の目玉機能カード（紫枠・新機能ページの主役） */
+function HighlightCards({ highlights }: { highlights: ReleaseHighlight[] }) {
+  return (
+    <ul className="flex flex-col gap-3">
+      {highlights.map((h) => (
+        <li key={h.title} className="rounded-xl border border-purple-100 bg-purple-50/50 p-3">
+          <p className="text-[11px] font-bold text-purple-700 mb-1">{h.title}</p>
+          <p className="text-xs text-gray-700 leading-snug">{h.body}</p>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+/** 過去バージョン1件（「これまでのアップデート」内のコンパクト表示） */
+function PastReleaseItem({ release }: { release: Release }) {
+  return (
+    <div>
+      <div className="flex items-baseline gap-2 mb-1.5">
+        <span className="text-sm font-bold text-gray-800">ver {release.version}</span>
+        {release.date && <span className="text-[10px] text-gray-400">{release.date}</span>}
+      </div>
+      <ul className="flex flex-col gap-1.5">
+        {release.highlights.map((h) => (
+          <li key={h.title} className="text-xs text-gray-600 leading-snug">
+            <span className="font-semibold text-gray-700">{h.title}</span>
+            <span className="text-gray-400"> — </span>
+            {h.body}
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+/**
+ * 新機能告知ページ。最新版の目玉を伝えつつ、下に「これまでのアップデート」を畳んで置く。
+ * 内容はすべて releases.ts 由来（このコンポーネントは表示のみ）。
+ */
 function NewsPage() {
+  const [showPast, setShowPast] = useState(false)
+  const { headline, highlights } = latestRelease
+  const past = releases.slice(1)
+
   return (
     <>
       <span className="inline-flex items-center gap-1.5 bg-purple-700 text-white text-[11px] font-bold px-2.5 py-1 rounded-full mb-2">
-        新機能 ver {NEWS_VERSION}
+        新機能 ver {latestRelease.version}
       </span>
       <h2 className="text-xl text-gray-900 mb-1 tracking-tight" style={CATCH_FONT_STYLE}>
-        <span className="whitespace-nowrap">その台数、</span>
-        <span className="whitespace-nowrap">
-          <span className="text-purple-700">「信じていい？」</span>がわかる。
-        </span>
+        {headline.lead}
+        <span className="text-purple-700">{headline.accent}</span>
+        {headline.tail}
       </h2>
       <p className="text-xs text-gray-500 mb-4">前回からのアップデート</p>
 
-      <ul className="flex flex-col gap-3">
-        <li className="rounded-xl border border-purple-100 bg-purple-50/50 p-3">
-          <p className="text-[11px] font-bold text-purple-700 mb-1">台数の出どころ表示</p>
-          <p className="text-xs text-gray-700 leading-snug">
-            台数バッジの色の濃さで「確からしさ」がひと目で分かるように。タップすると、その台数の出どころ（公式サイト・現地での確認など）も見られます。
-          </p>
-        </li>
-        <li className="rounded-xl border border-purple-100 bg-purple-50/50 p-3">
-          <p className="text-[11px] font-bold text-purple-700 mb-1">ペア戦カレンダー</p>
-          <p className="text-xs text-gray-700 leading-snug">
-            ラスサバの対戦モード（ペア戦／個人戦）を地図のチップと月間カレンダーで確認できるようになりました。
-          </p>
-        </li>
-      </ul>
+      <HighlightCards highlights={highlights} />
+
+      {past.length > 0 && (
+        <div className="mt-5 pt-4 border-t border-gray-100">
+          <button
+            onClick={() => setShowPast((v) => !v)}
+            className="flex items-center gap-1 text-xs font-semibold text-gray-600 hover:text-gray-900 transition-colors"
+            aria-expanded={showPast}
+          >
+            これまでのアップデート（ver {past[0].version} 以前）
+            <span className={`transition-transform ${showPast ? 'rotate-180' : ''}`} aria-hidden="true">
+              ▾
+            </span>
+          </button>
+          {showPast && (
+            <div className="mt-3 flex flex-col gap-4">
+              {past.map((r) => (
+                <PastReleaseItem key={r.version} release={r} />
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </>
   )
 }
@@ -384,6 +436,110 @@ const PAGES = [HowToPage, LegendPage, AboutPage, DataPrivacyPage, NewsPage]
 const PAGE_COUNT = PAGES.length
 // 新機能ページは末尾。再訪ユーザーの自動オープン時はここから開く。
 const NEWS_PAGE_INDEX = PAGES.length - 1
+
+/**
+ * 独自スクロールバー付きのスクロール領域。
+ * モバイル Safari 等ではネイティブのスクロールバーが消えて「スクロールできると気づけない」ため、
+ * 常時見えるサム（つまみ）を自前で重ねる。中身の高さが変わっても（新機能の開閉など）追従する。
+ */
+const MIN_THUMB = 28 // つまみが小さくなりすぎないための下限(px)
+// トラックの上下インセット(px)。上は見出し（タイトル）の下から始める程度、下は角丸ぶん。
+const TRACK_INSET_TOP = 64
+const TRACK_INSET_BOTTOM = 16
+
+function ScrollArea({ children }: { children: ReactNode }) {
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
+  const [thumb, setThumb] = useState({ height: 0, top: 0, visible: false })
+  // ドラッグ開始時のポインタ位置と scrollTop を保持（ドラッグ中の追従に使う）
+  const drag = useRef<{ startY: number; startScroll: number } | null>(null)
+
+  const update = useCallback(() => {
+    const el = scrollRef.current
+    if (!el) return
+    const { scrollTop, scrollHeight, clientHeight } = el
+    if (scrollHeight <= clientHeight + 1) {
+      setThumb((t) => (t.visible ? { height: 0, top: 0, visible: false } : t))
+      return
+    }
+    const track = clientHeight - TRACK_INSET_TOP - TRACK_INSET_BOTTOM
+    const height = Math.max(MIN_THUMB, (clientHeight / scrollHeight) * track)
+    const maxTop = track - height
+    const top = (scrollTop / (scrollHeight - clientHeight)) * maxTop
+    setThumb({ height, top, visible: true })
+  }, [])
+
+  // スクロール／リサイズ／中身の高さ変化（開閉）に追従
+  useEffect(() => {
+    const el = scrollRef.current
+    if (!el) return
+    update()
+    el.addEventListener('scroll', update, { passive: true })
+    // el = ビューポート高さの変化（端末リサイズ）、content = 中身の高さ変化（開閉・ページ切替）に追従
+    const ro = new ResizeObserver(update)
+    ro.observe(el)
+    if (contentRef.current) ro.observe(contentRef.current)
+    return () => {
+      el.removeEventListener('scroll', update)
+      ro.disconnect()
+    }
+  }, [update])
+
+  // つまみのドラッグでスクロール（ポインタ移動を scrollTop に換算）
+  useEffect(() => {
+    function onMove(e: globalThis.PointerEvent) {
+      const el = scrollRef.current
+      const d = drag.current
+      if (!el || !d) return
+      const { scrollHeight, clientHeight } = el
+      const track = clientHeight - TRACK_INSET_TOP - TRACK_INSET_BOTTOM
+      const height = Math.max(MIN_THUMB, (clientHeight / scrollHeight) * track)
+      const maxTop = track - height
+      if (maxTop <= 0) return
+      const perPx = (scrollHeight - clientHeight) / maxTop
+      el.scrollTop = d.startScroll + (e.clientY - d.startY) * perPx
+    }
+    function onUp() {
+      drag.current = null
+    }
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointerup', onUp)
+    return () => {
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onUp)
+    }
+  }, [])
+
+  const onThumbDown = (e: ReactPointerEvent) => {
+    const el = scrollRef.current
+    if (!el) return
+    drag.current = { startY: e.clientY, startScroll: el.scrollTop }
+    e.preventDefault()
+  }
+
+  return (
+    <div className="relative flex-1 min-h-0">
+      <div ref={scrollRef} className="no-native-scrollbar h-full overflow-y-auto px-5 pt-5 pb-2">
+        <div ref={contentRef}>{children}</div>
+      </div>
+      {/* 独自スクロールバー（中身が溢れる時だけ表示）。サイトのテーマ色（紫）に合わせる。
+          トラック高さ＝clientHeight に合わせる */}
+      {thumb.visible && (
+        <div
+          className="pointer-events-none absolute right-1 w-1 rounded-full bg-purple-100/70"
+          style={{ top: TRACK_INSET_TOP, bottom: TRACK_INSET_BOTTOM }}
+        >
+          <div
+            onPointerDown={onThumbDown}
+            className="pointer-events-auto absolute right-0 w-1 rounded-full bg-purple-400/80 hover:bg-purple-500 active:bg-purple-600 transition-colors cursor-grab active:cursor-grabbing touch-none"
+            style={{ height: thumb.height, top: thumb.top }}
+            aria-hidden="true"
+          />
+        </div>
+      )}
+    </div>
+  )
+}
 
 function OnboardingModal({ initialPage = 0, onClose }: { initialPage?: number; onClose: () => void }) {
   const [page, setPage] = useState(initialPage)
@@ -394,7 +550,9 @@ function OnboardingModal({ initialPage = 0, onClose }: { initialPage?: number; o
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl shadow-xl max-w-sm w-full relative max-h-[90vh] flex flex-col"
+        // 高さを全ページで統一（footer=「次へ」の位置が固定され、溢れる分は本文が独自スクロール）。
+        // 高さは1枚目（操作案内）がちょうど収まる値に合わせている。短い画面では 85vh で頭打ち。
+        className="bg-white rounded-2xl shadow-xl max-w-sm w-full relative h-[500px] max-h-[85vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -405,13 +563,13 @@ function OnboardingModal({ initialPage = 0, onClose }: { initialPage?: number; o
           ✕
         </button>
 
-        {/* 本文（ここだけスクロール） */}
-        <div className="flex-1 min-h-0 overflow-y-auto px-5 pt-5 pb-2">
+        {/* 本文（ここだけスクロール・独自スクロールバー付き） */}
+        <ScrollArea>
           {(() => {
             const Page = PAGES[page]
             return <Page />
           })()}
-        </div>
+        </ScrollArea>
 
         {/* 固定フッター：ナビゲーション＋ページインジケータ（常に表示） */}
         <div className="shrink-0 px-5 pt-3 pb-4">
