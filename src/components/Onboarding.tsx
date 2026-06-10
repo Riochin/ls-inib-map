@@ -526,12 +526,12 @@ function ScrollArea({ children }: { children: ReactNode }) {
           トラック高さ＝clientHeight に合わせる */}
       {thumb.visible && (
         <div
-          className="pointer-events-none absolute right-1 w-2 rounded-full bg-purple-100/70"
+          className="pointer-events-none absolute right-1 w-1 rounded-full bg-purple-100/70"
           style={{ top: TRACK_INSET_TOP, bottom: TRACK_INSET_BOTTOM }}
         >
           <div
             onPointerDown={onThumbDown}
-            className="pointer-events-auto absolute right-0 w-2 rounded-full bg-purple-400/80 hover:bg-purple-500 active:bg-purple-600 transition-colors cursor-grab active:cursor-grabbing touch-none"
+            className="pointer-events-auto absolute right-0 w-1 rounded-full bg-purple-400/80 hover:bg-purple-500 active:bg-purple-600 transition-colors cursor-grab active:cursor-grabbing touch-none"
             style={{ height: thumb.height, top: thumb.top }}
             aria-hidden="true"
           />
