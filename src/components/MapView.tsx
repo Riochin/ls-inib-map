@@ -109,6 +109,11 @@ function InfoWindowContent({ store, onClose }: { store: Store; onClose: () => vo
       </button>
       <h3 className="font-bold text-base leading-snug mb-1 break-words whitespace-normal">{store.name}</h3>
       <p className="text-xs text-gray-600 mb-1">{store.address}</p>
+      {store.approximateLocation && (
+        <p className="text-[11px] text-amber-700 mb-1 leading-snug">
+          ピンはおおよその位置です（住所から推定。実際の場所と少しずれている場合があります）
+        </p>
+      )}
       <div className="flex flex-wrap gap-1 mb-1">
         {store.games.map((game) => {
           // 運営確認のみ確定（通常色）、それ以外は薄い。タップで出どころ表示

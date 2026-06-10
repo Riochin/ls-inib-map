@@ -56,6 +56,26 @@ describe('applyOverrides', () => {
     expect(store.name).toBe('新名称')
   })
 
+  it('位置(lat/lng)を上書きすると approximateLocation を解除する（手動補正＝確定）', () => {
+    const stores = [makeStore({ approximateLocation: true })]
+    const file: OverridesFile = {
+      overrides: { abc123: { source: 'admin', lat: 36.0, lng: 137.0 } },
+    }
+    const [store] = applyOverrides(stores, file)
+    expect(store.lat).toBe(36.0)
+    expect(store.lng).toBe(137.0)
+    expect(store.approximateLocation).toBe(false)
+  })
+
+  it('位置を上書きしなければ approximateLocation はそのまま維持する', () => {
+    const stores = [makeStore({ approximateLocation: true })]
+    const file: OverridesFile = {
+      overrides: { abc123: { source: 'admin', machineCounts: { 'jojo-ls': 3 } } },
+    }
+    const [store] = applyOverrides(stores, file)
+    expect(store.approximateLocation).toBe(true)
+  })
+
   it('複数ゲームの台数を同時に上書きできる', () => {
     const stores = [makeStore()]
     const file: OverridesFile = {

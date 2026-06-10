@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
 import { dirname } from 'node:path'
 import type { Store } from '@/types/store'
 import type { StoresFile, StoresMeta } from '@/types/stores-file'
-import type { GeocodedStore } from './geocode'
+import { isApproximateLocation, type GeocodedStore } from './geocode'
 
 /**
  * JSON生成器と差分ゲート（Req2.4, 2.7, 5.1）。
@@ -56,6 +56,8 @@ function toStore(g: GeocodedStore): Store {
   // 閉店（手動）/移設（自動）は設定時のみ保持（省略時は営業中）
   if (g.closed) store.closed = true
   if (g.delisted) store.delisted = true
+  // ジオコード精度が低い（エリア重心フォールバック等）店舗にだけ「おおよその位置」フラグを付与
+  if (isApproximateLocation(g)) store.approximateLocation = true
   return store
 }
 

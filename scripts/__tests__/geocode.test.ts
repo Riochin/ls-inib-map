@@ -3,6 +3,7 @@ import {
   geocodeStores,
   buildGeocodeUrl,
   parseGeocodeResponse,
+  isApproximateLocation,
   type GeocodeCache,
 } from '../geocode'
 import type { GameTitle } from '@/types/store'
@@ -58,6 +59,52 @@ describe('parseGeocodeResponse', () => {
     expect(parseGeocodeResponse(make(48.85, 2.35))).toBeNull() // パリ（範囲外）
     expect(parseGeocodeResponse(make(35.69, 139.7))).toEqual({ lat: 35.69, lng: 139.7 }) // 東京（範囲内）
     expect(parseGeocodeResponse(make(26.21, 127.68))).toEqual({ lat: 26.21, lng: 127.68 }) // 沖縄（範囲内）
+  })
+
+  it('location_type を precision に、partial_match を partialMatch に写し取る', () => {
+    const body = {
+      status: 'OK',
+      results: [
+        {
+          partial_match: true,
+          geometry: { location: { lat: 35.69, lng: 139.7 }, location_type: 'APPROXIMATE' },
+        },
+      ],
+    }
+    expect(parseGeocodeResponse(body)).toEqual({
+      lat: 35.69,
+      lng: 139.7,
+      precision: 'APPROXIMATE',
+      partialMatch: true,
+    })
+  })
+
+  it('未知の location_type / partial_match=false はメタを付けない', () => {
+    const body = {
+      status: 'OK',
+      results: [
+        {
+          partial_match: false,
+          geometry: { location: { lat: 35.69, lng: 139.7 }, location_type: 'PLUS_CODE' },
+        },
+      ],
+    }
+    expect(parseGeocodeResponse(body)).toEqual({ lat: 35.69, lng: 139.7 })
+  })
+})
+
+describe('isApproximateLocation', () => {
+  it('APPROXIMATE のみを該当とする', () => {
+    expect(isApproximateLocation({ precision: 'APPROXIMATE' })).toBe(true)
+    expect(isApproximateLocation({ precision: 'ROOFTOP' })).toBe(false)
+    expect(isApproximateLocation({ precision: 'RANGE_INTERPOLATED' })).toBe(false)
+    expect(isApproximateLocation({ precision: 'GEOMETRIC_CENTER' })).toBe(false)
+    expect(isApproximateLocation({})).toBe(false)
+  })
+
+  it('partial_match だけでは該当としない（ビル名付き住所の誤検知防止）', () => {
+    expect(isApproximateLocation({ precision: 'ROOFTOP', partialMatch: true })).toBe(false)
+    expect(isApproximateLocation({ partialMatch: true })).toBe(false)
   })
 })
 

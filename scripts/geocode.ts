@@ -20,17 +20,61 @@ import type { MergedStore } from './types'
 // 型
 // ---------------------------------------------------------------------------
 
-/** 緯度経度 */
+/**
+ * ジオコード精度（Google Geocoding の `geometry.location_type`）。
+ * - `ROOFTOP`: 建物までピンポイント特定（最良）
+ * - `RANGE_INTERPOLATED`: 番地レンジからの内挿（良）
+ * - `GEOMETRIC_CENTER`: 道路・区画の中心（可）
+ * - `APPROXIMATE`: エリア重心へのフォールバック（要注意。字＋地番住所など）
+ */
+export type GeocodePrecision =
+  | 'ROOFTOP'
+  | 'RANGE_INTERPOLATED'
+  | 'GEOMETRIC_CENTER'
+  | 'APPROXIMATE'
+
+/** 緯度経度（＋ジオコード精度のメタ情報） */
 export interface GeocodeResult {
   lat: number
   lng: number
+  /** Google の `location_type`（旧キャッシュには無いため任意） */
+  precision?: GeocodePrecision
+  /** 住所を最後まで照合できず推測した（Google の `partial_match`） */
+  partialMatch?: boolean
 }
 
-/** 永続キャッシュ: 正規化住所 → 座標 */
+/** 永続キャッシュ: 正規化住所 → 座標（＋精度メタ） */
 export type GeocodeCache = Record<string, GeocodeResult>
 
 /** 座標が確定したマージ済み店舗（ジオコーダ出力・生成器へ渡る） */
-export type GeocodedStore = MergedStore & { lat: number; lng: number }
+export type GeocodedStore = MergedStore & {
+  lat: number
+  lng: number
+  precision?: GeocodePrecision
+  partialMatch?: boolean
+}
+
+/**
+ * ピン位置を「おおよそ（要確認）」とみなすか。
+ * `location_type=APPROXIMATE`（建物まで特定できずエリア重心へフォールバック）のみを該当とする。
+ *
+ * `partial_match`（住所のビル名・階層まで照合できなかった）は**含めない**。ビル名付き住所では
+ * 座標が `ROOFTOP`（建物精度）でも `partial_match=true` が頻発し、ピンは正確なのに誤検知に
+ * なるため。`partial_match` は監査レポートに参考情報として残すのみ。
+ */
+export function isApproximateLocation(result: {
+  precision?: GeocodePrecision
+  partialMatch?: boolean
+}): boolean {
+  return result.precision === 'APPROXIMATE'
+}
+
+const VALID_PRECISIONS: ReadonlySet<string> = new Set<GeocodePrecision>([
+  'ROOFTOP',
+  'RANGE_INTERPOLATED',
+  'GEOMETRIC_CENTER',
+  'APPROXIMATE',
+])
 
 /** ジオコーダの出力 */
 export interface GeocodeOutcome {
@@ -77,18 +121,30 @@ export function isValidJapanCoord(lat: number, lng: number): boolean {
   )
 }
 
-/** Google Geocoding APIのレスポンスから先頭結果の座標を取り出す（無ければ null） */
+/**
+ * Google Geocoding APIのレスポンスから先頭結果の座標＋精度を取り出す（無ければ null）。
+ * `geometry.location_type` を {@link GeocodePrecision} に、`partial_match` を `partialMatch`
+ * に写し取る（後段の精度フラグ付け・監査で使う）。
+ */
 export function parseGeocodeResponse(body: unknown): GeocodeResult | null {
   const b = body as {
     status?: string
-    results?: Array<{ geometry?: { location?: { lat?: number; lng?: number } } }>
+    results?: Array<{
+      partial_match?: boolean
+      geometry?: { location?: { lat?: number; lng?: number }; location_type?: string }
+    }>
   }
   if (b?.status !== 'OK') return null
-  const loc = b.results?.[0]?.geometry?.location
+  const top = b.results?.[0]
+  const loc = top?.geometry?.location
   if (loc == null || typeof loc.lat !== 'number' || typeof loc.lng !== 'number') return null
   // 日本国外・(0,0) 等の不正座標は「結果なし」として扱い、キャッシュにも残さない
   if (!isValidJapanCoord(loc.lat, loc.lng)) return null
-  return { lat: loc.lat, lng: loc.lng }
+  const result: GeocodeResult = { lat: loc.lat, lng: loc.lng }
+  const lt = top?.geometry?.location_type
+  if (typeof lt === 'string' && VALID_PRECISIONS.has(lt)) result.precision = lt as GeocodePrecision
+  if (top?.partial_match === true) result.partialMatch = true
+  return result
 }
 
 /**
@@ -165,7 +221,13 @@ export async function geocodeStores(
     // 2. キャッシュヒット
     const cached = cache[key]
     if (cached) {
-      out.push({ ...store, lat: cached.lat, lng: cached.lng })
+      out.push({
+        ...store,
+        lat: cached.lat,
+        lng: cached.lng,
+        precision: cached.precision,
+        partialMatch: cached.partialMatch,
+      })
       continue
     }
 
@@ -197,7 +259,13 @@ export async function geocodeStores(
 
     cache[key] = coords
     geocodedCount++
-    out.push({ ...store, lat: coords.lat, lng: coords.lng })
+    out.push({
+      ...store,
+      lat: coords.lat,
+      lng: coords.lng,
+      precision: coords.precision,
+      partialMatch: coords.partialMatch,
+    })
   }
 
   return { stores: out, cache, geocodedCount, skipped }
