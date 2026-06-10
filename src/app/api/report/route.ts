@@ -56,12 +56,15 @@ export async function POST(request: Request) {
       body: JSON.stringify({ title, body: issueBody, labels: [REPORT_LABEL] }),
     })
     if (!res.ok) {
+      const detail = await res.text().catch(() => '')
+      console.error(`[report] GitHub API ${res.status} ${res.statusText}: ${detail}`)
       return NextResponse.json(
         { error: '送信に失敗しました。時間をおいて再度お試しください。' },
         { status: 502 },
       )
     }
-  } catch {
+  } catch (err) {
+    console.error('[report] GitHub API への送信に失敗:', err)
     return NextResponse.json(
       { error: '送信に失敗しました。時間をおいて再度お試しください。' },
       { status: 502 },
