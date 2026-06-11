@@ -121,6 +121,63 @@
         "gundam-exvs": 2
       },
       "updatedAt": "2026-06-10"
+    },
+    "4dafc607ce42": {
+      "source": "admin",
+      "note": "タイトーステーション藤沢 イニブ筐体4台＋ライブモニター1台（公式5→筐体4, Issue #94）。@sylvaliongosvel。お礼可。",
+      "machineCounts": {
+        "gundam-exvs": 4
+      },
+      "updatedAt": "2026-06-12"
+    },
+    "7fe925f86f0f": {
+      "source": "admin",
+      "note": "アピナ印西 イニブ筐体4台＋ライブモニター1台（公式5→筐体4, Issue #93）。@sylvaliongosvel。お礼可。",
+      "machineCounts": {
+        "gundam-exvs": 4
+      },
+      "updatedAt": "2026-06-12"
+    },
+    "99f280e60853": {
+      "source": "admin",
+      "note": "GiGO 仙台利府 ラスサバ5台（マップ6→5, イニブ9据置, Issue #91）。@audadgj123。お礼可。",
+      "machineCounts": {
+        "jojo-ls": 5
+      },
+      "updatedAt": "2026-06-12"
+    },
+    "c5cf6ac3661e": {
+      "source": "admin",
+      "note": "フクイレジャーランドワイプラザ イニブ筐体4台＋ライブモニター1台（公式5→筐体4, Issue #80）。@kiyo_general。お礼可。",
+      "machineCounts": {
+        "gundam-exvs": 4
+      },
+      "updatedAt": "2026-06-12"
+    },
+    "cf6a353b751e": {
+      "source": "admin",
+      "note": "GiGO 福井 イニブ筐体4台＋リプレイ1台（公式5→筐体4, Issue #79）。@kiyo_general。メンション不可（お礼希望なし）。",
+      "machineCounts": {
+        "gundam-exvs": 4
+      },
+      "updatedAt": "2026-06-12"
+    },
+    "f5a9145e5af3": {
+      "source": "admin",
+      "note": "GiGO 高山 イニブ筐体2台＋ライブモニター1台（公式HP3台の内訳, Issue #78）。@lorelei2_。お礼可。録画/配信設備なし・電子マネー非対応。",
+      "machineCounts": {
+        "gundam-exvs": 2
+      },
+      "updatedAt": "2026-06-12"
+    },
+    "0307d6bb2ee2": {
+      "source": "user-report",
+      "note": "ファンタジスタ イニブ8台・ラスサバ2台（マップ イニブ10/ラスサバ3 → 修正, Issue #82）。SNS未記入のため未確認（みんなの報告）扱い。",
+      "machineCounts": {
+        "jojo-ls": 2,
+        "gundam-exvs": 8
+      },
+      "updatedAt": "2026-06-12"
     }
   }
 }
