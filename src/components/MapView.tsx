@@ -127,22 +127,45 @@ function InfoWindowContent({
   // 店舗単位の情報更新日。override（手動確定）の日付を優先し、無ければ全体の自動更新日。
   const infoDateLabel = formatDateJst(store.infoUpdatedAt ?? storesMeta.lastUpdated)
   // シェア：モバイルはネイティブ共有シート、非対応(PC等)はクリップボードへコピーにフォールバック。
-  const [shareDone, setShareDone] = useState(false)
+  // コピー結果は一定時間だけアイコンで示す。タイマーは ref で保持し、アンマウント時にクリアして
+  // アンマウント後の setState を防ぐ（連打時も前のタイマーを潰して多重発火させない）。
+  const [shareState, setShareState] = useState<'idle' | 'copied' | 'failed'>('idle')
+  const flashTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const flash = useCallback((next: 'copied' | 'failed') => {
+    setShareState(next)
+    if (flashTimer.current) clearTimeout(flashTimer.current)
+    flashTimer.current = setTimeout(() => setShareState('idle'), 1500)
+  }, [])
+  useEffect(() => () => {
+    if (flashTimer.current) clearTimeout(flashTimer.current)
+  }, [])
   const handleShare = useCallback(async () => {
     const url = typeof window !== 'undefined' ? window.location.href : ''
     const text = `${store.name}（${store.address}）`
-    try {
-      if (typeof navigator !== 'undefined' && navigator.share) {
+    // 共有シート対応端末はそちら（キャンセルは正常系なので握りつぶす）
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
         await navigator.share({ title: store.name, text, url })
-      } else if (typeof navigator !== 'undefined' && navigator.clipboard) {
-        await navigator.clipboard.writeText(`${text} ${url}`.trim())
-        setShareDone(true)
-        setTimeout(() => setShareDone(false), 1500)
+      } catch {
+        // 共有シートのキャンセル等は無視する
       }
-    } catch {
-      // 共有シートのキャンセル等は無視する
+      return
     }
-  }, [store.name, store.address])
+    // 非対応(PC等)はクリップボードへコピー。権限エラー等の失敗はユーザーに知らせる。
+    try {
+      if (typeof navigator === 'undefined' || !navigator.clipboard) throw new Error('clipboard unavailable')
+      await navigator.clipboard.writeText(`${text} ${url}`.trim())
+      flash('copied')
+    } catch {
+      flash('failed')
+    }
+  }, [store.name, store.address, flash])
+  const shareLabel =
+    shareState === 'copied'
+      ? 'リンクをコピーしました'
+      : shareState === 'failed'
+        ? 'コピーに失敗しました'
+        : 'この店舗を共有'
   return (
     <div className={`p-1.5 min-w-[220px] max-w-[min(340px,85vw)]${statusLabel ? ' bg-gray-100 rounded' : ''}`}>
       {/* ヘッダ：店名（折り返し可）と ✕ を横並びにして重なりを防ぐ */}
@@ -213,13 +236,19 @@ function InfoWindowContent({
           <button
             type="button"
             onClick={handleShare}
-            aria-label={shareDone ? 'リンクをコピーしました' : 'この店舗を共有'}
-            title={shareDone ? 'リンクをコピーしました' : 'この店舗を共有'}
+            aria-label={shareLabel}
+            title={shareLabel}
             className="inline-flex items-center text-gray-500 hover:text-gray-700"
           >
-            {shareDone ? (
+            {shareState === 'copied' ? (
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 text-green-600">
                 <polyline points="20 6 9 17 4 12" />
+              </svg>
+            ) : shareState === 'failed' ? (
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5 text-red-600">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
               </svg>
             ) : (
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
