@@ -18,6 +18,12 @@ on:
 permissions:
   contents: write
   issues: write
+  pull-requests: write
+
+# 同時実行を直列化し、レポート追記PRの競合を防ぐ（実行中ジョブはキャンセルしない）
+concurrency:
+  group: override-tweet-reminder
+  cancel-in-progress: false
 
 jobs:
   remind:
@@ -193,15 +199,25 @@ jobs:
             printf '# 台数・位置オーバーライド 反映報告（%s ドラフト）\n\n`templates/override-report.md` の型で override-tweet-reminder が自動記録。\n' "$month" > "$file"
           fi
           printf '%s\n' "$report" >> "$file"
+          echo "${file} へ追記しました（コミットは後続の create-pull-request 段でPR化）。"
 
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "$file"
-          git commit -m "docs(updates): ${month} 台数修正報告に自動追記（${short}）[skip ci]"
-          git fetch origin main -q
-          git rebase origin/main
-          git push origin HEAD:main
-          echo "${file} へ追記して main に push しました。"
+      # main はブランチ保護下（直 push 不可）のため、レポート追記は固定ブランチ経由のPRにする。
+      # 差分が無ければ peter-evans/create-pull-request は何もしない（PRも作らない）。
+      # update-stores と同じ方式。レビュー・マージは人が行う。
+      - name: レポート追記をPR化
+        uses: peter-evans/create-pull-request@v7
+        with:
+          add-paths: updates/override-reports
+          commit-message: 'docs(updates): 台数・位置修正報告に自動追記'
+          branch: auto/override-report
+          delete-branch: true
+          title: 'docs(updates): 台数・位置修正報告の自動追記'
+          body: |
+            override-tweet-reminder が `src/data/overrides.json` の更新を検知し、当月の
+            `updates/override-reports/` へ修正ツイートのドラフトを自動追記したものです。
+
+            投稿用ドラフトは別途「🔧 台数・位置修正ツイートの下書き」Issueにも出ています。
+            内容を確認のうえ問題なければマージしてください。
 
       - name: 失敗したらIssueを作成
         if: failure()
