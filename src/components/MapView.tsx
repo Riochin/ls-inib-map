@@ -167,13 +167,13 @@ function InfoWindowContent({
         ? 'コピーに失敗しました'
         : 'この店舗を共有'
   return (
-    <div className={`p-1.5 min-w-[220px] max-w-[min(340px,85vw)]${statusLabel ? ' bg-gray-100 rounded' : ''}`}>
+    <div className={`p-1 min-w-[200px] max-w-[260px]${statusLabel ? ' bg-gray-100 rounded' : ''}`}>
       {/* ヘッダ：店名（折り返し可）と ✕ を横並びにして重なりを防ぐ */}
-      <div className="flex items-start gap-1 mb-1.5">
+      <div className="flex items-start gap-1 mb-1">
         <div className="flex items-start gap-1.5 min-w-0 flex-1">
-          <h3 className="font-bold text-lg leading-snug break-words min-w-0">{store.name}</h3>
+          <h3 className="font-bold text-base leading-snug break-words min-w-0">{store.name}</h3>
           {statusLabel && (
-            <span className="shrink-0 mt-1 text-xs text-gray-500 font-medium whitespace-nowrap">
+            <span className="shrink-0 mt-0.5 text-[11px] text-gray-500 font-medium whitespace-nowrap">
               {statusLabel}
             </span>
           )}
@@ -181,18 +181,18 @@ function InfoWindowContent({
         <button
           onClick={onClose}
           aria-label="閉じる"
-          className="shrink-0 -mr-0.5 w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 text-base leading-none"
+          className="shrink-0 -mr-0.5 w-5 h-5 flex items-center justify-center text-gray-400 hover:text-gray-600 text-sm leading-none"
         >
           ✕
         </button>
       </div>
-      <p className="text-xs text-gray-600 mb-1.5">{store.address}</p>
+      <p className="text-xs text-gray-600 mb-1">{store.address}</p>
       {store.approximateLocation && (
-        <p className="text-xs text-amber-700 mb-1.5 leading-snug">
+        <p className="text-[11px] text-amber-700 mb-1 leading-snug">
           ピンはおおよその位置です（住所から推定。実際の場所と少しずれている場合があります）
         </p>
       )}
-      <div className="flex flex-wrap gap-1.5 mb-1.5">
+      <div className="flex flex-wrap gap-1 mb-1">
         {store.games.map((game) => {
           // 運営確認のみ確定（通常色）、それ以外は薄い。タップで出どころ表示
           const info = getCountSourceInfo(store.countSources?.[game])
@@ -210,17 +210,16 @@ function InfoWindowContent({
         })}
       </div>
       {openSource && (
-        <p className="text-xs text-gray-500 mb-1.5 leading-snug">
+        <p className="text-[11px] text-gray-500 mb-1.5 leading-snug">
           {getGameLabel(openSource)}：{getCountSourceInfo(store.countSources?.[openSource]).label}
         </p>
       )}
       {/* 店舗単位の情報更新日。override（手動確定）があればその日付、無ければ全体の自動更新日。 */}
       {infoDateLabel && (
-        <p className="text-xs text-gray-400 mb-1.5">情報更新: {infoDateLabel}</p>
+        <p className="text-[10px] text-gray-400 mb-1.5">情報更新: {infoDateLabel}</p>
       )}
-      {/* 経路・シェア・報告は最下部に置く（報告導線が一番手に取りやすい位置）。
-          情報更新との隙間を mt-4 で広げ、モーダルを少し縦に大きく見せる。 */}
-      <div className="flex items-center justify-between gap-2 mt-4">
+      {/* 経路・シェア・報告は最下部に置く（報告導線が一番手に取りやすい位置） */}
+      <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-3">
           <a
             href={`https://www.google.com/maps/dir/?api=1&destination=${store.lat},${store.lng}`}
