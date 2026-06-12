@@ -167,11 +167,11 @@ function InfoWindowContent({
         ? 'コピーに失敗しました'
         : 'この店舗を共有'
   return (
-    <div className={`p-1 min-w-[200px] max-w-[260px]${statusLabel ? ' bg-gray-100 rounded' : ''}`}>
+    <div className={`p-1.5 min-w-[210px] max-w-[min(300px,85vw)]${statusLabel ? ' bg-gray-100 rounded' : ''}`}>
       {/* ヘッダ：店名（折り返し可）と ✕ を横並びにして重なりを防ぐ */}
-      <div className="flex items-start gap-1 mb-1">
+      <div className="flex items-start gap-1 mb-1.5">
         <div className="flex items-start gap-1.5 min-w-0 flex-1">
-          <h3 className="font-bold text-base leading-snug break-words min-w-0">{store.name}</h3>
+          <h3 className="font-bold text-[17px] leading-snug break-words min-w-0">{store.name}</h3>
           {statusLabel && (
             <span className="shrink-0 mt-0.5 text-[11px] text-gray-500 font-medium whitespace-nowrap">
               {statusLabel}
@@ -186,13 +186,13 @@ function InfoWindowContent({
           ✕
         </button>
       </div>
-      <p className="text-xs text-gray-600 mb-1">{store.address}</p>
+      <p className="text-xs text-gray-600 mb-1.5">{store.address}</p>
       {store.approximateLocation && (
-        <p className="text-[11px] text-amber-700 mb-1 leading-snug">
+        <p className="text-[11px] text-amber-700 mb-1.5 leading-snug">
           ピンはおおよその位置です（住所から推定。実際の場所と少しずれている場合があります）
         </p>
       )}
-      <div className="flex flex-wrap gap-1 mb-1">
+      <div className="flex flex-wrap gap-1 mb-1.5">
         {store.games.map((game) => {
           // 運営確認のみ確定（通常色）、それ以外は薄い。タップで出どころ表示
           const info = getCountSourceInfo(store.countSources?.[game])
@@ -219,7 +219,7 @@ function InfoWindowContent({
         <p className="text-[10px] text-gray-400 mb-1.5">情報更新: {infoDateLabel}</p>
       )}
       {/* 経路・シェア・報告は最下部に置く（報告導線が一番手に取りやすい位置） */}
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex items-center justify-between gap-2 mt-2">
         <div className="flex items-center gap-3">
           <a
             href={`https://www.google.com/maps/dir/?api=1&destination=${store.lat},${store.lng}`}
