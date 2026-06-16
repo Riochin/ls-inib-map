@@ -188,10 +188,10 @@
     },
     "8fa39515bde4": {
       "source": "admin",
-      "note": "namco豊岡 ピン位置修正（Issue #92）。同住所(中陰字大工617)のスシロー豊岡店の建物位置(ROOFTOP)へ補正。報告者SNS未記入だが住所一致で運営確認。",
-      "lat": 35.554474,
-      "lng": 134.812503,
-      "updatedAt": "2026-06-12"
+      "note": "namco豊岡 ピン位置再修正（Issue #100）。報告者提示のGoogleマップ「namco豊岡店」実ピン位置へ補正（Issue #92のスシロー建物位置から約60m補正）。運営確認。",
+      "lat": 35.554971,
+      "lng": 134.81223,
+      "updatedAt": "2026-06-16"
     },
     "3ec1f3534a2a": {
       "source": "admin",
@@ -199,6 +199,22 @@
       "lat": 36.0422008,
       "lng": 136.2336664,
       "updatedAt": "2026-06-12"
+    },
+    "07906e9552bc": {
+      "source": "admin",
+      "note": "ウェアハウス一橋学園 イニブ8台（マップ9→8, Issue #101）。報告者=管理者確認済み。",
+      "machineCounts": {
+        "gundam-exvs": 8
+      },
+      "updatedAt": "2026-06-16"
+    },
+    "420e66ac88ad": {
+      "source": "admin",
+      "note": "namco池袋 ラスサバ10台で確定（Issue #99）。報告者=管理者確認済み。",
+      "machineCounts": {
+        "jojo-ls": 10
+      },
+      "updatedAt": "2026-06-16"
     }
   }
 }
