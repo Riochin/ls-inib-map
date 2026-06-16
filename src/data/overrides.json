@@ -199,6 +199,22 @@
       "lat": 36.0422008,
       "lng": 136.2336664,
       "updatedAt": "2026-06-12"
+    },
+    "07906e9552bc": {
+      "source": "admin",
+      "note": "ウェアハウス一橋学園 イニブ8台（マップ9→8, Issue #101）。報告者=管理者確認済み。",
+      "machineCounts": {
+        "gundam-exvs": 8
+      },
+      "updatedAt": "2026-06-16"
+    },
+    "420e66ac88ad": {
+      "source": "admin",
+      "note": "namco池袋 ラスサバ10台で確定（Issue #99）。報告者=管理者確認済み。",
+      "machineCounts": {
+        "jojo-ls": 10
+      },
+      "updatedAt": "2026-06-16"
     }
   }
 }
