@@ -29,6 +29,23 @@ const TERNARY_OPTIONS: { value: TernaryState; label: string }[] = [
   { value: 'unknown', label: '不明' },
 ]
 
+/** 数値入力をパースする。空欄・非数値・非有限値は undefined（送信しない）として扱う。 */
+function parseCount(v: string): number | undefined {
+  const t = v.trim()
+  if (t === '') return undefined
+  const n = Number(t)
+  return Number.isFinite(n) ? n : undefined
+}
+
+/** すでに登録済みの項目に添えるバッジ（既存情報だと一目で分かるように・配色は既存の gray 系に統一） */
+function FilledBadge() {
+  return (
+    <span className="ml-1.5 align-middle text-[10px] text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded-full">
+      登録済み
+    </span>
+  )
+}
+
 export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
   const hasJojo = store.games.includes('jojo-ls')
   const hasGundam = store.games.includes('gundam-exvs')
@@ -59,6 +76,19 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
 
   const hasSns = reporter.trim() !== ''
 
+  // すでに登録済みの項目（バッジ表示・初期入力の根拠）
+  const filled = {
+    jojo: store.machineCounts?.['jojo-ls'] !== undefined,
+    gundam: store.machineCounts?.['gundam-exvs'] !== undefined,
+    businessHours: !!store.businessHours,
+    floor: !!store.floor,
+    smoking: store.smoking !== undefined,
+    payments: (store.payments?.length ?? 0) > 0,
+    hasRecording: store.hasRecording !== undefined,
+    hasStreaming: store.hasStreaming !== undefined,
+  }
+  const hasExistingInfo = Object.values(filled).some(Boolean)
+
   function togglePayment(option: string) {
     setPayments((prev) =>
       prev.includes(option) ? prev.filter((p) => p !== option) : [...prev, option],
@@ -68,8 +98,8 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
   async function submit(e: FormEvent) {
     e.preventDefault()
 
-    const jojoNum = jojoLs.trim() !== '' ? Number(jojoLs) : undefined
-    const gundamNum = gundamExvs.trim() !== '' ? Number(gundamExvs) : undefined
+    const jojoNum = parseCount(jojoLs)
+    const gundamNum = parseCount(gundamExvs)
 
     const hasAnyInput =
       (jojoNum !== undefined && hasJojo) ||
@@ -182,12 +212,20 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
                 style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, opacity: 0 }}
               />
 
+              {hasExistingInfo && (
+                <p className="text-[11px] text-gray-500 bg-gray-50 rounded-lg px-3 py-2 mb-4 leading-snug">
+                  「<span className="text-gray-700 font-semibold">登録済み</span>」の項目は、すでに反映されている情報です。修正・追加があれば上書きしてください。
+                </p>
+              )}
+
               {/* 設置台数 */}
               <p className="text-xs font-semibold text-gray-600 mb-2">設置台数</p>
               <div className="grid grid-cols-2 gap-3 mb-4">
                 {hasJojo && (
                   <label className="block">
-                    <span className="text-xs text-gray-500">ジョジョ LS</span>
+                    <span className="text-xs text-gray-500">
+                      ジョジョ LS{filled.jojo && <FilledBadge />}
+                    </span>
                     <input
                       type="number"
                       min={0}
@@ -201,7 +239,9 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
                 )}
                 {hasGundam && (
                   <label className="block">
-                    <span className="text-xs text-gray-500">イニブ（EXVS2）</span>
+                    <span className="text-xs text-gray-500">
+                      イニブ（EXVS2）{filled.gundam && <FilledBadge />}
+                    </span>
                     <input
                       type="number"
                       min={0}
@@ -217,7 +257,9 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
 
               {/* 営業時間 */}
               <label className="block mb-3">
-                <span className="text-xs font-semibold text-gray-600">営業時間</span>
+                <span className="text-xs font-semibold text-gray-600">
+                  営業時間{filled.businessHours && <FilledBadge />}
+                </span>
                 <input
                   type="text"
                   value={businessHours}
@@ -230,7 +272,9 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
 
               {/* フロア */}
               <label className="block mb-3">
-                <span className="text-xs font-semibold text-gray-600">フロア</span>
+                <span className="text-xs font-semibold text-gray-600">
+                  フロア{filled.floor && <FilledBadge />}
+                </span>
                 <input
                   type="text"
                   value={floor}
@@ -243,7 +287,9 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
 
               {/* 喫煙所 */}
               <label className="block mb-3">
-                <span className="text-xs font-semibold text-gray-600">喫煙所</span>
+                <span className="text-xs font-semibold text-gray-600">
+                  喫煙所{filled.smoking && <FilledBadge />}
+                </span>
                 <select
                   value={smoking}
                   onChange={(e) => setSmoking(e.target.value as TernaryState | '')}
@@ -261,7 +307,7 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
               {/* 決済/電子マネー */}
               <fieldset className="mb-3">
                 <legend className="text-xs font-semibold text-gray-600 mb-1.5">
-                  決済・電子マネー（使えるものをすべて選択）
+                  決済・電子マネー（使えるものをすべて選択）{filled.payments && <FilledBadge />}
                 </legend>
                 <div className="grid grid-cols-2 gap-x-3 gap-y-1">
                   {PAYMENT_OPTIONS.map((opt) => (
@@ -279,7 +325,9 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
 
               {/* 録画台 */}
               <label className="block mb-3">
-                <span className="text-xs font-semibold text-gray-600">録画台</span>
+                <span className="text-xs font-semibold text-gray-600">
+                  録画台{filled.hasRecording && <FilledBadge />}
+                </span>
                 <select
                   value={hasRecording}
                   onChange={(e) => setHasRecording(e.target.value as TernaryState | '')}
@@ -296,7 +344,9 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
 
               {/* 配信台 */}
               <label className="block mb-4">
-                <span className="text-xs font-semibold text-gray-600">配信台</span>
+                <span className="text-xs font-semibold text-gray-600">
+                  配信台{filled.hasStreaming && <FilledBadge />}
+                </span>
                 <select
                   value={hasStreaming}
                   onChange={(e) => setHasStreaming(e.target.value as TernaryState | '')}
