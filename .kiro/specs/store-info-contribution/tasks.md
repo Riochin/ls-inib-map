@@ -65,8 +65,8 @@
   - `OnboardingModal` → `Onboarding` 親で FeedbackForm の open 状態を管理する
   - _Requirements: 2.1_
 
-- [ ] 5. 店舗詳細表示コンポーネント群（B機能）
-- [ ] 5.1 StoreDetailPanelを実装する（全属性・provenance表示）
+- [x] 5. 店舗詳細表示コンポーネント群（B機能）
+- [x] 5.1 StoreDetailPanelを実装する（全属性・provenance表示）
   - 全店舗属性（台数・営業時間・フロア・喫煙所・決済/電子マネー・録画台の有無・配信台の有無）を一覧表示する
   - 属性値が未登録（undefined）の場合は「未登録」と灰色テキストで表示する
   - `attributeSources[key] === 'user-report'` の属性には「（未確認）」を付与して未確認と分かる見た目で表示する
@@ -75,7 +75,7 @@
   - ノンテック層にも分かる平易な日本語の文言で表示する
   - _Requirements: 3.5, 3.6, 3.8, 5.3, 7.3_
 
-- [ ] 5.2 StoreDetailModalを実装する（レスポンシブ詳細モーダル）
+- [x] 5.2 StoreDetailModalを実装する（レスポンシブ詳細モーダル）
   - モバイル幅（md: 未満）ではボトムシート（画面下部から展開・`max-h-[85dvh]`・上部角丸）で表示する
   - PC幅（md: 以上）では画面中央のモーダル（`max-w-lg`・`rounded-2xl`）で表示する
   - `fixed inset-0 bg-black/40 z-[60]` のオーバーレイを設け、InfoWindow より前面に確実に配置する
