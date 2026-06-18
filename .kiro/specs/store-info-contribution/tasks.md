@@ -31,15 +31,15 @@
   - `FEEDBACK_LABEL = 'アプリ要望'` 定数を定義する
   - _Requirements: 1.1, 1.2, 1.5, 1.8, 2.3, 2.5, 4.10_
 
-- [ ] 3. API層の拡張（POST /api/report）
-- [ ] 3.1 新モードのバリデーション関数を実装する
+- [x] 3. API層の拡張（POST /api/report）
+- [x] 3.1 新モードのバリデーション関数を実装する
   - `validateFeedback()` を実装し、`content` 必須・文字数上限・category 有効値を検証する
   - `validateStructuredStore()` を実装し、全フィールド未入力の場合に 400 として拒否する
   - `machineCountsJojoLs`・`machineCountsGundamExvs` の整数チェック（0–99 範囲、NaN / Infinity 対策）を実装する
   - `payments` 配列の件数（max 20）と各要素の長さ（max 30 文字）をサーバー側で検証する
   - _Requirements: 1.4, 1.8, 2.4, 4.9_
 
-- [ ] 3.2 ルートハンドラに新モードのdispatch・Issue起票処理を追加する
+- [x] 3.2 ルートハンドラに新モードのdispatch・Issue起票処理を追加する
   - honeypot チェック・環境変数チェックを共通処理として mode 不問で先行適用する
   - `mode === 'feedback'` → `validateFeedback` + `buildFeedbackIssue` + ラベル `アプリ要望` のパスを追加する
   - `mode === 'structured-store'` → `validateStructuredStore` + `buildStructuredStoreIssue` + ラベル `ユーザー報告` のパスを追加する

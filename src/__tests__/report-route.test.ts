@@ -82,6 +82,148 @@ describe('POST /api/report', () => {
   })
 })
 
+describe('POST /api/report - mode=feedback', () => {
+  beforeEach(() => {
+    process.env.GITHUB_REPORT_TOKEN = 'tok'
+    process.env.GITHUB_REPORT_REPO = 'owner/repo'
+    vi.stubGlobal('fetch', vi.fn(async () => new Response('{}', { status: 201 })))
+  })
+  afterEach(() => {
+    vi.restoreAllMocks()
+    vi.unstubAllGlobals()
+    delete process.env.GITHUB_REPORT_TOKEN
+    delete process.env.GITHUB_REPORT_REPO
+  })
+
+  const validFeedback = {
+    mode: 'feedback',
+    category: '新機能の提案',
+    content: 'こんな機能が欲しいです',
+  }
+
+  it('honeypot 充填は ok:true かつ fetch未呼出', async () => {
+    const res = await POST(req({ ...validFeedback, website: 'http://spam' }))
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({ ok: true })
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it('category が無効値なら400', async () => {
+    const res = await POST(req({ ...validFeedback, category: 'ほげ' }))
+    expect(res.status).toBe(400)
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it('content が空なら400', async () => {
+    const res = await POST(req({ ...validFeedback, content: '' }))
+    expect(res.status).toBe(400)
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it('環境変数未設定なら503', async () => {
+    delete process.env.GITHUB_REPORT_TOKEN
+    const res = await POST(req(validFeedback))
+    expect(res.status).toBe(503)
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it('正常時は アプリ要望 ラベルで Issue を作成する', async () => {
+    const res = await POST(req(validFeedback))
+    expect(res.status).toBe(200)
+    expect(fetch).toHaveBeenCalledTimes(1)
+    const [, init] = (fetch as unknown as { mock: { calls: [string, RequestInit][] } }).mock.calls[0]
+    const sent = JSON.parse(init.body as string)
+    expect(sent.labels).toEqual(['アプリ要望'])
+    expect(sent.title).toContain('新機能の提案')
+  })
+
+  it('GitHub API 失敗時に [report:feedback] プレフィックスでエラーログを出す', async () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    vi.stubGlobal('fetch', vi.fn(async () => new Response('err', { status: 500 })))
+    const res = await POST(req(validFeedback))
+    expect(res.status).toBe(502)
+    expect(errorSpy.mock.calls[0][0]).toContain('[report:feedback]')
+  })
+})
+
+describe('POST /api/report - mode=structured-store', () => {
+  beforeEach(() => {
+    process.env.GITHUB_REPORT_TOKEN = 'tok'
+    process.env.GITHUB_REPORT_REPO = 'owner/repo'
+    vi.stubGlobal('fetch', vi.fn(async () => new Response('{}', { status: 201 })))
+  })
+  afterEach(() => {
+    vi.restoreAllMocks()
+    vi.unstubAllGlobals()
+    delete process.env.GITHUB_REPORT_TOKEN
+    delete process.env.GITHUB_REPORT_REPO
+  })
+
+  const baseStore = {
+    mode: 'structured-store',
+    storeId: 'abc123',
+    storeName: 'テスト店',
+    storeAddress: '東京都',
+  }
+
+  it('全属性フィールドが未入力なら400', async () => {
+    const res = await POST(req(baseStore))
+    expect(res.status).toBe(400)
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it('machineCountsJojoLs が非整数（文字列 "abc"）なら400', async () => {
+    const res = await POST(req({ ...baseStore, machineCountsJojoLs: 'abc' }))
+    expect(res.status).toBe(400)
+  })
+
+  it('machineCountsJojoLs が 99 超（100）なら400', async () => {
+    const res = await POST(req({ ...baseStore, machineCountsJojoLs: 100 }))
+    expect(res.status).toBe(400)
+  })
+
+  it('machineCountsJojoLs が小数（3.5）なら400', async () => {
+    const res = await POST(req({ ...baseStore, machineCountsJojoLs: 3.5 }))
+    expect(res.status).toBe(400)
+  })
+
+  it('payments が 21 件なら400', async () => {
+    const payments = Array.from({ length: 21 }, (_, i) => `pay${i}`)
+    const res = await POST(req({ ...baseStore, payments }))
+    expect(res.status).toBe(400)
+  })
+
+  it('payments の要素が 30 文字超なら400', async () => {
+    const res = await POST(req({ ...baseStore, payments: ['a'.repeat(31)] }))
+    expect(res.status).toBe(400)
+  })
+
+  it('businessHours のみ入力で200・ユーザー報告ラベル', async () => {
+    const res = await POST(req({ ...baseStore, businessHours: '10:00-23:00' }))
+    expect(res.status).toBe(200)
+    expect(fetch).toHaveBeenCalledTimes(1)
+    const [, init] = (fetch as unknown as { mock: { calls: [string, RequestInit][] } }).mock.calls[0]
+    const sent = JSON.parse(init.body as string)
+    expect(sent.labels).toEqual(['ユーザー報告'])
+    expect(sent.body).toContain('10:00-23:00')
+  })
+
+  it('honeypot 充填は ok:true かつ fetch未呼出', async () => {
+    const res = await POST(req({ ...baseStore, businessHours: '10:00-23:00', website: 'bot' }))
+    expect(res.status).toBe(200)
+    expect(await res.json()).toEqual({ ok: true })
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it('GitHub API 失敗時に [report:structured-store] プレフィックスでエラーログを出す', async () => {
+    const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    vi.stubGlobal('fetch', vi.fn(async () => new Response('err', { status: 500 })))
+    const res = await POST(req({ ...baseStore, businessHours: '10:00-23:00' }))
+    expect(res.status).toBe(502)
+    expect(errorSpy.mock.calls[0][0]).toContain('[report:structured-store]')
+  })
+})
+
 describe('buildReportIssue', () => {
   it('SNS ID未記入は「みんなの報告（未確認）」扱いで確定不可', () => {
     const { body } = buildReportIssue({
