@@ -48,8 +48,8 @@
   - 正常時に `{ ok: true }` を返し、失敗時（400 / 503 / 502）は既存エラー応答形式を継承する
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 2.3, 2.5_
 
-- [ ] 4. アプリ要望フォーム（A機能）
-- [ ] 4.1 FeedbackFormコンポーネントを実装する
+- [x] 4. アプリ要望フォーム（A機能）
+- [x] 4.1 FeedbackFormコンポーネントを実装する
   - カテゴリ選択（新機能の提案・既存機能の改善・不具合・その他）・内容入力・SNS ID 入力欄（任意）を持つフォームを構築する
   - content が空の場合は送信前にクライアントバリデーションエラーを表示する
   - honeypot フィールドを非表示で組み込む
@@ -59,7 +59,7 @@
   - `fixed inset-0 z-[60]` のオーバーレイで表示し、`onClose` で閉じる
   - _Requirements: 2.2, 2.3, 2.4, 2.5, 1.6, 1.7, 7.2, 7.3_
 
-- [ ] 4.2 Onboarding.AboutPageのXインテントを廃止してFeedbackForm導線に差し替える
+- [x] 4.2 Onboarding.AboutPageのXインテントを廃止してFeedbackForm導線に差し替える
   - `INFO_REPORT_URL` 定数と「Xで報告する」リンクを削除する
   - アプリ要望フォームを開くボタンを配置し、`onOpenFeedback` prop で FeedbackForm を呼び出す
   - `OnboardingModal` → `Onboarding` 親で FeedbackForm の open 状態を管理する
