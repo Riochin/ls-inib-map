@@ -176,6 +176,14 @@
         "gundam-exvs": 8
       }
     },
+    "caeb68c472ce": {
+      "source": "admin",
+      "note": "アクメ漱石",
+      "machineCounts": {
+        "gundam-exvs": 8
+      },
+      "updatedAt": "2026-06-18T05:56:16.074Z"
+    },
     "cf6a353b751e": {
       "source": "admin",
       "note": "GiGO 福井 イニブ筐体4台＋リプレイ1台（公式5→筐体4, Issue #79）。@kiyo_general。メンション不可（お礼希望なし）。",
@@ -219,10 +227,10 @@
     "f94e47ba4311": {
       "source": "user-report",
       "note": "アミューズメントワールド メトロポリス小田原",
+      "updatedAt": "2026-06-18T04:11:54.946Z",
       "machineCounts": {
         "jojo-ls": 4
-      },
-      "updatedAt": "2026-06-18T04:11:54.946Z"
+      }
     }
   }
 }
