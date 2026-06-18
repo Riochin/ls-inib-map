@@ -10,6 +10,18 @@ export type GameTitle = 'jojo-ls' | 'gundam-exvs'
  */
 export type Provenance = 'official' | 'auto-scrape' | 'user-report' | 'admin'
 
+/** 三値状態（あり / なし / 不明） */
+export type TernaryState = 'yes' | 'no' | 'unknown'
+
+/** 店舗属性キー（attributeSources で provenance を管理する対象） */
+export type StoreAttributeKey =
+  | 'businessHours'
+  | 'floor'
+  | 'smoking'
+  | 'payments'
+  | 'hasRecording'
+  | 'hasStreaming'
+
 /** 設置店舗 */
 export interface Store {
   /** 一意な店舗ID */
@@ -57,6 +69,23 @@ export interface Store {
    * 「情報更新: 日付」として使う（地図全体のスクレイプ最終更新日とは別物）。
    */
   infoUpdatedAt?: string
+  /** 営業時間（例: "10:00-23:00"・任意） */
+  businessHours?: string
+  /** フロア（例: "2F"・任意） */
+  floor?: string
+  /** 喫煙所の有無（任意） */
+  smoking?: TernaryState
+  /** 決済手段リスト（例: ["Suica", "PayPay"]・任意） */
+  payments?: string[]
+  /** 録画台の有無（任意） */
+  hasRecording?: TernaryState
+  /** 配信台の有無（任意） */
+  hasStreaming?: TernaryState
+  /**
+   * 属性別の出どころ（任意）。`countSources` と同一 `Partial<Record<...>>` パターン。
+   * キー無し＝provenance 不明（未登録）。`applyOverrides` でのみ書き込まれる。
+   */
+  attributeSources?: Partial<Record<StoreAttributeKey, Provenance>>
 }
 
 /** フィルタ選択肢 */

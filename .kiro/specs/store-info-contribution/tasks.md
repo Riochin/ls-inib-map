@@ -1,14 +1,14 @@
 # Implementation Plan
 
-- [ ] 1. データ型の基盤整備
-- [ ] 1.1 Store型に新属性フィールドとprovenance管理型を追加する
+- [x] 1. データ型の基盤整備
+- [x] 1.1 Store型に新属性フィールドとprovenance管理型を追加する
   - `TernaryState`（yes / no / unknown）と `StoreAttributeKey` の型を定義する
   - `Store` インターフェースに `businessHours`・`floor`・`smoking`・`payments`・`hasRecording`・`hasStreaming` を任意フィールドとして追加する
   - `attributeSources` を `Partial<Record<StoreAttributeKey, Provenance>>` として追加し、既存の `countSources` と同一パターンで実装する
   - 既存フィールドを変更せず追加のみで後方互換を保つ
   - _Requirements: 5.1, 5.2, 5.4_
 
-- [ ] 1.2 OverrideEntry型に新属性フィールドを追加する
+- [x] 1.2 OverrideEntry型に新属性フィールドを追加する
   - `OverrideEntry` に `businessHours`・`floor`・`smoking`・`payments`・`hasRecording`・`hasStreaming` を任意フィールドとして追加する
   - 既存の `source` フィールドをそのまま再利用し、管理者確定値（admin）を示す
   - _Requirements: 6.1, 6.2, 6.3_

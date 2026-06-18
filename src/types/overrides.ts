@@ -1,4 +1,4 @@
-import type { GameTitle, Provenance } from './store'
+import type { GameTitle, Provenance, TernaryState } from './store'
 
 /**
  * 1店舗ぶんの手動オーバーライド。公式スクレイプ由来の店舗データに重ねる。
@@ -24,6 +24,18 @@ export interface OverrideEntry {
   address?: string
   lat?: number
   lng?: number
+  /** 営業時間（任意） */
+  businessHours?: string
+  /** フロア（任意） */
+  floor?: string
+  /** 喫煙所の有無（任意） */
+  smoking?: TernaryState
+  /** 決済手段リスト（任意） */
+  payments?: string[]
+  /** 録画台の有無（任意） */
+  hasRecording?: TernaryState
+  /** 配信台の有無（任意） */
+  hasStreaming?: TernaryState
 }
 
 /** `src/data/overrides.json` のスキーマ。店舗IDをキーに {@link OverrideEntry} を持つ。 */
