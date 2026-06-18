@@ -143,6 +143,19 @@ describe('buildStructuredStoreIssue', () => {
     expect(body).not.toContain('@reporter')
     expect(body).not.toContain('#99')
   })
+
+  it('テーブルセル内の | をエスケープし、改行を空白へ潰す（行崩れ防止）', () => {
+    const { body } = buildStructuredStoreIssue({
+      ...base,
+      businessHours: '10:00-23:00 | 不定休',
+      correctionNote: '1行目\n2行目',
+    })
+    // 生の | はセル区切りなのでエスケープされている
+    expect(body).toContain('10:00-23:00 \\| 不定休')
+    // 改行はセル内に残らない（テーブルが崩れない）
+    expect(body).toContain('1行目 2行目')
+    expect(body).not.toContain('1行目\n2行目')
+  })
 })
 
 // --------  定数  --------

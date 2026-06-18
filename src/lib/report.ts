@@ -42,6 +42,14 @@ function neutralizeMentions(s: string): string {
   return s.replace(/([@#])/g, '$1​')
 }
 
+/**
+ * Markdown テーブルのセル用エスケープ。セル区切りの `|` を無効化（`\|`）し、改行を空白へ
+ * 潰すことで、ユーザー入力（特に複数行のメモ）によるテーブル崩れ・余計なMarkdown混入を防ぐ。
+ */
+function escapeTableCell(s: string): string {
+  return s.replace(/\|/g, '\\|').replace(/\r\n|[\r\n]/g, ' ')
+}
+
 // ─── 文字数上限定数 ───────────────────────────────────────────────
 export const MAX_CONTENT = 2000
 export const MAX_REPORTER = 80
@@ -137,20 +145,21 @@ export function buildStructuredStoreIssue(input: StructuredStoreInput): ReportIs
     : 'SNS ID未記入 → 未確認（みんなの報告）扱い'
   const mention = hasSns ? (input.noMention ? '不可（メンション希望なし）' : '可') : '—'
 
-  // 提案値一覧（入力済みフィールドのみ）
+  // 提案値一覧（入力済みフィールドのみ）。ユーザー入力はテーブルセル用にエスケープする
+  const cell = (v: string) => escapeTableCell(safe(v))
   const rows: string[] = []
   if (input.machineCountsJojoLs !== undefined)
     rows.push(`| ジョジョ台数 | ${input.machineCountsJojoLs} |`)
   if (input.machineCountsGundamExvs !== undefined)
     rows.push(`| イニブ台数 | ${input.machineCountsGundamExvs} |`)
   if (input.businessHours !== undefined)
-    rows.push(`| 営業時間 | ${safe(input.businessHours)} |`)
+    rows.push(`| 営業時間 | ${cell(input.businessHours)} |`)
   if (input.floor !== undefined)
-    rows.push(`| フロア | ${safe(input.floor)} |`)
+    rows.push(`| フロア | ${cell(input.floor)} |`)
   if (input.smoking !== undefined)
     rows.push(`| 喫煙所 | ${TERNARY_LABEL[input.smoking]} |`)
   if (input.payments !== undefined && input.payments.length > 0)
-    rows.push(`| 決済/電子マネー | ${input.payments.map(safe).join(', ')} |`)
+    rows.push(`| 決済/電子マネー | ${input.payments.map(cell).join(', ')} |`)
   if (input.hasRecording !== undefined)
     rows.push(`| 録画台 | ${TERNARY_LABEL[input.hasRecording]} |`)
   if (input.hasStreaming !== undefined)
@@ -158,7 +167,7 @@ export function buildStructuredStoreIssue(input: StructuredStoreInput): ReportIs
   if (input.correctionType !== undefined)
     rows.push(`| 修正・通報種別 | ${input.correctionType} |`)
   if (input.correctionNote !== undefined && input.correctionNote.trim())
-    rows.push(`| 修正・通報メモ | ${safe(input.correctionNote)} |`)
+    rows.push(`| 修正・通報メモ | ${cell(input.correctionNote)} |`)
 
   const table =
     rows.length > 0
