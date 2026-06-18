@@ -83,7 +83,7 @@ jobs:
                  ## 📣 ver${{ steps.parse.outputs.version }} 告知チェックリスト
                  関連PR: #${{ github.event.pull_request.number }}
 
-                 - [ ] サイト内お知らせ機能を更新（updates/v${{ steps.parse.outputs.version }}/news.md を清書 → src/data/releases.ts の先頭に反映）
+                 - [ ] サイト内お知らせのコピーを確認・必要なら修正（src/data/releases.ts の自動生成エントリを確認）
                  - [ ] X投稿文面を作成・確定＋紹介画像 flyer.html を作成（文面下書きは↓コメント / updates/v${{ steps.parse.outputs.version }}/post.md・flyer.html を仕上げ 1200×675 をスクショ）
                  - [ ] 本番環境の最終確認
                  - [ ] Xポスト文面の最終確認
@@ -111,20 +111,37 @@ jobs:
             4. 下書きをファイルに保存する。
                - `updates/v${{ steps.parse.outputs.version }}/post.md`（X スレッド全体。`v2.1/post.md` の体裁に合わせる）
                - `updates/v${{ steps.parse.outputs.version }}/discord.md`（Discord 文面）
-               - `updates/v${{ steps.parse.outputs.version }}/news.md`（サイト内お知らせ＝新機能ページの下書き。
+               - `updates/v${{ steps.parse.outputs.version }}/news.md`（サイト内お知らせの平文メモ。
                  `updates/templates/news.md` の形式に従い、`v2.1/news.md` の体裁に合わせる。
                  キャッチ（一部を紫強調）＋目玉機能を「機能名＋平易な説明1〜2文」で。確信が持てない点は `［要確認: …］` を残す。
-                 ★これは下書き。サイト反映（`src/data/releases.ts` への転記）は人手で行う＝チェックリストの該当項目。）
+                 ★サイト反映は手順5で releases.ts を直接更新するため、このファイルは人間が差分確認しやすくするための記録用。）
                - `updates/v${{ steps.parse.outputs.version }}/flyer.html`（紹介画像。`updates/templates/flyer.html` をコピーし、
                  ★[差し替え] 箇所＝バージョン番号・メイン見出し・機能カード×3 を今回のリリース内容で埋める。
                  確信が持てない数値や文言は無理に断定せず `［要確認: …］` を残す。
                  ★flyer.html は Issue コメントには出さない。ファイルとしてブランチに commit するだけにする。）
 
-            5. ブランチ `ver${{ steps.parse.outputs.version }}-release` を切って 4 のファイルをcommit・pushし、PRを作成する。
+            5. `src/data/releases.ts` の先頭に ver${{ steps.parse.outputs.version }} のエントリを追加する。
+               - ファイルを Read して現在の内容を確認する。
+               - `export const releases: Release[] = [` の直後に新しいエントリを挿入する（Edit ツールで既存の最初のエントリの前に差し込む）。
+               - エントリのフォーマット（TypeScript）:
+                 ```
+                 {
+                   version: '${{ steps.parse.outputs.version }}',
+                   date: 'YYYY-MM-DD',  // PR マージ日
+                   headline: { lead: '...', accent: '...', tail: '...' },
+                   highlights: [
+                     { title: '機能名', body: '平易な説明1〜2文。' },
+                   ],
+                 },
+                 ```
+               - `headline` は news.md のキャッチを `lead`/`accent`/`tail` に分解する。`accent` が紫で強調される部分（体言止めの体言など目玉の1〜3語）。
+               - `highlights` の `body` はノンテック層向けの平易な日本語で1〜2文。確信が持てない箇所は `［要確認: …］` を残す。
+
+            6. ブランチ `ver${{ steps.parse.outputs.version }}-release` を切って 4・5 のファイルをcommit・pushし、PRを作成する。
                - `git config user.name "github-actions[bot]"` /
                  `git config user.email "41898282+github-actions[bot]@users.noreply.github.com"`
                - `git switch -c ver${{ steps.parse.outputs.version }}-release`
-               - commit メッセージ: `chore(updates): ver${{ steps.parse.outputs.version }} 告知素材ドラフトを追加`
+               - commit メッセージ: `chore(updates): ver${{ steps.parse.outputs.version }} 告知素材ドラフトを追加・releases.ts にエントリを追加`
                - PR タイトル（★バージョン名にしない。verN.N にすると再び本ワークフローが発火するため）:
                  `chore(updates): ver${{ steps.parse.outputs.version }} 告知素材ドラフト`
                - PR 本文に、1 で作ったチェックリスト Issue へのリンク（`Closes #<Issue番号>` ではなく参照リンク）を入れる。
@@ -132,7 +149,7 @@ jobs:
 
             重要な制約:
             - データファイル（stores.json / overrides.json 等）やアプリのコードは変更しない。触ってよいのは
-              `updates/v${{ steps.parse.outputs.version }}/` 配下の新規ファイルのみ。
+              `updates/v${{ steps.parse.outputs.version }}/` 配下の新規ファイルと `src/data/releases.ts`（先頭へのエントリ追加のみ）。
             - PR タイトルは絶対に `verN.N` 形式にしない（無限ループ防止）。`*-release` ブランチなので PR title lint は免除される。
             - 不確かな情報は断定せず注記で残し、最終確認は人手に委ねる。
 
