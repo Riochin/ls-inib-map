@@ -158,10 +158,25 @@ export function OverridesAdmin() {
     }
   }
 
-  async function persist(next: OverridesFile, message: string) {
+  // POST前にディスクの最新状態を再フェッチしてからマージする。
+  // ページを開いたまま手書き編集した場合の上書き消失を防ぐ。
+  async function persist(
+    computeNext: (current: OverridesFile) => OverridesFile,
+    message: string,
+  ) {
     setSaving(true)
     setStatus('')
     try {
+      let current = file
+      try {
+        const r = await fetch('/api/overrides')
+        const data: OverridesFile = await r.json()
+        if (data?.overrides) current = data
+      } catch {
+        // 再フェッチ失敗時はローカルステートで継続
+      }
+
+      const next = computeNext(current)
       const res = await fetch('/api/overrides', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -188,16 +203,20 @@ export function OverridesAdmin() {
       setStatus('上書きする項目がありません（台数・閉店・移設・店名等のいずれかを入力）')
       return
     }
-    const next: OverridesFile = {
-      overrides: { ...file.overrides, [selected.id]: { note: selected.name, ...entry } },
-    }
-    await persist(next, `保存しました: ${selected.name} (${selected.id})`)
+    await persist(
+      (current) => ({
+        overrides: { ...current.overrides, [selected.id]: { note: selected.name, ...entry } },
+      }),
+      `保存しました: ${selected.name} (${selected.id})`,
+    )
   }
 
   async function remove(id: string) {
-    const overrides = { ...file.overrides }
-    delete overrides[id]
-    await persist({ overrides }, `削除しました: ${id}`)
+    await persist((current) => {
+      const overrides = { ...current.overrides }
+      delete overrides[id]
+      return { overrides }
+    }, `削除しました: ${id}`)
     if (selectedId === id) setForm(emptyForm())
   }
 
