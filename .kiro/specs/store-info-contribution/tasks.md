@@ -85,14 +85,14 @@
   - スマートフォン幅での操作性を最優先にしたレイアウトにする
   - _Requirements: 3.3, 3.4, 3.7, 7.4_
 
-- [ ] 6. MapView・InfoWindowContentの拡張（B機能の統合）
-- [ ] 6.1 InfoWindowContentを拡張してクイック表示から詳細展開できるようにする
+- [x] 6. MapView・InfoWindowContentの拡張（B機能の統合）
+- [x] 6.1 InfoWindowContentを拡張してクイック表示から詳細展開できるようにする
   - `onReport` prop を削除し、代わりに `onOpenDetail: () => void` prop を追加する
   - 「詳細を見る」ボタンを追加し、タップで `onOpenDetail` を呼び出す
   - 店名・住所・台数・主要操作（経路・シェア）をクイック表示として維持する
   - _Requirements: 3.1, 3.2, 3.8_
 
-- [ ] 6.2 MapViewを拡張してStoreDetailModalの状態管理を組み込む
+- [x] 6.2 MapViewを拡張してStoreDetailModalの状態管理を組み込む
   - `reportStore` state を `detailStore`（詳細モーダル用）と `infoFormStore`（情報提供フォーム用）の2つに分割する
   - `InfoWindowContent` の `onReport` 呼び出しを `onOpenDetail` に変更し、`detailStore` をセットする
   - `StoreDetailModal` を `detailStore` に基づいて表示し、`StoreDetailModal.onClose` で `detailStore` のみをクリアして地図に戻る

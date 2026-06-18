@@ -6,6 +6,7 @@ import type { Store, GameTitle } from '@/types/store'
 import { CurrentLocationMarker } from './CurrentLocationMarker'
 import { ApproximateCircle } from './ApproximateCircle'
 import { ReportModal } from './ReportModal'
+import { StoreDetailModal } from './StoreDetailModal'
 import { formatDateJst } from '@/lib/info-display'
 import { storesMeta } from '@/data/stores'
 import { getMarkerTheme, getGameLabel, getStoreStatusLabel, getCountSourceInfo } from '@/lib/marker-color'
@@ -26,7 +27,8 @@ const DEFAULT_ZOOM = 15
 export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onMapClick }: MapViewProps) {
   const map = useMap()
   const [openStoreId, setOpenStoreId] = useState<string | null>(null)
-  const [reportStore, setReportStore] = useState<Store | null>(null)
+  const [detailStore, setDetailStore] = useState<Store | null>(null)
+  const [infoFormStore, setInfoFormStore] = useState<Store | null>(null)
   const prevLocationRef = useRef<{ lat: number; lng: number } | null>(null)
 
   const handleOpen = useCallback((storeId: string) => {
@@ -98,14 +100,21 @@ export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onM
           <InfoWindowContent
             store={openStore}
             onClose={handleClose}
-            onReport={() => setReportStore(openStore)}
+            onOpenDetail={() => setDetailStore(openStore)}
           />
         </InfoWindow>
       )}
 
       {userLocation && <CurrentLocationMarker position={userLocation} />}
     </Map>
-    {reportStore && <ReportModal store={reportStore} onClose={() => setReportStore(null)} />}
+    {detailStore && (
+      <StoreDetailModal
+        store={detailStore}
+        onClose={() => setDetailStore(null)}
+        onOpenInfoForm={() => setInfoFormStore(detailStore)}
+      />
+    )}
+    {infoFormStore && <ReportModal store={infoFormStore} onClose={() => setInfoFormStore(null)} />}
     </>
   )
 }
@@ -113,11 +122,11 @@ export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onM
 function InfoWindowContent({
   store,
   onClose,
-  onReport,
+  onOpenDetail,
 }: {
   store: Store
   onClose: () => void
-  onReport: () => void
+  onOpenDetail: () => void
 }) {
   const theme = getMarkerTheme(store)
   // 閉店（🌸）・移設（公式一覧から消失）はグレー背景＋状態ラベルで通常店舗と区別する
@@ -262,10 +271,10 @@ function InfoWindowContent({
         </div>
         <button
           type="button"
-          onClick={onReport}
-          className="text-[11px] text-gray-500 hover:text-gray-700 hover:underline"
+          onClick={onOpenDetail}
+          className="text-[11px] text-blue-600 hover:text-blue-800 font-medium hover:underline"
         >
-          情報の修正を報告
+          詳細を見る
         </button>
       </div>
     </div>
