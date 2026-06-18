@@ -132,16 +132,16 @@
   - モバイル幅（< 768px）でボトムシート、PC幅（≥ 768px）で中央モーダルになることを確認する
   - _Requirements: 7.4, 7.5_
 
-- [ ]* 9.1 lib/report.tsの単体テストを追加する
+- [x] 9.1 lib/report.tsの単体テストを追加する
   - `buildFeedbackIssue()` の各カテゴリ・SNS ID あり/なし・メンション中和をテストする
   - `buildStructuredStoreIssue()` の部分入力・全未入力・payments 配列整形をテストする
   - _Requirements: 1.2, 1.5, 2.5, 4.10_
 
-- [ ]* 9.2 POST /api/reportの統合テストを追加する
+- [x] 9.2 POST /api/reportの統合テストを追加する
   - `mode='feedback'` の honeypot 検知・必須欠落 400・正常系 200 をテストする
   - `mode='structured-store'` の honeypot 検知・全未入力 400・部分入力正常系をテストする
   - _Requirements: 1.3, 2.4, 4.9_
 
-- [ ]* 9.3 applyOverrides拡張の単体テストを追加する
+- [x] 9.3 applyOverrides拡張の単体テストを追加する
   - 新属性が Store に正しく適用されること・`attributeSources` が正しく記録されることをテストする
   - _Requirements: 5.2, 5.4, 6.3_
