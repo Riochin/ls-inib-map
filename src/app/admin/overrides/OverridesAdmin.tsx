@@ -168,12 +168,13 @@ export function OverridesAdmin() {
     setStatus('')
     try {
       let current = file
+      let refetchFailed = false
       try {
         const r = await fetch('/api/overrides')
         const data: OverridesFile = await r.json()
         if (data?.overrides) current = data
       } catch {
-        // 再フェッチ失敗時はローカルステートで継続
+        refetchFailed = true
       }
 
       const next = computeNext(current)
@@ -188,7 +189,7 @@ export function OverridesAdmin() {
       }
       const data = await res.json()
       setFile(data.file as OverridesFile)
-      setStatus(message)
+      setStatus(refetchFailed ? `${message}（注意: 最新データの取得に失敗したため、ローカルの状態で上書きしました）` : message)
     } catch (e) {
       setStatus(`保存に失敗: ${e instanceof Error ? e.message : String(e)}`)
     } finally {

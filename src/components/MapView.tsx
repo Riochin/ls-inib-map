@@ -5,8 +5,10 @@ import { Map, useMap, InfoWindow } from '@vis.gl/react-google-maps'
 import type { Store, GameTitle } from '@/types/store'
 import { CurrentLocationMarker } from './CurrentLocationMarker'
 import { ApproximateCircle } from './ApproximateCircle'
-import { StoreInfoForm } from './StoreInfoForm'
-import { StoreDetailModal } from './StoreDetailModal'
+import dynamic from 'next/dynamic'
+
+const StoreInfoForm = dynamic(() => import('./StoreInfoForm').then((m) => m.StoreInfoForm))
+const StoreDetailModal = dynamic(() => import('./StoreDetailModal').then((m) => m.StoreDetailModal))
 import { formatDateJst } from '@/lib/info-display'
 import { storesMeta } from '@/data/stores'
 import { getMarkerTheme, getGameLabel, getStoreStatusLabel, getCountSourceInfo } from '@/lib/marker-color'
