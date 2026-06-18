@@ -13,15 +13,15 @@
   - 既存の `source` フィールドをそのまま再利用し、管理者確定値（admin）を示す
   - _Requirements: 6.1, 6.2, 6.3_
 
-- [ ] 2. ライブラリ層の拡張
-- [ ] 2.1 (P) applyOverridesを拡張して新属性の適用とattributeSourcesの記録を追加する
+- [x] 2. ライブラリ層の拡張
+- [x] 2.1 (P) applyOverridesを拡張して新属性の適用とattributeSourcesの記録を追加する
   - 新属性キーの配列を定義し、ループで `OverrideEntry` から `Store` に各属性を適用する
   - 適用時に `attributeSources[key] = entry.source` を記録し、管理者由来か否かを追跡できるようにする
   - `OverrideEntry.updatedAt` を `Store.infoUpdatedAt` に反映する処理を追加する
   - 既存の `machineCounts`・`countSources`・`closed`・`delisted` の処理は変更しない
   - _Requirements: 5.2, 5.4, 6.1, 6.2, 6.3_
 
-- [ ] 2.2 (P) lib/report.tsに新モードの型定義とIssue整形関数を追加する
+- [x] 2.2 (P) lib/report.tsに新モードの型定義とIssue整形関数を追加する
   - `FeedbackCategory`・`FeedbackInput`・`CorrectionType`・`StructuredStoreInput` の型を定義する
   - `buildFeedbackIssue()` を実装し、カテゴリ・内容・SNS ID 有無を含む Issue 本文を生成する
   - `buildStructuredStoreIssue()` を実装し、入力済みフィールドのみを「提案値一覧」テーブル形式で整形する

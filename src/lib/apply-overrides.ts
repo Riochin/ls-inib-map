@@ -1,7 +1,16 @@
-import type { Store, GameTitle } from '@/types/store'
+import type { Store, GameTitle, StoreAttributeKey } from '@/types/store'
 import type { OverridesFile, OverrideEntry } from '@/types/overrides'
 
 const GAME_TITLES: GameTitle[] = ['jojo-ls', 'gundam-exvs']
+
+const ATTRIBUTE_KEYS: StoreAttributeKey[] = [
+  'businessHours',
+  'floor',
+  'smoking',
+  'payments',
+  'hasRecording',
+  'hasStreaming',
+]
 
 /**
  * 公式スクレイプ由来の店舗一覧に、手動オーバーライド（overrides.json）を重ねる。
@@ -70,6 +79,20 @@ function applyEntry(store: Store, entry: OverrideEntry): Store {
 
   // 店舗単位の「情報更新日」を表示に載せる（override の更新日時）
   if (entry.updatedAt !== undefined) next.infoUpdatedAt = entry.updatedAt
+
+  // 新拡張属性を適用し、attributeSources に出どころを記録する
+  const attributeSources = { ...store.attributeSources }
+  let hasAttributeUpdate = false
+  for (const key of ATTRIBUTE_KEYS) {
+    const value = entry[key]
+    if (value !== undefined) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ;(next as any)[key] = value
+      attributeSources[key] = entry.source
+      hasAttributeUpdate = true
+    }
+  }
+  if (hasAttributeUpdate) next.attributeSources = attributeSources
 
   return next
 }
