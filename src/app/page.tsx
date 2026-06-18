@@ -42,6 +42,13 @@ export default function MapPage() {
     if (saved) setActiveFilter(saved)
   }, [])
 
+  useIsomorphicLayoutEffect(() => {
+    const id = new URLSearchParams(window.location.search).get('store')
+    if (!id) return
+    const found = stores.find((s) => s.id === id)
+    if (found) setFocusStore(found)
+  }, [])
+
   const handleFilterChange = useCallback((filter: FilterOption) => {
     setActiveFilter(filter)
     saveFilter(filter)

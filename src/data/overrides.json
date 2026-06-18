@@ -1,220 +1,228 @@
 {
   "overrides": {
-    "311e765f09c9": {
-      "source": "admin",
-      "note": "蟹貴さんより提供",
-      "machineCounts": {
-        "gundam-exvs": 8
-      },
-      "updatedAt": "2026-06-09"
-    },
-    "4225cbfd493f": {
-      "source": "admin",
-      "note": "オアシスさん",
-      "machineCounts": {
-        "jojo-ls": 4,
-        "gundam-exvs": 9
-      },
-      "updatedAt": "2026-06-09"
-    },
-    "6701f6561319": {
-      "source": "admin",
-      "note": "SBGさん",
-      "machineCounts": {
-        "jojo-ls": 3
-      },
-      "updatedAt": "2026-06-09"
-    },
-    "74a661a26350": {
-      "source": "admin",
-      "note": "タイトーFステーション吉祥寺JOY",
-      "closed": true,
-      "updatedAt": "2026-06-09"
-    },
-    "a4bf5a4b8d0b": {
-      "source": "admin",
-      "note": "Yリオンさん",
-      "machineCounts": {
-        "jojo-ls": 2
-      },
-      "updatedAt": "2026-06-09"
-    },
-    "b2c469a9c6c6": {
-      "source": "admin",
-      "note": "オアシスさん",
-      "machineCounts": {
-        "jojo-ls": 4,
-        "gundam-exvs": 9
-      },
-      "updatedAt": "2026-06-09"
-    },
-    "ec36fcabd4d3": {
-      "source": "admin",
-      "note": "オアシスさん",
-      "machineCounts": {
-        "gundam-exvs": 9
-      },
-      "updatedAt": "2026-06-09"
-    },
-    "7dabb1a2bb08": {
-      "source": "admin",
-      "note": "インターワールド伊勢崎 イニブ10台（Issue #49）。@UrUshihara_M。",
-      "machineCounts": {
-        "gundam-exvs": 10
-      },
-      "updatedAt": "2026-06-10"
-    },
-    "c63f86f0b751": {
-      "source": "admin",
-      "note": "群馬レジャーランド伊勢崎 イニブ8台（Issue #48）。@UrUshihara_M。。",
-      "machineCounts": {
-        "gundam-exvs": 8
-      },
-      "updatedAt": "2026-06-10"
-    },
-    "e8fae899bfa0": {
-      "source": "admin",
-      "note": "GiGO赤羽 イニブ8台（4台並びの計8）・ラスサバ3台（Issue #65）。ぬまくんと肩幅。設備: 同階層に手洗い場・喫煙所（狭い）、イニブ電子マネー対応、タイムレンタルあり、ラスサバ台はメンテ悪い。",
-      "machineCounts": {
-        "jojo-ls": 3,
-        "gundam-exvs": 8
-      },
-      "updatedAt": "2026-06-10"
-    },
-    "3e3410623889": {
-      "source": "admin",
-      "note": "namco王子サンスクエア イニブ6台（2台+4台のキモ配置, Issue #64）。出どころ: ぬまくん。古めの商業施設で非常に広い、喫煙所はイニブと別階層。",
-      "machineCounts": {
-        "gundam-exvs": 6
-      },
-      "updatedAt": "2026-06-10"
-    },
-    "14d32850a2a1": {
-      "source": "admin",
-      "note": "GiGO赤羽駅前 イニブ8台（片面4台並びで計8, 3F, Issue #63）。報告者: ぬまくん。設備: 喫煙所は同階層(3F)、手洗い場はイニブ筐体の真後ろ、電子マネー対応。",
-      "machineCounts": {
-        "gundam-exvs": 8
-      },
-      "updatedAt": "2026-06-10"
-    },
-    "2380eb9ab2af": {
-      "source": "admin",
-      "note": "トヤマレジャーランド呉羽 ピン位置修正（Issue #51, 報告者が実店舗位置を画像提示）。Googleマップ実位置に補正（約370mズレていた）。",
-      "lat": 36.7154173,
-      "lng": 137.1579387,
-      "updatedAt": "2026-06-10"
-    },
-    "4ce462b628ed": {
-      "source": "admin",
-      "note": "G-pala 日田 ピン位置修正＋イニブ4台（Issue #52）。登録済みだったがピンが約2km西にズレており未登録と誤認されていた。Googleマップ実位置に補正。",
-      "machineCounts": {
-        "gundam-exvs": 4
-      },
-      "lat": 33.3251978,
-      "lng": 130.9114515,
-      "updatedAt": "2026-06-10"
-    },
-    "c2a6953ae8f9": {
-      "source": "admin",
-      "note": "GiGO スマーク伊勢崎 イニブ台数修正（マップ3台→実際2台, Issue #75）。@UrUshihara_M。",
-      "machineCounts": {
-        "gundam-exvs": 2
-      },
-      "updatedAt": "2026-06-10"
-    },
-    "4dafc607ce42": {
-      "source": "admin",
-      "note": "タイトーステーション藤沢 イニブ筐体4台＋ライブモニター1台（公式5→筐体4, Issue #94）。@sylvaliongosvel。お礼可。",
-      "machineCounts": {
-        "gundam-exvs": 4
-      },
-      "updatedAt": "2026-06-12"
-    },
-    "7fe925f86f0f": {
-      "source": "admin",
-      "note": "アピナ印西 イニブ筐体4台＋ライブモニター1台（公式5→筐体4, Issue #93）。@sylvaliongosvel。お礼可。",
-      "machineCounts": {
-        "gundam-exvs": 4
-      },
-      "updatedAt": "2026-06-12"
-    },
-    "99f280e60853": {
-      "source": "admin",
-      "note": "GiGO 仙台利府 ラスサバ5台（マップ6→5, イニブ9据置, Issue #91）。@audadgj123。お礼可。",
-      "machineCounts": {
-        "jojo-ls": 5
-      },
-      "updatedAt": "2026-06-12"
-    },
-    "c5cf6ac3661e": {
-      "source": "admin",
-      "note": "フクイレジャーランドワイプラザ イニブ筐体4台＋ライブモニター1台（公式5→筐体4, Issue #80）。@kiyo_general。お礼可。",
-      "machineCounts": {
-        "gundam-exvs": 4
-      },
-      "updatedAt": "2026-06-12"
-    },
-    "cf6a353b751e": {
-      "source": "admin",
-      "note": "GiGO 福井 イニブ筐体4台＋リプレイ1台（公式5→筐体4, Issue #79）。@kiyo_general。メンション不可（お礼希望なし）。",
-      "machineCounts": {
-        "gundam-exvs": 4
-      },
-      "updatedAt": "2026-06-12"
-    },
-    "f5a9145e5af3": {
-      "source": "admin",
-      "note": "GiGO 高山 イニブ筐体2台＋ライブモニター1台（公式HP3台の内訳, Issue #78）。@lorelei2_。お礼可。録画/配信設備なし・電子マネー非対応。",
-      "machineCounts": {
-        "gundam-exvs": 2
-      },
-      "updatedAt": "2026-06-12"
-    },
     "0307d6bb2ee2": {
       "source": "user-report",
       "note": "ファンタジスタ イニブ8台・ラスサバ2台（マップ イニブ10/ラスサバ3 → 修正, Issue #82）。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-06-12",
       "machineCounts": {
         "jojo-ls": 2,
         "gundam-exvs": 8
-      },
-      "updatedAt": "2026-06-12"
-    },
-    "e63f5f03c5b3": {
-      "source": "admin",
-      "note": "あそVIVA本店（正式名）ピン位置修正（Issue #84）。住所『京都府福知山市字堀小字上高田2146-1』が舞鶴市(35.448,135.325)へ誤ジオコードされていたのを福知山の実位置へ補正。",
-      "lat": 35.2897195,
-      "lng": 135.1347873,
-      "updatedAt": "2026-06-12"
-    },
-    "8fa39515bde4": {
-      "source": "admin",
-      "note": "namco豊岡 ピン位置再修正（Issue #100）。報告者提示のGoogleマップ「namco豊岡店」実ピン位置へ補正（Issue #92のスシロー建物位置から約60m補正）。運営確認。",
-      "lat": 35.554971,
-      "lng": 134.81223,
-      "updatedAt": "2026-06-16"
-    },
-    "3ec1f3534a2a": {
-      "source": "admin",
-      "note": "福井レジャーランド板垣 ピン位置修正（Issue #81）。住所ジオコードが南へズレていたのを店名ROOFTOP（下馬3丁目・交差点付近）へ補正。@kiyo_general。お礼可。",
-      "lat": 36.0422008,
-      "lng": 136.2336664,
-      "updatedAt": "2026-06-12"
+      }
     },
     "07906e9552bc": {
       "source": "admin",
       "note": "ウェアハウス一橋学園 イニブ8台（マップ9→8, Issue #101）。報告者=管理者確認済み。",
+      "updatedAt": "2026-06-16",
       "machineCounts": {
         "gundam-exvs": 8
-      },
-      "updatedAt": "2026-06-16"
+      }
+    },
+    "14d32850a2a1": {
+      "source": "admin",
+      "note": "GiGO赤羽駅前 イニブ8台（片面4台並びで計8, 3F, Issue #63）。報告者: ぬまくん。設備: 喫煙所は同階層(3F)、手洗い場はイニブ筐体の真後ろ、電子マネー対応。",
+      "updatedAt": "2026-06-10",
+      "machineCounts": {
+        "gundam-exvs": 8
+      }
+    },
+    "2380eb9ab2af": {
+      "source": "admin",
+      "note": "トヤマレジャーランド呉羽 ピン位置修正（Issue #51, 報告者が実店舗位置を画像提示）。Googleマップ実位置に補正（約370mズレていた）。",
+      "updatedAt": "2026-06-10",
+      "lat": 36.7154173,
+      "lng": 137.1579387
+    },
+    "311e765f09c9": {
+      "source": "admin",
+      "note": "蟹貴さんより提供",
+      "updatedAt": "2026-06-09",
+      "machineCounts": {
+        "gundam-exvs": 8
+      }
+    },
+    "3e3410623889": {
+      "source": "admin",
+      "note": "namco王子サンスクエア イニブ6台（2台+4台のキモ配置, Issue #64）。出どころ: ぬまくん。古めの商業施設で非常に広い、喫煙所はイニブと別階層。",
+      "updatedAt": "2026-06-10",
+      "machineCounts": {
+        "gundam-exvs": 6
+      }
+    },
+    "3ec1f3534a2a": {
+      "source": "admin",
+      "note": "福井レジャーランド板垣 ピン位置修正（Issue #81）。住所ジオコードが南へズレていたのを店名ROOFTOP（下馬3丁目・交差点付近）へ補正。@kiyo_general。お礼可。",
+      "updatedAt": "2026-06-12",
+      "lat": 36.0422008,
+      "lng": 136.2336664
     },
     "420e66ac88ad": {
       "source": "admin",
       "note": "namco池袋 ラスサバ10台で確定（Issue #99）。報告者=管理者確認済み。",
+      "updatedAt": "2026-06-16",
       "machineCounts": {
         "jojo-ls": 10
+      }
+    },
+    "4225cbfd493f": {
+      "source": "admin",
+      "note": "オアシスさん",
+      "updatedAt": "2026-06-09",
+      "machineCounts": {
+        "jojo-ls": 4,
+        "gundam-exvs": 9
+      }
+    },
+    "4ce462b628ed": {
+      "source": "admin",
+      "note": "G-pala 日田 ピン位置修正＋イニブ4台（Issue #52）。登録済みだったがピンが約2km西にズレており未登録と誤認されていた。Googleマップ実位置に補正。",
+      "updatedAt": "2026-06-10",
+      "machineCounts": {
+        "gundam-exvs": 4
       },
-      "updatedAt": "2026-06-16"
+      "lat": 33.3251978,
+      "lng": 130.9114515
+    },
+    "4dafc607ce42": {
+      "source": "admin",
+      "note": "タイトーステーション藤沢 イニブ筐体4台＋ライブモニター1台（公式5→筐体4, Issue #94）。@sylvaliongosvel。お礼可。",
+      "updatedAt": "2026-06-12",
+      "machineCounts": {
+        "gundam-exvs": 4
+      }
+    },
+    "6701f6561319": {
+      "source": "admin",
+      "note": "SBGさん",
+      "updatedAt": "2026-06-09",
+      "machineCounts": {
+        "jojo-ls": 3
+      }
+    },
+    "74a661a26350": {
+      "source": "admin",
+      "note": "タイトーFステーション吉祥寺JOY",
+      "updatedAt": "2026-06-09",
+      "closed": true
+    },
+    "7dabb1a2bb08": {
+      "source": "admin",
+      "note": "インターワールド伊勢崎 イニブ10台（Issue #49）。@UrUshihara_M。",
+      "updatedAt": "2026-06-10",
+      "machineCounts": {
+        "gundam-exvs": 10
+      }
+    },
+    "7fe925f86f0f": {
+      "source": "admin",
+      "note": "アピナ印西 イニブ筐体4台＋ライブモニター1台（公式5→筐体4, Issue #93）。@sylvaliongosvel。お礼可。",
+      "updatedAt": "2026-06-12",
+      "machineCounts": {
+        "gundam-exvs": 4
+      }
+    },
+    "8fa39515bde4": {
+      "source": "admin",
+      "note": "namco豊岡 ピン位置再修正（Issue #100）。報告者提示のGoogleマップ「namco豊岡店」実ピン位置へ補正（Issue #92のスシロー建物位置から約60m補正）。運営確認。",
+      "updatedAt": "2026-06-16",
+      "lat": 35.554971,
+      "lng": 134.81223
+    },
+    "99f280e60853": {
+      "source": "admin",
+      "note": "GiGO 仙台利府 ラスサバ5台（マップ6→5, イニブ9据置, Issue #91）。@audadgj123。お礼可。",
+      "updatedAt": "2026-06-12",
+      "machineCounts": {
+        "jojo-ls": 5
+      }
+    },
+    "a4bf5a4b8d0b": {
+      "source": "admin",
+      "note": "Yリオンさん",
+      "updatedAt": "2026-06-09",
+      "machineCounts": {
+        "jojo-ls": 2
+      }
+    },
+    "b2c469a9c6c6": {
+      "source": "admin",
+      "note": "オアシスさん",
+      "updatedAt": "2026-06-09",
+      "machineCounts": {
+        "jojo-ls": 4,
+        "gundam-exvs": 9
+      }
+    },
+    "c2a6953ae8f9": {
+      "source": "admin",
+      "note": "GiGO スマーク伊勢崎 イニブ台数修正（マップ3台→実際2台, Issue #75）。@UrUshihara_M。",
+      "updatedAt": "2026-06-10",
+      "machineCounts": {
+        "gundam-exvs": 2
+      }
+    },
+    "c5cf6ac3661e": {
+      "source": "admin",
+      "note": "フクイレジャーランドワイプラザ イニブ筐体4台＋ライブモニター1台（公式5→筐体4, Issue #80）。@kiyo_general。お礼可。",
+      "updatedAt": "2026-06-12",
+      "machineCounts": {
+        "gundam-exvs": 4
+      }
+    },
+    "c63f86f0b751": {
+      "source": "admin",
+      "note": "群馬レジャーランド伊勢崎 イニブ8台（Issue #48）。@UrUshihara_M。。",
+      "updatedAt": "2026-06-10",
+      "machineCounts": {
+        "gundam-exvs": 8
+      }
+    },
+    "cf6a353b751e": {
+      "source": "admin",
+      "note": "GiGO 福井 イニブ筐体4台＋リプレイ1台（公式5→筐体4, Issue #79）。@kiyo_general。メンション不可（お礼希望なし）。",
+      "updatedAt": "2026-06-12",
+      "machineCounts": {
+        "gundam-exvs": 4
+      }
+    },
+    "e63f5f03c5b3": {
+      "source": "admin",
+      "note": "あそVIVA本店（正式名）ピン位置修正（Issue #84）。住所『京都府福知山市字堀小字上高田2146-1』が舞鶴市(35.448,135.325)へ誤ジオコードされていたのを福知山の実位置へ補正。",
+      "updatedAt": "2026-06-12",
+      "lat": 35.2897195,
+      "lng": 135.1347873
+    },
+    "e8fae899bfa0": {
+      "source": "admin",
+      "note": "GiGO赤羽 イニブ8台（4台並びの計8）・ラスサバ3台（Issue #65）。ぬまくんと肩幅。設備: 同階層に手洗い場・喫煙所（狭い）、イニブ電子マネー対応、タイムレンタルあり、ラスサバ台はメンテ悪い。",
+      "updatedAt": "2026-06-10",
+      "machineCounts": {
+        "jojo-ls": 3,
+        "gundam-exvs": 8
+      }
+    },
+    "ec36fcabd4d3": {
+      "source": "admin",
+      "note": "オアシスさん",
+      "updatedAt": "2026-06-09",
+      "machineCounts": {
+        "gundam-exvs": 9
+      }
+    },
+    "f5a9145e5af3": {
+      "source": "admin",
+      "note": "GiGO 高山 イニブ筐体2台＋ライブモニター1台（公式HP3台の内訳, Issue #78）。@lorelei2_。お礼可。録画/配信設備なし・電子マネー非対応。",
+      "updatedAt": "2026-06-12",
+      "machineCounts": {
+        "gundam-exvs": 2
+      }
+    },
+    "f94e47ba4311": {
+      "source": "user-report",
+      "note": "アミューズメントワールド メトロポリス小田原",
+      "machineCounts": {
+        "jojo-ls": 4
+      },
+      "updatedAt": "2026-06-18T04:11:54.946Z"
     }
   }
 }

@@ -1,37 +1,34 @@
 'use client'
 
 import { useState, type FormEvent } from 'react'
-import type { Store } from '@/types/store'
-import { REPORT_TYPES, type ReportType } from '@/lib/report'
 import { HEADING_FONT_STYLE } from '@/lib/heading-font'
+import type { FeedbackCategory } from '@/lib/report'
 
-/**
- * 店舗情報の「修正を報告」フォーム（モーダル）。地図の InfoWindow から開く。
- *
- * - 対象店（id/name/address）は自動添付。項目は最小（種別・自由記述・任意の名前）。
- * - 送信先は公開 API `/api/report`。サーバーが検証して GitHub Issue（手動トリアージ）化する。
- * - bot 対策の honeypot（視覚的に隠した `website` 入力）を仕込む。人は触れない。
- * - 「即時反映ではない」ことを明記（ノンテック層向け・平易表記）。
- */
-export function ReportModal({
-  store,
-  onClose,
-}: {
-  store: Pick<Store, 'id' | 'name' | 'address'>
+interface FeedbackFormProps {
   onClose: () => void
-}) {
-  const [type, setType] = useState<ReportType>(REPORT_TYPES[0])
-  const [text, setText] = useState('')
+}
+
+const FEEDBACK_CATEGORIES: FeedbackCategory[] = [
+  '新機能の提案',
+  '既存機能の改善',
+  '不具合',
+  'その他',
+]
+
+export function FeedbackForm({ onClose }: FeedbackFormProps) {
+  const [category, setCategory] = useState<FeedbackCategory>('新機能の提案')
+  const [content, setContent] = useState('')
   const [reporter, setReporter] = useState('')
   const [noMention, setNoMention] = useState(false)
-  const [website, setWebsite] = useState('') // honeypot（bot用・人は空のまま）
-  const hasSns = reporter.trim() !== ''
+  const [website, setWebsite] = useState('') // honeypot
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
 
+  const hasSns = reporter.trim() !== ''
+
   async function submit(e: FormEvent) {
     e.preventDefault()
-    if (!text.trim()) {
+    if (!content.trim()) {
       setErrorMsg('内容を入力してください。')
       setStatus('error')
       return
@@ -43,12 +40,10 @@ export function ReportModal({
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          storeId: store.id,
-          storeName: store.name,
-          storeAddress: store.address,
-          type,
-          text,
-          reporter,
+          mode: 'feedback',
+          category,
+          content,
+          reporter: reporter.trim() || undefined,
           noMention: hasSns ? noMention : false,
           website,
         }),
@@ -87,9 +82,9 @@ export function ReportModal({
               ありがとうございます！
             </h3>
             <p className="text-sm mb-4">
-              「{store.name}」の情報、受け付けました🙏
+              ご要望を受け付けました🙏
               <br />
-              内容を確認のうえ反映します（即時ではありません）。
+              内容を確認のうえ検討します（即時対応ではありません）。
             </p>
             <button
               onClick={onClose}
@@ -101,9 +96,12 @@ export function ReportModal({
         ) : (
           <form onSubmit={submit}>
             <h2 className="text-lg text-gray-800 mb-0.5" style={HEADING_FONT_STYLE}>
-              情報の修正を報告
+              アプリへのご要望
             </h2>
-            <p className="text-xs text-gray-500 mb-4 break-words">{store.name}</p>
+            <p className="text-xs text-gray-500 mb-4 leading-snug">
+              不具合の報告・新機能のご提案など、なんでもお気軽にどうぞ。
+            </p>
+
             {/* honeypot: 視覚的に隠す。bot が埋めたらサーバーで破棄 */}
             <input
               type="text"
@@ -117,15 +115,15 @@ export function ReportModal({
             />
 
             <label className="block mb-3">
-              <span className="text-xs font-semibold text-gray-600">報告の種類</span>
+              <span className="text-xs font-semibold text-gray-600">種類</span>
               <select
-                value={type}
-                onChange={(e) => setType(e.target.value as ReportType)}
+                value={category}
+                onChange={(e) => setCategory(e.target.value as FeedbackCategory)}
                 className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
               >
-                {REPORT_TYPES.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
+                {FEEDBACK_CATEGORIES.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
                   </option>
                 ))}
               </select>
@@ -134,11 +132,11 @@ export function ReportModal({
             <label className="block mb-3">
               <span className="text-xs font-semibold text-gray-600">内容（必須）</span>
               <textarea
-                value={text}
-                onChange={(e) => setText(e.target.value)}
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
                 rows={4}
                 maxLength={2000}
-                placeholder="例）イニブは実際8台です／ピンが実際の場所より南にずれています など"
+                placeholder="例）〇〇の機能がほしい、△△のボタンが反応しない など"
                 className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5 resize-y"
               />
             </label>
@@ -154,8 +152,7 @@ export function ReportModal({
               />
             </label>
             <p className="text-[10px] text-gray-400 mb-3 leading-snug">
-              SNS IDをいただくと、運営が確認のうえ「確定情報」として掲載できる場合があります。
-              未記入の場合は「みんなの報告（未確認）」としての掲載になります。
+              IDをいただくと、対応した際にお礼のご連絡ができる場合があります。
             </p>
 
             {hasSns && (
@@ -180,7 +177,7 @@ export function ReportModal({
               {status === 'sending' ? '送信中…' : '送信する'}
             </button>
             <p className="text-[10px] text-gray-400 mt-2 leading-snug">
-              いただいた内容は確認のうえ反映します（即時反映ではありません）。
+              いただいた内容は確認のうえ検討します（即時対応ではありません）。
             </p>
           </form>
         )}

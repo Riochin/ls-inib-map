@@ -8,6 +8,7 @@ import { CountBadge } from './CountBadge'
 import { HEADING_FONT_STYLE, CATCH_FONT_STYLE } from '@/lib/heading-font'
 // 新機能ページの内容は src/data/releases.ts に集約（追加はそこへ1エントリ足すだけ）。
 import { releases, latestRelease, type Release, type ReleaseHighlight } from '@/data/releases'
+import { FeedbackForm } from './FeedbackForm'
 
 const STORAGE_KEY = 'ls-exvs-onboarded'
 
@@ -24,11 +25,6 @@ const SITE_URL = 'https://lsib.world/'
 const TWEET_HASHTAG = 'ラストサバイニブ'
 const TWEET_TEXT = 'ラスサバ・イニブの設置店舗マップ📍'
 const HASHTAG_URL = `https://x.com/hashtag/${encodeURIComponent(TWEET_HASHTAG)}`
-const INFO_REPORT_URL =
-  'https://x.com/intent/post' +
-  `?text=${encodeURIComponent(`@${X_HANDLE} 店舗情報の修正・提供：`)}` +
-  `&url=${encodeURIComponent(SITE_URL)}` +
-  `&hashtags=${encodeURIComponent(TWEET_HASHTAG)}`
 const SHARE_URL =
   'https://x.com/intent/post' +
   `?text=${encodeURIComponent(TWEET_TEXT)}` +
@@ -243,7 +239,7 @@ function ShareButton() {
   )
 }
 
-function AboutPage() {
+function AboutPage({ onOpenFeedback }: { onOpenFeedback?: () => void }) {
   return (
     <>
       <h2 className="text-lg text-gray-800 mb-1" style={HEADING_FONT_STYLE}>このアプリについて</h2>
@@ -269,29 +265,17 @@ function AboutPage() {
         </div>
 
         <div>
-          <dt className="text-xs font-semibold text-gray-500 mb-1">お問い合わせ</dt>
-          <dd className="text-xs text-gray-700 leading-snug">
-            不具合・ご要望など、X（
-            <a href={X_URL} rel="noopener noreferrer" className="text-purple-700 hover:underline">
-              @{X_HANDLE}
-            </a>
-            ）までお気軽にどうぞ。お問い合わせ待ってます！
-          </dd>
-        </div>
-
-        <div>
-          <dt className="text-xs font-semibold text-gray-500 mb-1">店舗情報の修正・提供</dt>
+          <dt className="text-xs font-semibold text-gray-500 mb-1">ご要望・不具合の報告</dt>
           <dd>
-            <a
-              href={INFO_REPORT_URL}
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={onOpenFeedback}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 border border-purple-200 rounded-full text-xs font-semibold text-purple-700 hover:bg-purple-50 transition-colors"
             >
-              <XIcon />
-              Xで報告する
-            </a>
+              要望フォームを開く
+            </button>
             <p className="text-[11px] text-gray-500 mt-1 leading-snug">
-              閉店・移設・新規設置などの情報をお寄せください。
+              新機能の提案・不具合の報告など、なんでもお気軽にどうぞ。
             </p>
           </dd>
         </div>
@@ -436,6 +420,7 @@ const PAGES = [HowToPage, LegendPage, AboutPage, DataPrivacyPage, NewsPage]
 const PAGE_COUNT = PAGES.length
 // 新機能ページは末尾。再訪ユーザーの自動オープン時はここから開く。
 const NEWS_PAGE_INDEX = PAGES.length - 1
+const ABOUT_PAGE_INDEX = PAGES.indexOf(AboutPage)
 
 /**
  * 独自スクロールバー付きのスクロール領域。
@@ -541,7 +526,15 @@ function ScrollArea({ children }: { children: ReactNode }) {
   )
 }
 
-function OnboardingModal({ initialPage = 0, onClose }: { initialPage?: number; onClose: () => void }) {
+function OnboardingModal({
+  initialPage = 0,
+  onClose,
+  onOpenFeedback,
+}: {
+  initialPage?: number
+  onClose: () => void
+  onOpenFeedback: () => void
+}) {
   const [page, setPage] = useState(initialPage)
 
   return (
@@ -566,6 +559,7 @@ function OnboardingModal({ initialPage = 0, onClose }: { initialPage?: number; o
         {/* 本文（ここだけスクロール・独自スクロールバー付き） */}
         <ScrollArea>
           {(() => {
+            if (page === ABOUT_PAGE_INDEX) return <AboutPage onOpenFeedback={onOpenFeedback} />
             const Page = PAGES[page]
             return <Page />
           })()}
@@ -616,6 +610,7 @@ function OnboardingModal({ initialPage = 0, onClose }: { initialPage?: number; o
 export function Onboarding() {
   const [isOpen, setIsOpen] = useState(false)
   const [initialPage, setInitialPage] = useState(0)
+  const [feedbackOpen, setFeedbackOpen] = useState(false)
 
   // localStorage 参照は副作用フェーズ限定（SSR/hydration安全・ちらつき防止・Req6.2）
   useEffect(() => {
@@ -657,7 +652,14 @@ export function Onboarding() {
   return (
     <>
       <HelpButton onClick={openFromHelp} />
-      {isOpen && <OnboardingModal initialPage={initialPage} onClose={handleClose} />}
+      {isOpen && (
+        <OnboardingModal
+          initialPage={initialPage}
+          onClose={handleClose}
+          onOpenFeedback={() => setFeedbackOpen(true)}
+        />
+      )}
+      {feedbackOpen && <FeedbackForm onClose={() => setFeedbackOpen(false)} />}
     </>
   )
 }

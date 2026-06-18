@@ -5,10 +5,14 @@ import { Map, useMap, InfoWindow } from '@vis.gl/react-google-maps'
 import type { Store, GameTitle } from '@/types/store'
 import { CurrentLocationMarker } from './CurrentLocationMarker'
 import { ApproximateCircle } from './ApproximateCircle'
-import { ReportModal } from './ReportModal'
+import dynamic from 'next/dynamic'
+
+const StoreInfoForm = dynamic(() => import('./StoreInfoForm').then((m) => m.StoreInfoForm))
+const StoreDetailModal = dynamic(() => import('./StoreDetailModal').then((m) => m.StoreDetailModal))
 import { formatDateJst } from '@/lib/info-display'
 import { storesMeta } from '@/data/stores'
 import { getMarkerTheme, getGameLabel, getStoreStatusLabel, getCountSourceInfo } from '@/lib/marker-color'
+import { buildShareText } from '@/lib/share'
 import { CountBadge } from './CountBadge'
 import { useStoreClusterer } from '@/hooks/use-store-clusterer'
 
@@ -26,7 +30,8 @@ const DEFAULT_ZOOM = 15
 export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onMapClick }: MapViewProps) {
   const map = useMap()
   const [openStoreId, setOpenStoreId] = useState<string | null>(null)
-  const [reportStore, setReportStore] = useState<Store | null>(null)
+  const [detailStore, setDetailStore] = useState<Store | null>(null)
+  const [infoFormStore, setInfoFormStore] = useState<Store | null>(null)
   const prevLocationRef = useRef<{ lat: number; lng: number } | null>(null)
 
   const handleOpen = useCallback((storeId: string) => {
@@ -61,6 +66,7 @@ export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onM
     // クラスタに埋もれた店舗でも個別表示されるよう pan/zoom→de-cluster してから開く
     focusMarker(focusStore.id)
     setOpenStoreId(focusStore.id)
+    setDetailStore(focusStore)
     onFocusConsumed?.()
   }, [map, focusStore, focusMarker, onFocusConsumed])
 
@@ -98,14 +104,21 @@ export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onM
           <InfoWindowContent
             store={openStore}
             onClose={handleClose}
-            onReport={() => setReportStore(openStore)}
+            onOpenDetail={() => setDetailStore(openStore)}
           />
         </InfoWindow>
       )}
 
       {userLocation && <CurrentLocationMarker position={userLocation} />}
     </Map>
-    {reportStore && <ReportModal store={reportStore} onClose={() => setReportStore(null)} />}
+    {detailStore && (
+      <StoreDetailModal
+        store={detailStore}
+        onClose={() => setDetailStore(null)}
+        onOpenInfoForm={() => setInfoFormStore(detailStore)}
+      />
+    )}
+    {infoFormStore && <StoreInfoForm store={infoFormStore} onClose={() => setInfoFormStore(null)} />}
     </>
   )
 }
@@ -113,11 +126,11 @@ export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onM
 function InfoWindowContent({
   store,
   onClose,
-  onReport,
+  onOpenDetail,
 }: {
   store: Store
   onClose: () => void
-  onReport: () => void
+  onOpenDetail: () => void
 }) {
   const theme = getMarkerTheme(store)
   // 閉店（🌸）・移設（公式一覧から消失）はグレー背景＋状態ラベルで通常店舗と区別する
@@ -140,8 +153,8 @@ function InfoWindowContent({
     if (flashTimer.current) clearTimeout(flashTimer.current)
   }, [])
   const handleShare = useCallback(async () => {
-    const url = typeof window !== 'undefined' ? window.location.href : ''
-    const text = `${store.name}（${store.address}）`
+    const url = typeof window !== 'undefined' ? `${window.location.origin}/?store=${store.id}` : ''
+    const text = buildShareText(store)
     // 共有シート対応端末はそちら（キャンセルは正常系なので握りつぶす）
     if (typeof navigator !== 'undefined' && navigator.share) {
       try {
@@ -154,12 +167,12 @@ function InfoWindowContent({
     // 非対応(PC等)はクリップボードへコピー。権限エラー等の失敗はユーザーに知らせる。
     try {
       if (typeof navigator === 'undefined' || !navigator.clipboard) throw new Error('clipboard unavailable')
-      await navigator.clipboard.writeText(`${text} ${url}`.trim())
+      await navigator.clipboard.writeText(`${text}\n${url}`.trim())
       flash('copied')
     } catch {
       flash('failed')
     }
-  }, [store.name, store.address, flash])
+  }, [store, flash])
   const shareLabel =
     shareState === 'copied'
       ? 'リンクをコピーしました'
@@ -186,7 +199,7 @@ function InfoWindowContent({
           ✕
         </button>
       </div>
-      <p className="text-xs text-gray-600 mb-1.5">{store.address}</p>
+      {/* 住所は詳細モーダルに出すため、クイック表示では省略（一目見る用に簡潔化） */}
       {store.approximateLocation && (
         <p className="text-[11px] text-amber-700 mb-1.5 leading-snug">
           ピンはおおよその位置です（住所から推定。実際の場所と少しずれている場合があります）
@@ -262,10 +275,10 @@ function InfoWindowContent({
         </div>
         <button
           type="button"
-          onClick={onReport}
-          className="text-[11px] text-gray-500 hover:text-gray-700 hover:underline"
+          onClick={onOpenDetail}
+          className="text-[11px] text-blue-600 hover:text-blue-800 font-medium hover:underline"
         >
-          情報の修正を報告
+          詳細を見る
         </button>
       </div>
     </div>

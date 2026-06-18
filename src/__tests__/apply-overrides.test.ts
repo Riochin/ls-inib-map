@@ -128,3 +128,141 @@ describe('applyOverrides', () => {
     expect(stores[0]).toEqual(before)
   })
 })
+
+describe('applyOverrides - 新属性（attributeSources）', () => {
+  it('businessHours を OverrideEntry から Store に適用する', () => {
+    const stores = [makeStore()]
+    const file: OverridesFile = {
+      overrides: { abc123: { source: 'admin', businessHours: '10:00-23:00' } },
+    }
+    const [store] = applyOverrides(stores, file)
+    expect(store.businessHours).toBe('10:00-23:00')
+  })
+
+  it('floor を適用する', () => {
+    const stores = [makeStore()]
+    const file: OverridesFile = {
+      overrides: { abc123: { source: 'admin', floor: '2F' } },
+    }
+    const [store] = applyOverrides(stores, file)
+    expect(store.floor).toBe('2F')
+  })
+
+  it('smoking を適用する', () => {
+    const stores = [makeStore()]
+    const file: OverridesFile = {
+      overrides: { abc123: { source: 'user-report', smoking: 'no' } },
+    }
+    const [store] = applyOverrides(stores, file)
+    expect(store.smoking).toBe('no')
+  })
+
+  it('payments 配列を適用する', () => {
+    const stores = [makeStore()]
+    const file: OverridesFile = {
+      overrides: { abc123: { source: 'admin', payments: ['Suica', 'PayPay'] } },
+    }
+    const [store] = applyOverrides(stores, file)
+    expect(store.payments).toEqual(['Suica', 'PayPay'])
+  })
+
+  it('hasRecording を適用する', () => {
+    const stores = [makeStore()]
+    const file: OverridesFile = {
+      overrides: { abc123: { source: 'admin', hasRecording: 'yes' } },
+    }
+    const [store] = applyOverrides(stores, file)
+    expect(store.hasRecording).toBe('yes')
+  })
+
+  it('hasStreaming を適用する', () => {
+    const stores = [makeStore()]
+    const file: OverridesFile = {
+      overrides: { abc123: { source: 'admin', hasStreaming: 'unknown' } },
+    }
+    const [store] = applyOverrides(stores, file)
+    expect(store.hasStreaming).toBe('unknown')
+  })
+
+  it('適用した属性の source を attributeSources に記録する', () => {
+    const stores = [makeStore()]
+    const file: OverridesFile = {
+      overrides: {
+        abc123: { source: 'user-report', businessHours: '11:00-22:00', floor: '3F' },
+      },
+    }
+    const [store] = applyOverrides(stores, file)
+    expect(store.attributeSources?.businessHours).toBe('user-report')
+    expect(store.attributeSources?.floor).toBe('user-report')
+  })
+
+  it('source=admin を attributeSources に正しく記録する', () => {
+    const stores = [makeStore()]
+    const file: OverridesFile = {
+      overrides: { abc123: { source: 'admin', smoking: 'yes', hasRecording: 'no' } },
+    }
+    const [store] = applyOverrides(stores, file)
+    expect(store.attributeSources?.smoking).toBe('admin')
+    expect(store.attributeSources?.hasRecording).toBe('admin')
+  })
+
+  it('含まれない属性は attributeSources に記録しない', () => {
+    const stores = [makeStore()]
+    const file: OverridesFile = {
+      overrides: { abc123: { source: 'admin', businessHours: '10:00-23:00' } },
+    }
+    const [store] = applyOverrides(stores, file)
+    expect(store.attributeSources?.floor).toBeUndefined()
+    expect(store.attributeSources?.smoking).toBeUndefined()
+  })
+
+  it('全属性を一括適用できる', () => {
+    const stores = [makeStore()]
+    const file: OverridesFile = {
+      overrides: {
+        abc123: {
+          source: 'admin',
+          businessHours: '10:00-23:00',
+          floor: '2F',
+          smoking: 'no',
+          payments: ['Suica'],
+          hasRecording: 'yes',
+          hasStreaming: 'no',
+        },
+      },
+    }
+    const [store] = applyOverrides(stores, file)
+    expect(store.businessHours).toBe('10:00-23:00')
+    expect(store.floor).toBe('2F')
+    expect(store.smoking).toBe('no')
+    expect(store.payments).toEqual(['Suica'])
+    expect(store.hasRecording).toBe('yes')
+    expect(store.hasStreaming).toBe('no')
+    const src = store.attributeSources!
+    expect(src.businessHours).toBe('admin')
+    expect(src.floor).toBe('admin')
+    expect(src.smoking).toBe('admin')
+    expect(src.payments).toBe('admin')
+    expect(src.hasRecording).toBe('admin')
+    expect(src.hasStreaming).toBe('admin')
+  })
+
+  it('既存の Store に attributeSources があれば既存値を保持しつつ更新する', () => {
+    const stores = [makeStore({ attributeSources: { floor: 'official' } })]
+    const file: OverridesFile = {
+      overrides: { abc123: { source: 'admin', businessHours: '10:00-23:00' } },
+    }
+    const [store] = applyOverrides(stores, file)
+    expect(store.attributeSources?.floor).toBe('official')
+    expect(store.attributeSources?.businessHours).toBe('admin')
+  })
+
+  it('入力の Store（新属性含む）を破壊しない', () => {
+    const stores = [makeStore({ businessHours: '09:00-21:00', floor: '1F' })]
+    const before = structuredClone(stores[0])
+    applyOverrides(stores, {
+      overrides: { abc123: { source: 'admin', businessHours: '10:00-23:00' } },
+    })
+    expect(stores[0]).toEqual(before)
+  })
+})

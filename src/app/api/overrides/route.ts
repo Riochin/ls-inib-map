@@ -76,7 +76,17 @@ function stampUpdatedAt(next: OverridesFile, current: OverridesFile, now: string
 async function readOverrides(): Promise<OverridesFile> {
   try {
     const raw = await fs.readFile(OVERRIDES_PATH, 'utf-8')
-    return validateFile(JSON.parse(raw)) ?? { overrides: {} }
+    const parsed = JSON.parse(raw)
+    if (!parsed || typeof parsed !== 'object') return { overrides: {} }
+    const overridesRaw = (parsed as Record<string, unknown>).overrides
+    if (!overridesRaw || typeof overridesRaw !== 'object') return { overrides: {} }
+    // 1件の不正エントリでファイル全体を破棄しないよう、個別にスキップする
+    const overrides: Record<string, OverrideEntry> = {}
+    for (const [id, entryRaw] of Object.entries(overridesRaw as Record<string, unknown>)) {
+      const entry = validateEntry(entryRaw)
+      if (entry) overrides[id] = entry
+    }
+    return { overrides }
   } catch {
     return { overrides: {} }
   }
