@@ -5,6 +5,7 @@ import type { Store, GameTitle, StoreAttributeKey } from '@/types/store'
 import { formatDateJst } from '@/lib/info-display'
 import { storesMeta } from '@/data/stores'
 import { getMarkerTheme, getGameLabel, getCountSourceInfo, getStoreStatusLabel } from '@/lib/marker-color'
+import { buildShareText } from '@/lib/share'
 import { CountBadge } from './CountBadge'
 
 interface StoreDetailPanelProps {
@@ -66,8 +67,8 @@ export function StoreDetailPanel({ store, onOpenInfoForm, onClose }: StoreDetail
   )
 
   const handleShare = useCallback(async () => {
-    const url = typeof window !== 'undefined' ? window.location.href : ''
-    const text = `${store.name}（${store.address}）`
+    const url = typeof window !== 'undefined' ? `${window.location.origin}/?store=${store.id}` : ''
+    const text = buildShareText(store)
     if (typeof navigator !== 'undefined' && navigator.share) {
       try {
         await navigator.share({ title: store.name, text, url })
@@ -78,12 +79,12 @@ export function StoreDetailPanel({ store, onOpenInfoForm, onClose }: StoreDetail
     }
     try {
       if (typeof navigator === 'undefined' || !navigator.clipboard) throw new Error('clipboard unavailable')
-      await navigator.clipboard.writeText(`${text} ${url}`.trim())
+      await navigator.clipboard.writeText(`${text}\n${url}`.trim())
       flash('copied')
     } catch {
       flash('failed')
     }
-  }, [store.name, store.address, flash])
+  }, [store, flash])
 
   const shareLabel =
     shareState === 'copied'

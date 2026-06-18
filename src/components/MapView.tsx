@@ -10,6 +10,7 @@ import { StoreDetailModal } from './StoreDetailModal'
 import { formatDateJst } from '@/lib/info-display'
 import { storesMeta } from '@/data/stores'
 import { getMarkerTheme, getGameLabel, getStoreStatusLabel, getCountSourceInfo } from '@/lib/marker-color'
+import { buildShareText } from '@/lib/share'
 import { CountBadge } from './CountBadge'
 import { useStoreClusterer } from '@/hooks/use-store-clusterer'
 
@@ -63,6 +64,7 @@ export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onM
     // クラスタに埋もれた店舗でも個別表示されるよう pan/zoom→de-cluster してから開く
     focusMarker(focusStore.id)
     setOpenStoreId(focusStore.id)
+    setDetailStore(focusStore)
     onFocusConsumed?.()
   }, [map, focusStore, focusMarker, onFocusConsumed])
 
@@ -149,8 +151,8 @@ function InfoWindowContent({
     if (flashTimer.current) clearTimeout(flashTimer.current)
   }, [])
   const handleShare = useCallback(async () => {
-    const url = typeof window !== 'undefined' ? window.location.href : ''
-    const text = `${store.name}（${store.address}）`
+    const url = typeof window !== 'undefined' ? `${window.location.origin}/?store=${store.id}` : ''
+    const text = buildShareText(store)
     // 共有シート対応端末はそちら（キャンセルは正常系なので握りつぶす）
     if (typeof navigator !== 'undefined' && navigator.share) {
       try {
@@ -163,12 +165,12 @@ function InfoWindowContent({
     // 非対応(PC等)はクリップボードへコピー。権限エラー等の失敗はユーザーに知らせる。
     try {
       if (typeof navigator === 'undefined' || !navigator.clipboard) throw new Error('clipboard unavailable')
-      await navigator.clipboard.writeText(`${text} ${url}`.trim())
+      await navigator.clipboard.writeText(`${text}\n${url}`.trim())
       flash('copied')
     } catch {
       flash('failed')
     }
-  }, [store.name, store.address, flash])
+  }, [store, flash])
   const shareLabel =
     shareState === 'copied'
       ? 'リンクをコピーしました'
