@@ -2,7 +2,6 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react'
 import type { Store, GameTitle, StoreAttributeKey } from '@/types/store'
-import { HEADING_FONT_STYLE } from '@/lib/heading-font'
 import { formatDateJst } from '@/lib/info-display'
 import { storesMeta } from '@/data/stores'
 import { getMarkerTheme, getGameLabel, getCountSourceInfo, getStoreStatusLabel } from '@/lib/marker-color'
@@ -107,10 +106,9 @@ export function StoreDetailPanel({ store, onOpenInfoForm, onClose }: StoreDetail
       {/* ヘッダ：店名・状態ラベル・閉じるボタン */}
       <div className="flex items-start justify-between gap-2 mb-1">
         <div className="flex items-start gap-1.5 min-w-0 flex-1">
-          <h2
-            className="font-bold text-[18px] leading-snug break-words min-w-0"
-            style={HEADING_FONT_STYLE}
-          >
+          {/* 店名は任意文字列でサブセット不可のため、丸ゴシックは当てずシステムフォント太字で統一
+              （クイック表示の InfoWindow と同じ見た目。文字ごとの太さムラを防ぐ） */}
+          <h2 className="font-bold text-[18px] leading-snug break-words min-w-0">
             {store.name}
           </h2>
           {statusLabel && (
