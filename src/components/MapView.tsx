@@ -195,7 +195,7 @@ function InfoWindowContent({
           ✕
         </button>
       </div>
-      <p className="text-xs text-gray-600 mb-1.5">{store.address}</p>
+      {/* 住所は詳細モーダルに出すため、クイック表示では省略（一目見る用に簡潔化） */}
       {store.approximateLocation && (
         <p className="text-[11px] text-amber-700 mb-1.5 leading-snug">
           ピンはおおよその位置です（住所から推定。実際の場所と少しずれている場合があります）
