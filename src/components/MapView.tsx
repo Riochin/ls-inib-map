@@ -5,7 +5,7 @@ import { Map, useMap, InfoWindow } from '@vis.gl/react-google-maps'
 import type { Store, GameTitle } from '@/types/store'
 import { CurrentLocationMarker } from './CurrentLocationMarker'
 import { ApproximateCircle } from './ApproximateCircle'
-import { ReportModal } from './ReportModal'
+import { StoreInfoForm } from './StoreInfoForm'
 import { StoreDetailModal } from './StoreDetailModal'
 import { formatDateJst } from '@/lib/info-display'
 import { storesMeta } from '@/data/stores'
@@ -114,7 +114,7 @@ export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onM
         onOpenInfoForm={() => setInfoFormStore(detailStore)}
       />
     )}
-    {infoFormStore && <ReportModal store={infoFormStore} onClose={() => setInfoFormStore(null)} />}
+    {infoFormStore && <StoreInfoForm store={infoFormStore} onClose={() => setInfoFormStore(null)} />}
     </>
   )
 }

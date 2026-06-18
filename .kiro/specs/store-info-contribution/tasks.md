@@ -100,8 +100,8 @@
   - `StoreInfoForm.onClose` は `infoFormStore` のみをクリアし、`detailStore` を維持することで詳細モーダルに戻るようにする
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.7_
 
-- [ ] 7. 構造化店舗情報提供フォーム（C機能）
-- [ ] 7.1 StoreInfoFormを実装する（全属性一覧フォーム・ReportModal差し替え）
+- [x] 7. 構造化店舗情報提供フォーム（C機能）
+- [x] 7.1 StoreInfoFormを実装する（全属性一覧フォーム・ReportModal差し替え）
   - 全店舗属性（台数・営業時間・フロア・喫煙所・決済/電子マネー・録画台・配信台）を一覧表示する構造化フォームを構築する
   - 各属性に store の現在値を初期値として表示し、未登録の場合は空欄として明示する
   - `smoking`・`hasRecording`・`hasStreaming` は「— 未入力 — / あり / なし / 不明」の select で受け付ける
@@ -117,15 +117,15 @@
   - 認証なしで利用できる（ユーザー認証を要求しない）
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8, 4.9, 1.6, 1.7, 6.4, 7.1, 7.2, 7.3_
 
-- [ ] 8. 廃止コンポーネントの除去・最終統合
-- [ ] 8.1 ReportModalを削除して関連参照をクリーンアップする
+- [x] 8. 廃止コンポーネントの除去・最終統合
+- [x] 8.1 ReportModalを削除して関連参照をクリーンアップする
   - `ReportModal.tsx` ファイルを削除する
   - `ReportModal` をインポート・使用しているすべての箇所を `StoreInfoForm` 経由の新フローに切り替える
   - `MapView.reportStore` state の残存参照をすべて除去する
   - `InfoWindowContent.onReport` prop の残存参照を除去する
   - _Requirements: 7.5_
 
-- [ ] 8.2 既存機能の非回帰確認と統合動作検証を行う
+- [x] 8.2 既存機能の非回帰確認と統合動作検証を行う
   - ピンタップ → クイック表示（InfoWindow）→ 詳細モーダル（StoreDetailModal）→ 情報提供フォーム（StoreInfoForm）→ 送信完了 の一連のフローを確認する
   - オンボーディング → 要望フォーム（FeedbackForm）→ 送信完了 のフローを確認する
   - 地図表示・フィルタ・検索・クラスターが正常に動作することを確認する
