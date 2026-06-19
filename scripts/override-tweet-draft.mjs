@@ -109,11 +109,18 @@ export function countLine(name, entry) {
   return `・${name}：${parts.join(' / ')}`
 }
 
-/** ```で囲んだ親ポストブロックを組む（空ヘッダなら空文字）。 */
+/**
+ * ```で囲んだ親ポストブロックを組む（行が空なら空文字）。
+ * @param {string} header
+ * @param {string} lead
+ * @param {string[]} lines
+ */
 function parentPost(header, lead, lines) {
   if (lines.length === 0) return ''
   return [header, '', lead, '', lines.join('\n'), '', HASHTAG].join('\n')
 }
+
+/** @typedef {{ id: string, entry: Record<string, any>, counts: boolean, pos: boolean, details: boolean }} Change */
 
 /**
  * push 差分から Issue 下書き・月次レポート本文を生成する純粋関数。
@@ -128,9 +135,11 @@ export function buildDraft({ before, after, stores, today, commitShort }) {
   const beforeOv = before.overrides ?? {}
   const afterOv = after.overrides ?? {}
   const nameById = Object.fromEntries((stores.stores ?? []).map((s) => [s.id, s.name]))
+  /** @param {string} id */
   const nameOf = (id) => nameById[id] ?? id
 
   const changes = detectChanges(beforeOv, afterOv)
+  /** @param {Change} c */
   const isAdmin = (c) => c.entry.source === 'admin'
 
   // 台数/閉店: 確定(admin)は親ポスト、未確認(source!=admin)は参考表示に回す。
@@ -228,6 +237,7 @@ function parseArgs(argv) {
   return out
 }
 
+/** @param {string} p */
 const readJson = (p) => JSON.parse(readFileSync(p, 'utf8'))
 
 if (import.meta.url === `file://${process.argv[1]}`) {

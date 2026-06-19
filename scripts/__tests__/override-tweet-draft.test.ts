@@ -1,5 +1,4 @@
 import { describe, it, expect } from 'vitest'
-// @ts-expect-error 自己完結 ESM（型定義なし）を実行時 import
 import { buildDraft, detectChanges, countLine, deepEqual } from '../override-tweet-draft.mjs'
 
 const stores = {
