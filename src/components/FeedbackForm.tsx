@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, type FormEvent } from 'react'
+import { useState, useEffect, type FormEvent } from 'react'
 import { HEADING_FONT_STYLE } from '@/lib/heading-font'
 import type { FeedbackCategory } from '@/lib/report'
+import { checkClientRateLimit, recordClientSubmission } from '@/lib/client-rate-limit'
 
 interface FeedbackFormProps {
   onClose: () => void
@@ -23,16 +24,18 @@ export function FeedbackForm({ onClose }: FeedbackFormProps) {
   const [website, setWebsite] = useState('') // honeypot
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
+  const [cooldownMin, setCooldownMin] = useState(0)
+
+  useEffect(() => {
+    const { limited, minutesUntilFree } = checkClientRateLimit()
+    if (limited) setCooldownMin(minutesUntilFree)
+  }, [])
 
   const hasSns = reporter.trim() !== ''
+  const isCoolingDown = cooldownMin > 0
 
   async function submit(e: FormEvent) {
     e.preventDefault()
-    if (!content.trim()) {
-      setErrorMsg('内容を入力してください。')
-      setStatus('error')
-      return
-    }
     setStatus('sending')
     setErrorMsg('')
     try {
@@ -52,6 +55,7 @@ export function FeedbackForm({ onClose }: FeedbackFormProps) {
         const data = (await res.json().catch(() => ({}))) as { error?: string }
         throw new Error(data.error ?? `HTTP ${res.status}`)
       }
+      recordClientSubmission()
       setStatus('done')
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : String(err))
@@ -169,9 +173,15 @@ export function FeedbackForm({ onClose }: FeedbackFormProps) {
 
             {status === 'error' && <p className="text-xs text-red-600 mb-3">{errorMsg}</p>}
 
+            {isCoolingDown && (
+              <p className="text-xs text-amber-600 mb-3">
+                10分間に3件まで送信できます（約{cooldownMin}分後に再送信可）
+              </p>
+            )}
+
             <button
               type="submit"
-              disabled={status === 'sending'}
+              disabled={status === 'sending' || !content.trim() || isCoolingDown}
               className="w-full px-5 py-2.5 bg-gray-900 text-white rounded-full text-sm font-semibold hover:bg-gray-700 transition-colors disabled:opacity-50"
             >
               {status === 'sending' ? '送信中…' : '送信する'}
