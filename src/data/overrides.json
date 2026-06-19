@@ -17,6 +17,17 @@
         "gundam-exvs": 8
       }
     },
+    "0a3697626fe5": {
+      "source": "user-report",
+      "note": "アピナ長岡 ラスサバ3台・イニブ10台（Issue #138）。ピン位置修正（ピンが西にズレ → Googleマップ実位置に補正）。",
+      "updatedAt": "2026-06-19",
+      "lat": 37.4578494,
+      "lng": 138.8131163,
+      "machineCounts": {
+        "jojo-ls": 3,
+        "gundam-exvs": 10
+      }
+    },
     "14d32850a2a1": {
       "source": "admin",
       "note": "GiGO赤羽駅前 イニブ8台（片面4台並びで計8, 3F, Issue #63）。報告者: ぬまくん。設備: 喫煙所は同階層(3F)、手洗い場はイニブ筐体の真後ろ、電子マネー対応。",
@@ -25,12 +36,48 @@
         "gundam-exvs": 8
       }
     },
+    "20a5efd3c27f": {
+      "source": "user-report",
+      "note": "バイパスレジャーランド加賀 ラスサバ3台・イニブ14台・喫煙所あり（Issue #133）。",
+      "updatedAt": "2026-06-19",
+      "machineCounts": {
+        "jojo-ls": 3,
+        "gundam-exvs": 14
+      },
+      "smoking": "yes"
+    },
+    "21d1145039bd": {
+      "source": "admin",
+      "note": "namco松戸 ラスサバ10台・イニブ28台・喫煙所あり（Issue #125）。@dorodoro_numa。営業時間・フロアも提供。",
+      "updatedAt": "2026-06-19",
+      "machineCounts": {
+        "jojo-ls": 10,
+        "gundam-exvs": 28
+      },
+      "businessHours": "10:00〜23:00",
+      "floor": "地下1階",
+      "smoking": "yes"
+    },
     "2380eb9ab2af": {
       "source": "admin",
-      "note": "トヤマレジャーランド呉羽 ピン位置修正（Issue #51, 報告者が実店舗位置を画像提示）。Googleマップ実位置に補正（約370mズレていた）。",
-      "updatedAt": "2026-06-10",
+      "note": "トヤマレジャーランド呉羽 ピン位置修正（Issue #51, 報告者が実店舗位置を画像提示）。Googleマップ実位置に補正（約370mズレていた）。ラスサバ6台・イニブ14台・喫煙所あり（Issue #136）。",
+      "updatedAt": "2026-06-19",
       "lat": 36.7154173,
-      "lng": 137.1579387
+      "lng": 137.1579387,
+      "machineCounts": {
+        "jojo-ls": 6,
+        "gundam-exvs": 14
+      },
+      "smoking": "yes"
+    },
+    "2b7946698cc0": {
+      "source": "user-report",
+      "note": "アドアーズ船橋 イニブ18台・フロア地下1F（Issue #124）。録画台はないがライブモニターに録画機設置あり（エスカレーター降りてすぐの6台が録画対応）。",
+      "updatedAt": "2026-06-19",
+      "machineCounts": {
+        "gundam-exvs": 18
+      },
+      "floor": "地下1F"
     },
     "311e765f09c9": {
       "source": "admin",
@@ -39,6 +86,19 @@
       "machineCounts": {
         "gundam-exvs": 8
       }
+    },
+    "331d0f612a68": {
+      "source": "admin",
+      "note": "namco巣鴨よ永遠に 閉店・移設（Issue #109）。ls_boushi（メンション不可）。ラスサバ24台・フロア地下2階（両筐体）・禁煙・録画台あり・配信台あり。stores.json 側でも closed/delisted 設定済み。",
+      "updatedAt": "2026-06-19",
+      "closed": true,
+      "machineCounts": {
+        "jojo-ls": 24
+      },
+      "floor": "どっちも地下２階",
+      "smoking": "no",
+      "hasRecording": "yes",
+      "hasStreaming": "yes"
     },
     "3e3410623889": {
       "source": "admin",
@@ -50,10 +110,28 @@
     },
     "3ec1f3534a2a": {
       "source": "admin",
-      "note": "福井レジャーランド板垣 ピン位置修正（Issue #81）。住所ジオコードが南へズレていたのを店名ROOFTOP（下馬3丁目・交差点付近）へ補正。@kiyo_general。お礼可。",
-      "updatedAt": "2026-06-12",
+      "note": "福井レジャーランド板垣 ピン位置修正（Issue #81）。住所ジオコードが南へズレていたのを店名ROOFTOP（下馬3丁目・交差点付近）へ補正。@kiyo_general。ラスサバ2台・イニブ18台・喫煙所あり・録画台なし・配信台あり（Issue #123/#134）。",
+      "updatedAt": "2026-06-19",
       "lat": 36.0422008,
-      "lng": 136.2336664
+      "lng": 136.2336664,
+      "machineCounts": {
+        "jojo-ls": 2,
+        "gundam-exvs": 18
+      },
+      "smoking": "yes",
+      "hasRecording": "no",
+      "hasStreaming": "yes"
+    },
+    "40beebc2cba3": {
+      "source": "user-report",
+      "note": "バイパスレジャーランド藤江新館 ラスサバ6台・イニブ18台・喫煙所あり・録画台あり（Issue #131）。配信は事前予約が必要。",
+      "updatedAt": "2026-06-19",
+      "machineCounts": {
+        "jojo-ls": 6,
+        "gundam-exvs": 18
+      },
+      "smoking": "yes",
+      "hasRecording": "yes"
     },
     "420e66ac88ad": {
       "source": "admin",
@@ -71,6 +149,29 @@
         "jojo-ls": 4,
         "gundam-exvs": 9
       }
+    },
+    "4a4912e8ada8": {
+      "source": "user-report",
+      "note": "ゲームポイントシャトーEX ラスサバ4台・イニブ14台・2F・喫煙所あり（屋外1F）・配信台あり（Issue #129）。",
+      "updatedAt": "2026-06-19",
+      "machineCounts": {
+        "jojo-ls": 4,
+        "gundam-exvs": 14
+      },
+      "floor": "2F",
+      "smoking": "yes",
+      "hasStreaming": "yes"
+    },
+    "4b62a97cfc5e": {
+      "source": "admin",
+      "note": "シルクハット蒲田西口 イニブ28台・喫煙所あり・3階（Issue #126）。@dorodoro_numa。",
+      "updatedAt": "2026-06-19",
+      "machineCounts": {
+        "gundam-exvs": 28
+      },
+      "businessHours": "10:00〜0:45",
+      "floor": "3階",
+      "smoking": "yes"
     },
     "4ce462b628ed": {
       "source": "admin",
@@ -90,6 +191,41 @@
         "gundam-exvs": 4
       }
     },
+    "56015d135d11": {
+      "source": "user-report",
+      "note": "ゲームセンターテクノポリス ラスサバ3台・イニブ9台・喫煙所あり・録画台なし・配信台なし（Issue #139）。",
+      "updatedAt": "2026-06-19",
+      "machineCounts": {
+        "jojo-ls": 3,
+        "gundam-exvs": 9
+      },
+      "smoking": "yes",
+      "hasRecording": "no",
+      "hasStreaming": "no"
+    },
+    "5019f0c1ffb4": {
+      "source": "user-report",
+      "note": "上越レジャーランボウル ラスサバ3台・イニブ7台・喫煙所あり（Issue #137）。",
+      "updatedAt": "2026-06-19",
+      "machineCounts": {
+        "jojo-ls": 3,
+        "gundam-exvs": 7
+      },
+      "smoking": "yes"
+    },
+    "62ecb8dd115f": {
+      "source": "user-report",
+      "note": "namco梅田 ラスサバ12台・イニブ59台・3F・禁煙・交通系IC対応・配信台あり（Issue #128）。配信は配信カードに登録必要、先日付け予約可能（現地予約のみ/電話不可）。",
+      "updatedAt": "2026-06-19",
+      "machineCounts": {
+        "jojo-ls": 12,
+        "gundam-exvs": 59
+      },
+      "floor": "3F",
+      "smoking": "no",
+      "payments": ["交通系IC（Suica/PASMOなど）"],
+      "hasStreaming": "yes"
+    },
     "6701f6561319": {
       "source": "admin",
       "note": "SBGさん",
@@ -103,6 +239,19 @@
       "note": "タイトーFステーション吉祥寺JOY",
       "updatedAt": "2026-06-09",
       "closed": true
+    },
+    "759b99cc9970": {
+      "source": "user-report",
+      "note": "タイトーステーション大宮 ラスサバ4台・イニブ25台・4F・喫煙所あり・交通系IC対応（Issue #127）。",
+      "updatedAt": "2026-06-19",
+      "machineCounts": {
+        "jojo-ls": 4,
+        "gundam-exvs": 25
+      },
+      "businessHours": "9:00～0:00",
+      "floor": "4F",
+      "smoking": "yes",
+      "payments": ["交通系IC（Suica/PASMOなど）"]
     },
     "7dabb1a2bb08": {
       "source": "admin",
@@ -119,6 +268,34 @@
       "machineCounts": {
         "gundam-exvs": 4
       }
+    },
+    "809ce2bb59b4": {
+      "source": "user-report",
+      "note": "ラウンドワンスタジアム金沢 ラスサバ4台・イニブ7台・1F・喫煙所あり・録画台あり（Issue #132）。",
+      "updatedAt": "2026-06-19",
+      "machineCounts": {
+        "jojo-ls": 4,
+        "gundam-exvs": 7
+      },
+      "floor": "1F",
+      "smoking": "yes",
+      "hasRecording": "yes",
+      "hasStreaming": "no"
+    },
+    "83b41e611ba5": {
+      "source": "user-report",
+      "note": "バイパスレジャーランド藤江本館 ラスサバ3台・イニブ9台・2F・喫煙所あり（Issue #130）。ピン位置修正（ピンが北にズレ → Googleマップ実位置に補正）。",
+      "updatedAt": "2026-06-19",
+      "lat": 36.5839552,
+      "lng": 136.6215528,
+      "machineCounts": {
+        "jojo-ls": 3,
+        "gundam-exvs": 9
+      },
+      "floor": "２F",
+      "smoking": "yes",
+      "hasRecording": "no",
+      "hasStreaming": "no"
     },
     "8fa39515bde4": {
       "source": "admin",
@@ -151,6 +328,18 @@
         "jojo-ls": 4,
         "gundam-exvs": 9
       }
+    },
+    "c243bfe444a0": {
+      "source": "user-report",
+      "note": "ラウンドワン豊中 イニブ4台・2F・喫煙所あり（Issue #121/#122）。ピン位置修正（ピンが西にズレ → Googleマップ実位置に補正）。",
+      "updatedAt": "2026-06-19",
+      "lat": 34.757393,
+      "lng": 135.465534,
+      "machineCounts": {
+        "gundam-exvs": 4
+      },
+      "floor": "2F",
+      "smoking": "yes"
     },
     "c2a6953ae8f9": {
       "source": "admin",
@@ -192,6 +381,19 @@
         "gundam-exvs": 4
       }
     },
+    "d3d5ea015d5f": {
+      "source": "user-report",
+      "note": "ユーズランド高岡 ラスサバ2台・イニブ13台・2F・録画台なし・配信台なし（Issue #135）。",
+      "updatedAt": "2026-06-19",
+      "machineCounts": {
+        "jojo-ls": 2,
+        "gundam-exvs": 13
+      },
+      "businessHours": "10:00~21:00",
+      "floor": "２F",
+      "hasRecording": "no",
+      "hasStreaming": "no"
+    },
     "e63f5f03c5b3": {
       "source": "admin",
       "note": "あそVIVA本店（正式名）ピン位置修正（Issue #84）。住所『京都府福知山市字堀小字上高田2146-1』が舞鶴市(35.448,135.325)へ誤ジオコードされていたのを福知山の実位置へ補正。",
@@ -227,7 +429,7 @@
     "f94e47ba4311": {
       "source": "user-report",
       "note": "アミューズメントワールド メトロポリス小田原",
-      "updatedAt": "2026-06-18T04:11:54.946Z",
+      "updatedAt": "2026-06-18T04:11:54.074Z",
       "machineCounts": {
         "jojo-ls": 4
       }

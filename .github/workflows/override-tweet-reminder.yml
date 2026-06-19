@@ -2,8 +2,11 @@ name: Override tweet reminder
 
 # src/data/overrides.json が更新（台数オーバーライドの書き込み）されたら、
 # 修正ツイート（Xテンプレの2ツイート目＝【台数情報修正】／3ツイート目＝お礼＋メンション）の
-# 下書きをIssueに出して、投稿し忘れを防ぐ軽量ワークフロー。AIは使わず jq + gh だけで組み立てる。
+# 下書きをIssueに出して、投稿し忘れを防ぐ軽量ワークフロー。差分→下書きの生成ロジックは
+# scripts/override-tweet-draft.mjs（自己完結ESM・追加installなしでnode実行）に集約し、
+# このワークフロー自体は node + gh の薄いプラミングに徹する。
 #   - 2ツイート目: 今回 push の差分から「変化した台数・閉店」を店舗名つきで自動生成
+#   - 位置・店舗詳細（フロア/喫煙所/録画/配信/営業時間/決済）の変化は店名だけの告知に回す
 #   - 3ツイート目: お礼の定型（@メンションは公開の場由来のみ＝人手で。提供メモを参考表示）
 #   - 同じ未対応Issueが開いていればコメントで集約（投稿後に手動クローズ→次の更新で新規作成）
 #   - さらに当月の updates/override-reports/YYYY-MM.md へ下書きを自動追記し main に直コミット
@@ -40,8 +43,6 @@ jobs:
         run: |
           set -euo pipefail
 
-          nl=$'\n'
-
           # push 前後の overrides.json を用意（before が取れなければ空とみなす）
           cp src/data/overrides.json /tmp/after.json
           if [ -n "${BEFORE:-}" ] && git cat-file -e "${BEFORE}:src/data/overrides.json" 2>/dev/null; then
@@ -50,101 +51,23 @@ jobs:
             echo '{"overrides":{}}' > /tmp/before.json
           fi
 
-          # 変化検知の述語（before と比較）。ゲームキー: jojo-ls→ラスサバ / gundam-exvs→イニブ。
-          #   - 台数(machineCounts)・閉店(closed) の変化 → source で確定(admin)/未確認に振り分ける
-          #   - 位置(lat/lng) の変化 → 確定(admin)のみ「位置情報修正」として告知
-          # （$bef/$aft は jq の --slurpfile 引数。シングルクオートで素通しし二重展開を避ける）
-          CHANGED_COUNTS='
-            ($bef[0].overrides // {}) as $ao
-            | ($aft[0].overrides // {}) | to_entries
-            | map(select(
-                (.value.machineCounts // null) != (($ao[.key] // {}).machineCounts // null)
-                or (.value.closed // false)     != (($ao[.key] // {}).closed // false)
-              ))
-          '
-          CHANGED_POS='
-            ($bef[0].overrides // {}) as $ao
-            | ($aft[0].overrides // {}) | to_entries
-            | map(select(
-                (.value.lat // null) != (($ao[.key] // {}).lat // null)
-                or (.value.lng // null) != (($ao[.key] // {}).lng // null)
-              ))
-          '
-          NAMES='($st[0].stores | map({key:.id, value:.name}) | from_entries)'
-          # 台数/閉店エントリ配列 → 行文字列（呼び出し側で source 絞り込み済みを渡す）
-          COUNTLINE='map(
-              ($names[.key] // .key) as $nm
-              | if (.value.closed // false)
-                then "・\($nm)：閉店"
-                else "・\($nm)：" + ([ .value.machineCounts // {} | to_entries[]
-                     | (if .key=="jojo-ls" then "ラスサバ" elif .key=="gundam-exvs" then "イニブ" else .key end) + "\(.value)台"
-                   ] | join(" / "))
-                end
-            ) | .[]'
+          today=$(date +%Y-%m-%d)
+          short="${GITHUB_SHA:0:7}"
 
-          jq_lines() { # $1 = 配列を絞り込む jq（例: 'map(select(.value.source=="admin"))'）
-            jq -rn \
-              --slurpfile bef /tmp/before.json \
-              --slurpfile aft /tmp/after.json \
-              --slurpfile st  src/data/stores.json \
-              "$NAMES as \$names | $CHANGED_COUNTS | $1 | $COUNTLINE"
-          }
+          # 差分検知〜下書き生成のロジックは scripts/override-tweet-draft.mjs に集約。
+          # 依存 import を持たない自己完結 ESM なので runner の node で追加 install なしに実行できる。
+          #   - /tmp/draft.md  … Issue 用の下書き本文
+          #   - /tmp/report.md … 月次レポート追記本文
+          #   - 標準出力 … 告知対象(admin の台数/閉店/位置/店舗詳細の変化)が有れば "true"
+          has=$(node scripts/override-tweet-draft.mjs \
+            --before /tmp/before.json --after /tmp/after.json --stores src/data/stores.json \
+            --today "$today" --commit "$short" \
+            --out-draft /tmp/draft.md --out-report /tmp/report.md)
 
-          # 確定(admin)の台数/閉店 → 親ポスト。未確認(source!=admin)は除外し参考表示に回す。
-          lines=$(jq_lines 'map(select(.value.source=="admin"))')
-          unconfirmed_lines=$(jq_lines 'map(select(.value.source!="admin"))')
-
-          # 確定(admin)の位置(lat/lng)変化 → 位置情報修正の親ポスト
-          pos_lines=$(jq -rn \
-            --slurpfile bef /tmp/before.json \
-            --slurpfile aft /tmp/after.json \
-            --slurpfile st  src/data/stores.json \
-            "$NAMES as \$names | $CHANGED_POS | map(select(.value.source==\"admin\")) | map(\"・\(\$names[.key] // .key)\") | .[]")
-
-          if [ -z "$lines" ] && [ -z "$pos_lines" ]; then
-            echo "確定(admin)の台数・閉店・位置の変化なし。Issueは作成しません。"
+          if [ "$has" != "true" ]; then
+            echo "確定(admin)の台数・閉店・位置・店舗詳細の変化なし。Issueは作成しません。"
             exit 0
           fi
-
-          # 提供メモ（note）を参考表示用に集約（@メンションの当て先ヒント）。告知対象(admin)分のみ。
-          providers=$(jq -rn \
-            --slurpfile bef /tmp/before.json \
-            --slurpfile aft /tmp/after.json "
-              ( ($CHANGED_COUNTS | map(select(.value.source==\"admin\")))
-              + ($CHANGED_POS    | map(select(.value.source==\"admin\"))) )
-              | map(.value.note // empty) | unique | join(\", \")
-          ")
-
-          # 親ポスト本文（台数／位置）を組み立て（バッククォートは単一引用で素通し）
-          post_count=""
-          if [ -n "$lines" ]; then
-            post_count=$(printf '%s\n' "【台数情報修正】" "" "下記の台数を修正しました。" "" "$lines" "" "#ラストサバイニブ")
-          fi
-          post_pos=""
-          if [ -n "$pos_lines" ]; then
-            post_pos=$(printf '%s\n' "【位置情報修正】" "" "下記店舗のピン位置を修正しました。" "" "$pos_lines" "" "#ラストサバイニブ")
-          fi
-
-          # Issue用ドラフト（台数→位置→お礼リプ→未確認の参考、の順で存在分のみ）
-          draft=$(
-            {
-              if [ -n "$post_count" ]; then
-                printf '%s\n' "**親ポスト（【台数情報修正】）**" '```' "$post_count" '```' ""
-              fi
-              if [ -n "$post_pos" ]; then
-                printf '%s\n' "**親ポスト（【位置情報修正】）**" '```' "$post_pos" '```' ""
-              fi
-              printf '%s\n' "**ぶら下げリプ（お礼＋メンション）**" '```' \
-                "情報提供ありがとうございました🙏 変化があればまたお知らせください。" \
-                "@xxx @yyy @zzz" '```' "" \
-                "> メンションは公開の場（リプ・引用等）で情報をくれた人のみ。DM等の個人的なやりとり由来は名前を出さない。" \
-                "> 提供メモ（参考）: ${providers:-（なし）}"
-              if [ -n "$unconfirmed_lines" ]; then
-                printf '%s\n' "" "> ⚠️ 未確認（みんなの報告）のため親ポストから除外した台数変更:" "$unconfirmed_lines" \
-                  "> 運営確認後に該当エントリの source を admin に上げると、次回更新で告知対象になります。"
-              fi
-            }
-          )
 
           commit_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/commit/${GITHUB_SHA}"
           label='要修正ツイート'
@@ -156,19 +79,17 @@ jobs:
             --json number,title --jq "map(select(.title==\"$title\")) | .[0].number // empty")
 
           if [ -n "$existing" ]; then
-            gh issue comment "$existing" \
-              --body "$(printf '🔁 overrides.json がさらに更新されました（%s）。\n\n%s' "$commit_url" "$draft")"
+            { printf '🔁 overrides.json がさらに更新されました（%s）。\n\n' "$commit_url"; cat /tmp/draft.md; } > /tmp/comment.md
+            gh issue comment "$existing" --body-file /tmp/comment.md
             echo "既存Issue #$existing にコメントしました"
           else
-            gh issue create --title "$title" --label "$label" \
-              --body "$(printf 'overrides.json が更新されました（%s）。下記の修正ツイートを確認して投稿してください。投稿したらこのIssueを閉じてください。\n\n%s' "$commit_url" "$draft")"
+            { printf 'overrides.json が更新されました（%s）。下記の修正ツイートを確認して投稿してください。投稿したらこのIssueを閉じてください。\n\n' "$commit_url"; cat /tmp/draft.md; } > /tmp/issue.md
+            gh issue create --title "$title" --label "$label" --body-file /tmp/issue.md
             echo "新規Issueを作成しました"
           fi
 
           # ---- 当月の override-reports/YYYY-MM.md へ自動追記して main に直コミット ----
           month=$(date +%Y-%m)
-          today=$(date +%Y-%m-%d)
-          short="${GITHUB_SHA:0:7}"
           file="updates/override-reports/${month}.md"
 
           # 同一コミットは二重追記しない
@@ -177,28 +98,11 @@ jobs:
             exit 0
           fi
 
-          report=$(
-            {
-              printf '%s\n' "" "---" "" "## ${today} 追加分（自動記録 / コミット ${short}）" ""
-              if [ -n "$post_count" ]; then
-                printf '%s\n' "親ポスト（台数）:" '```' "$post_count" '```' ""
-              fi
-              if [ -n "$post_pos" ]; then
-                printf '%s\n' "親ポスト（位置）:" '```' "$post_pos" '```' ""
-              fi
-              printf '%s\n' "ぶら下げリプ:" '```' \
-                "情報提供ありがとうございました🙏 変化があればまたお知らせください。" "@xxx" '```' "" \
-                "> メンションは公開の場由来のみ（DM由来は伏せる）。提供メモ参考: ${providers:-（なし）}"
-              if [ -n "$unconfirmed_lines" ]; then
-                printf '%s\n' "" "> 未確認のため親ポスト除外（運営確認後に source=admin で告知対象化）:" "$unconfirmed_lines"
-              fi
-            }
-          )
-
           if [ ! -f "$file" ]; then
             printf '# 台数・位置オーバーライド 反映報告（%s ドラフト）\n\n`templates/override-report.md` の型で override-tweet-reminder が自動記録。\n' "$month" > "$file"
           fi
-          printf '%s\n' "$report" >> "$file"
+          cat /tmp/report.md >> "$file"
+          echo "" >> "$file"
           echo "${file} へ追記しました（コミットは後続の create-pull-request 段でPR化）。"
 
       # main はブランチ保護下（直 push 不可）のため、レポート追記は固定ブランチ経由のPRにする。

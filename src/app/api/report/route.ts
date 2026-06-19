@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { normalizeTextBasics } from '@/lib/text-normalize'
+import { ratelimit, getClientIp } from '@/lib/rate-limit'
 import {
   REPORT_TYPES,
   buildReportIssue,
@@ -58,6 +59,18 @@ export async function POST(request: Request) {
   // honeypot: 何か入っていれば bot とみなし、成功を装って静かに破棄
   if (typeof r.website === 'string' && r.website.trim() !== '') {
     return NextResponse.json({ ok: true })
+  }
+
+  // レート制限: IP ベースで 10 リクエスト / 10分
+  if (ratelimit) {
+    const ip = getClientIp(request)
+    const { success } = await ratelimit.limit(ip)
+    if (!success) {
+      return NextResponse.json(
+        { error: '送信が多すぎます。しばらく待ってから再度お試しください。' },
+        { status: 429 },
+      )
+    }
   }
 
   const token = process.env.GITHUB_REPORT_TOKEN

@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, type FormEvent } from 'react'
+import { useState, useEffect, type FormEvent } from 'react'
 import type { Store, TernaryState } from '@/types/store'
 import type { CorrectionType } from '@/lib/report'
 import { HEADING_FONT_STYLE } from '@/lib/heading-font'
+import { checkClientRateLimit, recordClientSubmission } from '@/lib/client-rate-limit'
 
 interface StoreInfoFormProps {
   store: Store
@@ -73,8 +74,34 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
   const [website, setWebsite] = useState('') // honeypot
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
+  const [isDirty, setIsDirty] = useState(false)
+  const [cooldownMin, setCooldownMin] = useState(0)
+
+  useEffect(() => {
+    const { limited, minutesUntilFree } = checkClientRateLimit()
+    if (limited) setCooldownMin(minutesUntilFree)
+  }, [])
+
+  const mark = () => setIsDirty(true)
 
   const hasSns = reporter.trim() !== ''
+
+  const jojoNum = parseCount(jojoLs)
+  const gundamNum = parseCount(gundamExvs)
+
+  const hasAnyInput =
+    (jojoNum !== undefined && hasJojo) ||
+    (gundamNum !== undefined && hasGundam) ||
+    businessHours.trim() !== '' ||
+    floor.trim() !== '' ||
+    smoking !== '' ||
+    payments.length > 0 ||
+    hasRecording !== '' ||
+    hasStreaming !== '' ||
+    correctionType !== '' ||
+    correctionNote.trim() !== ''
+
+  const isCoolingDown = cooldownMin > 0
 
   // すでに登録済みの項目（バッジ表示・初期入力の根拠）
   const filled = {
@@ -93,31 +120,11 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
     setPayments((prev) =>
       prev.includes(option) ? prev.filter((p) => p !== option) : [...prev, option],
     )
+    mark()
   }
 
   async function submit(e: FormEvent) {
     e.preventDefault()
-
-    const jojoNum = parseCount(jojoLs)
-    const gundamNum = parseCount(gundamExvs)
-
-    const hasAnyInput =
-      (jojoNum !== undefined && hasJojo) ||
-      (gundamNum !== undefined && hasGundam) ||
-      businessHours.trim() !== '' ||
-      floor.trim() !== '' ||
-      smoking !== '' ||
-      payments.length > 0 ||
-      hasRecording !== '' ||
-      hasStreaming !== '' ||
-      correctionType !== '' ||
-      correctionNote.trim() !== ''
-
-    if (!hasAnyInput) {
-      setErrorMsg('いずれかの項目を入力してください。')
-      setStatus('error')
-      return
-    }
 
     setStatus('sending')
     setErrorMsg('')
@@ -153,6 +160,7 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
         const data = (await res.json().catch(() => ({}))) as { error?: string }
         throw new Error(data.error ?? `HTTP ${res.status}`)
       }
+      recordClientSubmission()
       setStatus('done')
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : String(err))
@@ -231,7 +239,7 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
                       min={0}
                       max={99}
                       value={jojoLs}
-                      onChange={(e) => setJojoLs(e.target.value)}
+                      onChange={(e) => { setJojoLs(e.target.value); mark() }}
                       placeholder="台数"
                       className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
                     />
@@ -247,7 +255,7 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
                       min={0}
                       max={99}
                       value={gundamExvs}
-                      onChange={(e) => setGundamExvs(e.target.value)}
+                      onChange={(e) => { setGundamExvs(e.target.value); mark() }}
                       placeholder="台数"
                       className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
                     />
@@ -263,7 +271,7 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
                 <input
                   type="text"
                   value={businessHours}
-                  onChange={(e) => setBusinessHours(e.target.value)}
+                  onChange={(e) => { setBusinessHours(e.target.value); mark() }}
                   maxLength={100}
                   placeholder="例）10:00〜23:00"
                   className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
@@ -278,7 +286,7 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
                 <input
                   type="text"
                   value={floor}
-                  onChange={(e) => setFloor(e.target.value)}
+                  onChange={(e) => { setFloor(e.target.value); mark() }}
                   maxLength={50}
                   placeholder="例）2F、地下1F"
                   className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
@@ -292,7 +300,7 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
                 </span>
                 <select
                   value={smoking}
-                  onChange={(e) => setSmoking(e.target.value as TernaryState | '')}
+                  onChange={(e) => { setSmoking(e.target.value as TernaryState | ''); mark() }}
                   className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
                 >
                   <option value="">— 未入力 —</option>
@@ -330,7 +338,7 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
                 </span>
                 <select
                   value={hasRecording}
-                  onChange={(e) => setHasRecording(e.target.value as TernaryState | '')}
+                  onChange={(e) => { setHasRecording(e.target.value as TernaryState | ''); mark() }}
                   className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
                 >
                   <option value="">— 未入力 —</option>
@@ -349,7 +357,7 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
                 </span>
                 <select
                   value={hasStreaming}
-                  onChange={(e) => setHasStreaming(e.target.value as TernaryState | '')}
+                  onChange={(e) => { setHasStreaming(e.target.value as TernaryState | ''); mark() }}
                   className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
                 >
                   <option value="">— 未入力 —</option>
@@ -368,7 +376,7 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
                   <span className="text-xs text-gray-500">種別</span>
                   <select
                     value={correctionType}
-                    onChange={(e) => setCorrectionType(e.target.value as CorrectionType | '')}
+                    onChange={(e) => { setCorrectionType(e.target.value as CorrectionType | ''); mark() }}
                     className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
                   >
                     <option value="">— 選択 —</option>
@@ -380,7 +388,7 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
                   <span className="text-xs text-gray-500">メモ（任意）</span>
                   <textarea
                     value={correctionNote}
-                    onChange={(e) => setCorrectionNote(e.target.value)}
+                    onChange={(e) => { setCorrectionNote(e.target.value); mark() }}
                     rows={2}
                     maxLength={500}
                     placeholder="例）ピンが南側にずれています、2025年3月に閉店しました など"
@@ -423,9 +431,15 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
                 <p className="text-xs text-red-600 mb-3">{errorMsg}</p>
               )}
 
+              {isCoolingDown && (
+                <p className="text-xs text-amber-600 mb-3">
+                  10分間に3件まで送信できます（約{cooldownMin}分後に再送信可）
+                </p>
+              )}
+
               <button
                 type="submit"
-                disabled={status === 'sending'}
+                disabled={status === 'sending' || !isDirty || !hasAnyInput || isCoolingDown}
                 className="w-full px-5 py-2.5 bg-gray-900 text-white rounded-full text-sm font-semibold hover:bg-gray-700 transition-colors disabled:opacity-50"
               >
                 {status === 'sending' ? '送信中…' : '送信する'}
