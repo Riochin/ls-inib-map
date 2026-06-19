@@ -1,7 +1,17 @@
 'use client'
 
+/**
+ * 報告フォームのクライアントサイド・クールダウン。
+ *
+ * ⚠️ これはあくまで UX 向上のための「補助的」な制限。localStorage に送信時刻を
+ * 持つだけなので、ブラウザデータのクリア・シークレットウィンドウ・別端末では
+ * 簡単にリセットされる。セキュリティ上の本丁は `src/lib/rate-limit.ts` の
+ * サーバーサイド(Upstash Redis / IP単位)制限が担う。ここは「うっかり連打」を
+ * 早めに UI で止めて無駄なリクエストとサーバー側 429 を減らすのが目的。
+ */
+
 const WINDOW_MS = 10 * 60 * 1000 // 10分
-const MAX_PER_WINDOW = 10
+const MAX_PER_WINDOW = 10 // サーバーサイド(rate-limit.ts)と揃える
 const STORAGE_KEY = 'report-timestamps'
 
 function getRecent(): number[] {
