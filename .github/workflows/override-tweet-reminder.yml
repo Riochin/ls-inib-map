@@ -4,6 +4,7 @@ name: Override tweet reminder
 # 修正ツイート（Xテンプレの2ツイート目＝【台数情報修正】／3ツイート目＝お礼＋メンション）の
 # 下書きをIssueに出して、投稿し忘れを防ぐ軽量ワークフロー。AIは使わず jq + gh だけで組み立てる。
 #   - 2ツイート目: 今回 push の差分から「変化した台数・閉店」を店舗名つきで自動生成
+#   - 位置・店舗詳細（フロア/喫煙所/録画/配信/営業時間/決済）の変化は店名だけの告知に回す
 #   - 3ツイート目: お礼の定型（@メンションは公開の場由来のみ＝人手で。提供メモを参考表示）
 #   - 同じ未対応Issueが開いていればコメントで集約（投稿後に手動クローズ→次の更新で新規作成）
 #   - さらに当月の updates/override-reports/YYYY-MM.md へ下書きを自動追記し main に直コミット
@@ -70,6 +71,20 @@ jobs:
                 or (.value.lng // null) != (($ao[.key] // {}).lng // null)
               ))
           '
+          # 店舗詳細（フロア/喫煙所/録画/配信/営業時間/決済）のいずれかが変化したエントリ。
+          # 値はツイートに出さず店名だけ告知するので、ここでは差分検知のみ行う。
+          CHANGED_DETAILS='
+            ($bef[0].overrides // {}) as $ao
+            | ($aft[0].overrides // {}) | to_entries
+            | map(select(
+                (.value.businessHours // null) != (($ao[.key] // {}).businessHours // null)
+                or (.value.floor // null)        != (($ao[.key] // {}).floor // null)
+                or (.value.smoking // null)      != (($ao[.key] // {}).smoking // null)
+                or (.value.payments // null)     != (($ao[.key] // {}).payments // null)
+                or (.value.hasRecording // null) != (($ao[.key] // {}).hasRecording // null)
+                or (.value.hasStreaming // null) != (($ao[.key] // {}).hasStreaming // null)
+              ))
+          '
           NAMES='($st[0].stores | map({key:.id, value:.name}) | from_entries)'
           # 台数/閉店エントリ配列 → 行文字列（呼び出し側で source 絞り込み済みを渡す）
           COUNTLINE='map(
@@ -101,8 +116,15 @@ jobs:
             --slurpfile st  src/data/stores.json \
             "$NAMES as \$names | $CHANGED_POS | map(select(.value.source==\"admin\")) | map(\"・\(\$names[.key] // .key)\") | .[]")
 
-          if [ -z "$lines" ] && [ -z "$pos_lines" ]; then
-            echo "確定(admin)の台数・閉店・位置の変化なし。Issueは作成しません。"
+          # 確定(admin)の店舗詳細変化 → 店舗情報更新の親ポスト（店名だけ＝確認喚起）
+          detail_lines=$(jq -rn \
+            --slurpfile bef /tmp/before.json \
+            --slurpfile aft /tmp/after.json \
+            --slurpfile st  src/data/stores.json \
+            "$NAMES as \$names | $CHANGED_DETAILS | map(select(.value.source==\"admin\")) | map(\"・\(\$names[.key] // .key)\") | .[]")
+
+          if [ -z "$lines" ] && [ -z "$pos_lines" ] && [ -z "$detail_lines" ]; then
+            echo "確定(admin)の台数・閉店・位置・店舗詳細の変化なし。Issueは作成しません。"
             exit 0
           fi
 
@@ -110,8 +132,9 @@ jobs:
           providers=$(jq -rn \
             --slurpfile bef /tmp/before.json \
             --slurpfile aft /tmp/after.json "
-              ( ($CHANGED_COUNTS | map(select(.value.source==\"admin\")))
-              + ($CHANGED_POS    | map(select(.value.source==\"admin\"))) )
+              ( ($CHANGED_COUNTS  | map(select(.value.source==\"admin\")))
+              + ($CHANGED_POS     | map(select(.value.source==\"admin\")))
+              + ($CHANGED_DETAILS | map(select(.value.source==\"admin\"))) )
               | map(.value.note // empty) | unique | join(\", \")
           ")
 
@@ -124,6 +147,10 @@ jobs:
           if [ -n "$pos_lines" ]; then
             post_pos=$(printf '%s\n' "【位置情報修正】" "" "下記店舗のピン位置を修正しました。" "" "$pos_lines" "" "#ラストサバイニブ")
           fi
+          post_detail=""
+          if [ -n "$detail_lines" ]; then
+            post_detail=$(printf '%s\n' "【店舗情報更新】" "" "下記店舗の詳細情報（フロア・喫煙所・録画/配信など）を更新しました。アプリでご確認ください🙏" "" "$detail_lines" "" "#ラストサバイニブ")
+          fi
 
           # Issue用ドラフト（台数→位置→お礼リプ→未確認の参考、の順で存在分のみ）
           draft=$(
@@ -133,6 +160,9 @@ jobs:
               fi
               if [ -n "$post_pos" ]; then
                 printf '%s\n' "**親ポスト（【位置情報修正】）**" '```' "$post_pos" '```' ""
+              fi
+              if [ -n "$post_detail" ]; then
+                printf '%s\n' "**親ポスト（【店舗情報更新】）**" '```' "$post_detail" '```' ""
               fi
               printf '%s\n' "**ぶら下げリプ（お礼＋メンション）**" '```' \
                 "情報提供ありがとうございました🙏 変化があればまたお知らせください。" \
@@ -185,6 +215,9 @@ jobs:
               fi
               if [ -n "$post_pos" ]; then
                 printf '%s\n' "親ポスト（位置）:" '```' "$post_pos" '```' ""
+              fi
+              if [ -n "$post_detail" ]; then
+                printf '%s\n' "親ポスト（店舗情報）:" '```' "$post_detail" '```' ""
               fi
               printf '%s\n' "ぶら下げリプ:" '```' \
                 "情報提供ありがとうございました🙏 変化があればまたお知らせください。" "@xxx" '```' "" \
