@@ -1,0 +1,66 @@
+name: チェーン店属性自動更新
+
+# 月次でチェーン店公式サイトから営業時間・公式URL・緯度経度を取得し、
+# src/data/scrape-attributes.json を更新する（ver2.3.3）。
+# 差分がある場合のみ PR を作成。main への直 push はせず人がレビュー・マージする。
+on:
+  schedule:
+    # 毎月1日 10:24 JST（= 01:24 UTC）。update-stores（水曜 00:24 UTC）と時間帯を分ける
+    - cron: '24 1 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: update-chain-attributes
+  cancel-in-progress: false
+
+jobs:
+  update-chain-attributes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: pnpm をセットアップ
+        uses: pnpm/action-setup@v4
+
+      - name: Node.js をセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: 依存関係をインストール
+        run: pnpm install --frozen-lockfile
+
+      - name: チェーン店属性スクレイプを実行
+        run: pnpm exec tsx scripts/scrape-chain-attributes.ts
+
+      - name: 差分があればPRを作成
+        uses: peter-evans/create-pull-request@v7
+        with:
+          add-paths: |
+            src/data/scrape-attributes.json
+            scripts/cache/chain-url-map.json
+          commit-message: 'chore: チェーン店属性を自動更新'
+          branch: auto/update-chain-attributes
+          delete-branch: true
+          title: 'chore: チェーン店属性の自動更新（タイトー/namco）'
+          body: |
+            チェーン店属性自動更新ワークフローが検出した差分です。
+
+            - `src/data/scrape-attributes.json` — auto-scrape 属性（営業時間・公式URL・緯度経度）
+            - `scripts/cache/chain-url-map.json` — storeId ↔ 公式URL 名寄せキャッシュ
+
+            `unmatched` に記録された未一致店舗は `chain-url-map.json` を確認し、
+            必要に応じて `overrides.json` に手動で公式URL/営業時間を追加してください。
+
+            内容を確認のうえ問題なければマージしてください。マージで Vercel の本番デプロイが発火します。
+
+      - name: 失敗したらIssueを作成
+        if: failure()
+        uses: ./.github/actions/report-failure
