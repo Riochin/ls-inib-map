@@ -4,6 +4,7 @@ import { useState, useEffect, type FormEvent } from 'react'
 import { HEADING_FONT_STYLE } from '@/lib/heading-font'
 import type { FeedbackCategory } from '@/lib/report'
 import { checkClientRateLimit, recordClientSubmission } from '@/lib/client-rate-limit'
+import { trackEvent } from '@/lib/analytics'
 
 interface FeedbackFormProps {
   onClose: () => void
@@ -59,6 +60,7 @@ export function FeedbackForm({ onClose }: FeedbackFormProps) {
         throw new Error(data.error ?? `HTTP ${res.status}`)
       }
       recordClientSubmission()
+      trackEvent('submit_feedback')
       setStatus('done')
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : String(err))

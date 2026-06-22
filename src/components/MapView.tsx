@@ -15,6 +15,7 @@ import { getMarkerTheme, getGameLabel, getStoreStatusLabel, getCountSourceInfo }
 import { buildShareText } from '@/lib/share'
 import { CountBadge } from './CountBadge'
 import { useStoreClusterer } from '@/hooks/use-store-clusterer'
+import { trackEvent } from '@/lib/analytics'
 
 interface MapViewProps {
   stores: Store[]
@@ -36,6 +37,8 @@ export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onM
 
   const handleOpen = useCallback((storeId: string) => {
     setOpenStoreId(storeId)
+    // マーカークリック由来の詳細表示。店名は deps を増やさないため id のみ送る。
+    trackEvent('view_store_detail', { store_id: storeId, source: 'marker' })
   }, [])
 
   const { focusMarker } = useStoreClusterer({ stores, onMarkerClick: handleOpen })
@@ -72,6 +75,13 @@ export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onM
     setOpenStoreId(focusStore.id)
     setDetailStore(focusStore)
     /* eslint-enable react-hooks/set-state-in-effect */
+    // 共有URL（?store=）由来の詳細表示。検索選択もこの経路を通るが、そちらは別途
+    // select_search_result を送っているため source は deeplink 代表で計上する。
+    trackEvent('view_store_detail', {
+      store_id: focusStore.id,
+      store_name: focusStore.name,
+      source: 'deeplink',
+    })
     onFocusConsumed?.()
   }, [map, focusStore, focusMarker, onFocusConsumed])
 
@@ -164,6 +174,7 @@ function InfoWindowContent({
     if (typeof navigator !== 'undefined' && navigator.share) {
       try {
         await navigator.share({ title: store.name, text, url })
+        trackEvent('share_store', { store_id: store.id, method: 'web_share' })
       } catch {
         // 共有シートのキャンセル等は無視する
       }
@@ -174,6 +185,7 @@ function InfoWindowContent({
       if (typeof navigator === 'undefined' || !navigator.clipboard) throw new Error('clipboard unavailable')
       await navigator.clipboard.writeText(`${text}\n${url}`.trim())
       flash('copied')
+      trackEvent('share_store', { store_id: store.id, method: 'clipboard' })
     } catch {
       flash('failed')
     }
@@ -243,6 +255,7 @@ function InfoWindowContent({
             href={`https://www.google.com/maps/dir/?api=1&destination=${store.lat},${store.lng}`}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackEvent('click_store_map', { store_id: store.id, store_name: store.name })}
             className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { trackEvent } from '@/lib/analytics'
 
 interface LocateButtonProps {
   isLocating: boolean
@@ -29,7 +30,10 @@ export function LocateButton({ isLocating, error, onLocate }: LocateButtonProps)
   return (
     <div className="absolute bottom-6 left-4 z-10 flex flex-col items-start gap-2">
       <button
-        onClick={onLocate}
+        onClick={() => {
+          trackEvent('click_geolocation_search')
+          onLocate()
+        }}
         disabled={isLocating}
         className="w-14 h-14 bg-white/90 backdrop-blur-sm rounded-full shadow-lg flex items-center justify-center hover:bg-white active:bg-gray-100 disabled:opacity-50 transition-colors"
         aria-label="現在位置を取得"

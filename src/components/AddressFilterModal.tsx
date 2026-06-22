@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import type { AddressFilter, AddressIndex } from '@/types/store'
 import { EMPTY_ADDRESS_FILTER } from '@/types/store'
+import { trackEvent } from '@/lib/analytics'
 
 interface AddressFilterModalProps {
   index: AddressIndex
@@ -56,6 +57,11 @@ export function AddressFilterModal({ index, activeFilter, onApply, onClose }: Ad
 
   function handleApply() {
     onApply(draft)
+    // 都県未選択（すべて）は 'all' として計上。市区の選択数も併せて送る。
+    trackEvent('select_prefecture', {
+      prefecture: draft.prefecture ?? 'all',
+      city_count: draft.cities.length,
+    })
     onClose()
   }
 

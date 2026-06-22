@@ -9,6 +9,7 @@ import { HEADING_FONT_STYLE, CATCH_FONT_STYLE } from '@/lib/heading-font'
 // 新機能ページの内容は src/data/releases.ts に集約（追加はそこへ1エントリ足すだけ）。
 import { releases, latestRelease, type Release, type ReleaseHighlight } from '@/data/releases'
 import { FeedbackForm } from './FeedbackForm'
+import { trackEvent } from '@/lib/analytics'
 
 const STORAGE_KEY = 'ls-exvs-onboarded'
 
@@ -623,10 +624,12 @@ export function Onboarding() {
         // 初回ユーザー: チュートリアル先頭から（新機能告知は邪魔しない）
         setInitialPage(0)
         setIsOpen(true)
+        trackEvent('open_help', { source: 'auto_first_visit', initial_page: 0 })
       } else if (newsSeen !== NEWS_VERSION) {
         // 再訪ユーザー＆新機能が未読: 新機能ページから自動オープン
         setInitialPage(NEWS_PAGE_INDEX)
         setIsOpen(true)
+        trackEvent('open_help', { source: 'auto_news', initial_page: NEWS_PAGE_INDEX })
       }
       /* eslint-enable react-hooks/set-state-in-effect */
       // 新機能を既読の再訪ユーザーには自動表示しない（「?」からはいつでも閲覧可）
@@ -639,6 +642,7 @@ export function Onboarding() {
   const openFromHelp = () => {
     setInitialPage(0)
     setIsOpen(true)
+    trackEvent('open_help', { source: 'help_button', initial_page: 0 })
   }
 
   const handleClose = () => {
