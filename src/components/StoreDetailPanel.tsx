@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react'
 import type { Store, GameTitle, StoreAttributeKey } from '@/types/store'
-import { formatDateJst } from '@/lib/info-display'
+import { formatDateJst, formatByGameTernary } from '@/lib/info-display'
 import { storesMeta } from '@/data/stores'
 import { getMarkerTheme, getGameLabel, getCountSourceInfo, getStoreStatusLabel } from '@/lib/marker-color'
 import { buildShareText } from '@/lib/share'
@@ -25,10 +25,13 @@ function AttributeRow({
   label,
   value,
   isUserReport,
+  preformatted = false,
 }: {
   label: string
   value: string | undefined
   isUserReport: boolean
+  /** value 側で既に「（未確認）」を埋め込み済みの場合 true（録画台/配信台のタイトル別表示） */
+  preformatted?: boolean
 }) {
   return (
     <div className="flex justify-between items-start gap-2 py-1.5 border-b border-gray-100 last:border-0">
@@ -38,7 +41,7 @@ function AttributeRow({
       ) : (
         <span className={`text-xs text-right${isUserReport ? ' text-amber-700' : ' text-gray-800'}`}>
           {value}
-          {isUserReport ? '（未確認）' : ''}
+          {isUserReport && !preformatted ? '（未確認）' : ''}
         </span>
       )}
     </div>
@@ -101,8 +104,16 @@ export function StoreDetailPanel({ store, onOpenInfoForm, onClose }: StoreDetail
   }
 
   const smokingValue = store.smoking !== undefined ? TERNARY_LABELS[store.smoking] : undefined
-  const hasRecordingValue = store.hasRecording !== undefined ? TERNARY_LABELS[store.hasRecording] : undefined
-  const hasStreamingValue = store.hasStreaming !== undefined ? TERNARY_LABELS[store.hasStreaming] : undefined
+  const recordingValue = formatByGameTernary(
+    store.games,
+    store.hasRecordingByGame,
+    isUserReport('hasRecordingByGame'),
+  )
+  const streamingValue = formatByGameTernary(
+    store.games,
+    store.hasStreamingByGame,
+    isUserReport('hasStreamingByGame'),
+  )
   const paymentsValue = store.payments?.length ? store.payments.join('、') : undefined
 
   return (
@@ -171,8 +182,8 @@ export function StoreDetailPanel({ store, onOpenInfoForm, onClose }: StoreDetail
         <AttributeRow label="フロア" value={store.floor} isUserReport={isUserReport('floor')} />
         <AttributeRow label="喫煙所" value={smokingValue} isUserReport={isUserReport('smoking')} />
         <AttributeRow label="決済/電子マネー" value={paymentsValue} isUserReport={isUserReport('payments')} />
-        <AttributeRow label="録画台" value={hasRecordingValue} isUserReport={isUserReport('hasRecording')} />
-        <AttributeRow label="配信台" value={hasStreamingValue} isUserReport={isUserReport('hasStreaming')} />
+        <AttributeRow label="録画台" value={recordingValue} isUserReport={isUserReport('hasRecordingByGame')} preformatted />
+        <AttributeRow label="配信台" value={streamingValue} isUserReport={isUserReport('hasStreamingByGame')} preformatted />
       </div>
 
       {/* 情報更新日 */}
