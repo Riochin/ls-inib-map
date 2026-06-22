@@ -64,6 +64,11 @@ function createMarkerContent(store: Store): HTMLImageElement {
   el.width = image.width
   el.height = image.height
   el.style.cursor = 'pointer'
+  // AdvancedMarkerElement は下辺中央を座標に合わせる。先端は余白ぶん下辺から
+  // 浮いているので、そのぶん下へずらして先端を正確に座標へ刺す。
+  if (image.anchorBottomOffset) {
+    el.style.transform = `translateY(${image.anchorBottomOffset}px)`
+  }
   return el
 }
 

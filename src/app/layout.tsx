@@ -80,6 +80,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  // GA 測定 ID は環境変数で管理。未設定（ローカル/プレビュー等）では GA を読み込まず誤計測を防ぐ。
+  const gaId = process.env.NEXT_PUBLIC_GA_ID
   return (
     <html lang="ja">
       <head>
@@ -107,7 +109,7 @@ export default function RootLayout({
         <SeoContent />
         {children}
       </body>
-      <GoogleAnalytics gaId="G-9VVXLS9KMZ" />
+      {gaId && <GoogleAnalytics gaId={gaId} />}
     </html>
   )
 }

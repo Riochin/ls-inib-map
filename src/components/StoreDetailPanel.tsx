@@ -7,6 +7,7 @@ import { storesMeta } from '@/data/stores'
 import { getMarkerTheme, getGameLabel, getCountSourceInfo, getStoreStatusLabel } from '@/lib/marker-color'
 import { buildShareText } from '@/lib/share'
 import { CountBadge } from './CountBadge'
+import { trackEvent } from '@/lib/analytics'
 
 interface StoreDetailPanelProps {
   store: Store
@@ -72,6 +73,7 @@ export function StoreDetailPanel({ store, onOpenInfoForm, onClose }: StoreDetail
     if (typeof navigator !== 'undefined' && navigator.share) {
       try {
         await navigator.share({ title: store.name, text, url })
+        trackEvent('share_store', { store_id: store.id, method: 'web_share' })
       } catch {
         // キャンセル等は無視
       }
@@ -81,6 +83,7 @@ export function StoreDetailPanel({ store, onOpenInfoForm, onClose }: StoreDetail
       if (typeof navigator === 'undefined' || !navigator.clipboard) throw new Error('clipboard unavailable')
       await navigator.clipboard.writeText(`${text}\n${url}`.trim())
       flash('copied')
+      trackEvent('share_store', { store_id: store.id, method: 'clipboard' })
     } catch {
       flash('failed')
     }
@@ -183,6 +186,7 @@ export function StoreDetailPanel({ store, onOpenInfoForm, onClose }: StoreDetail
           href={`https://www.google.com/maps/dir/?api=1&destination=${store.lat},${store.lng}`}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => trackEvent('click_store_map', { store_id: store.id, store_name: store.name })}
           className="inline-flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline"
         >
           <svg
@@ -258,6 +262,7 @@ export function StoreDetailPanel({ store, onOpenInfoForm, onClose }: StoreDetail
             href={store.officialUrl}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackEvent('click_official_site', { store_id: store.id })}
             className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700"
           >
             <svg

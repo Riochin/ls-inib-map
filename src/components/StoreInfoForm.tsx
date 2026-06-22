@@ -5,6 +5,7 @@ import type { Store, TernaryState } from '@/types/store'
 import type { CorrectionType } from '@/lib/report'
 import { HEADING_FONT_STYLE } from '@/lib/heading-font'
 import { checkClientRateLimit, recordClientSubmission } from '@/lib/client-rate-limit'
+import { trackEvent } from '@/lib/analytics'
 
 interface StoreInfoFormProps {
   store: Store
@@ -164,6 +165,7 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
         throw new Error(data.error ?? `HTTP ${res.status}`)
       }
       recordClientSubmission()
+      trackEvent('submit_store_info', { store_id: store.id, has_correction: correctionType !== '' })
       setStatus('done')
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : String(err))

@@ -22,6 +22,7 @@ import type { FilterOption, AddressFilter, Store } from '@/types/store'
 import { EMPTY_ADDRESS_FILTER } from '@/types/store'
 import { loadSavedFilter, saveFilter } from '@/lib/filter-storage'
 import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect'
+import { trackEvent } from '@/lib/analytics'
 
 export default function MapPage() {
   const [activeFilter, setActiveFilter] = useState<FilterOption>('all')
@@ -52,6 +53,7 @@ export default function MapPage() {
   const handleFilterChange = useCallback((filter: FilterOption) => {
     setActiveFilter(filter)
     saveFilter(filter)
+    trackEvent('filter_title', { filter })
   }, [])
 
   const filteredStores = useMemo(
@@ -72,6 +74,7 @@ export default function MapPage() {
     setFocusStore(store)
     setIsSearchOpen(false)
     setSearchQuery('')
+    trackEvent('select_search_result', { store_id: store.id })
   }, [])
 
   const handleMapClick = useCallback(() => {
