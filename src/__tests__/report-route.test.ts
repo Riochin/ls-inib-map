@@ -215,6 +215,29 @@ describe('POST /api/report - mode=structured-store', () => {
     expect(fetch).not.toHaveBeenCalled()
   })
 
+  it('録画台/配信台のタイトル別キーを受け付け、Issue本文にタイトル別行を出す', async () => {
+    const res = await POST(
+      req({ ...baseStore, hasRecordingGundamExvs: 'yes', hasStreamingJojoLs: 'no' }),
+    )
+    expect(res.status).toBe(200)
+    const [, init] = (fetch as unknown as { mock: { calls: [string, RequestInit][] } }).mock.calls[0]
+    const sent = JSON.parse(init.body as string)
+    expect(sent.body).toContain('録画台（イニブ）')
+    expect(sent.body).toContain('配信台（ラスサバ）')
+  })
+
+  it('録画台/配信台のタイトル別キー単体でも hasAnyInput を満たし200', async () => {
+    const res = await POST(req({ ...baseStore, hasStreamingGundamExvs: 'yes' }))
+    expect(res.status).toBe(200)
+    expect(fetch).toHaveBeenCalledTimes(1)
+  })
+
+  it('不正な三値（yes/no/unknown以外）は無視され、それだけなら400', async () => {
+    const res = await POST(req({ ...baseStore, hasRecordingJojoLs: 'maybe' }))
+    expect(res.status).toBe(400)
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
   it('GitHub API 失敗時に [report:structured-store] プレフィックスでエラーログを出す', async () => {
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     vi.stubGlobal('fetch', vi.fn(async () => new Response('err', { status: 500 })))
