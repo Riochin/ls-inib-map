@@ -220,6 +220,18 @@
       },
       "smoking": "yes"
     },
+    "60a0ff908860": {
+      "source": "user-report",
+      "note": "ラウンドワンさいか屋横須賀 イニブ16台（マップ17→16）・営業時間 平日10:00〜23:59・フロア 南館5階・録画台あり・配信台なし（Issue #147）。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-06-22",
+      "machineCounts": {
+        "gundam-exvs": 16
+      },
+      "businessHours": "平日 10:00〜23:59",
+      "floor": "南館5階",
+      "hasRecording": "yes",
+      "hasStreaming": "no"
+    },
     "62ecb8dd115f": {
       "source": "user-report",
       "note": "namco梅田 ラスサバ12台・イニブ59台・3F・禁煙・交通系IC対応・配信台あり（Issue #128）。配信は配信カードに登録必要、先日付け予約可能（現地予約のみ/電話不可）。",
