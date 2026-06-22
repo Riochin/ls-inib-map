@@ -6,6 +6,13 @@ import { getThemeByKey, type ThemeKey } from '@/lib/marker-color'
  */
 export type MarkerThemeKey = ThemeKey
 
+/**
+ * マーカー画像（`<img>`）へ当てる薄い影。クラスタバブルの box-shadow と質感を揃える。
+ * SVG filter ではなく CSS drop-shadow を使うことで、高DPI端末でもピンをぼかさず
+ * 鮮明なまま影だけ重ねる（drop-shadow はアルファ形状＝ピン輪郭に沿う）。
+ */
+export const MARKER_SHADOW_FILTER = 'drop-shadow(0 1px 1.5px rgba(0,0,0,0.3))'
+
 export interface MarkerImage {
   /** data:image/svg+xml,... 形式のピン画像 */
   url: string
@@ -36,15 +43,17 @@ const CLOSED_SIZE = 40
 
 /**
  * ピン型 SVG 文字列を生成する純関数（both/gundamOnly/delisted）。
- * グラデ塗り＋中央の白丸に、クラスタバブルと揃えた白枠（stroke）と薄い影
- * （feDropShadow）を重ね、ズームアウト時や地図背景に溶けないよう視認性を上げる。
- * グラデ・フィルタは各 SVG 内に閉じた `<defs>` として埋め込み、自己完結させる
- * （DOM 非依存・SSR 安全）。
+ * グラデ塗り＋中央の白丸に、クラスタバブルと揃えた白枠（stroke）を重ねて
+ * 地図背景に溶けないよう視認性を上げる。グラデは各 SVG 内に閉じた `<defs>` と
+ * して埋め込み、自己完結させる（DOM 非依存・SSR 安全）。
+ *
+ * 薄い影は SVG の `<filter>` ではなく、表示側の `<img>` に CSS の drop-shadow
+ * （MARKER_SHADOW_FILTER）で付ける。SVG filter を `<img>` 内に入れると高DPI端末で
+ * SVG 実寸でラスタライズされてピンがぼやけるため、影だけ CSS 側に逃がしている。
  */
 function buildPinSvg(theme: MarkerThemeKey): string {
   const { gradientFrom, gradientTo } = getThemeByKey(theme)
   const gradId = `grad-${theme}`
-  const shadowId = `shadow-${theme}`
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" width="${PIN_WIDTH}" height="${PIN_HEIGHT}" viewBox="0 0 ${PIN_WIDTH} ${PIN_HEIGHT}">` +
     `<defs>` +
@@ -52,11 +61,8 @@ function buildPinSvg(theme: MarkerThemeKey): string {
     `<stop offset="0%" stop-color="${gradientFrom}"/>` +
     `<stop offset="100%" stop-color="${gradientTo}"/>` +
     `</linearGradient>` +
-    `<filter id="${shadowId}" x="-50%" y="-50%" width="200%" height="200%">` +
-    `<feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.3"/>` +
-    `</filter>` +
     `</defs>` +
-    `<g filter="url(#${shadowId})" transform="translate(${PIN_PADDING} ${PIN_PADDING})">` +
+    `<g transform="translate(${PIN_PADDING} ${PIN_PADDING})">` +
     `<path d="M14 0C6.268 0 0 6.268 0 14c0 7.732 14 22 14 22s14-14.268 14-22C28 6.268 21.732 0 14 0z" fill="url(#${gradId})" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>` +
     `<circle cx="14" cy="14" r="5" fill="white"/>` +
     `</g>` +
