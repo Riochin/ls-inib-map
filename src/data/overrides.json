@@ -25,14 +25,15 @@
     },
     "0a3697626fe5": {
       "source": "user-report",
-      "note": "アピナ長岡 ラスサバ3台・イニブ10台（Issue #138）。ピン位置修正（ピンが西にズレ → Googleマップ実位置に補正）。",
-      "updatedAt": "2026-06-19",
+      "note": "アピナ長岡 ラスサバ3台・イニブ10台・フロア2F（Issue #138, #144）。ピン位置修正（ピンが西にズレ → Googleマップ実位置に補正）。",
+      "updatedAt": "2026-06-22",
       "lat": 37.4578494,
       "lng": 138.8131163,
       "machineCounts": {
         "jojo-ls": 3,
         "gundam-exvs": 10
-      }
+      },
+      "floor": "2F"
     },
     "14d32850a2a1": {
       "source": "admin",
@@ -439,6 +440,15 @@
       "machineCounts": {
         "jojo-ls": 4
       }
+    },
+    "3614aed15784": {
+      "source": "user-report",
+      "note": "コーハツ イニブ5台・録画台あり（Issue #145）。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-06-22",
+      "machineCounts": {
+        "gundam-exvs": 5
+      },
+      "hasRecording": "yes"
     }
   }
 }
