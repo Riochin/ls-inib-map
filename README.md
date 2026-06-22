@@ -125,6 +125,22 @@ scripts/              # ビルド前データ生成パイプライン（scrape �
 
 ロジックは純関数として `src/lib/` に分離し、コンポーネントは単一責任を保ちます（パスエイリアス `@/` = `src/`）。
 
+## 新しいゲームタイトルを追加するには（開発者向け）
+
+タイトルは `GameTitle`（`src/types/store.ts`）を中心に各所が結合しています。新タイトル（例 `new-title`）を追加する場合、おおむね以下を編集します。**台数・録画台・配信台などは `Partial<Record<GameTitle, …>>` で持つため、ほとんどの表示は `store.games` をループして自動拡張されます**。手当てが要るのは「2タイトル前提でハードコードされた箇所」です。
+
+1. **型** — `src/types/store.ts` の `GameTitle` に ID を追加。`FilterOption`（= `'all' | GameTitle`）は自動拡張。
+2. **ゲーム一覧の定数** — `src/lib/apply-overrides.ts` の `GAME_TITLES` 配列に追加（`machineCounts`・`hasRecordingByGame`・`hasStreamingByGame` のマージ対象になる）。
+3. **ラベル/色（要ロック解除）** — `src/lib/marker-color.ts`
+   - `getGameLabel()` は現在2タイトル前提の三項式。新タイトルの表示名を返すよう分岐を見直す（引数型 `'jojo-ls' | 'gundam-exvs'` も `GameTitle` へ）。
+   - `THEMES` / `getThemeKey()` のピン色は `both` / `gundamOnly` の2値前提。タイトルの組み合わせ表現を拡張する。
+4. **フィルタ UI** — `src/components/FilterBar.tsx` の `FILTERS` にチップを追加。`ACTIVE_BG_COLORS`（`Record<FilterOption, string>`）は型で追加を強制されるので色も定義。
+5. **提供フォーム** — `src/components/StoreInfoForm.tsx` は `hasJojo` / `hasGundam` のように**タイトルごとにハードコード**。新タイトルの state・入力（台数／録画台／配信台）・送信ペイロードキー（`machineCounts<Title>` 等）を追加。
+6. **投稿パイプライン** — `src/lib/report.ts`（`StructuredStoreInput` の flat key と Issue 行）と `src/app/api/report/route.ts`（検証）に新タイトルのキーを追加。
+7. **データ生成** — `scripts/scrape.ts` の `SOURCES` / `ALL_SITES` / `SiteKey` に公式サイト取得元を追加し、`scripts/merge.ts` のタイトル合成を確認 → `npx tsx scripts/pipeline.ts` で `src/data/stores.json` を再生成。
+
+> 目安：**`Record<GameTitle, …>` を使う箇所は TypeScript がキー追加を強制**してくれます（漏れに気づける）。一方 `getGameLabel` / `getThemeKey` / `StoreInfoForm` の 2タイトル前提ロジックはコンパイラで検出されないため、手動での見直しが必須です。`pnpm exec tsc --noEmit` と `pnpm test` で検証してください。
+
 ## ライセンス / 免責
 
 ファン制作の非公式サービスであり、株式会社バンダイナムコアミューズメント等の権利者とは一切関係ありません。店舗データは各公式サイトをもとにしていますが、最新の状況と異なる場合があります。実際の稼働状況は各店舗へご確認ください。

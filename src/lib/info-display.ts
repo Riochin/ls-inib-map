@@ -1,4 +1,39 @@
 import type { StoresMeta } from '@/types/stores-file'
+import type { GameTitle, TernaryState } from '@/types/store'
+import { getGameLabel } from '@/lib/marker-color'
+
+const TERNARY_LABELS: Record<TernaryState, string> = {
+  yes: 'あり',
+  no: 'なし',
+  unknown: '不明',
+}
+
+/**
+ * ゲーム別の三値（録画台/配信台）を店舗詳細パネル用の文字列に整形する。
+ * - 複数タイトル店: 「ラスサバ 不明 ／ イニブ あり」のようにタイトル別併記
+ * - 単一タイトル店: 「あり」のみ（タイトル名は冗長なので省略）
+ * - 値が一つも無ければ `undefined`（呼び出し側で「未登録」表示）
+ *
+ * `isUserReport` かつ値が `yes`/`no` のセグメントにのみ「（未確認）」を付ける
+ * （`unknown` は不確実さを値自体が示すため付けない）。
+ */
+export function formatByGameTernary(
+  games: readonly GameTitle[],
+  byGame: Partial<Record<GameTitle, TernaryState>> | undefined,
+  isUserReport: boolean,
+): string | undefined {
+  if (!byGame) return undefined
+  const multi = games.length > 1
+  const segments: string[] = []
+  for (const game of games) {
+    const value = byGame[game]
+    if (value === undefined) continue
+    const suffix = isUserReport && value !== 'unknown' ? '（未確認）' : ''
+    const label = `${TERNARY_LABELS[value]}${suffix}`
+    segments.push(multi ? `${getGameLabel(game)} ${label}` : label)
+  }
+  return segments.length > 0 ? segments.join(' ／ ') : undefined
+}
 
 /**
  * データ出典（公式2サイト）の既定URL。

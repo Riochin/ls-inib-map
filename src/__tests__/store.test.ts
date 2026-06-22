@@ -68,8 +68,8 @@ describe('StoreAttributeKey型', () => {
       'floor',
       'smoking',
       'payments',
-      'hasRecording',
-      'hasStreaming',
+      'hasRecordingByGame',
+      'hasStreamingByGame',
     ]
     expect(keys).toHaveLength(6)
   })
@@ -88,8 +88,8 @@ describe('Store型拡張フィールド', () => {
       floor: '2F',
       smoking: 'no',
       payments: ['Suica', 'PayPay'],
-      hasRecording: 'yes',
-      hasStreaming: 'unknown',
+      hasRecordingByGame: { 'jojo-ls': 'yes' },
+      hasStreamingByGame: { 'jojo-ls': 'unknown' },
       attributeSources: {
         businessHours: 'admin',
         smoking: 'user-report',
@@ -99,8 +99,8 @@ describe('Store型拡張フィールド', () => {
     expect(store.floor).toBe('2F')
     expect(store.smoking).toBe('no')
     expect(store.payments).toEqual(['Suica', 'PayPay'])
-    expect(store.hasRecording).toBe('yes')
-    expect(store.hasStreaming).toBe('unknown')
+    expect(store.hasRecordingByGame?.['jojo-ls']).toBe('yes')
+    expect(store.hasStreamingByGame?.['jojo-ls']).toBe('unknown')
     expect(store.attributeSources?.businessHours).toBe('admin')
     expect(store.attributeSources?.smoking).toBe('user-report')
   })
@@ -118,8 +118,8 @@ describe('Store型拡張フィールド', () => {
     expect(store.floor).toBeUndefined()
     expect(store.smoking).toBeUndefined()
     expect(store.payments).toBeUndefined()
-    expect(store.hasRecording).toBeUndefined()
-    expect(store.hasStreaming).toBeUndefined()
+    expect(store.hasRecordingByGame).toBeUndefined()
+    expect(store.hasStreamingByGame).toBeUndefined()
     expect(store.attributeSources).toBeUndefined()
   })
 
@@ -134,12 +134,12 @@ describe('Store型拡張フィールド', () => {
       attributeSources: {
         floor: 'official',
         payments: 'admin',
-        hasStreaming: 'user-report',
+        hasStreamingByGame: 'user-report',
       },
     }
     expect(store.attributeSources?.floor).toBe('official')
     expect(store.attributeSources?.payments).toBe('admin')
-    expect(store.attributeSources?.hasStreaming).toBe('user-report')
+    expect(store.attributeSources?.hasStreamingByGame).toBe('user-report')
     expect(store.attributeSources?.businessHours).toBeUndefined()
   })
 })

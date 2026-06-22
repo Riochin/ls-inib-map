@@ -1,17 +1,30 @@
-import type { Store, GameTitle, StoreAttributeKey } from '@/types/store'
+import type { Store, GameTitle, StoreAttributeKey, TernaryState } from '@/types/store'
 import type { OverridesFile, OverrideEntry } from '@/types/overrides'
 
 const GAME_TITLES: GameTitle[] = ['jojo-ls', 'gundam-exvs']
 
+// 単純値の属性キー（entry[key] をそのまま写すもの）。録画台/配信台は
+// ゲーム別（ByGame）でマージが必要なため、ここには含めず個別に処理する。
 const ATTRIBUTE_KEYS: StoreAttributeKey[] = [
   'businessHours',
   'floor',
   'smoking',
   'payments',
-  'hasRecording',
-  'hasStreaming',
   'officialUrl',
 ]
+
+/** ゲーム別の三値レコードを重ねる（指定ゲームのみ置換。machineCounts と同パターン）。 */
+function mergeByGame(
+  current: Partial<Record<GameTitle, TernaryState>> | undefined,
+  override: Partial<Record<GameTitle, TernaryState>>,
+): Partial<Record<GameTitle, TernaryState>> {
+  const merged = { ...current }
+  for (const game of GAME_TITLES) {
+    const value = override[game]
+    if (value !== undefined) merged[game] = value
+  }
+  return merged
+}
 
 /**
  * 公式スクレイプ由来の店舗一覧に、手動オーバーライド（overrides.json）を重ねる。
@@ -84,11 +97,23 @@ function applyEntry(store: Store, entry: OverrideEntry): Store {
   // 新拡張属性を適用し、attributeSources に出どころを記録する
   const attributeSources = { ...store.attributeSources }
   let hasAttributeUpdate = false
+
+  // ゲーム別の録画台/配信台はゲーム単位でマージ（provenance は機能単位で1つ）
+  if (entry.hasRecordingByGame) {
+    next.hasRecordingByGame = mergeByGame(store.hasRecordingByGame, entry.hasRecordingByGame)
+    attributeSources.hasRecordingByGame = entry.source
+    hasAttributeUpdate = true
+  }
+  if (entry.hasStreamingByGame) {
+    next.hasStreamingByGame = mergeByGame(store.hasStreamingByGame, entry.hasStreamingByGame)
+    attributeSources.hasStreamingByGame = entry.source
+    hasAttributeUpdate = true
+  }
+
   for (const key of ATTRIBUTE_KEYS) {
     const value = entry[key]
     if (value !== undefined) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ;(next as any)[key] = value
+      ;(next as unknown as Record<string, unknown>)[key] = value
       attributeSources[key] = entry.source
       hasAttributeUpdate = true
     }

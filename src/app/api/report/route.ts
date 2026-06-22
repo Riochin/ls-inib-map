@@ -201,13 +201,13 @@ function validateStructuredStore(r: Record<string, unknown>): StructuredStoreInp
     payments = filtered.length > 0 ? filtered : undefined
   }
 
-  const hasRecording = TERNARY_VALUES.includes(r.hasRecording as TernaryState)
-    ? (r.hasRecording as TernaryState)
-    : undefined
+  const ternary = (v: unknown): TernaryState | undefined =>
+    TERNARY_VALUES.includes(v as TernaryState) ? (v as TernaryState) : undefined
 
-  const hasStreaming = TERNARY_VALUES.includes(r.hasStreaming as TernaryState)
-    ? (r.hasStreaming as TernaryState)
-    : undefined
+  const hasRecordingJojoLs = ternary(r.hasRecordingJojoLs)
+  const hasRecordingGundamExvs = ternary(r.hasRecordingGundamExvs)
+  const hasStreamingJojoLs = ternary(r.hasStreamingJojoLs)
+  const hasStreamingGundamExvs = ternary(r.hasStreamingGundamExvs)
 
   const correctionType = CORRECTION_TYPES.includes(r.correctionType as CorrectionType)
     ? (r.correctionType as CorrectionType)
@@ -223,8 +223,10 @@ function validateStructuredStore(r: Record<string, unknown>): StructuredStoreInp
     floor,
     smoking,
     payments,
-    hasRecording,
-    hasStreaming,
+    hasRecordingJojoLs,
+    hasRecordingGundamExvs,
+    hasStreamingJojoLs,
+    hasStreamingGundamExvs,
     correctionType,
     correctionNote,
   ].some((v) => v !== undefined)
@@ -244,8 +246,10 @@ function validateStructuredStore(r: Record<string, unknown>): StructuredStoreInp
     floor,
     smoking,
     payments,
-    hasRecording,
-    hasStreaming,
+    hasRecordingJojoLs,
+    hasRecordingGundamExvs,
+    hasStreamingJojoLs,
+    hasStreamingGundamExvs,
     correctionType,
     correctionNote,
   }

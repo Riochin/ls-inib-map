@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect, type FormEvent } from 'react'
+import { useState, useEffect, type FormEvent, type ReactNode } from 'react'
 import type { Store, TernaryState } from '@/types/store'
 import type { CorrectionType } from '@/lib/report'
 import { HEADING_FONT_STYLE } from '@/lib/heading-font'
+import { getGameLabel } from '@/lib/marker-color'
 import { checkClientRateLimit, recordClientSubmission } from '@/lib/client-rate-limit'
 import { trackEvent } from '@/lib/analytics'
 
@@ -48,6 +49,40 @@ function FilledBadge() {
   )
 }
 
+/** あり/なし/不明 の三値セレクト（喫煙所・録画台/配信台のタイトル別など共通利用）。 */
+function TernarySelect({
+  label,
+  filled,
+  value,
+  onChange,
+}: {
+  label: ReactNode
+  filled?: boolean
+  value: TernaryState | ''
+  onChange: (v: TernaryState | '') => void
+}) {
+  return (
+    <label className="block">
+      <span className="text-xs text-gray-500">
+        {label}
+        {filled && <FilledBadge />}
+      </span>
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value as TernaryState | '')}
+        className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
+      >
+        <option value="">— 未入力 —</option>
+        {TERNARY_OPTIONS.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+    </label>
+  )
+}
+
 export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
   const hasJojo = store.games.includes('jojo-ls')
   const hasGundam = store.games.includes('gundam-exvs')
@@ -66,8 +101,18 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
   const [floor, setFloor] = useState(store.floor ?? '')
   const [smoking, setSmoking] = useState<TernaryState | ''>(store.smoking ?? '')
   const [payments, setPayments] = useState<string[]>(store.payments ?? [])
-  const [hasRecording, setHasRecording] = useState<TernaryState | ''>(store.hasRecording ?? '')
-  const [hasStreaming, setHasStreaming] = useState<TernaryState | ''>(store.hasStreaming ?? '')
+  const [recordingJojo, setRecordingJojo] = useState<TernaryState | ''>(
+    store.hasRecordingByGame?.['jojo-ls'] ?? '',
+  )
+  const [recordingGundam, setRecordingGundam] = useState<TernaryState | ''>(
+    store.hasRecordingByGame?.['gundam-exvs'] ?? '',
+  )
+  const [streamingJojo, setStreamingJojo] = useState<TernaryState | ''>(
+    store.hasStreamingByGame?.['jojo-ls'] ?? '',
+  )
+  const [streamingGundam, setStreamingGundam] = useState<TernaryState | ''>(
+    store.hasStreamingByGame?.['gundam-exvs'] ?? '',
+  )
   const [correctionType, setCorrectionType] = useState<CorrectionType | ''>('')
   const [correctionNote, setCorrectionNote] = useState('')
   const [reporter, setReporter] = useState('')
@@ -100,8 +145,10 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
     floor.trim() !== '' ||
     smoking !== '' ||
     payments.length > 0 ||
-    hasRecording !== '' ||
-    hasStreaming !== '' ||
+    (recordingJojo !== '' && hasJojo) ||
+    (recordingGundam !== '' && hasGundam) ||
+    (streamingJojo !== '' && hasJojo) ||
+    (streamingGundam !== '' && hasGundam) ||
     correctionType !== '' ||
     correctionNote.trim() !== ''
 
@@ -115,8 +162,10 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
     floor: !!store.floor,
     smoking: store.smoking !== undefined,
     payments: (store.payments?.length ?? 0) > 0,
-    hasRecording: store.hasRecording !== undefined,
-    hasStreaming: store.hasStreaming !== undefined,
+    recordingJojo: store.hasRecordingByGame?.['jojo-ls'] !== undefined,
+    recordingGundam: store.hasRecordingByGame?.['gundam-exvs'] !== undefined,
+    streamingJojo: store.hasStreamingByGame?.['jojo-ls'] !== undefined,
+    streamingGundam: store.hasStreamingByGame?.['gundam-exvs'] !== undefined,
   }
   const hasExistingInfo = Object.values(filled).some(Boolean)
 
@@ -149,8 +198,10 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
     if (floor.trim()) payload.floor = floor.trim()
     if (smoking !== '') payload.smoking = smoking
     if (payments.length > 0) payload.payments = payments
-    if (hasRecording !== '') payload.hasRecording = hasRecording
-    if (hasStreaming !== '') payload.hasStreaming = hasStreaming
+    if (hasJojo && recordingJojo !== '') payload.hasRecordingJojoLs = recordingJojo
+    if (hasGundam && recordingGundam !== '') payload.hasRecordingGundamExvs = recordingGundam
+    if (hasJojo && streamingJojo !== '') payload.hasStreamingJojoLs = streamingJojo
+    if (hasGundam && streamingGundam !== '') payload.hasStreamingGundamExvs = streamingGundam
     if (correctionType !== '') payload.correctionType = correctionType
     if (correctionNote.trim()) payload.correctionNote = correctionNote.trim()
 
@@ -336,43 +387,51 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
                 </div>
               </fieldset>
 
-              {/* 録画台 */}
-              <label className="block mb-3">
-                <span className="text-xs font-semibold text-gray-600">
-                  録画台{filled.hasRecording && <FilledBadge />}
-                </span>
-                <select
-                  value={hasRecording}
-                  onChange={(e) => { setHasRecording(e.target.value as TernaryState | ''); mark() }}
-                  className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
-                >
-                  <option value="">— 未入力 —</option>
-                  {TERNARY_OPTIONS.map((o) => (
-                    <option key={o.value} value={o.value}>
-                      {o.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              {/* 録画台（タイトル別） */}
+              <div className="mb-3">
+                <p className="text-xs font-semibold text-gray-600 mb-1.5">録画台</p>
+                <div className="grid grid-cols-2 gap-3">
+                  {hasJojo && (
+                    <TernarySelect
+                      label={getGameLabel('jojo-ls')}
+                      filled={filled.recordingJojo}
+                      value={recordingJojo}
+                      onChange={(v) => { setRecordingJojo(v); mark() }}
+                    />
+                  )}
+                  {hasGundam && (
+                    <TernarySelect
+                      label={getGameLabel('gundam-exvs')}
+                      filled={filled.recordingGundam}
+                      value={recordingGundam}
+                      onChange={(v) => { setRecordingGundam(v); mark() }}
+                    />
+                  )}
+                </div>
+              </div>
 
-              {/* 配信台 */}
-              <label className="block mb-4">
-                <span className="text-xs font-semibold text-gray-600">
-                  配信台{filled.hasStreaming && <FilledBadge />}
-                </span>
-                <select
-                  value={hasStreaming}
-                  onChange={(e) => { setHasStreaming(e.target.value as TernaryState | ''); mark() }}
-                  className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
-                >
-                  <option value="">— 未入力 —</option>
-                  {TERNARY_OPTIONS.map((o) => (
-                    <option key={o.value} value={o.value}>
-                      {o.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              {/* 配信台（タイトル別） */}
+              <div className="mb-4">
+                <p className="text-xs font-semibold text-gray-600 mb-1.5">配信台</p>
+                <div className="grid grid-cols-2 gap-3">
+                  {hasJojo && (
+                    <TernarySelect
+                      label={getGameLabel('jojo-ls')}
+                      filled={filled.streamingJojo}
+                      value={streamingJojo}
+                      onChange={(v) => { setStreamingJojo(v); mark() }}
+                    />
+                  )}
+                  {hasGundam && (
+                    <TernarySelect
+                      label={getGameLabel('gundam-exvs')}
+                      filled={filled.streamingGundam}
+                      value={streamingGundam}
+                      onChange={(v) => { setStreamingGundam(v); mark() }}
+                    />
+                  )}
+                </div>
+              </div>
 
               {/* 修正・通報セクション */}
               <div className="border-t border-gray-200 pt-4 mb-4">
