@@ -612,11 +612,13 @@ export function Onboarding() {
   const [initialPage, setInitialPage] = useState(0)
   const [feedbackOpen, setFeedbackOpen] = useState(false)
 
-  // localStorage 参照は副作用フェーズ限定（SSR/hydration安全・ちらつき防止・Req6.2）
+  // localStorage 参照は副作用フェーズ限定（SSR/hydration安全・ちらつき防止・Req6.2）。
+  // クライアント専用値で初期表示を決めるため、ハイドレーション後の同期 setState が必須。
   useEffect(() => {
     try {
       const onboarded = localStorage.getItem(STORAGE_KEY)
       const newsSeen = localStorage.getItem(NEWS_SEEN_KEY)
+      /* eslint-disable react-hooks/set-state-in-effect -- 上記理由によりハイドレーション後の同期が必要 */
       if (!onboarded) {
         // 初回ユーザー: チュートリアル先頭から（新機能告知は邪魔しない）
         setInitialPage(0)
@@ -626,6 +628,7 @@ export function Onboarding() {
         setInitialPage(NEWS_PAGE_INDEX)
         setIsOpen(true)
       }
+      /* eslint-enable react-hooks/set-state-in-effect */
       // 新機能を既読の再訪ユーザーには自動表示しない（「?」からはいつでも閲覧可）
     } catch {
       // localStorage 不可（プライベートモード等）の場合は自動表示しない

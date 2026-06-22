@@ -9,15 +9,21 @@ interface LocateButtonProps {
 }
 
 export function LocateButton({ isLocating, error, onLocate }: LocateButtonProps) {
-  const [showError, setShowError] = useState(false)
+  // error が変わるたびに dismissal をレンダー中にリセット（React 公式の前回値比較パターン）。
+  // これで同一エラーの連続発生でもトーストを再表示でき、effect 内の同期 setState を避けられる。
+  const [dismissed, setDismissed] = useState(false)
+  const [prevError, setPrevError] = useState(error)
+  if (error !== prevError) {
+    setPrevError(error)
+    setDismissed(false)
+  }
+  const showError = error !== null && !dismissed
 
   useEffect(() => {
     if (error) {
-      setShowError(true)
-      const timer = setTimeout(() => setShowError(false), 3000)
+      const timer = setTimeout(() => setDismissed(true), 3000)
       return () => clearTimeout(timer)
     }
-    setShowError(false)
   }, [error])
 
   return (

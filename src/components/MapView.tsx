@@ -61,12 +61,17 @@ export function MapView({ stores, userLocation, focusStore, onFocusConsumed, onM
     map.setZoom(14)
   }, [map, userLocation])
 
+  // focusStore は親からの「この店を開け」というワンショット命令プロップ。マップへの
+  // 命令的操作(focusMarker)とあわせて消費する正当な effect。開いた状態は focusStore が
+  // クリアされても保持される独立 state のため派生化できず、ここでの同期 setState が必要。
   useEffect(() => {
     if (!map || !focusStore) return
     // クラスタに埋もれた店舗でも個別表示されるよう pan/zoom→de-cluster してから開く
     focusMarker(focusStore.id)
+    /* eslint-disable react-hooks/set-state-in-effect -- 上記理由による命令プロップの消費 */
     setOpenStoreId(focusStore.id)
     setDetailStore(focusStore)
+    /* eslint-enable react-hooks/set-state-in-effect */
     onFocusConsumed?.()
   }, [map, focusStore, focusMarker, onFocusConsumed])
 
