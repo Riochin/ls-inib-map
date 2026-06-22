@@ -20,3 +20,32 @@ body {
   height: 0;
   display: none; /* WebKit (Chrome/Safari/iOS) */
 }
+
+/* 現在地ボタンがエラー時に横へ伸びてメッセージ窓化するときの展開アニメーション。
+   丸ボタン幅(3.5rem)から窓幅(280px)まで max-width を広げ、overflow:hidden で
+   中身を左から徐々に見せることで「ボタンが伸びる」印象を出す。 */
+@keyframes locate-expand {
+  from {
+    max-width: 3.5rem;
+  }
+  to {
+    max-width: 280px;
+  }
+}
+.animate-locate-expand {
+  animation: locate-expand 260ms ease-out;
+}
+
+/* 閉じる「<」を押したときの収縮アニメ（展開の逆再生）。終了後に丸ボタンへ差し替えるため
+   forwards で 3.5rem を保持し、丸ボタンとの継ぎ目のちらつきを防ぐ。 */
+@keyframes locate-collapse {
+  from {
+    max-width: 280px;
+  }
+  to {
+    max-width: 3.5rem;
+  }
+}
+.animate-locate-collapse {
+  animation: locate-collapse 220ms ease-in forwards;
+}
