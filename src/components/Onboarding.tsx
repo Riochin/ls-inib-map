@@ -1,7 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react'
-import { getMarkerImage, type MarkerThemeKey } from '@/lib/marker-image'
+import { getMarkerImage, MARKER_SHADOW_FILTER, type MarkerThemeKey } from '@/lib/marker-image'
 import { getThemeByKey } from '@/lib/marker-color'
 import { CountBadge } from './CountBadge'
 // 見出し系の丸ゴシック（M PLUS Rounded 1c）。送信フォーム等と共有しトーンを揃える。
@@ -185,7 +185,7 @@ function LegendPage() {
             <li key={theme} className="flex items-center gap-3">
               <span className="w-10 flex justify-center shrink-0">
                 {/* 実際のマーカー画像を使った凡例 */}
-                <img src={img.url} alt="" className="h-7 w-auto" />
+                <img src={img.url} alt="" className="h-7 w-auto" style={{ filter: MARKER_SHADOW_FILTER }} />
               </span>
               <span className="text-xs text-gray-700">{label}</span>
             </li>

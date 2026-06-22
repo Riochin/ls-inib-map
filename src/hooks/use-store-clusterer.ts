@@ -5,7 +5,7 @@ import { useMap, useMapsLibrary } from '@vis.gl/react-google-maps'
 import { MarkerClusterer, type Renderer } from '@googlemaps/markerclusterer'
 import type { Store } from '@/types/store'
 import { getThemeByKey, getThemeKey } from '@/lib/marker-color'
-import { getMarkerImage } from '@/lib/marker-image'
+import { getMarkerImage, MARKER_SHADOW_FILTER } from '@/lib/marker-image'
 
 /** フォーカス時にクラスタを解除して個別マーカーを表示するズームレベル（クラスタラの maxZoom 超） */
 const FOCUS_ZOOM = 17
@@ -64,6 +64,8 @@ function createMarkerContent(store: Store): HTMLImageElement {
   el.width = image.width
   el.height = image.height
   el.style.cursor = 'pointer'
+  // 影は SVG ではなく CSS 側で付け、高DPI端末でもピンをぼかさない（marker-image 参照）
+  el.style.filter = MARKER_SHADOW_FILTER
   // AdvancedMarkerElement は下辺中央を座標に合わせる。先端は余白ぶん下辺から
   // 浮いているので、そのぶん下へずらして先端を正確に座標へ刺す。
   if (image.anchorBottomOffset) {

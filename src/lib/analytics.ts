@@ -1,16 +1,24 @@
-import { sendGAEvent } from '@next/third-parties/google'
-
 /**
  * GA4 カスタムイベント計測の中核ラッパー（Issue #59）。
  *
  * 直帰率ではなく「ユーザーが店舗探索・地図機能をどれだけ活用したか」を行動ベースで
- * 計測するためのもの。各コンポーネントは生の sendGAEvent ではなく、必ずこの trackEvent
+ * 計測するためのもの。各コンポーネントは生の gtag ではなく、必ずこの trackEvent
  * 経由でイベントを送る（イベント名・パラメータを型で固定し、タイポと命名ブレを防ぐ）。
  *
+ * 送信は GA(gtag.js) がグローバルに生やす `window.gtag('event', ...)` を直接呼ぶ。
+ * `@next/third-parties` の `sendGAEvent` はモジュール内部状態（初期化フラグ）に依存して
+ * イベントを取りこぼす事例があったため、ページビューと同じ確実な経路に統一している。
+ *
  * - イベント名・パラメータは GA4 推奨のスネークケースで統一する。
- * - SSR/ビルド時（window 不在）や NEXT_PUBLIC_GA_ID 未設定環境（ローカル/プレビュー）では
- *   何もしない（no-op）。これにより開発時の誤計測を防ぐ。
+ * - SSR/ビルド時（window 不在）や GA 未ロード環境（window.gtag 不在＝ローカル/プレビューで
+ *   NEXT_PUBLIC_GA_ID 未設定など）では何もしない（no-op）。
  */
+
+declare global {
+  interface Window {
+    gtag?: (command: 'event', eventName: string, params?: Record<string, unknown>) => void
+  }
+}
 
 /** イベント名 → そのイベントが取るパラメータ型のマップ。パラメータ無しは Record<string, never>。 */
 export type GAEventMap = {
@@ -60,9 +68,10 @@ type EventArgs<E extends GAEventName> = GAEventMap[E] extends Record<string, nev
  *   trackEvent('click_geolocation_search')
  */
 export function trackEvent<E extends GAEventName>(name: E, ...args: EventArgs<E>): void {
-  // SSR/ビルド時、または GA 未設定環境（ローカル/プレビュー）では送信しない。
+  // SSR/ビルド時は送信しない。
   if (typeof window === 'undefined') return
-  if (!process.env.NEXT_PUBLIC_GA_ID) return
+  // GA(gtag.js) 未ロード環境（ローカル/プレビューで GA 無効など）では no-op。
+  if (typeof window.gtag !== 'function') return
   const params = (args[0] ?? {}) as Record<string, unknown>
-  sendGAEvent('event', name, params)
+  window.gtag('event', name, params)
 }
