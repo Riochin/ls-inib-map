@@ -11,29 +11,55 @@ export interface MarkerImage {
   url: string
   width: number
   height: number
+  /**
+   * 画像下辺からアンカー点（ピン先端）までの距離(px)。
+   * AdvancedMarkerElement は「コンテンツ下辺中央」を座標に合わせるため、
+   * 先端を下辺から浮かせたぶん、表示時にこの値だけ下へずらして補正する。
+   */
+  anchorBottomOffset: number
 }
 
-const PIN_WIDTH = 28
-const PIN_HEIGHT = 36
+/** ピン本体（先端まで）のサイズ。白枠・影ぶんの余白は別途 PIN_PADDING で確保する */
+const PIN_CORE_WIDTH = 28
+const PIN_CORE_HEIGHT = 36
+/**
+ * 白枠・影が外側へはみ出すぶんの余白。先端の枠・影が見切れないよう全周に足す。
+ * 下にも足したぶんピン先端が下辺から浮くが、表示側で anchorBottomOffset だけ
+ * 下へずらして補正するので、刺さる座標はズレない。
+ */
+const PIN_PADDING = 4
+/** 余白込みのピン画像サイズ（img 要素のレンダリングサイズ） */
+const PIN_WIDTH = PIN_CORE_WIDTH + PIN_PADDING * 2
+const PIN_HEIGHT = PIN_CORE_HEIGHT + PIN_PADDING * 2
 /** 閉店マーカー（🌸のみ）のサイズ。旧 StoreMarker の絵文字表示に揃える */
 const CLOSED_SIZE = 40
 
 /**
  * ピン型 SVG 文字列を生成する純関数（both/gundamOnly/delisted）。
- * グラデ塗り＋中央の白丸。グラデは各 SVG 内に閉じた `<defs>` として埋め込み、
- * 自己完結させる（DOM 非依存・SSR 安全）。
+ * グラデ塗り＋中央の白丸に、クラスタバブルと揃えた白枠（stroke）と薄い影
+ * （feDropShadow）を重ね、ズームアウト時や地図背景に溶けないよう視認性を上げる。
+ * グラデ・フィルタは各 SVG 内に閉じた `<defs>` として埋め込み、自己完結させる
+ * （DOM 非依存・SSR 安全）。
  */
 function buildPinSvg(theme: MarkerThemeKey): string {
   const { gradientFrom, gradientTo } = getThemeByKey(theme)
   const gradId = `grad-${theme}`
+  const shadowId = `shadow-${theme}`
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" width="${PIN_WIDTH}" height="${PIN_HEIGHT}" viewBox="0 0 ${PIN_WIDTH} ${PIN_HEIGHT}">` +
-    `<defs><linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">` +
+    `<defs>` +
+    `<linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">` +
     `<stop offset="0%" stop-color="${gradientFrom}"/>` +
     `<stop offset="100%" stop-color="${gradientTo}"/>` +
-    `</linearGradient></defs>` +
-    `<path d="M14 0C6.268 0 0 6.268 0 14c0 7.732 14 22 14 22s14-14.268 14-22C28 6.268 21.732 0 14 0z" fill="url(#${gradId})"/>` +
+    `</linearGradient>` +
+    `<filter id="${shadowId}" x="-50%" y="-50%" width="200%" height="200%">` +
+    `<feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.3"/>` +
+    `</filter>` +
+    `</defs>` +
+    `<g filter="url(#${shadowId})" transform="translate(${PIN_PADDING} ${PIN_PADDING})">` +
+    `<path d="M14 0C6.268 0 0 6.268 0 14c0 7.732 14 22 14 22s14-14.268 14-22C28 6.268 21.732 0 14 0z" fill="url(#${gradId})" stroke="#fff" stroke-width="2" stroke-linejoin="round"/>` +
     `<circle cx="14" cy="14" r="5" fill="white"/>` +
+    `</g>` +
     `</svg>`
   )
 }
@@ -55,9 +81,10 @@ function dataUri(svg: string): string {
 
 function toMarkerImage(theme: MarkerThemeKey): MarkerImage {
   if (theme === 'closed') {
-    return { url: dataUri(buildClosedSvg()), width: CLOSED_SIZE, height: CLOSED_SIZE }
+    // 🌸は全体が下辺中央アンカーでよい（先端の概念がない）ため補正なし
+    return { url: dataUri(buildClosedSvg()), width: CLOSED_SIZE, height: CLOSED_SIZE, anchorBottomOffset: 0 }
   }
-  return { url: dataUri(buildPinSvg(theme)), width: PIN_WIDTH, height: PIN_HEIGHT }
+  return { url: dataUri(buildPinSvg(theme)), width: PIN_WIDTH, height: PIN_HEIGHT, anchorBottomOffset: PIN_PADDING }
 }
 
 /**
