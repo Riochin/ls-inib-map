@@ -110,6 +110,23 @@ describe('buildStructuredStoreIssue', () => {
     expect(body).toContain('閉店・移設')
   })
 
+  it('録画台/配信台はタイトル別の行で出力する', () => {
+    const { body } = buildStructuredStoreIssue({
+      ...base,
+      hasRecordingGundamExvs: 'yes',
+      hasStreamingJojoLs: 'no',
+    })
+    expect(body).toContain('録画台（イニブ）')
+    expect(body).toContain('配信台（ラスサバ）')
+  })
+
+  it('入力されたタイトルの録画台/配信台のみ出力する', () => {
+    const { body } = buildStructuredStoreIssue({ ...base, hasRecordingJojoLs: 'unknown' })
+    expect(body).toContain('録画台（ラスサバ）')
+    expect(body).not.toContain('録画台（イニブ）')
+    expect(body).not.toContain('配信台')
+  })
+
   it('タイトルに店名が含まれる', () => {
     const { title } = buildStructuredStoreIssue(base)
     expect(title).toContain('テスト店')

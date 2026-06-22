@@ -93,8 +93,10 @@ export interface StructuredStoreInput {
   smoking?: TernaryState
   /** max 20件・各 max 30文字 */
   payments?: string[]
-  hasRecording?: TernaryState
-  hasStreaming?: TernaryState
+  hasRecordingJojoLs?: TernaryState
+  hasRecordingGundamExvs?: TernaryState
+  hasStreamingJojoLs?: TernaryState
+  hasStreamingGundamExvs?: TernaryState
   correctionType?: CorrectionType
   /** max 500 */
   correctionNote?: string
@@ -160,10 +162,14 @@ export function buildStructuredStoreIssue(input: StructuredStoreInput): ReportIs
     rows.push(`| 喫煙所 | ${TERNARY_LABEL[input.smoking]} |`)
   if (input.payments !== undefined && input.payments.length > 0)
     rows.push(`| 決済/電子マネー | ${input.payments.map(cell).join(', ')} |`)
-  if (input.hasRecording !== undefined)
-    rows.push(`| 録画台 | ${TERNARY_LABEL[input.hasRecording]} |`)
-  if (input.hasStreaming !== undefined)
-    rows.push(`| 配信台 | ${TERNARY_LABEL[input.hasStreaming]} |`)
+  if (input.hasRecordingJojoLs !== undefined)
+    rows.push(`| 録画台（ラスサバ） | ${TERNARY_LABEL[input.hasRecordingJojoLs]} |`)
+  if (input.hasRecordingGundamExvs !== undefined)
+    rows.push(`| 録画台（イニブ） | ${TERNARY_LABEL[input.hasRecordingGundamExvs]} |`)
+  if (input.hasStreamingJojoLs !== undefined)
+    rows.push(`| 配信台（ラスサバ） | ${TERNARY_LABEL[input.hasStreamingJojoLs]} |`)
+  if (input.hasStreamingGundamExvs !== undefined)
+    rows.push(`| 配信台（イニブ） | ${TERNARY_LABEL[input.hasStreamingGundamExvs]} |`)
   if (input.correctionType !== undefined)
     rows.push(`| 修正・通報種別 | ${input.correctionType} |`)
   if (input.correctionNote !== undefined && input.correctionNote.trim())
