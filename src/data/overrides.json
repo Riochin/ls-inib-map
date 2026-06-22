@@ -96,16 +96,20 @@
     },
     "331d0f612a68": {
       "source": "admin",
-      "note": "namco巣鴨よ永遠に 閉店・移設（Issue #109）。ls_boushi（メンション不可）。ラスサバ24台・フロア地下2階（両筐体）・禁煙・録画台あり・配信台あり。stores.json 側でも closed/delisted 設定済み。",
-      "updatedAt": "2026-06-19",
+      "note": "namco巣鴨よ永遠に 閉店・移設（Issue #109）。ls_boushi（メンション不可）。ラスサバ24台・フロア地下2階（両筐体）・禁煙・録画台あり・配信台あり。stores.json 側でも closed/delisted 設定済み。v2.3.5: 配信台/録画台をタイトル別化（単一タイトル＝ラスサバに割当）。",
+      "updatedAt": "2026-06-23",
       "closed": true,
       "machineCounts": {
         "jojo-ls": 24
       },
       "floor": "どっちも地下２階",
       "smoking": "no",
-      "hasRecording": "yes",
-      "hasStreaming": "yes"
+      "hasRecordingByGame": {
+        "jojo-ls": "yes"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "yes"
+      }
     },
     "3e3410623889": {
       "source": "admin",
@@ -117,8 +121,8 @@
     },
     "3ec1f3534a2a": {
       "source": "admin",
-      "note": "福井レジャーランド板垣 ピン位置修正（Issue #81）。住所ジオコードが南へズレていたのを店名ROOFTOP（下馬3丁目・交差点付近）へ補正。@kiyo_general。ラスサバ2台・イニブ18台・喫煙所あり・録画台なし・配信台あり（Issue #123/#134）。",
-      "updatedAt": "2026-06-19",
+      "note": "福井レジャーランド板垣 ピン位置修正（Issue #81）。住所ジオコードが南へズレていたのを店名ROOFTOP（下馬3丁目・交差点付近）へ補正。@kiyo_general。ラスサバ2台・イニブ18台・喫煙所あり（Issue #123/#134）。v2.3.5: 配信台/録画台をタイトル別化。Issue #123(配信あり)/#134(配信なし)で矛盾しWeb確認も取れず、録画/配信とも両タイトル不明として再報告待ち。",
+      "updatedAt": "2026-06-23",
       "lat": 36.0422008,
       "lng": 136.2336664,
       "machineCounts": {
@@ -126,19 +130,32 @@
         "gundam-exvs": 18
       },
       "smoking": "yes",
-      "hasRecording": "no",
-      "hasStreaming": "yes"
+      "hasRecordingByGame": {
+        "jojo-ls": "unknown",
+        "gundam-exvs": "unknown"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "unknown",
+        "gundam-exvs": "unknown"
+      }
     },
     "40beebc2cba3": {
       "source": "user-report",
-      "note": "バイパスレジャーランド藤江新館 ラスサバ6台・イニブ18台・喫煙所あり・録画台あり（Issue #131）。配信は事前予約が必要。",
-      "updatedAt": "2026-06-19",
+      "note": "バイパスレジャーランド藤江新館 ラスサバ6台・イニブ18台・喫煙所あり・録画台あり（Issue #131）。配信は事前予約が必要。v2.3.5: 配信台/録画台をタイトル別化。公式X(@l_l_f_s_1)がイニブ主力店＝録画台イニブあり、ラスサバ/配信は不明（再報告待ち）。",
+      "updatedAt": "2026-06-23",
       "machineCounts": {
         "jojo-ls": 6,
         "gundam-exvs": 18
       },
       "smoking": "yes",
-      "hasRecording": "yes"
+      "hasRecordingByGame": {
+        "jojo-ls": "unknown",
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "unknown",
+        "gundam-exvs": "unknown"
+      }
     },
     "420e66ac88ad": {
       "source": "admin",
@@ -159,15 +176,22 @@
     },
     "4a4912e8ada8": {
       "source": "user-report",
-      "note": "ゲームポイントシャトーEX ラスサバ4台・イニブ14台・2F・喫煙所あり（屋外1F）・配信台あり（Issue #129）。",
-      "updatedAt": "2026-06-19",
+      "note": "ゲームポイントシャトーEX ラスサバ4台・イニブ14台・2F・喫煙所あり（屋外1F）・配信台あり（Issue #129）。v2.3.5: 配信台/録画台をタイトル別化。公式サイト(ex-kyobashi.com)でイニブ・ラスサバ両タイトルに配信PC＋録画機完備を確認＝両方あり。",
+      "updatedAt": "2026-06-23",
       "machineCounts": {
         "jojo-ls": 4,
         "gundam-exvs": 14
       },
       "floor": "2F",
       "smoking": "yes",
-      "hasStreaming": "yes"
+      "hasRecordingByGame": {
+        "jojo-ls": "yes",
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "yes",
+        "gundam-exvs": "yes"
+      }
     },
     "4b62a97cfc5e": {
       "source": "admin",
@@ -200,15 +224,21 @@
     },
     "56015d135d11": {
       "source": "user-report",
-      "note": "ゲームセンターテクノポリス ラスサバ3台・イニブ9台・喫煙所あり・録画台なし・配信台なし（Issue #139）。",
-      "updatedAt": "2026-06-19",
+      "note": "ゲームセンターテクノポリス ラスサバ3台・イニブ9台・喫煙所あり（Issue #139）。v2.3.5: 配信台/録画台をタイトル別化。店舗単位「なし」報告は片タイトルのみ確認の可能性があるため両タイトル不明に（再報告待ち）。",
+      "updatedAt": "2026-06-23",
       "machineCounts": {
         "jojo-ls": 3,
         "gundam-exvs": 9
       },
       "smoking": "yes",
-      "hasRecording": "no",
-      "hasStreaming": "no"
+      "hasRecordingByGame": {
+        "jojo-ls": "unknown",
+        "gundam-exvs": "unknown"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "unknown",
+        "gundam-exvs": "unknown"
+      }
     },
     "5019f0c1ffb4": {
       "source": "user-report",
@@ -222,20 +252,24 @@
     },
     "60a0ff908860": {
       "source": "user-report",
-      "note": "ラウンドワンさいか屋横須賀 イニブ16台（マップ17→16）・営業時間 平日10:00〜23:59・フロア 南館5階・録画台あり・配信台なし（Issue #147）。SNS未記入のため未確認（みんなの報告）扱い。",
-      "updatedAt": "2026-06-22",
+      "note": "ラウンドワンさいか屋横須賀 イニブ16台（マップ17→16）・営業時間 平日10:00〜23:59・フロア 南館5階・録画台あり・配信台なし（Issue #147）。SNS未記入のため未確認（みんなの報告）扱い。v2.3.5: 配信台/録画台をタイトル別化（単一タイトル＝イニブに割当）。",
+      "updatedAt": "2026-06-23",
       "machineCounts": {
         "gundam-exvs": 16
       },
       "businessHours": "平日 10:00〜23:59",
       "floor": "南館5階",
-      "hasRecording": "yes",
-      "hasStreaming": "no"
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
     },
     "62ecb8dd115f": {
       "source": "user-report",
-      "note": "namco梅田 ラスサバ12台・イニブ59台・3F・禁煙・交通系IC対応・配信台あり（Issue #128）。配信は配信カードに登録必要、先日付け予約可能（現地予約のみ/電話不可）。",
-      "updatedAt": "2026-06-19",
+      "note": "namco梅田 ラスサバ12台・イニブ59台・3F・禁煙・交通系IC対応・配信台あり（Issue #128）。配信は配信カードに登録必要、先日付け予約可能（現地予約のみ/電話不可）。v2.3.5: 配信台/録画台をタイトル別化。公式/店舗YouTubeでラスサバ配信PCを確認＝ラスサバ配信あり、イニブ配信・録画は不明（再報告待ち）。",
+      "updatedAt": "2026-06-23",
       "machineCounts": {
         "jojo-ls": 12,
         "gundam-exvs": 59
@@ -243,7 +277,14 @@
       "floor": "3F",
       "smoking": "no",
       "payments": ["交通系IC（Suica/PASMOなど）"],
-      "hasStreaming": "yes"
+      "hasRecordingByGame": {
+        "jojo-ls": "unknown",
+        "gundam-exvs": "unknown"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "yes",
+        "gundam-exvs": "unknown"
+      }
     },
     "6701f6561319": {
       "source": "admin",
@@ -290,21 +331,27 @@
     },
     "809ce2bb59b4": {
       "source": "user-report",
-      "note": "ラウンドワンスタジアム金沢 ラスサバ4台・イニブ7台・1F・喫煙所あり・録画台あり（Issue #132）。",
-      "updatedAt": "2026-06-19",
+      "note": "ラウンドワンスタジアム金沢 ラスサバ4台・イニブ7台・1F・喫煙所あり・録画台あり（Issue #132）。v2.3.5: 配信台/録画台をタイトル別化。録画はRound1のGR-HD録画機・EXVS主体運用＝録画台イニブあり、ラスサバ/配信は不明（再報告待ち）。",
+      "updatedAt": "2026-06-23",
       "machineCounts": {
         "jojo-ls": 4,
         "gundam-exvs": 7
       },
       "floor": "1F",
       "smoking": "yes",
-      "hasRecording": "yes",
-      "hasStreaming": "no"
+      "hasRecordingByGame": {
+        "jojo-ls": "unknown",
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "unknown",
+        "gundam-exvs": "unknown"
+      }
     },
     "83b41e611ba5": {
       "source": "user-report",
-      "note": "バイパスレジャーランド藤江本館 ラスサバ3台・イニブ9台・2F・喫煙所あり（Issue #130）。ピン位置修正（ピンが北にズレ → Googleマップ実位置に補正）。",
-      "updatedAt": "2026-06-19",
+      "note": "バイパスレジャーランド藤江本館 ラスサバ3台・イニブ9台・2F・喫煙所あり（Issue #130）。ピン位置修正（ピンが北にズレ → Googleマップ実位置に補正）。v2.3.5: 配信台/録画台をタイトル別化。店舗単位「なし」報告は片タイトルのみ確認の可能性があるため両タイトル不明に（再報告待ち）。",
+      "updatedAt": "2026-06-23",
       "lat": 36.5839552,
       "lng": 136.6215528,
       "machineCounts": {
@@ -313,8 +360,14 @@
       },
       "floor": "２F",
       "smoking": "yes",
-      "hasRecording": "no",
-      "hasStreaming": "no"
+      "hasRecordingByGame": {
+        "jojo-ls": "unknown",
+        "gundam-exvs": "unknown"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "unknown",
+        "gundam-exvs": "unknown"
+      }
     },
     "8fa39515bde4": {
       "source": "admin",
@@ -402,16 +455,22 @@
     },
     "d3d5ea015d5f": {
       "source": "user-report",
-      "note": "ユーズランド高岡 ラスサバ2台・イニブ13台・2F・録画台なし・配信台なし（Issue #135）。",
-      "updatedAt": "2026-06-19",
+      "note": "ユーズランド高岡 ラスサバ2台・イニブ13台・2F（Issue #135）。v2.3.5: 配信台/録画台をタイトル別化。店舗単位「なし」報告は片タイトルのみ確認の可能性があるため両タイトル不明に（再報告待ち）。",
+      "updatedAt": "2026-06-23",
       "machineCounts": {
         "jojo-ls": 2,
         "gundam-exvs": 13
       },
       "businessHours": "10:00~21:00",
       "floor": "２F",
-      "hasRecording": "no",
-      "hasStreaming": "no"
+      "hasRecordingByGame": {
+        "jojo-ls": "unknown",
+        "gundam-exvs": "unknown"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "unknown",
+        "gundam-exvs": "unknown"
+      }
     },
     "e63f5f03c5b3": {
       "source": "admin",
@@ -455,12 +514,17 @@
     },
     "3614aed15784": {
       "source": "user-report",
-      "note": "コーハツ イニブ5台・録画台あり（Issue #145）。SNS未記入のため未確認（みんなの報告）扱い。",
-      "updatedAt": "2026-06-22",
+      "note": "コーハツ イニブ5台・録画台あり（Issue #145）。SNS未記入のため未確認（みんなの報告）扱い。v2.3.5: 配信台/録画台をタイトル別化（単一タイトル＝イニブに割当）。配信は未報告のため不明。",
+      "updatedAt": "2026-06-23",
       "machineCounts": {
         "gundam-exvs": 5
       },
-      "hasRecording": "yes"
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "unknown"
+      }
     }
   }
 }
