@@ -33,7 +33,8 @@ export function FilterBar({ activeFilter, onFilterChange }: FilterBarProps) {
   const [indicator, setIndicator] = useState({ left: 0, width: 0 })
   const [mounted, setMounted] = useState(false)
   const [prevFilter, setPrevFilter] = useState<FilterOption>(activeFilter)
-  const [isTransitioning, setIsTransitioning] = useState(false)
+  // 旧フィルターが追いつくまでの 280ms が遷移中。state を持たず派生値で表現する
+  const isTransitioning = mounted && activeFilter !== prevFilter
 
   const updateIndicator = useCallback(() => {
     const container = containerRef.current
@@ -55,14 +56,10 @@ export function FilterBar({ activeFilter, onFilterChange }: FilterBarProps) {
     }
   }, [activeFilter, updateIndicator, mounted])
 
-  // Crossfade: track previous filter for outgoing layer
+  // Crossfade: 遷移開始から 280ms 後に旧フィルターを追従させる（isTransitioning は派生値）
   useEffect(() => {
     if (activeFilter !== prevFilter && mounted) {
-      setIsTransitioning(true)
-      const timer = setTimeout(() => {
-        setPrevFilter(activeFilter)
-        setIsTransitioning(false)
-      }, 280)
+      const timer = setTimeout(() => setPrevFilter(activeFilter), 280)
       return () => clearTimeout(timer)
     }
   }, [activeFilter, prevFilter, mounted])

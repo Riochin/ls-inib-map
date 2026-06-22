@@ -140,9 +140,13 @@ export function useStoreClusterer({ stores, onMarkerClick }: UseStoreClustererPa
   // 店舗ID→クリックリスナーのハンドル。マーカー破棄時に解放してリークを防ぐ
   const listenersRef = useRef<Map<string, google.maps.MapsEventListener>>(new Map())
 
-  // クリックハンドラは ref 経由で参照し、ハンドラ差し替えでマーカーを再生成しない
+  // クリックハンドラは ref 経由で参照し、ハンドラ差し替えでマーカーを再生成しない。
+  // ref 書き込みはレンダー中ではなく effect 内で行う（current は非同期のクリック
+  // コールバックでのみ読まれるため commit 後更新で十分・react-hooks/refs 準拠）
   const onMarkerClickRef = useRef(onMarkerClick)
-  onMarkerClickRef.current = onMarkerClick
+  useEffect(() => {
+    onMarkerClickRef.current = onMarkerClick
+  })
 
   // クラスタラの初期化とアンマウント時のクリーンアップ（renderer に AdvancedMarkerElement を使うため marker ライブラリ必須）
   useEffect(() => {

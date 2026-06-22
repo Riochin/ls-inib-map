@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import type { AddressFilter, AddressIndex } from '@/types/store'
 import { EMPTY_ADDRESS_FILTER } from '@/types/store'
 
@@ -14,11 +14,8 @@ interface AddressFilterModalProps {
 const PREFECTURE_ORDER = ['東京都', '神奈川県', '埼玉県', '千葉県']
 
 export function AddressFilterModal({ index, activeFilter, onApply, onClose }: AddressFilterModalProps) {
+  // モーダルは開くたびに新規マウントされるため、初期値で activeFilter を取り込めば十分
   const [draft, setDraft] = useState<AddressFilter>(activeFilter)
-
-  useEffect(() => {
-    setDraft(activeFilter)
-  }, [activeFilter])
 
   const prefectures = useMemo(() => {
     const known = PREFECTURE_ORDER.filter((p) => index.prefectureCities.has(p))

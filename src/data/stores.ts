@@ -3,6 +3,7 @@ import type { StoresFile, StoresMeta } from '@/types/stores-file'
 import type { OverridesFile } from '@/types/overrides'
 import { applyOverrides } from '@/lib/apply-overrides'
 import storesFile from './stores.json'
+import scrapeAttributesFile from './scrape-attributes.json'
 import overridesFile from './overrides.json'
 
 /**
@@ -17,8 +18,11 @@ import overridesFile from './overrides.json'
  */
 const data = storesFile as StoresFile
 
-/** 設置店舗一覧（公式データ＋手動オーバーライド適用済み・read-only） */
-export const stores: Store[] = applyOverrides(data.stores, overridesFile as OverridesFile)
+/** 設置店舗一覧（公式データ＋auto-scrape＋手動オーバーライド適用済み・read-only） */
+export const stores: Store[] = applyOverrides(
+  applyOverrides(data.stores, scrapeAttributesFile as OverridesFile),
+  overridesFile as OverridesFile,
+)
 
 /** データメタ情報（最終更新日時・出典） */
 export const storesMeta: StoresMeta = {

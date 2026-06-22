@@ -21,6 +21,7 @@ export type StoreAttributeKey =
   | 'payments'
   | 'hasRecording'
   | 'hasStreaming'
+  | 'officialUrl'
 
 /** 設置店舗 */
 export interface Store {
@@ -81,6 +82,8 @@ export interface Store {
   hasRecording?: TernaryState
   /** 配信台の有無（任意） */
   hasStreaming?: TernaryState
+  /** 公式店舗ページURL（例: "https://location.taito.co.jp/locs/stores/1234/"・任意） */
+  officialUrl?: string
   /**
    * 属性別の出どころ（任意）。`countSources` と同一 `Partial<Record<...>>` パターン。
    * キー無し＝provenance 不明（未登録）。`applyOverrides` でのみ書き込まれる。

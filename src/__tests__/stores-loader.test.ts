@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { stores, storesMeta } from '@/data/stores'
 import storesJson from '@/data/stores.json'
+import scrapeAttributesJson from '@/data/scrape-attributes.json'
 import overridesJson from '@/data/overrides.json'
 import { applyOverrides } from '@/lib/apply-overrides'
 import type { Store } from '@/types/store'
@@ -21,9 +22,10 @@ describe('stores ローダ（生成 JSON 読込）', () => {
     expect(storesMeta.source.gundam).toMatch(/^https:\/\//)
   })
 
-  it('ローダは生成 JSON に手動オーバーライドを適用して再公開する', () => {
+  it('ローダは生成 JSON に二層オーバーライド（auto-scrape→手動）を適用して再公開する', () => {
+    // layer 1: auto-scrape（scrape-attributes.json）→ layer 2: 手動（overrides.json・常に最優先）
     const expected = applyOverrides(
-      storesJson.stores as Store[],
+      applyOverrides(storesJson.stores as Store[], scrapeAttributesJson as OverridesFile),
       overridesJson as OverridesFile,
     )
     expect(stores).toEqual(expected)

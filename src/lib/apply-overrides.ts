@@ -10,6 +10,7 @@ const ATTRIBUTE_KEYS: StoreAttributeKey[] = [
   'payments',
   'hasRecording',
   'hasStreaming',
+  'officialUrl',
 ]
 
 /**

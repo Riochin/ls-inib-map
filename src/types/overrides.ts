@@ -36,6 +36,8 @@ export interface OverrideEntry {
   hasRecording?: TernaryState
   /** 配信台の有無（任意） */
   hasStreaming?: TernaryState
+  /** 公式店舗ページURL（任意） */
+  officialUrl?: string
 }
 
 /** `src/data/overrides.json` のスキーマ。店舗IDをキーに {@link OverrideEntry} を持つ。 */

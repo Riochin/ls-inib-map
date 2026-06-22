@@ -26,8 +26,11 @@ export function FeedbackForm({ onClose }: FeedbackFormProps) {
   const [errorMsg, setErrorMsg] = useState('')
   const [cooldownMin, setCooldownMin] = useState(0)
 
+  // localStorage はクライアント専用。ハイドレーション後に読むことで SSR(=0) との
+  // ミスマッチを防ぐ。lazy 初期化にすると初回レンダーが不一致になるため effect が正解。
   useEffect(() => {
     const { limited, minutesUntilFree } = checkClientRateLimit()
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- 上記理由によりハイドレーション後の同期が必要
     if (limited) setCooldownMin(minutesUntilFree)
   }, [])
 
