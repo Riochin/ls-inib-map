@@ -9,15 +9,16 @@ describe('OverrideEntry型拡張フィールド', () => {
       floor: '2F',
       smoking: 'no',
       payments: ['Suica', 'PayPay'],
-      hasRecording: 'yes',
-      hasStreaming: 'unknown',
+      hasRecordingByGame: { 'jojo-ls': 'yes', 'gundam-exvs': 'no' },
+      hasStreamingByGame: { 'gundam-exvs': 'unknown' },
     }
     expect(entry.businessHours).toBe('10:00-23:00')
     expect(entry.floor).toBe('2F')
     expect(entry.smoking).toBe('no')
     expect(entry.payments).toEqual(['Suica', 'PayPay'])
-    expect(entry.hasRecording).toBe('yes')
-    expect(entry.hasStreaming).toBe('unknown')
+    expect(entry.hasRecordingByGame?.['jojo-ls']).toBe('yes')
+    expect(entry.hasRecordingByGame?.['gundam-exvs']).toBe('no')
+    expect(entry.hasStreamingByGame?.['gundam-exvs']).toBe('unknown')
   })
 
   it('新属性フィールドはすべて任意（既存フィールドのみでも OverrideEntry 型に適合する）', () => {
@@ -29,8 +30,8 @@ describe('OverrideEntry型拡張フィールド', () => {
     expect(entry.floor).toBeUndefined()
     expect(entry.smoking).toBeUndefined()
     expect(entry.payments).toBeUndefined()
-    expect(entry.hasRecording).toBeUndefined()
-    expect(entry.hasStreaming).toBeUndefined()
+    expect(entry.hasRecordingByGame).toBeUndefined()
+    expect(entry.hasStreamingByGame).toBeUndefined()
   })
 
   it('既存フィールドとの共存', () => {

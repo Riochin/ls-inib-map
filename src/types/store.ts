@@ -19,8 +19,8 @@ export type StoreAttributeKey =
   | 'floor'
   | 'smoking'
   | 'payments'
-  | 'hasRecording'
-  | 'hasStreaming'
+  | 'hasRecordingByGame'
+  | 'hasStreamingByGame'
   | 'officialUrl'
 
 /** 設置店舗 */
@@ -78,10 +78,14 @@ export interface Store {
   smoking?: TernaryState
   /** 決済手段リスト（例: ["Suica", "PayPay"]・任意） */
   payments?: string[]
-  /** 録画台の有無（任意） */
-  hasRecording?: TernaryState
-  /** 配信台の有無（任意） */
-  hasStreaming?: TernaryState
+  /**
+   * ゲーム別 録画台の有無（任意。`machineCounts` と同じ持ち方）。配信台/録画台は
+   * タイトルごとの筐体に紐づく設備のため、店舗単位ではなくタイトル別に保持する
+   * （例 `{ 'jojo-ls': 'no', 'gundam-exvs': 'yes' }`）。
+   */
+  hasRecordingByGame?: Partial<Record<GameTitle, TernaryState>>
+  /** ゲーム別 配信台の有無（任意。{@link Store.hasRecordingByGame} と同パターン） */
+  hasStreamingByGame?: Partial<Record<GameTitle, TernaryState>>
   /** 公式店舗ページURL（例: "https://location.taito.co.jp/locs/stores/1234/"・任意） */
   officialUrl?: string
   /**

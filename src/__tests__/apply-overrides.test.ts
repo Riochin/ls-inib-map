@@ -166,22 +166,33 @@ describe('applyOverrides - 新属性（attributeSources）', () => {
     expect(store.payments).toEqual(['Suica', 'PayPay'])
   })
 
-  it('hasRecording を適用する', () => {
+  it('hasRecordingByGame をゲーム別に適用し、出どころを記録する', () => {
     const stores = [makeStore()]
     const file: OverridesFile = {
-      overrides: { abc123: { source: 'admin', hasRecording: 'yes' } },
+      overrides: { abc123: { source: 'admin', hasRecordingByGame: { 'gundam-exvs': 'yes' } } },
     }
     const [store] = applyOverrides(stores, file)
-    expect(store.hasRecording).toBe('yes')
+    expect(store.hasRecordingByGame).toEqual({ 'gundam-exvs': 'yes' })
+    expect(store.attributeSources?.hasRecordingByGame).toBe('admin')
   })
 
-  it('hasStreaming を適用する', () => {
+  it('hasStreamingByGame をゲーム別に適用し、出どころを記録する', () => {
     const stores = [makeStore()]
     const file: OverridesFile = {
-      overrides: { abc123: { source: 'admin', hasStreaming: 'unknown' } },
+      overrides: { abc123: { source: 'user-report', hasStreamingByGame: { 'jojo-ls': 'unknown' } } },
     }
     const [store] = applyOverrides(stores, file)
-    expect(store.hasStreaming).toBe('unknown')
+    expect(store.hasStreamingByGame).toEqual({ 'jojo-ls': 'unknown' })
+    expect(store.attributeSources?.hasStreamingByGame).toBe('user-report')
+  })
+
+  it('hasRecordingByGame は既存ゲーム値を保持しつつ指定ゲームのみ上書きする', () => {
+    const stores = [makeStore({ hasRecordingByGame: { 'jojo-ls': 'no', 'gundam-exvs': 'no' } })]
+    const file: OverridesFile = {
+      overrides: { abc123: { source: 'user-report', hasRecordingByGame: { 'gundam-exvs': 'yes' } } },
+    }
+    const [store] = applyOverrides(stores, file)
+    expect(store.hasRecordingByGame).toEqual({ 'jojo-ls': 'no', 'gundam-exvs': 'yes' })
   })
 
   it('適用した属性の source を attributeSources に記録する', () => {
@@ -199,11 +210,11 @@ describe('applyOverrides - 新属性（attributeSources）', () => {
   it('source=admin を attributeSources に正しく記録する', () => {
     const stores = [makeStore()]
     const file: OverridesFile = {
-      overrides: { abc123: { source: 'admin', smoking: 'yes', hasRecording: 'no' } },
+      overrides: { abc123: { source: 'admin', smoking: 'yes', hasRecordingByGame: { 'jojo-ls': 'no' } } },
     }
     const [store] = applyOverrides(stores, file)
     expect(store.attributeSources?.smoking).toBe('admin')
-    expect(store.attributeSources?.hasRecording).toBe('admin')
+    expect(store.attributeSources?.hasRecordingByGame).toBe('admin')
   })
 
   it('含まれない属性は attributeSources に記録しない', () => {
@@ -226,8 +237,8 @@ describe('applyOverrides - 新属性（attributeSources）', () => {
           floor: '2F',
           smoking: 'no',
           payments: ['Suica'],
-          hasRecording: 'yes',
-          hasStreaming: 'no',
+          hasRecordingByGame: { 'jojo-ls': 'yes' },
+          hasStreamingByGame: { 'gundam-exvs': 'no' },
         },
       },
     }
@@ -236,15 +247,15 @@ describe('applyOverrides - 新属性（attributeSources）', () => {
     expect(store.floor).toBe('2F')
     expect(store.smoking).toBe('no')
     expect(store.payments).toEqual(['Suica'])
-    expect(store.hasRecording).toBe('yes')
-    expect(store.hasStreaming).toBe('no')
+    expect(store.hasRecordingByGame).toEqual({ 'jojo-ls': 'yes' })
+    expect(store.hasStreamingByGame).toEqual({ 'gundam-exvs': 'no' })
     const src = store.attributeSources!
     expect(src.businessHours).toBe('admin')
     expect(src.floor).toBe('admin')
     expect(src.smoking).toBe('admin')
     expect(src.payments).toBe('admin')
-    expect(src.hasRecording).toBe('admin')
-    expect(src.hasStreaming).toBe('admin')
+    expect(src.hasRecordingByGame).toBe('admin')
+    expect(src.hasStreamingByGame).toBe('admin')
   })
 
   it('既存の Store に attributeSources があれば既存値を保持しつつ更新する', () => {

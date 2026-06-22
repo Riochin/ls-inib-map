@@ -32,10 +32,10 @@ export interface OverrideEntry {
   smoking?: TernaryState
   /** 決済手段リスト（任意） */
   payments?: string[]
-  /** 録画台の有無（任意） */
-  hasRecording?: TernaryState
-  /** 配信台の有無（任意） */
-  hasStreaming?: TernaryState
+  /** ゲーム別 録画台の有無（任意。指定したゲームのみ置換する） */
+  hasRecordingByGame?: Partial<Record<GameTitle, TernaryState>>
+  /** ゲーム別 配信台の有無（任意。指定したゲームのみ置換する） */
+  hasStreamingByGame?: Partial<Record<GameTitle, TernaryState>>
   /** 公式店舗ページURL（任意） */
   officialUrl?: string
 }
