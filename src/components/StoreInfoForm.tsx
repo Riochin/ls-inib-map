@@ -87,16 +87,10 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
   const hasJojo = store.games.includes('jojo-ls')
   const hasGundam = store.games.includes('gundam-exvs')
 
-  const [jojoLs, setJojoLs] = useState(
-    store.machineCounts?.['jojo-ls'] !== undefined
-      ? String(store.machineCounts['jojo-ls'])
-      : '',
-  )
-  const [gundamExvs, setGundamExvs] = useState(
-    store.machineCounts?.['gundam-exvs'] !== undefined
-      ? String(store.machineCounts['gundam-exvs'])
-      : '',
-  )
+  // 台数は既存値を初期入力しない（空欄）。現在値はプレースホルダーでヒント表示する。
+  // 事前入力すると、提供を意図しないタイトルの台数までそのまま確定されてしまうため（Issue #171）。
+  const [jojoLs, setJojoLs] = useState('')
+  const [gundamExvs, setGundamExvs] = useState('')
   const [businessHours, setBusinessHours] = useState(store.businessHours ?? '')
   const [floor, setFloor] = useState(store.floor ?? '')
   const [smoking, setSmoking] = useState<TernaryState | ''>(store.smoking ?? '')
@@ -283,7 +277,10 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
               )}
 
               {/* 設置台数 */}
-              <p className="text-xs font-semibold text-gray-600 mb-2">設置台数</p>
+              <p className="text-xs font-semibold text-gray-600 mb-1">設置台数</p>
+              <p className="text-[11px] text-gray-400 mb-2">
+                変更する台数だけ入力してください。空欄のままなら現在の台数は変わりません。
+              </p>
               <div className="grid grid-cols-2 gap-3 mb-4">
                 {hasJojo && (
                   <label className="block">
@@ -296,7 +293,11 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
                       max={99}
                       value={jojoLs}
                       onChange={(e) => { setJojoLs(e.target.value); mark() }}
-                      placeholder="台数"
+                      placeholder={
+                        store.machineCounts?.['jojo-ls'] !== undefined
+                          ? `現在 ${store.machineCounts['jojo-ls']}台`
+                          : '台数'
+                      }
                       className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
                     />
                   </label>
@@ -312,7 +313,11 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
                       max={99}
                       value={gundamExvs}
                       onChange={(e) => { setGundamExvs(e.target.value); mark() }}
-                      placeholder="台数"
+                      placeholder={
+                        store.machineCounts?.['gundam-exvs'] !== undefined
+                          ? `現在 ${store.machineCounts['gundam-exvs']}台`
+                          : '台数'
+                      }
                       className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
                     />
                   </label>
