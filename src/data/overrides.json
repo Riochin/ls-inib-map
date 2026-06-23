@@ -96,7 +96,7 @@
     },
     "331d0f612a68": {
       "source": "admin",
-      "note": "namco巣鴨よ永遠に 閉店・移設（Issue #109）。ls_boushi（メンション不可）。ラスサバ24台・フロア地下2階（両筐体）・禁煙・録画台あり・配信台あり。stores.json 側でも closed/delisted 設定済み。v2.3.5: 配信台/録画台をタイトル別化（単一タイトル＝ラスサバに割当）。",
+      "note": "namco巣鴨よ永遠に 閉店・移設（Issue #109）。ls_boushi（メンション不可）。ラスサバ24台・フロア地下2階（両筐体）・禁煙・録画台あり・配信台あり。stores.json 側でも closed/delisted 設定済み。v2.3.5: 配信台/録画台をタイトル別化（単一タイトル＝ラスサバに割当）。Issue #163で再報告（両タイトル録画/配信あり）受領＝閉店・移設店につき既存維持。",
       "updatedAt": "2026-06-23",
       "closed": true,
       "machineCounts": {
@@ -121,7 +121,7 @@
     },
     "3ec1f3534a2a": {
       "source": "admin",
-      "note": "福井レジャーランド板垣 ピン位置修正（Issue #81）。住所ジオコードが南へズレていたのを店名ROOFTOP（下馬3丁目・交差点付近）へ補正。@kiyo_general。ラスサバ2台・イニブ18台・喫煙所あり（Issue #123/#134）。v2.3.5: 配信台/録画台をタイトル別化。Issue #123(配信あり)/#134(配信なし)で矛盾しWeb確認も取れず、録画/配信とも両タイトル不明として再報告待ち。",
+      "note": "福井レジャーランド板垣 ピン位置修正（Issue #81）。住所ジオコードが南へズレていたのを店名ROOFTOP（下馬3丁目・交差点付近）へ補正。@kiyo_general。ラスサバ2台・イニブ18台・喫煙所あり（Issue #123/#134）。v2.3.5: 配信台/録画台をタイトル別化。Issue #166で再報告（録画ラスサバなし/イニブ不明・配信ラスサバなし/イニブ不明、SNS未記入＝未確認）。ラスサバ側を反映、イニブ側は不明のまま。",
       "updatedAt": "2026-06-23",
       "lat": 36.0422008,
       "lng": 136.2336664,
@@ -131,11 +131,11 @@
       },
       "smoking": "yes",
       "hasRecordingByGame": {
-        "jojo-ls": "unknown",
+        "jojo-ls": "no",
         "gundam-exvs": "unknown"
       },
       "hasStreamingByGame": {
-        "jojo-ls": "unknown",
+        "jojo-ls": "no",
         "gundam-exvs": "unknown"
       }
     },
@@ -288,10 +288,23 @@
     },
     "6701f6561319": {
       "source": "admin",
-      "note": "SBGさん",
-      "updatedAt": "2026-06-09",
+      "note": "GiGO 相模大野 SBGさん（ラスサバ3台）。Issue #153 @AzukiBAR1800（お礼可）: イニブ11台・営業10:00〜23:00・2F・禁煙・決済(交通系IC/d払い/PayPay/楽天ペイ/nanaco)・録画台なし・配信台なし。報告者=ラスサバ勢のため録画/配信はラスサバ側に割当、イニブ側は不明。",
+      "updatedAt": "2026-06-23",
       "machineCounts": {
-        "jojo-ls": 3
+        "jojo-ls": 3,
+        "gundam-exvs": 11
+      },
+      "businessHours": "10:00〜23:00",
+      "floor": "2F",
+      "smoking": "no",
+      "payments": ["交通系IC（Suica/PASMOなど）", "d払い", "PayPay", "楽天ペイ", "nanaco"],
+      "hasRecordingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "unknown"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "unknown"
       }
     },
     "74a661a26350": {
@@ -523,6 +536,144 @@
         "gundam-exvs": "yes"
       },
       "hasStreamingByGame": {
+        "gundam-exvs": "unknown"
+      }
+    },
+    "55d17e4a6c8a": {
+      "source": "admin",
+      "note": "ラウンドワン町田 Issue #151 @AzukiBAR1800（お礼可）。ラスサバ4台・イニブ18台・営業10:00〜0:59（アミューズメントコーナー）・2F・喫煙所あり・録画台あり・配信台なし。報告者=ラスサバ勢のため録画/配信はラスサバ側に割当。録画はRound1のGR-HD録画機（EXVS.2IB設置店）＝イニブ側も録画ありと判断、配信はイニブ不明。",
+      "updatedAt": "2026-06-23",
+      "machineCounts": {
+        "jojo-ls": 4,
+        "gundam-exvs": 18
+      },
+      "businessHours": "10:00〜0:59（アミューズメントコーナー）",
+      "floor": "2F",
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "jojo-ls": "yes",
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "unknown"
+      }
+    },
+    "8835e8a89d0c": {
+      "source": "admin",
+      "note": "タイトーステーション町田 Issue #152 @AzukiBAR1800（お礼可）。ラスサバ2台・イニブ13台・営業10:00〜24:00・2F・喫煙所あり・録画台なし・配信台なし。報告者=ラスサバ勢のため録画/配信はラスサバ側に割当、イニブ側は不明。",
+      "updatedAt": "2026-06-23",
+      "machineCounts": {
+        "jojo-ls": 2,
+        "gundam-exvs": 13
+      },
+      "businessHours": "10:00〜24:00",
+      "floor": "2F",
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "unknown"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "unknown"
+      }
+    },
+    "ae99c03b1679": {
+      "source": "admin",
+      "note": "神奈川レジャーランド厚木 Issue #154 @AzukiBAR1800（お礼可）。ラスサバ3台・イニブ14台・営業9:00〜24:00・2F・喫煙所あり・決済(PayPay/交通系IC)・録画台不明・配信台なし。報告者=ラスサバ勢のため録画/配信はラスサバ側に割当、イニブ側は不明。",
+      "updatedAt": "2026-06-23",
+      "machineCounts": {
+        "jojo-ls": 3,
+        "gundam-exvs": 14
+      },
+      "businessHours": "9:00〜24:00",
+      "floor": "2F",
+      "smoking": "yes",
+      "payments": ["PayPay", "交通系IC（Suica/PASMOなど）"],
+      "hasRecordingByGame": {
+        "jojo-ls": "unknown",
+        "gundam-exvs": "unknown"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "unknown"
+      }
+    },
+    "ba2bd10a7c7d": {
+      "source": "admin",
+      "note": "タイトーステーション横浜西口五番街 Issue #155 @AzukiBAR1800（お礼可）。ラスサバ4台・イニブ19台・営業09:00〜23:45・5F・喫煙所あり・録画台なし・配信台なし。報告者=ラスサバ勢のため録画/配信はラスサバ側に割当、イニブ側は不明。",
+      "updatedAt": "2026-06-23",
+      "machineCounts": {
+        "jojo-ls": 4,
+        "gundam-exvs": 19
+      },
+      "businessHours": "09:00〜23:45",
+      "floor": "5F",
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "unknown"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "unknown"
+      }
+    },
+    "21bcd686f1b2": {
+      "source": "admin",
+      "note": "ラウンドワン横浜駅西口 Issue #156 @AzukiBAR1800（お礼可）。ラスサバ4台・イニブ20台・3F・喫煙所あり・録画台なし・配信台なし。報告者=ラスサバ勢のため録画/配信はラスサバ側に割当、イニブ側は不明。",
+      "updatedAt": "2026-06-23",
+      "machineCounts": {
+        "jojo-ls": 4,
+        "gundam-exvs": 20
+      },
+      "floor": "3F",
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "unknown"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "unknown"
+      }
+    },
+    "9e447655f838": {
+      "source": "admin",
+      "note": "シルクハット川崎ダイス Issue #157 @AzukiBAR1800（お礼可）。ラスサバ4台・イニブ26台・地下1F・録画台不明・配信台なし。報告者=ラスサバ勢のため録画/配信はラスサバ側に割当、イニブ側は不明。",
+      "updatedAt": "2026-06-23",
+      "machineCounts": {
+        "jojo-ls": 4,
+        "gundam-exvs": 26
+      },
+      "floor": "地下1F",
+      "hasRecordingByGame": {
+        "jojo-ls": "unknown",
+        "gundam-exvs": "unknown"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "unknown"
+      }
+    },
+    "8ae2c042f786": {
+      "source": "admin",
+      "note": "Amusement＆Game MAGHREB Issue #158 @AzukiBAR1800（お礼可）。ラスサバ1台・イニブ9台・営業10:00〜24:00・1F・喫煙所あり・録画台なし・配信台なし。報告者=ラスサバ勢のため録画/配信はラスサバ側に割当、イニブ側は不明。",
+      "updatedAt": "2026-06-23",
+      "machineCounts": {
+        "jojo-ls": 1,
+        "gundam-exvs": 9
+      },
+      "businessHours": "10:00〜24:00",
+      "floor": "1F",
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "unknown"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
         "gundam-exvs": "unknown"
       }
     }
