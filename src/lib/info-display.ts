@@ -17,11 +17,16 @@ const TERNARY_LABELS: Record<TernaryState, string> = {
  * `unconfirmed`（出どころが admin 以外）かつ値が `yes`/`no` のセグメントにのみ「（未確認）」を
  * 付ける（`unknown` は不確実さを値自体が示すため付けない）。
  */
-export function formatByGameTernary(
-  games: readonly GameTitle[],
-  byGame: Partial<Record<GameTitle, TernaryState>> | undefined,
-  unconfirmed: boolean,
-): string | undefined {
+export function formatByGameTernary({
+  games,
+  byGame,
+  unconfirmed,
+}: {
+  games: readonly GameTitle[]
+  byGame: Partial<Record<GameTitle, TernaryState>> | undefined
+  /** 出どころが admin 以外（未確認）か。yes/no のセグメントに「（未確認）」を付けるかの判定 */
+  unconfirmed: boolean
+}): string | undefined {
   if (!byGame) return undefined
   const multi = games.length > 1
   const segments: string[] = []
@@ -49,12 +54,19 @@ export function formatByGameTernary(
  * 出どころが admin なら確定として無印で「2F」と出す。`soft` は未確認かどうかで、呼び出し側で
  * 文字色（amber）の出し分けに使う。
  */
-export function formatFloorByGame(
-  games: readonly GameTitle[],
-  floorByGame: Partial<Record<GameTitle, string>> | undefined,
-  storeWideFloor: string | undefined,
-  unconfirmed: boolean,
-): { value: string | undefined; soft: boolean } {
+export function formatFloorByGame({
+  games,
+  floorByGame,
+  storeWideFloor,
+  unconfirmed,
+}: {
+  games: readonly GameTitle[]
+  floorByGame: Partial<Record<GameTitle, string>> | undefined
+  /** 店舗単位の共通フロア（floorByGame に無いゲームのフォールバック先） */
+  storeWideFloor: string | undefined
+  /** 出どころが admin 以外（未確認）か。「（未確認）」を付けるかの判定 */
+  unconfirmed: boolean
+}): { value: string | undefined; soft: boolean } {
   const multi = games.length > 1
   const resolved: { game: GameTitle; value: string }[] = []
   for (const game of games) {

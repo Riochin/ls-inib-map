@@ -106,18 +106,23 @@ export function StoreDetailPanel({ store, onOpenInfoForm, onClose }: StoreDetail
   }
 
   const smokingValue = store.smoking !== undefined ? TERNARY_LABELS[store.smoking] : undefined
-  const recordingValue = formatByGameTernary(
-    store.games,
-    store.hasRecordingByGame,
-    unconfirmed('hasRecordingByGame'),
-  )
-  const streamingValue = formatByGameTernary(
-    store.games,
-    store.hasStreamingByGame,
-    unconfirmed('hasStreamingByGame'),
-  )
+  const recordingValue = formatByGameTernary({
+    games: store.games,
+    byGame: store.hasRecordingByGame,
+    unconfirmed: unconfirmed('hasRecordingByGame'),
+  })
+  const streamingValue = formatByGameTernary({
+    games: store.games,
+    byGame: store.hasStreamingByGame,
+    unconfirmed: unconfirmed('hasStreamingByGame'),
+  })
   const paymentsValue = store.payments?.length ? store.payments.join('、') : undefined
-  const floor = formatFloorByGame(store.games, store.floorByGame, store.floor, unconfirmed('floor'))
+  const floor = formatFloorByGame({
+    games: store.games,
+    floorByGame: store.floorByGame,
+    storeWideFloor: store.floor,
+    unconfirmed: unconfirmed('floor'),
+  })
 
   return (
     <div className="p-4 text-sm text-gray-800">
