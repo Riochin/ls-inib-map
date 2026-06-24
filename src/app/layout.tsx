@@ -36,6 +36,17 @@ export const metadata: Metadata = {
   verification: {
     google: 'thDPYfsByvt8fIWF72-54d59tsSdBF-oPTsN41Yp5Vs',
   },
+  // iOS でホーム画面から起動したときの挙動。フルスクリーン化し、
+  // ステータスバーは明色（白背景）、アプリ名はホーム画面のラベルに合わせる。
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'ラストサバイニブ',
+  },
+  // 数字の羅列（台数など）を電話番号として自動リンク化されるのを防ぐ。
+  formatDetection: {
+    telephone: false,
+  },
   openGraph: {
     title: SITE_NAME,
     description: DESCRIPTION,
@@ -73,6 +84,9 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
+  // モバイルブラウザのアドレスバー色。通常表示（非PWA）でも効く。
+  // マニフェストの theme_color と揃え、ブランドの紫に。
+  themeColor: '#7B2FBE',
 }
 
 export default function RootLayout({
