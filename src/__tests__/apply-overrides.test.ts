@@ -148,6 +148,27 @@ describe('applyOverrides - 新属性（attributeSources）', () => {
     expect(store.floor).toBe('2F')
   })
 
+  it('floorByGame をゲーム別に適用し、出どころを floor に記録する', () => {
+    const stores = [makeStore()]
+    const file: OverridesFile = {
+      overrides: {
+        abc123: { source: 'admin', floorByGame: { 'jojo-ls': '2F', 'gundam-exvs': '3F' } },
+      },
+    }
+    const [store] = applyOverrides(stores, file)
+    expect(store.floorByGame).toEqual({ 'jojo-ls': '2F', 'gundam-exvs': '3F' })
+    expect(store.attributeSources?.floor).toBe('admin')
+  })
+
+  it('floorByGame は既存ゲーム値を保持しつつ指定ゲームのみ上書きする', () => {
+    const stores = [makeStore({ floorByGame: { 'jojo-ls': '1F', 'gundam-exvs': '1F' } })]
+    const file: OverridesFile = {
+      overrides: { abc123: { source: 'user-report', floorByGame: { 'gundam-exvs': '4F' } } },
+    }
+    const [store] = applyOverrides(stores, file)
+    expect(store.floorByGame).toEqual({ 'jojo-ls': '1F', 'gundam-exvs': '4F' })
+  })
+
   it('smoking を適用する', () => {
     const stores = [makeStore()]
     const file: OverridesFile = {
@@ -193,6 +214,56 @@ describe('applyOverrides - 新属性（attributeSources）', () => {
     }
     const [store] = applyOverrides(stores, file)
     expect(store.hasRecordingByGame).toEqual({ 'jojo-ls': 'no', 'gundam-exvs': 'yes' })
+  })
+
+  it('attributeSources でフィールド個別に出どころを上書きできる（既定は entry.source）', () => {
+    const stores = [makeStore()]
+    const file: OverridesFile = {
+      overrides: {
+        abc123: {
+          source: 'user-report',
+          businessHours: '10:00-23:00',
+          floor: '2F',
+          // フロアだけ運営確認済み。営業時間は既定（user-report）のまま。
+          attributeSources: { floor: 'admin' },
+        },
+      },
+    }
+    const [store] = applyOverrides(stores, file)
+    expect(store.attributeSources?.floor).toBe('admin')
+    expect(store.attributeSources?.businessHours).toBe('user-report')
+  })
+
+  it('countSources でゲーム別台数の出どころを個別に上書きできる', () => {
+    const stores = [makeStore()]
+    const file: OverridesFile = {
+      overrides: {
+        abc123: {
+          source: 'user-report',
+          machineCounts: { 'jojo-ls': 3, 'gundam-exvs': 8 },
+          // イニブ台数だけ運営確認済み。ラスサバは既定（user-report）。
+          countSources: { 'gundam-exvs': 'admin' },
+        },
+      },
+    }
+    const [store] = applyOverrides(stores, file)
+    expect(store.countSources?.['gundam-exvs']).toBe('admin')
+    expect(store.countSources?.['jojo-ls']).toBe('user-report')
+  })
+
+  it('floorByGame の出どころも attributeSources.floor で上書きできる', () => {
+    const stores = [makeStore()]
+    const file: OverridesFile = {
+      overrides: {
+        abc123: {
+          source: 'user-report',
+          floorByGame: { 'jojo-ls': '2F', 'gundam-exvs': '3F' },
+          attributeSources: { floor: 'admin' },
+        },
+      },
+    }
+    const [store] = applyOverrides(stores, file)
+    expect(store.attributeSources?.floor).toBe('admin')
   })
 
   it('適用した属性の source を attributeSources に記録する', () => {

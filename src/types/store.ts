@@ -72,8 +72,15 @@ export interface Store {
   infoUpdatedAt?: string
   /** 営業時間（例: "10:00-23:00"・任意） */
   businessHours?: string
-  /** フロア（例: "2F"・任意） */
+  /** フロア（例: "2F"・任意）。店舗単位の共通フロア。ゲーム別は {@link Store.floorByGame}。 */
   floor?: string
+  /**
+   * ゲーム別フロア（任意。`machineCounts` と同じ持ち方）。ラスサバ/イニブが別フロアに
+   * 設置される店があるため、タイトルごとに保持する（例 `{ 'jojo-ls': '2F', 'gundam-exvs': '3F' }`）。
+   * キー無しのゲームは {@link Store.floor}（店舗単位）へフォールバックする。表示側は
+   * フォールバックで埋めた区間を「（未確認）」扱いにする（フロア別に確認したわけではないため）。
+   */
+  floorByGame?: Partial<Record<GameTitle, string>>
   /** 喫煙所の有無（任意） */
   smoking?: TernaryState
   /** 決済手段リスト（例: ["Suica", "PayPay"]・任意） */

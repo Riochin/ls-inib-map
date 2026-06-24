@@ -3,6 +3,7 @@ import {
   buildCountLabel,
   formatLastUpdated,
   formatByGameTernary,
+  formatFloorByGame,
   DEFAULT_DATA_SOURCE,
 } from '@/lib/info-display'
 import type { GameTitle } from '@/types/store'
@@ -44,35 +45,143 @@ describe('formatLastUpdated', () => {
 
 describe('formatByGameTernary', () => {
   it('複数タイトル店はタイトル別に併記する', () => {
-    const out = formatByGameTernary(BOTH, { 'jojo-ls': 'unknown', 'gundam-exvs': 'yes' }, false)
+    const out = formatByGameTernary({
+      games: BOTH,
+      byGame: { 'jojo-ls': 'unknown', 'gundam-exvs': 'yes' },
+      unconfirmed: false,
+    })
     expect(out).toBe('ラスサバ 不明 ／ イニブ あり')
   })
 
   it('単一タイトル店はタイトル名を省略して値のみ表示する', () => {
-    expect(formatByGameTernary(['gundam-exvs'], { 'gundam-exvs': 'yes' }, false)).toBe('あり')
+    const out = formatByGameTernary({
+      games: ['gundam-exvs'],
+      byGame: { 'gundam-exvs': 'yes' },
+      unconfirmed: false,
+    })
+    expect(out).toBe('あり')
   })
 
   it('値が未設定（undefined）なら undefined を返す（呼び出し側で「未登録」表示）', () => {
-    expect(formatByGameTernary(BOTH, undefined, false)).toBeUndefined()
+    expect(formatByGameTernary({ games: BOTH, byGame: undefined, unconfirmed: false })).toBeUndefined()
   })
 
   it('どのタイトルにも値が無ければ undefined を返す', () => {
-    expect(formatByGameTernary(BOTH, {}, false)).toBeUndefined()
+    expect(formatByGameTernary({ games: BOTH, byGame: {}, unconfirmed: false })).toBeUndefined()
   })
 
-  it('isUserReport のとき yes/no には（未確認）を付ける', () => {
-    const out = formatByGameTernary(BOTH, { 'jojo-ls': 'no', 'gundam-exvs': 'yes' }, true)
+  it('未確認（admin以外）のとき yes/no には（未確認）を付ける', () => {
+    const out = formatByGameTernary({
+      games: BOTH,
+      byGame: { 'jojo-ls': 'no', 'gundam-exvs': 'yes' },
+      unconfirmed: true,
+    })
     expect(out).toBe('ラスサバ なし（未確認） ／ イニブ あり（未確認）')
   })
 
-  it('isUserReport でも unknown には（未確認）を付けない', () => {
-    const out = formatByGameTernary(BOTH, { 'jojo-ls': 'unknown', 'gundam-exvs': 'yes' }, true)
+  it('未確認でも unknown には（未確認）を付けない', () => {
+    const out = formatByGameTernary({
+      games: BOTH,
+      byGame: { 'jojo-ls': 'unknown', 'gundam-exvs': 'yes' },
+      unconfirmed: true,
+    })
     expect(out).toBe('ラスサバ 不明 ／ イニブ あり（未確認）')
   })
 
   it('一部タイトルのみ値があるときは設定済みのタイトルだけ表示する', () => {
-    const out = formatByGameTernary(BOTH, { 'gundam-exvs': 'yes' }, false)
+    const out = formatByGameTernary({ games: BOTH, byGame: { 'gundam-exvs': 'yes' }, unconfirmed: false })
     expect(out).toBe('イニブ あり')
+  })
+})
+
+describe('formatFloorByGame', () => {
+  it('複数タイトル店でゲーム別フロアをタイトル別に併記する', () => {
+    const out = formatFloorByGame({
+      games: BOTH,
+      floorByGame: { 'jojo-ls': '2F', 'gundam-exvs': '3F' },
+      storeWideFloor: undefined,
+      unconfirmed: false,
+    })
+    expect(out).toEqual({ value: 'ラスサバ 2F ／ イニブ 3F', soft: false })
+  })
+
+  it('複数タイトル店で両ゲーム同じ明示フロアなら確定の共通フロアとして1つに集約する', () => {
+    const out = formatFloorByGame({
+      games: BOTH,
+      floorByGame: { 'jojo-ls': '2F', 'gundam-exvs': '2F' },
+      storeWideFloor: undefined,
+      unconfirmed: false,
+    })
+    expect(out).toEqual({ value: '2F', soft: false })
+  })
+
+  it('共通フロアでも未確認（admin以外）なら集約値に（未確認）を付ける', () => {
+    const out = formatFloorByGame({
+      games: BOTH,
+      floorByGame: { 'jojo-ls': '2F', 'gundam-exvs': '2F' },
+      storeWideFloor: undefined,
+      unconfirmed: true,
+    })
+    expect(out).toEqual({ value: '2F（未確認）', soft: true })
+  })
+
+  it('店舗共通フロアのみ（floorByGame 無し）でも確定なら共通フロアとして集約する', () => {
+    const out = formatFloorByGame({ games: BOTH, floorByGame: undefined, storeWideFloor: '2F', unconfirmed: false })
+    expect(out).toEqual({ value: '2F', soft: false })
+  })
+
+  it('店舗共通フロアのみで未確認なら共通フロアに（未確認）を付ける', () => {
+    const out = formatFloorByGame({ games: BOTH, floorByGame: undefined, storeWideFloor: '2F', unconfirmed: true })
+    expect(out).toEqual({ value: '2F（未確認）', soft: true })
+  })
+
+  it('フロアが分かれるとき、確定なら未確認を付けない', () => {
+    const out = formatFloorByGame({
+      games: BOTH,
+      floorByGame: { 'jojo-ls': '5F' },
+      storeWideFloor: '2F',
+      unconfirmed: false,
+    })
+    expect(out).toEqual({ value: 'ラスサバ 5F ／ イニブ 2F', soft: false })
+  })
+
+  it('単一タイトル店も出どころで判定する（確定なら値のみ・タイトル名省略）', () => {
+    const out = formatFloorByGame({
+      games: ['gundam-exvs'],
+      floorByGame: undefined,
+      storeWideFloor: '2F',
+      unconfirmed: false,
+    })
+    expect(out).toEqual({ value: '2F', soft: false })
+  })
+
+  it('単一タイトル店も未確認なら（未確認）を付ける', () => {
+    const out = formatFloorByGame({
+      games: ['gundam-exvs'],
+      floorByGame: { 'gundam-exvs': '2F' },
+      storeWideFloor: undefined,
+      unconfirmed: true,
+    })
+    expect(out).toEqual({ value: '2F（未確認）', soft: true })
+  })
+
+  it('フロアが分かれるとき、未確認ならタイトル別に（未確認）を付ける', () => {
+    const out = formatFloorByGame({
+      games: BOTH,
+      floorByGame: { 'jojo-ls': '2F', 'gundam-exvs': '3F' },
+      storeWideFloor: undefined,
+      unconfirmed: true,
+    })
+    expect(out).toEqual({ value: 'ラスサバ 2F（未確認） ／ イニブ 3F（未確認）', soft: true })
+  })
+
+  it('フロア情報が一つも無ければ value は undefined', () => {
+    expect(
+      formatFloorByGame({ games: BOTH, floorByGame: undefined, storeWideFloor: undefined, unconfirmed: false }),
+    ).toEqual({ value: undefined, soft: false })
+    expect(
+      formatFloorByGame({ games: BOTH, floorByGame: {}, storeWideFloor: '', unconfirmed: false }),
+    ).toEqual({ value: undefined, soft: false })
   })
 })
 

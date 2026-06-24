@@ -1,4 +1,4 @@
-import type { Store, GameTitle, StoreAttributeKey, TernaryState } from '@/types/store'
+import type { Store, GameTitle, StoreAttributeKey, Provenance } from '@/types/store'
 import type { OverridesFile, OverrideEntry } from '@/types/overrides'
 
 const GAME_TITLES: GameTitle[] = ['jojo-ls', 'gundam-exvs']
@@ -13,11 +13,11 @@ const ATTRIBUTE_KEYS: StoreAttributeKey[] = [
   'officialUrl',
 ]
 
-/** ゲーム別の三値レコードを重ねる（指定ゲームのみ置換。machineCounts と同パターン）。 */
-function mergeByGame(
-  current: Partial<Record<GameTitle, TernaryState>> | undefined,
-  override: Partial<Record<GameTitle, TernaryState>>,
-): Partial<Record<GameTitle, TernaryState>> {
+/** ゲーム別レコードを重ねる（指定ゲームのみ置換。machineCounts と同パターン）。 */
+function mergeByGame<T>(
+  current: Partial<Record<GameTitle, T>> | undefined,
+  override: Partial<Record<GameTitle, T>>,
+): Partial<Record<GameTitle, T>> {
   const merged = { ...current }
   for (const game of GAME_TITLES) {
     const value = override[game]
@@ -67,6 +67,11 @@ export function applyOverrides(stores: Store[], file: OverridesFile): Store[] {
 function applyEntry(store: Store, entry: OverrideEntry): Store {
   const next: Store = { ...store }
 
+  // フィールド個別の出どころ（entry.attributeSources / entry.countSources）を優先し、
+  // 無ければエントリ既定の entry.source を使う（1エントリ内で確信度が違う場合に対応）。
+  const attrSource = (key: StoreAttributeKey): Provenance => entry.attributeSources?.[key] ?? entry.source
+  const countSource = (game: GameTitle): Provenance => entry.countSources?.[game] ?? entry.source
+
   if (entry.machineCounts) {
     const machineCounts = { ...store.machineCounts }
     const countSources = { ...store.countSources }
@@ -74,7 +79,7 @@ function applyEntry(store: Store, entry: OverrideEntry): Store {
       const value = entry.machineCounts[game]
       if (typeof value === 'number' && Number.isFinite(value)) {
         machineCounts[game] = value
-        countSources[game] = entry.source
+        countSources[game] = countSource(game)
       }
     }
     next.machineCounts = machineCounts
@@ -101,12 +106,19 @@ function applyEntry(store: Store, entry: OverrideEntry): Store {
   // ゲーム別の録画台/配信台はゲーム単位でマージ（provenance は機能単位で1つ）
   if (entry.hasRecordingByGame) {
     next.hasRecordingByGame = mergeByGame(store.hasRecordingByGame, entry.hasRecordingByGame)
-    attributeSources.hasRecordingByGame = entry.source
+    attributeSources.hasRecordingByGame = attrSource('hasRecordingByGame')
     hasAttributeUpdate = true
   }
   if (entry.hasStreamingByGame) {
     next.hasStreamingByGame = mergeByGame(store.hasStreamingByGame, entry.hasStreamingByGame)
-    attributeSources.hasStreamingByGame = entry.source
+    attributeSources.hasStreamingByGame = attrSource('hasStreamingByGame')
+    hasAttributeUpdate = true
+  }
+
+  // ゲーム別フロアもゲーム単位でマージ（provenance はフロア属性で1つ＝'floor'）
+  if (entry.floorByGame) {
+    next.floorByGame = mergeByGame(store.floorByGame, entry.floorByGame)
+    attributeSources.floor = attrSource('floor')
     hasAttributeUpdate = true
   }
 
@@ -114,7 +126,7 @@ function applyEntry(store: Store, entry: OverrideEntry): Store {
     const value = entry[key]
     if (value !== undefined) {
       ;(next as unknown as Record<string, unknown>)[key] = value
-      attributeSources[key] = entry.source
+      attributeSources[key] = attrSource(key)
       hasAttributeUpdate = true
     }
   }

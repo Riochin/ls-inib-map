@@ -208,6 +208,23 @@ describe('POST /api/report - mode=structured-store', () => {
     expect(sent.body).toContain('10:00-23:00')
   })
 
+  it('floorJojoLs / floorGundamExvs のみ入力で200・フロアが本文に出る', async () => {
+    const res = await POST(req({ ...baseStore, floorJojoLs: '2F', floorGundamExvs: '3F' }))
+    expect(res.status).toBe(200)
+    const [, init] = (fetch as unknown as { mock: { calls: [string, RequestInit][] } }).mock.calls[0]
+    const sent = JSON.parse(init.body as string)
+    expect(sent.body).toContain('フロア（ラスサバ）')
+    expect(sent.body).toContain('フロア（イニブ）')
+  })
+
+  it('フロア両ゲーム同値は1行（フロア）にまとまる', async () => {
+    const res = await POST(req({ ...baseStore, floorJojoLs: '2F', floorGundamExvs: '2F' }))
+    expect(res.status).toBe(200)
+    const [, init] = (fetch as unknown as { mock: { calls: [string, RequestInit][] } }).mock.calls[0]
+    const sent = JSON.parse(init.body as string)
+    expect(sent.body).toContain('| フロア | 2F |')
+  })
+
   it('honeypot 充填は ok:true かつ fetch未呼出', async () => {
     const res = await POST(req({ ...baseStore, businessHours: '10:00-23:00', website: 'bot' }))
     expect(res.status).toBe(200)

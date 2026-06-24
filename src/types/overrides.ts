@@ -1,4 +1,4 @@
-import type { GameTitle, Provenance, TernaryState } from './store'
+import type { GameTitle, Provenance, StoreAttributeKey, TernaryState } from './store'
 
 /**
  * 1店舗ぶんの手動オーバーライド。公式スクレイプ由来の店舗データに重ねる。
@@ -6,8 +6,16 @@ import type { GameTitle, Provenance, TernaryState } from './store'
  * 毎週のスクレイプに消されずに保持するための層。
  */
 export interface OverrideEntry {
-  /** この修正の出どころ（user-report / admin / auto-scrape など） */
+  /** この修正の既定の出どころ（user-report / admin / auto-scrape など）。フィールド個別指定が無いものに使う。 */
   source: Provenance
+  /**
+   * フィールド個別の出どころ（任意）。指定したフィールドは {@link OverrideEntry.source} より優先する。
+   * 1エントリ内でフィールドごとに確信度が違うとき（例: フロアは現地確認=admin だが台数は user-report）に使う。
+   * 値を適用するフィールドにのみ効く（このエントリで値を持たないフィールドへの source 単独指定は無視）。
+   */
+  attributeSources?: Partial<Record<StoreAttributeKey, Provenance>>
+  /** ゲーム別台数の個別出どころ（任意。{@link OverrideEntry.attributeSources} の `machineCounts` 版） */
+  countSources?: Partial<Record<GameTitle, Provenance>>
   /** 人間用メモ（店名・報告元など。IDが変わって効かなくなった時の手がかり） */
   note?: string
   /**
@@ -26,8 +34,10 @@ export interface OverrideEntry {
   lng?: number
   /** 営業時間（任意） */
   businessHours?: string
-  /** フロア（任意） */
+  /** フロア（任意・店舗単位の共通フロア） */
   floor?: string
+  /** ゲーム別フロア（任意。指定したゲームのみ置換する。例 `{ 'jojo-ls': '2F', 'gundam-exvs': '3F' }`） */
+  floorByGame?: Partial<Record<GameTitle, string>>
   /** 喫煙所の有無（任意） */
   smoking?: TernaryState
   /** 決済手段リスト（任意） */
