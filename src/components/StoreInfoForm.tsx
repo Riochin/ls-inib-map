@@ -92,7 +92,22 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
   const [jojoLs, setJojoLs] = useState('')
   const [gundamExvs, setGundamExvs] = useState('')
   const [businessHours, setBusinessHours] = useState(store.businessHours ?? '')
-  const [floor, setFloor] = useState(store.floor ?? '')
+  // フロア: 両ゲーム店は「共通＋別フロア切替」、単一店は共通欄1つ。
+  const bothGames = hasJojo && hasGundam
+  const initialJojoFloor = store.floorByGame?.['jojo-ls'] ?? store.floor ?? ''
+  const initialGundamFloor = store.floorByGame?.['gundam-exvs'] ?? store.floor ?? ''
+  // 既に floorByGame が別フロアで登録済みなら分割モードで初期表示する
+  const initialSplitFloor =
+    bothGames &&
+    store.floorByGame?.['jojo-ls'] !== undefined &&
+    store.floorByGame?.['gundam-exvs'] !== undefined &&
+    store.floorByGame['jojo-ls'] !== store.floorByGame['gundam-exvs']
+  const [floorShared, setFloorShared] = useState(
+    store.floor ?? store.floorByGame?.['jojo-ls'] ?? store.floorByGame?.['gundam-exvs'] ?? '',
+  )
+  const [splitFloor, setSplitFloor] = useState(initialSplitFloor)
+  const [floorJojo, setFloorJojo] = useState(initialJojoFloor)
+  const [floorGundam, setFloorGundam] = useState(initialGundamFloor)
   const [smoking, setSmoking] = useState<TernaryState | ''>(store.smoking ?? '')
   const [payments, setPayments] = useState<string[]>(store.payments ?? [])
   const [recordingJojo, setRecordingJojo] = useState<TernaryState | ''>(
@@ -132,11 +147,30 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
   const jojoNum = parseCount(jojoLs)
   const gundamNum = parseCount(gundamExvs)
 
+  // フォーム入力からゲーム別フロアの送信値を組む（空欄は除外）。共通入力時は両ゲームへ同値を入れる。
+  const floors: { jojo?: string; gundam?: string } = (() => {
+    const out: { jojo?: string; gundam?: string } = {}
+    if (bothGames && splitFloor) {
+      const j = floorJojo.trim()
+      const g = floorGundam.trim()
+      if (j) out.jojo = j
+      if (g) out.gundam = g
+    } else {
+      const v = floorShared.trim()
+      if (v) {
+        if (hasJojo) out.jojo = v
+        if (hasGundam) out.gundam = v
+      }
+    }
+    return out
+  })()
+
   const hasAnyInput =
     (jojoNum !== undefined && hasJojo) ||
     (gundamNum !== undefined && hasGundam) ||
     businessHours.trim() !== '' ||
-    floor.trim() !== '' ||
+    floors.jojo !== undefined ||
+    floors.gundam !== undefined ||
     smoking !== '' ||
     payments.length > 0 ||
     (recordingJojo !== '' && hasJojo) ||
@@ -153,7 +187,7 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
     jojo: store.machineCounts?.['jojo-ls'] !== undefined,
     gundam: store.machineCounts?.['gundam-exvs'] !== undefined,
     businessHours: !!store.businessHours,
-    floor: !!store.floor,
+    floor: !!store.floor || !!store.floorByGame?.['jojo-ls'] || !!store.floorByGame?.['gundam-exvs'],
     smoking: store.smoking !== undefined,
     payments: (store.payments?.length ?? 0) > 0,
     recordingJojo: store.hasRecordingByGame?.['jojo-ls'] !== undefined,
@@ -189,7 +223,8 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
     if (hasJojo && jojoNum !== undefined) payload.machineCountsJojoLs = jojoNum
     if (hasGundam && gundamNum !== undefined) payload.machineCountsGundamExvs = gundamNum
     if (businessHours.trim()) payload.businessHours = businessHours.trim()
-    if (floor.trim()) payload.floor = floor.trim()
+    if (floors.jojo !== undefined) payload.floorJojoLs = floors.jojo
+    if (floors.gundam !== undefined) payload.floorGundamExvs = floors.gundam
     if (smoking !== '') payload.smoking = smoking
     if (payments.length > 0) payload.payments = payments
     if (hasJojo && recordingJojo !== '') payload.hasRecordingJojoLs = recordingJojo
@@ -339,20 +374,57 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
                 />
               </label>
 
-              {/* フロア */}
-              <label className="block mb-3">
-                <span className="text-xs font-semibold text-gray-600">
+              {/* フロア（両ゲーム店は共通＋別フロア切替・単一店は1欄） */}
+              <div className="mb-3">
+                <p className="text-xs font-semibold text-gray-600 mb-1">
                   フロア{filled.floor && <FilledBadge />}
-                </span>
-                <input
-                  type="text"
-                  value={floor}
-                  onChange={(e) => { setFloor(e.target.value); mark() }}
-                  maxLength={50}
-                  placeholder="例）2F、地下1F"
-                  className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
-                />
-              </label>
+                </p>
+                {bothGames && (
+                  <label className="flex items-center gap-1.5 mb-1.5 text-xs text-gray-600">
+                    <input
+                      type="checkbox"
+                      checked={splitFloor}
+                      onChange={(e) => { setSplitFloor(e.target.checked); mark() }}
+                    />
+                    ラスサバとイニブで別フロアにある
+                  </label>
+                )}
+                {bothGames && splitFloor ? (
+                  <div className="grid grid-cols-2 gap-3">
+                    <label className="block">
+                      <span className="text-xs text-gray-500">{getGameLabel('jojo-ls')}</span>
+                      <input
+                        type="text"
+                        value={floorJojo}
+                        onChange={(e) => { setFloorJojo(e.target.value); mark() }}
+                        maxLength={50}
+                        placeholder="例）4F、地下2階"
+                        className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="text-xs text-gray-500">{getGameLabel('gundam-exvs')}</span>
+                      <input
+                        type="text"
+                        value={floorGundam}
+                        onChange={(e) => { setFloorGundam(e.target.value); mark() }}
+                        maxLength={50}
+                        placeholder="例）2F"
+                        className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
+                      />
+                    </label>
+                  </div>
+                ) : (
+                  <input
+                    type="text"
+                    value={floorShared}
+                    onChange={(e) => { setFloorShared(e.target.value); mark() }}
+                    maxLength={50}
+                    placeholder="例）4F、地下2階"
+                    className="w-full border border-gray-300 rounded px-2 py-1.5"
+                  />
+                )}
+              </div>
 
               {/* 喫煙所 */}
               <label className="block mb-3">

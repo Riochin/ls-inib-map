@@ -105,6 +105,29 @@ describe('buildStructuredStoreIssue', () => {
     expect(body).toContain('3')
   })
 
+  it('フロアが両ゲーム同値なら1行（フロア）にまとめる', () => {
+    const { body } = buildStructuredStoreIssue({ ...base, floorJojoLs: '2F', floorGundamExvs: '2F' })
+    expect(body).toContain('| フロア | 2F |')
+    expect(body).not.toContain('フロア（ラスサバ）')
+    expect(body).not.toContain('フロア（イニブ）')
+  })
+
+  it('フロアが別値ならタイトル別の2行で出力する', () => {
+    const { body } = buildStructuredStoreIssue({ ...base, floorJojoLs: '2F', floorGundamExvs: '3F' })
+    expect(body).toContain('フロア（ラスサバ）')
+    expect(body).toContain('2F')
+    expect(body).toContain('フロア（イニブ）')
+    expect(body).toContain('3F')
+    expect(body).not.toContain('| フロア | ')
+  })
+
+  it('片方のゲームのフロアのみ入力されたときはそのタイトルだけ出力する', () => {
+    const { body } = buildStructuredStoreIssue({ ...base, floorGundamExvs: '4F' })
+    expect(body).toContain('フロア（イニブ）')
+    expect(body).toContain('4F')
+    expect(body).not.toContain('フロア（ラスサバ）')
+  })
+
   it('correctionType を本文に含める', () => {
     const { body } = buildStructuredStoreIssue({ ...base, correctionType: '閉店・移設' })
     expect(body).toContain('閉店・移設')

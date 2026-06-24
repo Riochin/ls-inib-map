@@ -185,7 +185,8 @@ function validateStructuredStore(r: Record<string, unknown>): StructuredStoreInp
   }
 
   const businessHours = trimStr(r.businessHours, MAX_BUSINESS_HOURS) || undefined
-  const floor = trimStr(r.floor, MAX_FLOOR) || undefined
+  const floorJojoLs = trimStr(r.floorJojoLs, MAX_FLOOR) || undefined
+  const floorGundamExvs = trimStr(r.floorGundamExvs, MAX_FLOOR) || undefined
 
   const smoking = TERNARY_VALUES.includes(r.smoking as TernaryState)
     ? (r.smoking as TernaryState)
@@ -220,7 +221,8 @@ function validateStructuredStore(r: Record<string, unknown>): StructuredStoreInp
     machineCountsJojoLs,
     machineCountsGundamExvs,
     businessHours,
-    floor,
+    floorJojoLs,
+    floorGundamExvs,
     smoking,
     payments,
     hasRecordingJojoLs,
@@ -243,7 +245,8 @@ function validateStructuredStore(r: Record<string, unknown>): StructuredStoreInp
     machineCountsJojoLs,
     machineCountsGundamExvs,
     businessHours,
-    floor,
+    floorJojoLs,
+    floorGundamExvs,
     smoking,
     payments,
     hasRecordingJojoLs,

@@ -88,8 +88,9 @@ export interface StructuredStoreInput {
   machineCountsGundamExvs?: number
   /** max 100 */
   businessHours?: string
-  /** max 50 */
-  floor?: string
+  /** ゲーム別フロア（各 max 50）。両ゲーム同フロアなら同値を入れる。 */
+  floorJojoLs?: string
+  floorGundamExvs?: string
   smoking?: TernaryState
   /** max 20件・各 max 30文字 */
   payments?: string[]
@@ -156,8 +157,19 @@ export function buildStructuredStoreIssue(input: StructuredStoreInput): ReportIs
     rows.push(`| イニブ台数 | ${input.machineCountsGundamExvs} |`)
   if (input.businessHours !== undefined)
     rows.push(`| 営業時間 | ${cell(input.businessHours)} |`)
-  if (input.floor !== undefined)
-    rows.push(`| フロア | ${cell(input.floor)} |`)
+  // フロア: 両ゲーム同値なら1行、異なれば（片方のみ含む）タイトル別に出す
+  if (
+    input.floorJojoLs !== undefined &&
+    input.floorGundamExvs !== undefined &&
+    input.floorJojoLs === input.floorGundamExvs
+  ) {
+    rows.push(`| フロア | ${cell(input.floorJojoLs)} |`)
+  } else {
+    if (input.floorJojoLs !== undefined)
+      rows.push(`| フロア（ラスサバ） | ${cell(input.floorJojoLs)} |`)
+    if (input.floorGundamExvs !== undefined)
+      rows.push(`| フロア（イニブ） | ${cell(input.floorGundamExvs)} |`)
+  }
   if (input.smoking !== undefined)
     rows.push(`| 喫煙所 | ${TERNARY_LABEL[input.smoking]} |`)
   if (input.payments !== undefined && input.payments.length > 0)
