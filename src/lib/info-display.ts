@@ -14,13 +14,13 @@ const TERNARY_LABELS: Record<TernaryState, string> = {
  * - 単一タイトル店: 「あり」のみ（タイトル名は冗長なので省略）
  * - 値が一つも無ければ `undefined`（呼び出し側で「未登録」表示）
  *
- * `isUserReport` かつ値が `yes`/`no` のセグメントにのみ「（未確認）」を付ける
- * （`unknown` は不確実さを値自体が示すため付けない）。
+ * `unconfirmed`（出どころが admin 以外）かつ値が `yes`/`no` のセグメントにのみ「（未確認）」を
+ * 付ける（`unknown` は不確実さを値自体が示すため付けない）。
  */
 export function formatByGameTernary(
   games: readonly GameTitle[],
   byGame: Partial<Record<GameTitle, TernaryState>> | undefined,
-  isUserReport: boolean,
+  unconfirmed: boolean,
 ): string | undefined {
   if (!byGame) return undefined
   const multi = games.length > 1
@@ -28,11 +28,52 @@ export function formatByGameTernary(
   for (const game of games) {
     const value = byGame[game]
     if (value === undefined) continue
-    const suffix = isUserReport && value !== 'unknown' ? '（未確認）' : ''
+    const suffix = unconfirmed && value !== 'unknown' ? '（未確認）' : ''
     const label = `${TERNARY_LABELS[value]}${suffix}`
     segments.push(multi ? `${getGameLabel(game)} ${label}` : label)
   }
   return segments.length > 0 ? segments.join(' ／ ') : undefined
+}
+
+/**
+ * ゲーム別フロアを店舗詳細パネル用の文字列に整形する。`formatByGameTernary` と同じ整形思想。
+ * - 全タイトルが同じフロア（または単一タイトル店）: 「2F」と1つに集約（共通フロア）
+ * - フロアが分かれる: 「ラスサバ 2F ／ イニブ 3F」のようにタイトル別併記
+ * - 値が一つも無ければ `value: undefined`（呼び出し側で「未登録」表示）
+ *
+ * 各ゲームは `floorByGame[game]`（明示値）を優先し、無ければ店舗単位 `storeWideFloor` へ
+ * フォールバックする（既存の店舗共通フロアもこの経路で表示される）。
+ *
+ * 確定/未確認はフロア属性の出どころ（`unconfirmed` 引数）だけで決める（モデル統一）。
+ * `unconfirmed`（出どころが admin 以外）のとき値に「（未確認）」を付ける。共通フロアでも
+ * 出どころが admin なら確定として無印で「2F」と出す。`soft` は未確認かどうかで、呼び出し側で
+ * 文字色（amber）の出し分けに使う。
+ */
+export function formatFloorByGame(
+  games: readonly GameTitle[],
+  floorByGame: Partial<Record<GameTitle, string>> | undefined,
+  storeWideFloor: string | undefined,
+  unconfirmed: boolean,
+): { value: string | undefined; soft: boolean } {
+  const multi = games.length > 1
+  const resolved: { game: GameTitle; value: string }[] = []
+  for (const game of games) {
+    const value = floorByGame?.[game] ?? storeWideFloor
+    if (value === undefined || value === '') continue
+    resolved.push({ game, value })
+  }
+  if (resolved.length === 0) return { value: undefined, soft: false }
+
+  const suffix = unconfirmed ? '（未確認）' : ''
+
+  // 単一タイトル店、または全タイトルが同じフロア（＝共通フロア）なら1つに集約して見せる
+  const allSame = resolved.length === games.length && resolved.every((r) => r.value === resolved[0].value)
+  if (!multi || allSame) {
+    return { value: `${resolved[0].value}${suffix}`, soft: unconfirmed }
+  }
+
+  const segments = resolved.map((r) => `${getGameLabel(r.game)} ${r.value}${suffix}`)
+  return { value: segments.join(' ／ '), soft: unconfirmed }
 }
 
 /**

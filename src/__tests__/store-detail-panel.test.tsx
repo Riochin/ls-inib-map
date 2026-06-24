@@ -45,8 +45,9 @@ describe('StoreDetailPanel — 録画台/配信台のタイトル別表示', () 
     expect(count).toBe(2)
   })
 
-  it('複数タイトル店ではタイトル別に値を併記する', () => {
-    // 他属性も埋め、ByGame を入れた録画台/配信台が「未登録」にならないことを担保する
+  it('複数タイトル店ではタイトル別に値を併記する（確定＝admin出どころは未確認なし）', () => {
+    // 他属性も埋め、ByGame を入れた録画台/配信台が「未登録」にならないことを担保する。
+    // 出どころ admin で確定にし、（未確認）が付かない素の併記文字列を検証する。
     const html = render(
       makeStore({
         businessHours: '10:00-23:00',
@@ -55,6 +56,7 @@ describe('StoreDetailPanel — 録画台/配信台のタイトル別表示', () 
         payments: ['Suica'],
         hasRecordingByGame: { 'jojo-ls': 'unknown', 'gundam-exvs': 'yes' },
         hasStreamingByGame: { 'jojo-ls': 'no', 'gundam-exvs': 'no' },
+        attributeSources: { hasRecordingByGame: 'admin', hasStreamingByGame: 'admin' },
       }),
     )
     expect(html).toContain('ラスサバ 不明 ／ イニブ あり')
@@ -67,13 +69,14 @@ describe('StoreDetailPanel — 録画台/配信台のタイトル別表示', () 
       makeStore({
         games: ['gundam-exvs'],
         hasRecordingByGame: { 'gundam-exvs': 'yes' },
+        attributeSources: { hasRecordingByGame: 'admin' },
       }),
     )
     // 録画台の行は「あり」のみ（「イニブ あり」ではない）
     expect(html).toContain('>あり<')
   })
 
-  it('user-report の yes/no には（未確認）を付け、unknown には付けない', () => {
+  it('admin 以外の出どころの yes/no には（未確認）を付け、unknown には付けない', () => {
     const html = render(
       makeStore({
         hasRecordingByGame: { 'jojo-ls': 'unknown', 'gundam-exvs': 'yes' },
@@ -82,5 +85,44 @@ describe('StoreDetailPanel — 録画台/配信台のタイトル別表示', () 
     )
     expect(html).toContain('イニブ あり（未確認）')
     expect(html).not.toContain('不明（未確認）')
+  })
+})
+
+describe('StoreDetailPanel — フロアのゲーム別表示', () => {
+  it('floorByGame が別フロアでも admin 出どころなら未確認を付けずタイトル別に併記する', () => {
+    const html = render(
+      makeStore({
+        floorByGame: { 'jojo-ls': '2F', 'gundam-exvs': '3F' },
+        attributeSources: { floor: 'admin' },
+      }),
+    )
+    expect(html).toContain('ラスサバ 2F ／ イニブ 3F')
+    expect(html).not.toContain('2F（未確認）')
+  })
+
+  it('共通フロアが admin 出どころなら確定として1つに集約表示する', () => {
+    const html = render(
+      makeStore({
+        floorByGame: { 'jojo-ls': '2F', 'gundam-exvs': '2F' },
+        attributeSources: { floor: 'admin' },
+      }),
+    )
+    expect(html).toContain('>2F<')
+    expect(html).not.toContain('未確認')
+    expect(html).not.toContain('ラスサバ 2F')
+  })
+
+  it('店舗共通フロアのみで出どころ未登録なら共通フロアを未確認表示する（集約）', () => {
+    const html = render(makeStore({ floor: '2F' }))
+    expect(html).toContain('>2F（未確認）<')
+    expect(html).not.toContain('ラスサバ 2F')
+  })
+
+  it('単一タイトル店も出どころで判定する（admin は値のみ）', () => {
+    const html = render(
+      makeStore({ games: ['gundam-exvs'], floor: '2F', attributeSources: { floor: 'admin' } }),
+    )
+    expect(html).toContain('>2F<')
+    expect(html).not.toContain('2F（未確認）')
   })
 })

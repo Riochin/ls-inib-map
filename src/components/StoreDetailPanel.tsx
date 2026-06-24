@@ -2,9 +2,9 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react'
 import type { Store, GameTitle, StoreAttributeKey } from '@/types/store'
-import { formatDateJst, formatByGameTernary } from '@/lib/info-display'
+import { formatDateJst, formatByGameTernary, formatFloorByGame } from '@/lib/info-display'
 import { storesMeta } from '@/data/stores'
-import { getMarkerTheme, getGameLabel, getCountSourceInfo, getStoreStatusLabel } from '@/lib/marker-color'
+import { getMarkerTheme, getGameLabel, getCountSourceInfo, getStoreStatusLabel, isConfirmedSource } from '@/lib/marker-color'
 import { buildShareText } from '@/lib/share'
 import { CountBadge } from './CountBadge'
 import { trackEvent } from '@/lib/analytics'
@@ -24,13 +24,14 @@ const TERNARY_LABELS: Record<string, string> = {
 function AttributeRow({
   label,
   value,
-  isUserReport,
+  unconfirmed,
   preformatted = false,
 }: {
   label: string
   value: string | undefined
-  isUserReport: boolean
-  /** value 側で既に「（未確認）」を埋め込み済みの場合 true（録画台/配信台のタイトル別表示） */
+  /** 出どころが admin 以外（公式/自動取得/みんなの報告/未登録）＝未確認のとき true */
+  unconfirmed: boolean
+  /** value 側で既に「（未確認）」を埋め込み済みの場合 true（録画台/配信台/フロアのタイトル別表示） */
   preformatted?: boolean
 }) {
   return (
@@ -39,9 +40,9 @@ function AttributeRow({
       {value === undefined ? (
         <span className="text-xs text-gray-400">未登録</span>
       ) : (
-        <span className={`text-xs text-right${isUserReport ? ' text-amber-700' : ' text-gray-800'}`}>
+        <span className={`text-xs text-right${unconfirmed ? ' text-amber-700' : ' text-gray-800'}`}>
           {value}
-          {isUserReport && !preformatted ? '（未確認）' : ''}
+          {unconfirmed && !preformatted ? '（未確認）' : ''}
         </span>
       )}
     </div>
@@ -99,22 +100,24 @@ export function StoreDetailPanel({ store, onOpenInfoForm, onClose }: StoreDetail
         ? 'コピーに失敗しました'
         : 'この店舗を共有'
 
-  function isUserReport(key: StoreAttributeKey): boolean {
-    return store.attributeSources?.[key] === 'user-report'
+  // 確定は出どころが admin のときのみ。それ以外（公式/自動取得/みんなの報告/未登録）は未確認。
+  function unconfirmed(key: StoreAttributeKey): boolean {
+    return !isConfirmedSource(store.attributeSources?.[key])
   }
 
   const smokingValue = store.smoking !== undefined ? TERNARY_LABELS[store.smoking] : undefined
   const recordingValue = formatByGameTernary(
     store.games,
     store.hasRecordingByGame,
-    isUserReport('hasRecordingByGame'),
+    unconfirmed('hasRecordingByGame'),
   )
   const streamingValue = formatByGameTernary(
     store.games,
     store.hasStreamingByGame,
-    isUserReport('hasStreamingByGame'),
+    unconfirmed('hasStreamingByGame'),
   )
   const paymentsValue = store.payments?.length ? store.payments.join('、') : undefined
+  const floor = formatFloorByGame(store.games, store.floorByGame, store.floor, unconfirmed('floor'))
 
   return (
     <div className="p-4 text-sm text-gray-800">
@@ -178,12 +181,12 @@ export function StoreDetailPanel({ store, onOpenInfoForm, onClose }: StoreDetail
 
       {/* 拡張属性一覧 */}
       <div className="bg-gray-50 rounded-xl px-3 py-0.5 mb-3">
-        <AttributeRow label="営業時間" value={store.businessHours} isUserReport={isUserReport('businessHours')} />
-        <AttributeRow label="フロア" value={store.floor} isUserReport={isUserReport('floor')} />
-        <AttributeRow label="喫煙所" value={smokingValue} isUserReport={isUserReport('smoking')} />
-        <AttributeRow label="決済/電子マネー" value={paymentsValue} isUserReport={isUserReport('payments')} />
-        <AttributeRow label="録画台" value={recordingValue} isUserReport={isUserReport('hasRecordingByGame')} preformatted />
-        <AttributeRow label="配信台" value={streamingValue} isUserReport={isUserReport('hasStreamingByGame')} preformatted />
+        <AttributeRow label="営業時間" value={store.businessHours} unconfirmed={unconfirmed('businessHours')} />
+        <AttributeRow label="フロア" value={floor.value} unconfirmed={floor.soft} preformatted />
+        <AttributeRow label="喫煙所" value={smokingValue} unconfirmed={unconfirmed('smoking')} />
+        <AttributeRow label="決済/電子マネー" value={paymentsValue} unconfirmed={unconfirmed('payments')} />
+        <AttributeRow label="録画台" value={recordingValue} unconfirmed={unconfirmed('hasRecordingByGame')} preformatted />
+        <AttributeRow label="配信台" value={streamingValue} unconfirmed={unconfirmed('hasStreamingByGame')} preformatted />
       </div>
 
       {/* 情報更新日 */}

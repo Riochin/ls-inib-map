@@ -119,6 +119,15 @@ export interface CountSourceInfo {
 }
 
 /**
+ * フィールド（台数・属性）の出どころが運営確認済み（確定）かを返す。
+ * `admin`（運営が現地確認）のみ確定。公式・自動取得・みんなの報告・未登録（undefined）は未確認。
+ * 台数バッジと属性行で共通の確定判定として使う（モデル統一）。
+ */
+export function isConfirmedSource(source?: Provenance): boolean {
+  return source === 'admin'
+}
+
+/**
  * 台数の出どころに応じた説明と確からしさを返す。
  * `admin`（運営確認）だけを確定とし、それ以外（公式・みんなの報告・自動取得）は未確認。
  */
