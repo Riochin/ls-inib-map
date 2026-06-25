@@ -3,7 +3,9 @@
 import { useState, useCallback, useMemo } from 'react'
 import { APIProvider } from '@vis.gl/react-google-maps'
 import { stores, storesMeta } from '@/data/stores'
-import { filterStoresAll, filterStoresByKeyword } from '@/lib/filter'
+import { filterStoresAll, filterStoresByKeyword, isStoreFilterActive } from '@/lib/filter'
+import { filterStoresByFacility } from '@/lib/facility-filter'
+import { filterStoresByCompleteness } from '@/lib/completeness'
 import { buildAddressIndex } from '@/lib/address-parser'
 import { useGeolocation } from '@/hooks/use-geolocation'
 import { MapView } from '@/components/MapView'
@@ -18,15 +20,15 @@ import { LastUpdated } from '@/components/LastUpdated'
 import { Credit } from '@/components/Credit'
 import { Onboarding } from '@/components/Onboarding'
 import { PairSchedulePanel } from '@/components/PairSchedulePanel'
-import type { FilterOption, AddressFilter, Store } from '@/types/store'
-import { EMPTY_ADDRESS_FILTER } from '@/types/store'
-import { loadSavedFilter, saveFilter } from '@/lib/filter-storage'
+import type { FilterOption, StoreFilter, Store } from '@/types/store'
+import { EMPTY_STORE_FILTER } from '@/types/store'
+import { loadSavedFilter, saveFilter, loadSavedStoreFilter, saveStoreFilter } from '@/lib/filter-storage'
 import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect'
 import { trackEvent } from '@/lib/analytics'
 
 export default function MapPage() {
   const [activeFilter, setActiveFilter] = useState<FilterOption>('all')
-  const [addressFilter, setAddressFilter] = useState<AddressFilter>(EMPTY_ADDRESS_FILTER)
+  const [storeFilter, setStoreFilter] = useState<StoreFilter>(EMPTY_STORE_FILTER)
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearchOpen, setIsSearchOpen] = useState(false)
@@ -43,6 +45,12 @@ export default function MapPage() {
     if (saved) setActiveFilter(saved)
   }, [])
 
+  // 前回の絞り込み条件（地方/都県/設備/充実度）を復元。破損・未保存時は既定の空フィルタのまま。
+  useIsomorphicLayoutEffect(() => {
+    const saved = loadSavedStoreFilter()
+    if (saved) setStoreFilter(saved)
+  }, [])
+
   useIsomorphicLayoutEffect(() => {
     const id = new URLSearchParams(window.location.search).get('store')
     if (!id) return
@@ -56,19 +64,34 @@ export default function MapPage() {
     trackEvent('filter_title', { filter })
   }, [])
 
-  const filteredStores = useMemo(
-    () => filterStoresByKeyword(
-      filterStoresAll(stores, activeFilter, addressFilter, addressIndex),
-      searchQuery,
-    ),
-    [activeFilter, addressFilter, addressIndex, searchQuery],
+  const handleApplyStoreFilter = useCallback((filter: StoreFilter) => {
+    setStoreFilter(filter)
+    saveStoreFilter(filter)
+  }, [])
+
+  // モーダル内のリアルタイム件数。適用前のドラフト条件を本番と同じパイプラインで数える
+  // （ゲームタブ・キーワードも込み）。
+  const previewCount = useCallback(
+    (draft: StoreFilter, game: FilterOption) => {
+      const byAddress = filterStoresAll(stores, game, draft.address, addressIndex)
+      const byFacility = filterStoresByFacility(byAddress, draft.facility)
+      const byCompleteness = filterStoresByCompleteness(byFacility, draft.completeness)
+      return filterStoresByKeyword(byCompleteness, searchQuery).length
+    },
+    [addressIndex, searchQuery],
   )
 
-  const isAddressFilterActive =
-    addressFilter.prefecture !== null || addressFilter.cities.length > 0
+  const filteredStores = useMemo(() => {
+    const byAddress = filterStoresAll(stores, activeFilter, storeFilter.address, addressIndex)
+    const byFacility = filterStoresByFacility(byAddress, storeFilter.facility)
+    const byCompleteness = filterStoresByCompleteness(byFacility, storeFilter.completeness)
+    return filterStoresByKeyword(byCompleteness, searchQuery)
+  }, [activeFilter, storeFilter, addressIndex, searchQuery])
+
+  const isStoreFilterOn = isStoreFilterActive(storeFilter)
 
   const isFiltered =
-    activeFilter !== 'all' || isAddressFilterActive || searchQuery.trim() !== ''
+    activeFilter !== 'all' || isStoreFilterOn || searchQuery.trim() !== ''
 
   const handleSearchSelect = useCallback((store: Store) => {
     setFocusStore(store)
@@ -114,7 +137,7 @@ export default function MapPage() {
           />
         )}
         <AddressFilterButton
-          isActive={isAddressFilterActive}
+          isActive={isStoreFilterOn}
           onOpen={() => setIsAddressModalOpen(true)}
         />
         <MapView
@@ -130,9 +153,12 @@ export default function MapPage() {
         {isAddressModalOpen && (
           <AddressFilterModal
             index={addressIndex}
-            activeFilter={addressFilter}
-            onApply={setAddressFilter}
+            filter={storeFilter}
+            gameFilter={activeFilter}
+            onApply={handleApplyStoreFilter}
+            onGameFilterChange={handleFilterChange}
             onClose={() => setIsAddressModalOpen(false)}
+            previewCount={previewCount}
           />
         )}
       </div>

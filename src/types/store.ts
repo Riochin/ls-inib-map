@@ -114,7 +114,11 @@ export interface ParsedAddress {
 
 /** 住所フィルタ選択状態 */
 export interface AddressFilter {
-  prefecture: string | null
+  /** 地方（標準8地方区分・正式名。null＝すべて）。都道府県より上位の絞り込み軸。 */
+  region: string | null
+  /** 選択中の都道府県（正式名・複数選択可。空＝すべて）。 */
+  prefectures: string[]
+  /** 市区（複数選択可）。市区/区への絞り込みは都道府県を1つだけ選んだときに使う。 */
   cities: string[]
   wards: string[]
 }
@@ -127,7 +131,46 @@ export interface AddressIndex {
 }
 
 export const EMPTY_ADDRESS_FILTER: AddressFilter = {
-  prefecture: null,
+  region: null,
+  prefectures: [],
   cities: [],
   wards: [],
+}
+
+/** 設備・条件フィルタ選択状態 */
+export interface FacilityFilter {
+  /** 最低台数（machineCounts の合計がこの値以上。null＝無条件） */
+  minMachines: number | null
+  /** 配信台あり（hasStreamingByGame のいずれかが 'yes'） */
+  hasStreaming: boolean
+  /** 録画台あり（hasRecordingByGame のいずれかが 'yes'） */
+  hasRecording: boolean
+  /** 喫煙所あり（smoking === 'yes'） */
+  hasSmoking: boolean
+  /** 営業中のみ（closed/delisted を除外。時刻判定はしない） */
+  openOnly: boolean
+}
+
+export const EMPTY_FACILITY_FILTER: FacilityFilter = {
+  minMachines: null,
+  hasStreaming: false,
+  hasRecording: false,
+  hasSmoking: false,
+  openOnly: false,
+}
+
+/** 情報の充実度レベル（all＝すべて / rich＝充実 / poor＝不足） */
+export type CompletenessLevel = 'all' | 'rich' | 'poor'
+
+/** 統合フィルタ選択状態（住所＋設備＋充実度）。localStorage 直列化の単位。 */
+export interface StoreFilter {
+  address: AddressFilter
+  facility: FacilityFilter
+  completeness: CompletenessLevel
+}
+
+export const EMPTY_STORE_FILTER: StoreFilter = {
+  address: EMPTY_ADDRESS_FILTER,
+  facility: EMPTY_FACILITY_FILTER,
+  completeness: 'all',
 }

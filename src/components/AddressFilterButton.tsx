@@ -17,7 +17,7 @@ export function AddressFilterButton({ isActive, onOpen }: AddressFilterButtonPro
           <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
         </svg>
         {isActive && (
-          <span className="absolute top-1 right-1 w-4 h-4 bg-blue-600 rounded-full border-2 border-white" />
+          <span className="absolute top-1 right-1 w-4 h-4 bg-purple-700 rounded-full border-2 border-white" />
         )}
       </button>
     </div>

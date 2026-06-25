@@ -52,7 +52,7 @@ describe('全国住所の階層フィルタ回帰', () => {
   const index = buildAddressIndex(stores)
 
   it('都道府県で絞り込むと当該県の店舗のみ残る', () => {
-    const filter: AddressFilter = { prefecture: '東京都', cities: [], wards: [] }
+    const filter: AddressFilter = { region: null, prefectures: ['東京都'], cities: [], wards: [] }
     const result = filterStoresByAddress(stores, filter, index)
     expect(result).toHaveLength(2) // 新宿区 + 西多摩郡日の出町
     expect(result.every((r) => r.address.startsWith('東京都'))).toBe(true)
@@ -60,7 +60,8 @@ describe('全国住所の階層フィルタ回帰', () => {
 
   it('政令市＋区で絞り込むと当該区の店舗のみ残る', () => {
     const filter: AddressFilter = {
-      prefecture: '神奈川県',
+      region: null,
+      prefectures: ['神奈川県'],
       cities: ['横浜市'],
       wards: ['西区'],
     }
@@ -71,7 +72,8 @@ describe('全国住所の階層フィルタ回帰', () => {
 
   it('東京23区は ward を市区キーとして絞り込める', () => {
     const filter: AddressFilter = {
-      prefecture: '東京都',
+      region: null,
+      prefectures: ['東京都'],
       cities: ['新宿区'],
       wards: [],
     }

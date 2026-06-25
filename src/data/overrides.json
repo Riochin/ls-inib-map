@@ -113,10 +113,22 @@
     },
     "3e3410623889": {
       "source": "admin",
-      "note": "namco王子サンスクエア イニブ6台（2台+4台のキモ配置, Issue #64）。出どころ: ぬまくん。古めの商業施設で非常に広い、喫煙所はイニブと別階層。",
-      "updatedAt": "2026-06-10",
+      "attributeSources": {
+        "businessHours": "user-report",
+        "hasRecordingByGame": "user-report",
+        "hasStreamingByGame": "user-report"
+      },
+      "note": "namco王子サンスクエア イニブ6台（2台+4台のキモ配置, Issue #64・運営確認）。出どころ: ぬまくん。古めの商業施設で非常に広い、喫煙所はイニブと別階層。Issue #186: 営業10:00-23:00・録画台(ラスサバ)あり・配信台(ラスサバ)なし。SNS未記入のため新規属性は未確認(みんなの報告=user-report)扱い、台数は#64の運営確認を維持。",
+      "updatedAt": "2026-06-25",
       "machineCounts": {
         "gundam-exvs": 6
+      },
+      "businessHours": "10:00-23:00",
+      "hasRecordingByGame": {
+        "jojo-ls": "yes"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no"
       }
     },
     "3ec1f3534a2a": {
@@ -451,11 +463,17 @@
     },
     "caeb68c472ce": {
       "source": "admin",
-      "note": "アクメ漱石",
+      "note": "アクメ漱石（西日暮里 GAME SPOT VERSUS, イニブ8台）。Issue #173: 営業10:00〜1:00・3F・喫煙所あり・配信台(イニブ)あり・録画台(イニブ)不明。SNS ID=かたはば 提供あり＝確定。",
+      "updatedAt": "2026-06-25",
       "machineCounts": {
         "gundam-exvs": 8
       },
-      "updatedAt": "2026-06-18T05:56:16.074Z"
+      "businessHours": "10:00〜1:00",
+      "floor": "3F",
+      "smoking": "yes",
+      "hasStreamingByGame": {
+        "gundam-exvs": "yes"
+      }
     },
     "cf6a353b751e": {
       "source": "admin",
@@ -667,6 +685,45 @@
       "hasStreamingByGame": {
         "jojo-ls": "no",
         "gundam-exvs": "unknown"
+      }
+    },
+    "b5b63d606ad7": {
+      "source": "admin",
+      "note": "モーリーファンタジークロスガーデン川崎 営業10:00〜20:00・1F・喫煙所なし（店舗内なし／同建物内に喫煙所あり）・録画台(イニブ)不明・配信台(イニブ)不明（Issue #176）。SNS ID=かたはば 提供あり＝確定。",
+      "updatedAt": "2026-06-25",
+      "businessHours": "10:00〜20:00",
+      "floor": "1F",
+      "smoking": "no"
+    },
+    "f68ca1684b0f": {
+      "source": "admin",
+      "note": "GiGO 高田馬場 地下1F・喫煙所なし・録画台なし(両タイトル)・配信台なし(両タイトル)（Issue #175）。SNS ID=かたはば 提供あり＝確定。",
+      "updatedAt": "2026-06-25",
+      "floor": "地下1F",
+      "smoking": "no",
+      "hasRecordingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
+      }
+    },
+    "d66178eb6b8a": {
+      "source": "admin",
+      "note": "namco中野 営業10:00-23:00・2F・喫煙所あり・録画台なし(両タイトル)・配信台ラスサバあり/イニブなし（Issue #174）。SNS ID=かたはば 提供あり＝確定。",
+      "updatedAt": "2026-06-25",
+      "businessHours": "10:00-23:00",
+      "floor": "2F",
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "yes",
+        "gundam-exvs": "no"
       }
     }
   }
