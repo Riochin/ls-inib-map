@@ -239,49 +239,69 @@
     font-weight: 700;
     padding: 4px 11px;
     border-radius: 999px;
-    background: var(--purple-soft);
-    color: var(--purple);
-  }
-
-  /* ===== 地方選択 UI再現 ===== */
-  .region-select {
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-  }
-  .region-row {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-  .region-chip {
-    font-size: 11px;
-    font-weight: 700;
-    font-family: var(--round);
-    padding: 4px 10px;
-    border-radius: 8px;
-  }
-  .region-chip.active {
-    background: var(--purple);
-    color: #fff;
-  }
-  .region-chip.inactive {
     background: #f0f1f5;
     color: var(--ink-soft);
   }
-  .pref-row {
+
+  /* ===== 地方・都道府県選択 UI再現（実UIのラジオ／チェックボックス） ===== */
+  .region-select {
     display: flex;
-    gap: 5px;
-    flex-wrap: wrap;
-    padding-left: 2px;
+    flex-direction: column;
+    gap: 8px;
   }
-  .pref-chip {
+  .region-group-label {
+    font-size: 9.5px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    margin-bottom: 1px;
+  }
+  .check-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px 8px;
+  }
+  .check-grid.cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
     font-size: 10.5px;
     font-weight: 600;
-    padding: 3px 9px;
-    border-radius: 7px;
-    background: var(--purple-soft);
-    color: var(--purple);
+    color: var(--ink);
+  }
+  .check-box {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    border: 1.5px solid #c7cad6;
+    background: #fff;
+  }
+  .check-box.radio { border-radius: 50%; }
+  .check-box.square { border-radius: 3px; }
+  .check-box.on {
+    background: var(--purple);
+    border-color: var(--purple);
+    position: relative;
+  }
+  .check-box.radio.on::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    background: #fff;
+    border-radius: 50%;
+  }
+  .check-box.square.on::after {
+    content: "";
+    position: absolute;
+    left: 3.5px;
+    top: 0.5px;
+    width: 3.5px;
+    height: 7px;
+    border: solid #fff;
+    border-width: 0 1.6px 1.6px 0;
+    transform: rotate(45deg);
   }
 
   /* ===== 充実度フィルター UI再現 ===== */
@@ -401,17 +421,17 @@
         <!-- カード1: 設備条件フィルター -->
         <div class="card">
           <span class="kicker">設備で絞り込む</span>
-          <h3>配信台・録画台・<br><span class="accent">喫煙所</span>で選べる。</h3>
+          <h3><span class="accent">配信台</span>・<span class="accent">録画台</span>・<br>最低台数・喫煙所で選べる。</h3>
           <p>「配信台あり」「最低3台」「営業中のみ」など、<br>設備条件を指定して店舗を絞り込めます。</p>
           <div class="preview">
             <div class="facility-filter">
               <div class="filter-row">
                 <span class="filter-toggle on"><span class="dot"></span>配信台あり</span>
-                <span class="filter-toggle on"><span class="dot"></span>営業中のみ</span>
+                <span class="filter-toggle on"><span class="dot"></span>録画台あり</span>
               </div>
               <div class="filter-row">
-                <span class="filter-toggle off">録画台あり</span>
                 <span class="filter-toggle off">喫煙所あり</span>
+                <span class="filter-toggle off">営業中のみ</span>
               </div>
               <div class="filter-row">
                 <span class="min-machines">最低台数：3台〜</span>
@@ -427,17 +447,22 @@
           <p>「関東」などの地方区分、または複数の都県を<br>まとめて選んで絞り込めます。</p>
           <div class="preview">
             <div class="region-select">
-              <div class="region-row">
-                <span class="region-chip inactive">北海道</span>
-                <span class="region-chip inactive">東北</span>
-                <span class="region-chip active">関東</span>
-                <span class="region-chip inactive">中部</span>
-                <span class="region-chip inactive">近畿</span>
+              <div>
+                <p class="region-group-label">地方</p>
+                <div class="check-grid">
+                  <span class="check-item"><span class="check-box radio"></span>すべて</span>
+                  <span class="check-item"><span class="check-box radio on"></span>関東</span>
+                  <span class="check-item"><span class="check-box radio"></span>近畿</span>
+                </div>
               </div>
-              <div class="pref-row">
-                <span class="pref-chip">東京都</span>
-                <span class="pref-chip">神奈川県</span>
-                <span class="pref-chip">埼玉県</span>
+              <div>
+                <p class="region-group-label">都道府県（複数選択可）</p>
+                <div class="check-grid cols-2">
+                  <span class="check-item"><span class="check-box square on"></span>東京都</span>
+                  <span class="check-item"><span class="check-box square on"></span>神奈川県</span>
+                  <span class="check-item"><span class="check-box square"></span>埼玉県</span>
+                  <span class="check-item"><span class="check-box square"></span>千葉県</span>
+                </div>
               </div>
             </div>
           </div>
@@ -445,9 +470,9 @@
 
         <!-- カード3: 充実度フィルター -->
         <div class="card">
-          <span class="kicker">充実度で絞り込む</span>
+          <span class="kicker">情報の充実度で絞り込む</span>
           <h3>情報が<span class="accent">充実している店</span><br>だけ表示。</h3>
-          <p>情報が充実している店・不足している店だけを<br>表示できます。提供すべき店を探すのにも便利。</p>
+          <p>情報が充実している店・不足している店だけを<br>表示できます。不足している店舗を見つけて、<br>ぜひ情報提供にご協力ください。</p>
           <div class="preview">
             <div class="completeness-filter">
               <div class="comp-row">
