@@ -41,6 +41,8 @@ const MIN_MACHINE_OPTIONS: { value: number | null; label: string }[] = [
   { value: 4, label: '4台〜' },
   { value: 6, label: '6台〜' },
   { value: 8, label: '8台〜' },
+  { value: 16, label: '16台〜' },
+  { value: 24, label: '24台〜' },
 ]
 
 const PREFECTURE_ORDER = ['東京都', '神奈川県', '埼玉県', '千葉県']
