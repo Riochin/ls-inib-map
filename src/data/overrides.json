@@ -55,15 +55,23 @@
     },
     "21d1145039bd": {
       "source": "admin",
-      "note": "namco松戸 ラスサバ10台・イニブ28台・喫煙所あり（Issue #125）。@dorodoro_numa。営業時間・フロアも提供。",
-      "updatedAt": "2026-06-19",
+      "note": "namco松戸 ラスサバ10台・イニブ28台・喫煙所あり（Issue #125）。@dorodoro_numa。営業時間・フロアも提供。Issue #195 @LSyoshiyuki（お礼可）: 営業10:00〜23:00・地下1階・喫煙所あり（既報と一致）・録画台(ラスサバ)なし・配信台(ラスサバ)なし。報告者=ラスサバ勢のため録画/配信はラスサバ側に割当・イニブ側は不明。SNS ID提供あり＝確定。",
+      "updatedAt": "2026-06-26",
       "machineCounts": {
         "jojo-ls": 10,
         "gundam-exvs": 28
       },
       "businessHours": "10:00〜23:00",
       "floor": "地下1階",
-      "smoking": "yes"
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "unknown"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "unknown"
+      }
     },
     "2380eb9ab2af": {
       "source": "admin",
@@ -724,6 +732,36 @@
       "hasStreamingByGame": {
         "jojo-ls": "yes",
         "gundam-exvs": "no"
+      }
+    },
+    "f1a9a281132e": {
+      "source": "admin",
+      "note": "千葉レジャーランド野田 営業8:00〜24:00・喫煙所あり・録画台(ラスサバ)なし・配信台(ラスサバ)なし（Issue #192/#194）。#192はSNS未記入だが#194で同報告者がSNS ID @LSyoshiyuki を提供＝確定。報告者=ラスサバ勢のため録画/配信はラスサバ側に割当・イニブ側は不明。お礼可。",
+      "updatedAt": "2026-06-26",
+      "businessHours": "8:00〜24:00",
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "unknown"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "unknown"
+      }
+    },
+    "c11b804317fa": {
+      "source": "admin",
+      "note": "タイトーステーション柏 営業10:00〜24:00・喫煙所あり・録画台(ラスサバ)なし・配信台(ラスサバ)なし（Issue #193）。@LSyoshiyuki（お礼可）。SNS ID提供あり＝確定。報告者=ラスサバ勢のため録画/配信はラスサバ側に割当・イニブ側は不明。",
+      "updatedAt": "2026-06-26",
+      "businessHours": "10:00〜24:00",
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "unknown"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "unknown"
       }
     }
   }
