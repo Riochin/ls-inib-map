@@ -202,9 +202,14 @@ export function AddressFilterModal({
         onClick={onClose}
         aria-hidden="true"
       />
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-2xl shadow-2xl max-h-[85dvh] flex flex-col">
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="filter-modal-title"
+        className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-2xl shadow-2xl max-h-[85dvh] flex flex-col"
+      >
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-          <h2 className="text-base text-gray-800" style={HEADING_FONT_STYLE}>絞り込み</h2>
+          <h2 id="filter-modal-title" className="text-base text-gray-800" style={HEADING_FONT_STYLE}>絞り込み</h2>
           <button
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-500"
@@ -218,7 +223,11 @@ export function AddressFilterModal({
 
         {/* 適用中バー（条件チップ＋個別解除） */}
         {chips.length > 0 && (
-          <div className="flex flex-wrap gap-1.5 px-5 py-2.5 border-b border-gray-100 bg-gray-50">
+          <div
+            role="group"
+            aria-label="適用中の絞り込み条件"
+            className="flex flex-wrap gap-1.5 px-5 py-2.5 border-b border-gray-100 bg-gray-50"
+          >
             {chips.map((chip) => (
               <button
                 key={chip.key}
@@ -419,6 +428,11 @@ export function AddressFilterModal({
             </div>
           </section>
         </div>
+
+        {/* スクリーンリーダー向け：結果件数の変化を読み上げる（視覚的には非表示） */}
+        <p className="sr-only" role="status" aria-live="polite">
+          {count !== null ? `絞り込み結果 ${count}件` : ''}
+        </p>
 
         <div className="flex gap-3 px-5 py-4 border-t border-gray-100">
           <button

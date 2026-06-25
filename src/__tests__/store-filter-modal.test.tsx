@@ -34,6 +34,33 @@ function inputByName(html: string, name: string): string {
   return m ? m[0] : ''
 }
 
+describe('AddressFilterModal — アクセシビリティ', () => {
+  it('シートが dialog として意味付けされ、見出しに紐づく', () => {
+    const html = render(EMPTY_STORE_FILTER)
+    const dialog = html.match(/<div[^>]*role="dialog"[^>]*>/)
+    expect(dialog?.[0]).toContain('aria-modal="true"')
+    expect(dialog?.[0]).toContain('aria-labelledby="filter-modal-title"')
+    expect(html).toContain('id="filter-modal-title"')
+  })
+
+  it('適用中バーが group としてラベル付けされる', () => {
+    const applied: StoreFilter = {
+      ...EMPTY_STORE_FILTER,
+      address: { ...EMPTY_STORE_FILTER.address, prefectures: ['東京都'] },
+    }
+    const html = render(applied)
+    const group = html.match(/<div[^>]*role="group"[^>]*>/)
+    expect(group?.[0]).toContain('aria-label="適用中の絞り込み条件"')
+  })
+
+  it('件数のライブリージョン（aria-live=polite）で結果件数を読み上げる', () => {
+    const html = render(EMPTY_STORE_FILTER, { previewCount: () => 38 })
+    const live = html.match(/<p[^>]*aria-live="polite"[^>]*>[^<]*<\/p>/)
+    expect(live?.[0]).toContain('role="status"')
+    expect(live?.[0]).toContain('38件')
+  })
+})
+
 describe('AddressFilterModal — ゲームタイトル選択', () => {
   it('すべて/ラスサバ/イニブの3択を表示する', () => {
     const html = render(EMPTY_STORE_FILTER)

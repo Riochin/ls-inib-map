@@ -140,6 +140,23 @@ describe('loadSavedStoreFilter', () => {
     })
     expect(loadSavedStoreFilter()).toBeNull()
   })
+
+  it('旧スキーマ（単一 prefecture 文字列・prefectures なし）でもクラッシュせず安全に取り込む', () => {
+    // 複数選択化より前のバージョンが書いた可能性のあるデータ形
+    const legacy = JSON.stringify({
+      address: { region: '関東', prefecture: '東京都', cities: ['新宿区'] },
+      facility: { hasStreaming: true },
+      completeness: 'rich',
+    })
+    vi.stubGlobal('localStorage', createStorageMock({ [STORE_FILTER_STORAGE_KEY]: legacy }))
+    const result = loadSavedStoreFilter()
+    // 未知の prefecture キーは黙って捨て（prefectures は空）、有効な値は活かす
+    expect(result?.address.prefectures).toEqual([])
+    expect(result?.address.region).toBe('関東')
+    expect(result?.address.cities).toEqual(['新宿区'])
+    expect(result?.facility.hasStreaming).toBe(true)
+    expect(result?.completeness).toBe('rich')
+  })
 })
 
 describe('saveStoreFilter', () => {
