@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ラストサバイニブ ver 2.4 紹介</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --purple: #7B2FBE;
+    --purple-soft: #F3E8FF;
+    --purple-light: #C4A0E8;
+    --blue: #2563EB;
+    --blue-soft: #DBEAFE;
+    --ink: #1f2433;
+    --ink-soft: #5b6376;
+    --round: "M PLUS Rounded 1c", system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #cdd3e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 40px;
+    font-family: system-ui, -apple-system, "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+    color: var(--ink);
+  }
+
+  /* ===== 撮影枠 ===== */
+  #flyer {
+    position: relative;
+    width: 1200px;
+    height: 675px;
+    overflow: hidden;
+    border-radius: 28px;
+    background:
+      radial-gradient(1100px 520px at 88% -8%, rgba(123,47,190,0.18), transparent 60%),
+      radial-gradient(900px 520px at 0% 110%, rgba(37,99,235,0.14), transparent 55%),
+      linear-gradient(160deg, #fbfaff 0%, #f4f1fb 100%);
+  }
+
+  #flyer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(123,47,190,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(123,47,190,0.05) 1px, transparent 1px);
+    background-size: 46px 46px;
+    mask-image: radial-gradient(circle at 50% 40%, #000 55%, transparent 100%);
+  }
+
+  .deco-pin {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border-radius: 50% 50% 50% 0;
+    transform: rotate(-45deg);
+    background: linear-gradient(135deg, var(--purple), var(--purple-light));
+    box-shadow: 0 8px 16px rgba(123,47,190,0.25);
+    opacity: 0.5;
+  }
+  .deco-pin::after {
+    content: "";
+    position: absolute;
+    inset: 9px;
+    background: #fff;
+    border-radius: 50%;
+  }
+  .deco-pin.p1 { top: 34px; right: 206px; transform: rotate(-45deg) scale(0.8); opacity: 0.5; }
+  .deco-pin.p2 { top: 158px; right: 192px; opacity: 0.5; }
+  .deco-pin.p3 { top: 120px; right: 36px; transform: rotate(-45deg) scale(0.6); opacity: 0.3; }
+  .deco-pin.b { background: linear-gradient(135deg, var(--blue), #93c5fd); box-shadow: 0 8px 16px rgba(37,99,235,0.22); }
+
+  .inner {
+    position: relative;
+    z-index: 2;
+    height: 100%;
+    padding: 44px 52px 40px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ===== ヘッダー ===== */
+  header { display: flex; align-items: flex-start; justify-content: space-between; }
+
+  .ver-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--purple);
+    color: #fff;
+    font-family: var(--round);
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: 0.02em;
+    padding: 8px 18px;
+    border-radius: 999px;
+    box-shadow: 0 10px 24px rgba(123,47,190,0.28);
+  }
+  .ver-pill .dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; opacity: 0.9; }
+
+  .title {
+    font-family: var(--round);
+    font-weight: 800;
+    font-size: 50px;
+    line-height: 1.12;
+    letter-spacing: 0.01em;
+    margin-top: 18px;
+  }
+  .accent { color: var(--purple); }
+  .subtitle {
+    margin-top: 10px;
+    font-size: 19px;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+
+  .brand {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding-left: 24px;
+    margin-right: 12px;
+  }
+  .brand-pin {
+    width: 116px;
+    height: auto;
+    margin-top: 6px;
+    filter: drop-shadow(0 14px 26px rgba(123,47,190,0.34));
+  }
+
+  /* ===== 機能カード ===== */
+  .cards {
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  .card {
+    height: 335px;
+    background: rgba(255,255,255,0.82);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(123,47,190,0.10);
+    border-radius: 20px;
+    padding: 20px 20px 20px;
+    box-shadow: 0 18px 40px rgba(70,40,110,0.12);
+    display: flex;
+    flex-direction: column;
+  }
+  .card .kicker {
+    font-family: var(--round);
+    font-weight: 700;
+    font-size: 12.5px;
+    color: var(--purple);
+    background: var(--purple-soft);
+    align-self: flex-start;
+    padding: 4px 11px;
+    border-radius: 999px;
+    letter-spacing: 0.03em;
+  }
+  .card h3 {
+    font-family: var(--round);
+    font-weight: 700;
+    font-size: 19px;
+    margin-top: 12px;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+  .card p {
+    margin-top: 8px;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+
+  .preview {
+    height: 130px;
+    overflow: hidden;
+    margin-top: 14px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: #fff;
+    border: 1px solid #eef0f6;
+    border-radius: 14px;
+    padding: 12px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+  }
+
+  /* ===== 設備フィルター UI再現 ===== */
+  .facility-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .filter-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .filter-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 4px 11px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .filter-toggle.on {
+    background: var(--purple);
+    color: #fff;
+  }
+  .filter-toggle.off {
+    background: #f0f1f5;
+    color: var(--ink-soft);
+  }
+  .filter-toggle .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.7;
+  }
+  .min-machines {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 4px 11px;
+    border-radius: 999px;
+    background: #f0f1f5;
+    color: var(--ink-soft);
+  }
+
+  /* ===== 地方・都道府県選択 UI再現（実UIのラジオ／チェックボックス） ===== */
+  .region-select {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .region-group-label {
+    font-size: 9.5px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    margin-bottom: 1px;
+  }
+  .check-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px 8px;
+  }
+  .check-grid.cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .check-box {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+    border: 1.5px solid #c7cad6;
+    background: #fff;
+  }
+  .check-box.radio { border-radius: 50%; }
+  .check-box.square { border-radius: 3px; }
+  .check-box.on {
+    background: var(--purple);
+    border-color: var(--purple);
+    position: relative;
+  }
+  .check-box.radio.on::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    background: #fff;
+    border-radius: 50%;
+  }
+  .check-box.square.on::after {
+    content: "";
+    position: absolute;
+    left: 3.5px;
+    top: 0.5px;
+    width: 3.5px;
+    height: 7px;
+    border: solid #fff;
+    border-width: 0 1.6px 1.6px 0;
+    transform: rotate(45deg);
+  }
+
+  /* ===== 充実度フィルター UI再現 ===== */
+  .completeness-filter {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .comp-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .comp-bar {
+    flex: 1;
+    height: 8px;
+    border-radius: 999px;
+    background: #eef0f6;
+    overflow: hidden;
+  }
+  .comp-bar .fill {
+    height: 100%;
+    border-radius: 999px;
+  }
+  .comp-bar .fill.rich { background: var(--purple); width: 55%; }
+  .comp-bar .fill.poor { background: #d1d5db; width: 20%; }
+  .comp-label {
+    font-size: 11px;
+    font-weight: 700;
+    width: 72px;
+    flex-shrink: 0;
+  }
+  .comp-label.rich { color: var(--purple); }
+  .comp-label.poor { color: var(--ink-soft); }
+  .comp-badge {
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+  }
+  .comp-badge.rich {
+    background: var(--purple-soft);
+    color: var(--purple);
+  }
+  .comp-badge.poor {
+    background: #f0f1f5;
+    color: var(--ink-soft);
+  }
+  .comp-sub {
+    font-size: 10px;
+    color: var(--ink-soft);
+    line-height: 1.4;
+  }
+
+  /* ===== フッター ===== */
+  footer {
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .url {
+    font-family: var(--round);
+    font-weight: 700;
+    font-size: 19px;
+    color: var(--ink);
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+  }
+  .url .link-mark {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--purple);
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .url .link-mark svg { width: 15px; height: 15px; }
+  .hashtag {
+    font-family: var(--round);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--purple);
+    background: var(--purple-soft);
+    padding: 7px 16px;
+    border-radius: 999px;
+  }
+</style>
+</head>
+<body>
+  <div id="flyer">
+    <span class="deco-pin p1"></span>
+    <span class="deco-pin p2 b"></span>
+    <span class="deco-pin p3"></span>
+
+    <div class="inner">
+      <header>
+        <div>
+          <span class="ver-pill"><span class="dot"></span>新機能 ver 2.4</span>
+          <h1 class="title">条件で、<span class="accent">「絞り込む」</span><br>ができるように。</h1>
+          <p class="subtitle">ラスサバ・イニブの設置店舗マップ アップデート</p>
+        </div>
+        <div class="brand">
+          <svg class="brand-pin" viewBox="0 0 28 36" xmlns="http://www.w3.org/2000/svg" aria-label="ラストサバイニブ ロゴ">
+            <defs>
+              <linearGradient id="brand-grad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#7B2FBE"/>
+                <stop offset="30%" stop-color="#7B2FBE"/>
+                <stop offset="100%" stop-color="#2563EB"/>
+              </linearGradient>
+            </defs>
+            <path d="M14 0C6.268 0 0 6.268 0 14c0 7.732 14 22 14 22s14-14.268 14-22C28 6.268 21.732 0 14 0z" fill="url(#brand-grad)"/>
+            <circle cx="14" cy="14" r="5" fill="white"/>
+          </svg>
+        </div>
+      </header>
+
+      <div class="cards">
+        <!-- カード1: 設備条件フィルター -->
+        <div class="card">
+          <span class="kicker">設備で絞り込む</span>
+          <h3><span class="accent">配信台</span>・<span class="accent">録画台</span>・<br>最低台数・喫煙所で選べる。</h3>
+          <p>「配信台あり」「最低3台」「営業中のみ」など、<br>設備条件を指定して店舗を絞り込めます。</p>
+          <div class="preview">
+            <div class="facility-filter">
+              <div class="filter-row">
+                <span class="filter-toggle on"><span class="dot"></span>配信台あり</span>
+                <span class="filter-toggle on"><span class="dot"></span>録画台あり</span>
+              </div>
+              <div class="filter-row">
+                <span class="filter-toggle off">喫煙所あり</span>
+                <span class="filter-toggle off">営業中のみ</span>
+              </div>
+              <div class="filter-row">
+                <span class="min-machines">最低台数：3台〜</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- カード2: 地方・複数都県選択 -->
+        <div class="card">
+          <span class="kicker">エリアで絞り込む</span>
+          <h3>「<span class="accent">地方</span>」「複数都県」<br>で選べる。</h3>
+          <p>「関東」などの地方区分、または複数の都県を<br>まとめて選んで絞り込めます。</p>
+          <div class="preview">
+            <div class="region-select">
+              <div>
+                <p class="region-group-label">地方</p>
+                <div class="check-grid">
+                  <span class="check-item"><span class="check-box radio"></span>すべて</span>
+                  <span class="check-item"><span class="check-box radio on"></span>関東</span>
+                  <span class="check-item"><span class="check-box radio"></span>近畿</span>
+                </div>
+              </div>
+              <div>
+                <p class="region-group-label">都道府県（複数選択可）</p>
+                <div class="check-grid cols-2">
+                  <span class="check-item"><span class="check-box square on"></span>東京都</span>
+                  <span class="check-item"><span class="check-box square on"></span>神奈川県</span>
+                  <span class="check-item"><span class="check-box square"></span>埼玉県</span>
+                  <span class="check-item"><span class="check-box square"></span>千葉県</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- カード3: 充実度フィルター -->
+        <div class="card">
+          <span class="kicker">情報の充実度で絞り込む</span>
+          <h3>情報が<span class="accent">充実している店</span><br>だけ表示。</h3>
+          <p>情報が充実している店・不足している店だけを<br>表示できます。不足している店舗を見つけて、<br>ぜひ情報提供にご協力ください。</p>
+          <div class="preview">
+            <div class="completeness-filter">
+              <div class="comp-row">
+                <span class="comp-label rich">充実した店</span>
+                <div class="comp-bar"><div class="fill rich"></div></div>
+                <span class="comp-badge rich">表示中</span>
+              </div>
+              <div class="comp-row">
+                <span class="comp-label poor">不足した店</span>
+                <div class="comp-bar"><div class="fill poor"></div></div>
+                <span class="comp-badge poor">非表示</span>
+              </div>
+              <div class="comp-sub">※充実度は営業時間・台数・決済手段など7項目で判定</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <span class="url">
+          <span class="link-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.5 1.5"/>
+              <path d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.5-1.5"/>
+            </svg>
+          </span>
+          lsib.world
+        </span>
+        <span class="hashtag">#ラストサバイニブ</span>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>
