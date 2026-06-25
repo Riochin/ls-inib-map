@@ -156,10 +156,25 @@ export function AddressFilterModal({
     onApply(draft)
     // ゲームタイトル選択を上部タブへ同期（変化時のみ。saveFilter/track は呼び出し側で実施）。
     if (gameDraft !== gameFilter) onGameFilterChange(gameDraft)
-    // 都県未選択（すべて）は 'all' として計上。複数選択は連結して送る。市区の選択数も併せて。
+    // 既存指標（継続性のため温存）。都県未選択は 'all'、複数選択は連結。
     trackEvent('select_prefecture', {
       prefecture: address.prefectures.length === 0 ? 'all' : address.prefectures.join(','),
       city_count: address.cities.length,
+    })
+    // ver2.4〜: 全軸＋結果件数のサマリー。どの絞り込みが使われるかを把握する。
+    trackEvent('apply_filter', {
+      game: gameDraft,
+      region: address.region ?? 'all',
+      prefecture_count: address.prefectures.length,
+      city_count: address.cities.length,
+      min_machines: facility.minMachines ?? 0,
+      has_streaming: facility.hasStreaming,
+      has_recording: facility.hasRecording,
+      has_smoking: facility.hasSmoking,
+      open_only: facility.openOnly,
+      completeness: draft.completeness,
+      result_count: previewCount ? previewCount(draft, gameDraft) : 0,
+      is_filtered: chips.length > 0 || gameDraft !== 'all',
     })
     onClose()
   }

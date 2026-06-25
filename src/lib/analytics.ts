@@ -30,8 +30,29 @@ export type GAEventMap = {
   }
   /** 「経路を調べる」Google マップリンク押下 */
   click_store_map: { store_id: string; store_name?: string }
-  /** エリア絞り込みモーダルで「適用」 */
+  /**
+   * エリア絞り込みモーダルで「適用」（既存指標・継続性のため温存）。
+   * 全軸を取る {@link GAEventMap.apply_filter} と併走で送り、過去データと比較可能にする。
+   */
   select_prefecture: { prefecture: string; city_count: number }
+  /**
+   * 絞り込みモーダルで「適用」時の全条件サマリー（ver2.4〜）。どの軸が使われるか・
+   * 結果件数の分布を1イベントで把握する。`select_prefecture` と同時に送る。
+   */
+  apply_filter: {
+    game: string
+    region: string
+    prefecture_count: number
+    city_count: number
+    min_machines: number
+    has_streaming: boolean
+    has_recording: boolean
+    has_smoking: boolean
+    open_only: boolean
+    completeness: string
+    result_count: number
+    is_filtered: boolean
+  }
   /** タイトルタブ切替（すべて/ラスサバ/イニブ） */
   filter_title: { filter: string }
   /** 現在地ボタン押下 */
