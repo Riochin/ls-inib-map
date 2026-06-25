@@ -74,7 +74,7 @@ export default function MapPage() {
   const previewCount = useCallback(
     (draft: StoreFilter, game: FilterOption) => {
       const byAddress = filterStoresAll(stores, game, draft.address, addressIndex)
-      const byFacility = filterStoresByFacility(byAddress, draft.facility)
+      const byFacility = filterStoresByFacility(byAddress, draft.facility, game)
       const byCompleteness = filterStoresByCompleteness(byFacility, draft.completeness)
       return filterStoresByKeyword(byCompleteness, searchQuery).length
     },
@@ -83,7 +83,7 @@ export default function MapPage() {
 
   const filteredStores = useMemo(() => {
     const byAddress = filterStoresAll(stores, activeFilter, storeFilter.address, addressIndex)
-    const byFacility = filterStoresByFacility(byAddress, storeFilter.facility)
+    const byFacility = filterStoresByFacility(byAddress, storeFilter.facility, activeFilter)
     const byCompleteness = filterStoresByCompleteness(byFacility, storeFilter.completeness)
     return filterStoresByKeyword(byCompleteness, searchQuery)
   }, [activeFilter, storeFilter, addressIndex, searchQuery])
