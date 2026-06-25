@@ -6,7 +6,7 @@ import { normalizeTextBasics } from '@/lib/text-normalize'
  * 非貪欲な `[都道府県]` マッチでは「京都府」が「京都」に化けるため、
  * 既知の都道府県名を前方一致で照合して接頭辞を確定する。
  */
-const PREFECTURES = [
+export const PREFECTURES = [
   '北海道',
   '青森県', '岩手県', '宮城県', '秋田県', '山形県', '福島県',
   '茨城県', '栃木県', '群馬県', '埼玉県', '千葉県', '東京都', '神奈川県',
