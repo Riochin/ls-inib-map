@@ -333,17 +333,30 @@
       "closed": true
     },
     "759b99cc9970": {
-      "source": "user-report",
-      "note": "タイトーステーション大宮 ラスサバ4台・イニブ25台・4F・喫煙所あり・交通系IC対応（Issue #127）。",
-      "updatedAt": "2026-06-19",
+      "source": "admin",
+      "countSources": {
+        "jojo-ls": "user-report"
+      },
+      "attributeSources": {
+        "payments": "user-report"
+      },
+      "note": "タイトーステーション大宮 #127(ラスサバ4・イニブ25・4F・喫煙・IC, SNS未記入=user-report)。Issue #208 @ls_boushi(SNS提供=確定): イニブ22台に修正・営業9:00～0:00・4F・喫煙所あり・録画台(ラスサバ)なし/(イニブ)あり・配信台(ラスサバ)なし。報告者=イニブ勢のためラスサバ録画/配信のみ確定割当。ラスサバ台数(#127)とpaymentsは今回未報告のためuser-report維持。お礼可。",
+      "updatedAt": "2026-06-26",
       "machineCounts": {
         "jojo-ls": 4,
-        "gundam-exvs": 25
+        "gundam-exvs": 22
       },
       "businessHours": "9:00～0:00",
       "floor": "4F",
       "smoking": "yes",
-      "payments": ["交通系IC（Suica/PASMOなど）"]
+      "payments": ["交通系IC（Suica/PASMOなど）"],
+      "hasRecordingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no"
+      }
     },
     "7dabb1a2bb08": {
       "source": "admin",
@@ -762,6 +775,132 @@
       "hasStreamingByGame": {
         "jojo-ls": "no",
         "gundam-exvs": "unknown"
+      }
+    },
+    "6b1812154b52": {
+      "source": "user-report",
+      "note": "シルクハット大船 録画台(イニブ)あり（Issue #201）。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-06-26",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      }
+    },
+    "7d5b035fa72f": {
+      "source": "admin",
+      "note": "ドリームキャンディー Issue #204 @1kAreta_8r0U(SNS提供=確定): 営業0:00～24:00・ワンフロア・喫煙所あり・録画台(イニブ)なし・配信台(イニブ)なし。memo: 金土日は10:00オープン／イニブ録画機・配信台は無いが配信機材を持込み店員に声かければ配信可。Issue #202(SNS未記入)は同一店の重複報告のため本エントリに統合。お礼可。",
+      "updatedAt": "2026-06-26",
+      "businessHours": "0:00～24:00",
+      "floor": "ワンフロア",
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "09100605547d": {
+      "source": "user-report",
+      "note": "ラウンドワン札幌すすきの 録画台(ラスサバ)あり（Issue #203）。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-06-26",
+      "hasRecordingByGame": {
+        "jojo-ls": "yes"
+      }
+    },
+    "afddac5e0fb6": {
+      "source": "user-report",
+      "note": "ラウンドワンスタジアム中川1号線 喫煙所あり・録画台(イニブ)あり・配信台(イニブ)なし（Issue #205）。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-06-26",
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "65a4a2e1151f": {
+      "source": "user-report",
+      "note": "ラウンドワンスタジアムさいたま・栗橋 イニブ4台・フロア1F・喫煙所あり・録画台(イニブ)あり・配信台(イニブ)なし（Issue #206）。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-06-26",
+      "machineCounts": {
+        "gundam-exvs": 4
+      },
+      "floor": "1F",
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "f0d7fd49e11b": {
+      "source": "admin",
+      "note": "埼玉レジャーランド大宮ラクーン Issue #207 @ls_boushi(SNS提供=確定): イニブ8台・営業9:00-24:00・5F(商業施設内)・録画台(イニブ)なし・配信台(イニブ)なし。お礼可。",
+      "updatedAt": "2026-06-26",
+      "machineCounts": {
+        "gundam-exvs": 8
+      },
+      "businessHours": "9:00-24:00",
+      "floor": "5F",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "5e617718c8b4": {
+      "source": "admin",
+      "note": "埼玉レジャーランド大宮駅東口 Issue #209 @ls_boushi(SNS提供=確定): イニブ8台・営業9:00-24:00・2階・録画台(イニブ)なし・配信台(イニブ)なし。お礼可。",
+      "updatedAt": "2026-06-26",
+      "machineCounts": {
+        "gundam-exvs": 8
+      },
+      "businessHours": "9:00-24:00",
+      "floor": "2階",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "9a5e3a282c50": {
+      "source": "user-report",
+      "note": "namco秋葉原 イニブ40台・営業10:00-23:00・B1・禁煙・決済(交通系IC/d払い/nanaco/iD)・録画台(イニブ)なし・配信台(イニブ)あり（Issue #210）。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-06-26",
+      "machineCounts": {
+        "gundam-exvs": 40
+      },
+      "businessHours": "10:00-23:00",
+      "floor": "B1",
+      "smoking": "no",
+      "payments": ["交通系IC（Suica/PASMOなど）", "d払い", "nanaco", "iD"],
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "yes"
+      }
+    },
+    "c0ed2946a852": {
+      "source": "admin",
+      "note": "GiGO 大宮西口 Issue #211 @ls_boushi(SNS提供=確定): イニブ6台・営業10:00-23:00・4階・喫煙所なし(memo「外に出ればあり」＝店内なし/店外に喫煙可)・決済多数・録画台(イニブ)なし・配信台(イニブ)なし。お礼可。",
+      "updatedAt": "2026-06-26",
+      "machineCounts": {
+        "gundam-exvs": 6
+      },
+      "businessHours": "10:00-23:00",
+      "floor": "4階",
+      "smoking": "no",
+      "payments": ["交通系IC（Suica/PASMOなど）", "nanaco", "iD", "楽天ペイ", "QUICPay", "WAON", "PayPay", "LINE Pay", "d払い"],
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
       }
     }
   }
