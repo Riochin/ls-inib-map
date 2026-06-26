@@ -79,17 +79,17 @@ GITHUB_REPORT_REPO=owner/repo
 ### インストール・起動
 
 ```bash
-npm install
-npm run dev        # 開発サーバー起動 (http://localhost:3000)
+pnpm install
+pnpm dev           # 開発サーバー起動 (http://localhost:3000)
 ```
 
 ### コマンド
 
 ```bash
-npm run build      # プロダクションビルド
-npm start          # プロダクションサーバー起動
-npm test           # テスト実行（Vitest）
-npm run test:watch # テスト（watch モード）
+pnpm build         # プロダクションビルド
+pnpm start         # プロダクションサーバー起動
+pnpm test          # テスト実行（Vitest）
+pnpm test:watch    # テスト（watch モード）
 ```
 
 ## データ更新パイプライン
@@ -97,7 +97,7 @@ npm run test:watch # テスト（watch モード）
 設置店舗データは公式 2 サイト（[ラスサバ](https://bandainamco-am.co.jp/am/vg/jojols/location/) / [イニブ](https://gundam-vs.jp/extreme/ac2ib/location/)）から取得し、`src/data/stores.json` を生成します。
 
 ```bash
-npx tsx scripts/pipeline.ts
+pnpm exec tsx scripts/pipeline.ts
 ```
 
 処理の流れ:
@@ -137,7 +137,7 @@ scripts/              # ビルド前データ生成パイプライン（scrape �
 4. **フィルタ UI** — `src/components/FilterBar.tsx` の `FILTERS` にチップを追加。`ACTIVE_BG_COLORS`（`Record<FilterOption, string>`）は型で追加を強制されるので色も定義。
 5. **提供フォーム** — `src/components/StoreInfoForm.tsx` は `hasJojo` / `hasGundam` のように**タイトルごとにハードコード**。新タイトルの state・入力（台数／録画台／配信台）・送信ペイロードキー（`machineCounts<Title>` 等）を追加。
 6. **投稿パイプライン** — `src/lib/report.ts`（`StructuredStoreInput` の flat key と Issue 行）と `src/app/api/report/route.ts`（検証）に新タイトルのキーを追加。
-7. **データ生成** — `scripts/scrape.ts` の `SOURCES` / `ALL_SITES` / `SiteKey` に公式サイト取得元を追加し、`scripts/merge.ts` のタイトル合成を確認 → `npx tsx scripts/pipeline.ts` で `src/data/stores.json` を再生成。
+7. **データ生成** — `scripts/scrape.ts` の `SOURCES` / `ALL_SITES` / `SiteKey` に公式サイト取得元を追加し、`scripts/merge.ts` のタイトル合成を確認 → `pnpm exec tsx scripts/pipeline.ts` で `src/data/stores.json` を再生成。
 
 > 目安：**`Record<GameTitle, …>` を使う箇所は TypeScript がキー追加を強制**してくれます（漏れに気づける）。一方 `getGameLabel` / `getThemeKey` / `StoreInfoForm` の 2タイトル前提ロジックはコンパイラで検出されないため、手動での見直しが必須です。`pnpm exec tsc --noEmit` と `pnpm test` で検証してください。
 
