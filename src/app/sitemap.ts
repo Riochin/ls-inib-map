@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next'
 import { storesMeta } from '@/data/stores'
+import { getAreaPrefectures } from '@/lib/area'
 
 const SITE_URL = 'https://ls-inib-map.vercel.app'
 
@@ -8,6 +9,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ? new Date(storesMeta.lastUpdated)
     : new Date()
 
+  const areas = getAreaPrefectures()
+
   return [
     {
       url: SITE_URL,
@@ -15,5 +18,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'daily',
       priority: 1,
     },
+    {
+      url: `${SITE_URL}/area`,
+      lastModified,
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    ...areas.map((area) => ({
+      url: `${SITE_URL}/area/${area.slug}`,
+      lastModified,
+      changeFrequency: 'weekly' as const,
+      priority: 0.7,
+    })),
   ]
 }
