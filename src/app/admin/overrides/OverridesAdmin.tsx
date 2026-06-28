@@ -84,10 +84,12 @@ function entryFromForm(f: FormState): OverrideEntry | null {
     hasOverride = true
   }
 
-  if (f.note.trim()) entry.note = f.note.trim()
-  if (f.remarks.trim()) {
+  const trimmedNote = f.note.trim()
+  if (trimmedNote) entry.note = trimmedNote
+  const trimmedRemarks = f.remarks.trim()
+  if (trimmedRemarks) {
     // 補足は公開表示される実データ＝これ単体でも有効な override とみなす
-    entry.remarks = f.remarks.trim()
+    entry.remarks = trimmedRemarks
     hasOverride = true
   }
   if (f.closed) {
