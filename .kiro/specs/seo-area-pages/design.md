@@ -184,6 +184,54 @@ return [
 
 ---
 
+## 県ページ内 検索・絞り込み（追加スコープ: store-search）
+
+### 方針
+
+県ページの本文一覧に、クライアント側の検索・絞り込みを**段階的強化**として被せる。マップUI（`SearchBar` / `FilterBar`）の**コンポーネントは流用せず**、一致ロジックの純関数（`lib/filter.ts` / `lib/facility-filter.ts`）**のみ**を再利用する。これにより一致挙動が地図と自動的に一致し、二重実装のドリフトを防ぐ。`SearchBar.tsx`（`absolute top-16` の地図オーバーレイ）・`FilterBar.tsx`（`absolute` 浮遊・タイトル切替）はドキュメントフローの本文ページに不適合のため使わない。
+
+タイトル切替（イニブ／ラスサバ）はページが既に `<h2>` セクションで分割済みのためファセットに含めない。「営業中のみ」も県ページが既に営業中店舗のみ（Req 1.6）のため除外する。提供ファセットは **最低台数・配信台あり・録画台あり・喫煙所あり** の4種。
+
+### SSG・JS非依存の担保
+
+検索UIは**閾値以上の県のみ**クライアントコンポーネント化する。クライアントコンポーネントの初期 state は「検索語なし・ファセットなし」で、初期描画は全店一覧（サーバー描画と一致）となるため、初期 HTML に全店が含まれ、JS無効でも全件が見える（Req 7.1 / Req 8.7 を満たす）。検索・ファセットUIは JS 実行後にのみ機能する純粋な付加機能。閾値未満の県は従来どおり完全な静的セクションのまま（クライアントJS不要）。
+
+### 新規・変更コンポーネント
+
+| 対象 | 種別 | 役割 |
+|------|------|------|
+| `src/components/area/AreaStoreSections.tsx` | 新規 | タイトル別 `<section>(h2 + AreaStoreList)` の描画を `AreaPageContent` から抽出した presentational。静的経路と検索経路の双方が再利用 |
+| `src/components/area/AreaStoreFilter.tsx` | 新規 | `'use client'`。検索ボックス＋設備ファセット＋絞り込み結果を描画するアイランド。state は `query` と `FacilityFilter`（subset）。一致は純関数に委譲 |
+| `src/lib/area.ts`（または `area-seo.ts`） | 変更 | 閾値定数 `AREA_SEARCH_MIN_STORES = 10` を追加（単一定数で調整可能） |
+| `src/components/area/AreaPageContent.tsx` | 変更 | `detail.total >= AREA_SEARCH_MIN_STORES` のとき `<AreaStoreFilter>`、未満は `<AreaStoreSections>`（静的）に分岐 |
+
+### 絞り込みロジック（セクション単位・純関数の再利用）
+
+各タイトルセクションについて、当該タイトルでスコープして適用する:
+
+```ts
+// game は当該セクションのタイトル（'gundam-exvs' | 'jojo-ls'）
+const visible = filterStoresByFacility(
+  filterStoresByKeyword(storesByGame[game], query),
+  facility,            // { minMachines, hasStreaming, hasRecording, hasSmoking, openOnly: false }
+  game,                // 台数・配信台・録画台は当該タイトルでスコープ
+)
+```
+
+- フリーテキスト: `filterStoresByKeyword`（店名＋住所・空白区切り AND）。店名だけでなく住所も対象なので「新宿」等のエリア語入力で実質的な所在地絞り込みも兼ねる。
+- 設備: `filterStoresByFacility` を `openOnly: false` 固定で利用。`minMachines` はノンテック層向けにプリセットのチップ（例: 指定なし／4台以上／8台以上）で与える。`hasStreaming` / `hasRecording` / `hasSmoking` はトグルチップ。
+- 可視0件のセクションは `<h2>` ごと隠す。全タイトルで0件のときは「該当する店舗がありません」を表示。
+
+### UI
+
+`FilterBar` のピル/チップの見た目（ブランド紫・角丸）を**踏襲**しつつ、配置はドキュメントフロー（`absolute` 浮遊なし）。検索ボックスはリード文直下、ファセットチップはその下に横並び。既存 design language（Req 6.1）に準拠。
+
+### 影響範囲
+
+クライアント専用に閉じ、`generateStaticParams` / `generateMetadata` / JSON-LD（全店対象の ItemList）・サイトマップには手を入れない（Req 8.8）。閾値未満の県と全ハブページは無変更。
+
+---
+
 ## Error Handling
 
 - `getAreaForPrefecture(slug)` が `null`（未知スラッグ・店舗0）→ 県ページは `notFound()`（404）
@@ -200,6 +248,9 @@ return [
 - `sitemap.test.ts`（既存があれば拡張）: `/area` と全県 URL を含む／件数が `getAreaPrefectures()` と一致
 - 県ページの `generateStaticParams` が全スラッグを返すこと
 - 既存の地図・フィルタ・検索系テストが緑のまま（影響ゼロの確認）
+- `AreaStoreFilter.test.tsx`: フリーテキスト（店名・住所一致）／設備ファセット（最低台数・配信・録画・喫煙）の絞り込み結果、可視0セクションの見出し非表示、全0件の空状態表示、初期 state での全件描画（JS非依存の担保）
+- 閾値ゲート: `total >= AREA_SEARCH_MIN_STORES` の県のみ検索UIを描画し、未満は静的セクションのみ（`AreaStoreFilter` を描画しない）こと
+- 一致規則の地図との一致: `filterStoresByKeyword` / `filterStoresByFacility` を共有し、エリア側で再実装しないこと（純関数の再利用を確認）
 
 ---
 
