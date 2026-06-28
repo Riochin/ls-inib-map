@@ -88,6 +88,8 @@ function applyEntry(store: Store, entry: OverrideEntry): Store {
 
   if (entry.closed !== undefined) next.closed = entry.closed
   if (entry.delisted !== undefined) next.delisted = entry.delisted
+  // 補足は運営編集の中立テキスト＝provenance（attributeSources）を持たない単純な上書き
+  if (entry.remarks !== undefined) next.remarks = entry.remarks
   if (entry.name !== undefined) next.name = entry.name
   if (entry.address !== undefined) next.address = entry.address
   if (entry.lat !== undefined) next.lat = entry.lat

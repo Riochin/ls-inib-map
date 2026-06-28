@@ -23,6 +23,7 @@ interface FormState {
   counts: Record<GameTitle, string>
   source: Provenance
   note: string
+  remarks: string
   closed: boolean
   delisted: boolean
   name: string
@@ -36,6 +37,7 @@ function emptyForm(): FormState {
     counts: { 'jojo-ls': '', 'gundam-exvs': '' },
     source: 'user-report',
     note: '',
+    remarks: '',
     closed: false,
     delisted: false,
     name: '',
@@ -50,6 +52,7 @@ function formFromEntry(entry: OverrideEntry): FormState {
   const f = emptyForm()
   f.source = entry.source
   f.note = entry.note ?? ''
+  f.remarks = entry.remarks ?? ''
   f.closed = entry.closed ?? false
   f.delisted = entry.delisted ?? false
   f.name = entry.name ?? ''
@@ -82,6 +85,11 @@ function entryFromForm(f: FormState): OverrideEntry | null {
   }
 
   if (f.note.trim()) entry.note = f.note.trim()
+  if (f.remarks.trim()) {
+    // 補足は公開表示される実データ＝これ単体でも有効な override とみなす
+    entry.remarks = f.remarks.trim()
+    hasOverride = true
+  }
   if (f.closed) {
     entry.closed = true
     hasOverride = true
@@ -398,13 +406,27 @@ export function OverridesAdmin() {
           </label>
 
           <label className="block mb-3">
-            <span className="text-xs font-semibold text-gray-600">メモ（任意）</span>
+            <span className="text-xs font-semibold text-gray-600">内部メモ（非公開・任意）</span>
             <input
               value={form.note}
               onChange={(e) => setForm((f) => ({ ...f, note: e.target.value }))}
-              placeholder="例）ライブモニター除外・報告元"
+              placeholder="例）ライブモニター除外・報告元・Issue番号（地図には出ません）"
               className="w-full border border-gray-300 rounded px-2 py-1 mt-0.5"
             />
+          </label>
+
+          <label className="block mb-3">
+            <span className="text-xs font-semibold text-gray-600">補足（地図に公開・任意）</span>
+            <textarea
+              value={form.remarks}
+              onChange={(e) => setForm((f) => ({ ...f, remarks: e.target.value }))}
+              placeholder="例）喫煙所は店外に出ればあり／録画台はないがライブモニターに録画機あり（SNS・Issue番号は書かない）"
+              rows={3}
+              className="w-full border border-gray-300 rounded px-2 py-1 mt-0.5"
+            />
+            <span className="block text-[10px] text-gray-400 mt-0.5">
+              詳細モーダルの「補足」欄に中立テキストで表示されます（未確認バッジは付きません）。
+            </span>
           </label>
 
           <div className="flex gap-4 mb-4 text-xs">

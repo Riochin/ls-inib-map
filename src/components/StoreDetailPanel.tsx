@@ -194,6 +194,14 @@ export function StoreDetailPanel({ store, onOpenInfoForm, onClose }: StoreDetail
         <AttributeRow label="配信台" value={streamingValue} unconfirmed={unconfirmed('hasStreamingByGame')} preformatted />
       </div>
 
+      {/* 補足（自由記述・運営編集の中立テキスト。確定/未確認の対象外） */}
+      {store.remarks && (
+        <div className="mb-3">
+          <p className="text-xs font-semibold text-gray-500 mb-1">補足</p>
+          <p className="text-xs text-gray-700 leading-relaxed whitespace-pre-wrap">{store.remarks}</p>
+        </div>
+      )}
+
       {/* 情報更新日 */}
       {infoDateLabel && (
         <p className="text-[10px] text-gray-400 mb-3">情報更新: {infoDateLabel}</p>

@@ -96,6 +96,12 @@ export interface Store {
   /** 公式店舗ページURL（例: "https://location.taito.co.jp/locs/stores/1234/"・任意） */
   officialUrl?: string
   /**
+   * 補足（任意）。構造化フィールドに収まらない自由記述を、詳細モーダルの「補足」欄に
+   * 中立テキストで表示する。手動オーバーライドの `remarks` を runtime で写したもの。
+   * 運営が要約して書く編集物のため、確定/未確認（attributeSources）の管理対象外。
+   */
+  remarks?: string
+  /**
    * 属性別の出どころ（任意）。`countSources` と同一 `Partial<Record<...>>` パターン。
    * キー無し＝provenance 不明（未登録）。`applyOverrides` でのみ書き込まれる。
    */
