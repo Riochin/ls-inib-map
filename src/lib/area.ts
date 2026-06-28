@@ -20,6 +20,14 @@ import type { GameTitle, Store } from '@/types/store'
 /** エリア集計対象のゲームタイトル（出力順固定） */
 const GAME_TITLES: readonly GameTitle[] = ['gundam-exvs', 'jojo-ls']
 
+/**
+ * 県ページに店内検索・絞り込みUIを出す店舗数の閾値（この値以上で表示）。
+ *
+ * 少件数の県では検索が過剰でノンテック層にノイズになるため、店舗が多い県だけに出す。
+ * 単一定数で調整可能。未満の県は従来どおりクライアントJS非依存の静的描画を維持する。
+ */
+export const AREA_SEARCH_MIN_STORES = 10
+
 export interface AreaSummary {
   /** 正式名（例「東京都」） */
   prefecture: string

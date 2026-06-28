@@ -1,12 +1,13 @@
 import type { AreaDetail, AreaSummary } from '@/lib/area'
-import type { GameTitle } from '@/types/store'
 import type { StoresMeta } from '@/types/stores-file'
-import { getGameLabel } from '@/lib/marker-color'
 import { formatLastUpdated } from '@/lib/info-display'
 import { areaTitle, buildBreadcrumbJsonLd, buildItemListJsonLd } from '@/lib/area-seo'
 import { CATCH_FONT_STYLE, HEADING_FONT_STYLE } from '@/lib/heading-font'
+import { AREA_SEARCH_MIN_STORES } from '@/lib/area'
 import { AreaBreadcrumb } from '@/components/area/AreaBreadcrumb'
-import { AreaStoreList } from '@/components/area/AreaStoreList'
+import { AreaStoreSections } from '@/components/area/AreaStoreSections'
+import { AreaStoreFilter } from '@/components/area/AreaStoreFilter'
+import { SiteFooter } from '@/components/SiteFooter'
 
 /**
  * 県ページ `/area/[pref]` の本文（同期・presentational）。
@@ -18,8 +19,6 @@ import { AreaStoreList } from '@/components/area/AreaStoreList'
  */
 
 const BRAND_PURPLE = '#7B2FBE'
-/** タイトル別セクションの出力順 */
-const GAME_TITLES: readonly GameTitle[] = ['gundam-exvs', 'jojo-ls']
 
 interface AreaPageContentProps {
   detail: AreaDetail
@@ -62,18 +61,12 @@ export function AreaPageContent({ detail, lastUpdated, source, otherAreas }: Are
         </p>
       </header>
 
-      {GAME_TITLES.map((game) => {
-        const list = detail.storesByGame[game]
-        if (list.length === 0) return null
-        return (
-          <section key={game}>
-            <h2 className="mb-3 text-lg" style={{ ...HEADING_FONT_STYLE, color: BRAND_PURPLE }}>
-              {detail.prefecture}の{getGameLabel(game)}設置店（{list.length}店）
-            </h2>
-            <AreaStoreList game={game} stores={list} />
-          </section>
-        )
-      })}
+      {/* 店舗数が多い県のみ検索・絞り込みUIを段階的強化として被せる。未満は静的のまま（Req 7.1） */}
+      {detail.total >= AREA_SEARCH_MIN_STORES ? (
+        <AreaStoreFilter storesByGame={detail.storesByGame} prefecture={detail.prefecture} />
+      ) : (
+        <AreaStoreSections storesByGame={detail.storesByGame} prefecture={detail.prefecture} />
+      )}
 
       <section>
         {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- 静的SEOページのためクライアントJS非依存の素の<a>を使う（Req 7.1） */}
@@ -102,6 +95,8 @@ export function AreaPageContent({ detail, lastUpdated, source, otherAreas }: Are
           </ul>
         </nav>
       )}
+
+      <SiteFooter />
 
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }} />
