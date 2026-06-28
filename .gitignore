@@ -24,3 +24,6 @@ npm-debug.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# ユーザー報告自動反映ワークフローの中間ファイル（PR本文の Closes 行組み立て用・コミットしない）
+reflected-issues.txt
