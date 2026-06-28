@@ -10,6 +10,19 @@ import { HEADING_FONT_STYLE, CATCH_FONT_STYLE } from '@/lib/heading-font'
 import { releases, latestRelease, type Release, type ReleaseHighlight } from '@/data/releases'
 import { FeedbackForm } from './FeedbackForm'
 import { trackEvent } from '@/lib/analytics'
+// 開発者情報・SNS・データ方針・免責などの「事実」は /about ページと共有する単一ソース。
+import {
+  AUTHOR_NAME,
+  X_HANDLE,
+  X_URL,
+  TWEET_HASHTAG,
+  HASHTAG_URL,
+  SHARE_URL,
+  APP_INTRO,
+  DATA_BASIC,
+  PRIVACY_NOTE,
+  DISCLAIMER,
+} from '@/lib/site-config'
 
 const STORAGE_KEY = 'ls-exvs-onboarded'
 
@@ -19,18 +32,7 @@ const STORAGE_KEY = 'ls-exvs-onboarded'
 const NEWS_VERSION = latestRelease.version
 const NEWS_SEEN_KEY = 'ls-exvs-news-seen'
 
-const AUTHOR_NAME = 'マルハット'
-const X_HANDLE = 'ls_boushi'
-const X_URL = `https://x.com/${X_HANDLE}`
-const SITE_URL = 'https://lsib.world/'
-const TWEET_HASHTAG = 'ラストサバイニブ'
-const TWEET_TEXT = 'ラスサバ・イニブの設置店舗マップ📍'
-const HASHTAG_URL = `https://x.com/hashtag/${encodeURIComponent(TWEET_HASHTAG)}`
-const SHARE_URL =
-  'https://x.com/intent/post' +
-  `?text=${encodeURIComponent(TWEET_TEXT)}` +
-  `&url=${encodeURIComponent(SITE_URL)}` +
-  `&hashtags=${encodeURIComponent(TWEET_HASHTAG)}`
+// 開発者情報・SNS・共有 URL は src/lib/site-config.ts に集約（/about ページと共有）。
 
 // --- ブランド/外部リンク用アイコン ---
 
@@ -243,9 +245,12 @@ function ShareButton() {
 function AboutPage({ onOpenFeedback }: { onOpenFeedback?: () => void }) {
   return (
     <>
-      <h2 className="text-lg text-gray-800 mb-1" style={HEADING_FONT_STYLE}>このアプリについて</h2>
-      <p className="text-xs text-gray-500 mb-3 leading-snug">
-        ラスサバ・イニブの設置店舗を地図でまとめて確認できる非公式の個人開発アプリです。
+      <h2 className="text-lg text-gray-800 mb-1" style={HEADING_FONT_STYLE}>このサイトについて</h2>
+      <p className="text-xs text-gray-500 mb-1 leading-snug">{APP_INTRO}</p>
+      <p className="mb-3">
+        <a href="/about" className="text-xs font-semibold text-purple-700 hover:underline">
+          このサイトについて詳しく見る →
+        </a>
       </p>
 
       <dl className="flex flex-col gap-3 mb-3">
@@ -311,23 +316,17 @@ function DataPrivacyPage() {
       <dl className="flex flex-col gap-3">
         <div>
           <dt className="text-sm font-semibold text-gray-800 mb-1">データについて</dt>
-          <dd className="text-xs text-gray-600 leading-relaxed">
-            店舗データは各公式サイトをもとに自動更新しています。反映までに時間差があり、最新の状況と異なる場合があります。実際の稼働状況は店舗へご確認ください。
-          </dd>
+          <dd className="text-xs text-gray-600 leading-relaxed">{DATA_BASIC}</dd>
         </div>
 
         <div>
           <dt className="text-sm font-semibold text-gray-800 mb-1">プライバシー</dt>
-          <dd className="text-xs text-gray-600 leading-relaxed">
-            現在地はブラウザ内で地図表示にのみ使用し、サーバーへ送信・保存することはありません。
-          </dd>
+          <dd className="text-xs text-gray-600 leading-relaxed">{PRIVACY_NOTE}</dd>
         </div>
 
         <div>
           <dt className="text-sm font-semibold text-gray-800 mb-1">免責</dt>
-          <dd className="text-xs text-gray-600 leading-relaxed">
-            本アプリはファン制作の非公式サービスであり、株式会社バンダイナムコアミューズメント等の権利者とは一切関係ありません。
-          </dd>
+          <dd className="text-xs text-gray-600 leading-relaxed">{DISCLAIMER}</dd>
         </div>
       </dl>
     </>
