@@ -36,6 +36,22 @@ export function areaCanonicalPath(slug: string): string {
   return `/area/${slug}`
 }
 
+/** ハブページ `/area` の canonical パス。 */
+export const AREA_HUB_CANONICAL = '/area'
+
+/** ハブページの見出し／メタタイトル。 */
+export function areaHubTitle(): string {
+  return '全国のラスサバ・イニブ 設置店舗マップ'
+}
+
+/** ハブページのメタ description（総店舗数・都道府県数を含む）。 */
+export function areaHubDescription(totalStores: number, prefectureCount: number): string {
+  return (
+    `全国${prefectureCount}都道府県・計${totalStores}店のラスサバ（ジョジョ ラストサバイバー）・` +
+    `イニブ（ガンダム EXVS2）営業中店舗を都道府県別に掲載。地名から設置店舗一覧へアクセスできます。`
+  )
+}
+
 /** 県内の営業中店舗を ID で重複排除した一覧（タイトル出力順・店名昇順を保持）。 */
 function uniqueStores(detail: AreaDetail): Store[] {
   const seen = new Map<string, Store>()

@@ -3,6 +3,9 @@ import {
   areaTitle,
   areaDescription,
   areaCanonicalPath,
+  areaHubTitle,
+  areaHubDescription,
+  AREA_HUB_CANONICAL,
   buildBreadcrumbJsonLd,
   buildItemListJsonLd,
   AREA_SITE_URL,
@@ -46,6 +49,28 @@ describe('areaDescription', () => {
 describe('areaCanonicalPath', () => {
   it('/area/<slug> を返す', () => {
     expect(areaCanonicalPath('tokyo')).toBe('/area/tokyo')
+  })
+})
+
+describe('areaHubTitle', () => {
+  it('全国の設置店舗マップを表すタイトルを返す', () => {
+    const title = areaHubTitle()
+    expect(title).toContain('全国')
+    expect(title).toContain('設置店舗')
+  })
+})
+
+describe('areaHubDescription', () => {
+  it('総店舗数と都道府県数を含む', () => {
+    const desc = areaHubDescription(123, 30)
+    expect(desc).toContain('123')
+    expect(desc).toContain('30')
+  })
+})
+
+describe('AREA_HUB_CANONICAL', () => {
+  it('/area を指す', () => {
+    expect(AREA_HUB_CANONICAL).toBe('/area')
   })
 })
 
