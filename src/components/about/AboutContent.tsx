@@ -37,7 +37,7 @@ const BRAND_PURPLE = '#7B2FBE'
 /** タイトル別の出力順（area と共通）。 */
 const GAME_TITLES: readonly GameTitle[] = ['gundam-exvs', 'jojo-ls']
 
-/** このアプリでできること（オンボーディングの操作案内・凡例に対応）。 */
+/** このサイトでできること（オンボーディングの操作案内・凡例に対応）。 */
 const FEATURES: string[] = [
   '全国のゲームセンターの設置店舗を地図でまとめて確認できます。',
   'タイトル（ラスサバ／イニブ）で表示を切り替えられます。',
@@ -71,7 +71,7 @@ export function AboutContent({ lastUpdated, totalStores, prefectureCount, popula
           ホーム
         </a>
         <span className="mx-1">›</span>
-        <span>このアプリについて</span>
+        <span>このサイトについて</span>
       </nav>
 
       <header>
@@ -80,7 +80,7 @@ export function AboutContent({ lastUpdated, totalStores, prefectureCount, popula
         </h1>
         <p className="mt-2 text-gray-700 leading-relaxed">
           {gameFullWithShort('jojo-ls')}と{gameFullWithShort('gundam-exvs')}
-          の設置されたゲームセンターを、地図でまとめて確認できる非公式の個人開発アプリです。
+          の設置されたゲームセンターを、地図でまとめて確認できる非公式の個人開発サイトです。
         </p>
       </header>
 
@@ -105,7 +105,7 @@ export function AboutContent({ lastUpdated, totalStores, prefectureCount, popula
 
       <section>
         <h2 className="mb-2 text-lg" style={{ ...HEADING_FONT_STYLE, color: BRAND_PURPLE }}>
-          このアプリでできること
+          このサイトでできること
         </h2>
         <ul className="flex flex-col gap-1.5 text-sm text-gray-700 leading-relaxed list-disc pl-5">
           {FEATURES.map((f) => (

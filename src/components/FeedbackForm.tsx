@@ -105,7 +105,7 @@ export function FeedbackForm({ onClose }: FeedbackFormProps) {
         ) : (
           <form onSubmit={submit}>
             <h2 className="text-lg text-gray-800 mb-0.5" style={HEADING_FONT_STYLE}>
-              アプリへのご要望
+              サイトへのご要望
             </h2>
             <p className="text-xs text-gray-500 mb-4 leading-snug">
               不具合の報告・新機能のご提案など、なんでもお気軽にどうぞ。

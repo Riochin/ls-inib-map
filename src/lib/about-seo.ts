@@ -13,13 +13,13 @@ export const ABOUT_SITE_URL = 'https://ls-inib-map.vercel.app'
 
 /** ページ／メタの見出し（layout の title テンプレートで「｜サイト名」が付く）。 */
 export function aboutTitle(): string {
-  return 'このアプリについて'
+  return 'このサイトについて'
 }
 
 /** メタ description（正式名称を含め指名検索の被リンク面を広げる）。 */
 export function aboutDescription(): string {
   return (
-    `${gameFullWithShort('jojo-ls')}と${gameFullWithShort('gundam-exvs')}の設置店舗を地図で探せる非公式アプリ。` +
+    `${gameFullWithShort('jojo-ls')}と${gameFullWithShort('gundam-exvs')}の設置店舗を地図で探せる非公式サイト。` +
     '運営者・データの作り方・プライバシー・免責、よくある質問を掲載しています。'
   )
 }
@@ -59,14 +59,14 @@ export const ABOUT_FAQ: { q: string; a: string }[] = [
   },
 ]
 
-/** パンくず（ホーム → このアプリについて）の BreadcrumbList 構造化データ。 */
+/** パンくず（ホーム → このサイトについて）の BreadcrumbList 構造化データ。 */
 export function buildAboutBreadcrumbJsonLd(siteUrl: string = ABOUT_SITE_URL) {
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'ホーム', item: `${siteUrl}/` },
-      { '@type': 'ListItem', position: 2, name: 'このアプリについて', item: `${siteUrl}/about` },
+      { '@type': 'ListItem', position: 2, name: 'このサイトについて', item: `${siteUrl}/about` },
     ],
   }
 }

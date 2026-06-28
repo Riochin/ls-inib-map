@@ -245,7 +245,7 @@ function ShareButton() {
 function AboutPage({ onOpenFeedback }: { onOpenFeedback?: () => void }) {
   return (
     <>
-      <h2 className="text-lg text-gray-800 mb-1" style={HEADING_FONT_STYLE}>このアプリについて</h2>
+      <h2 className="text-lg text-gray-800 mb-1" style={HEADING_FONT_STYLE}>このサイトについて</h2>
       <p className="text-xs text-gray-500 mb-1 leading-snug">{APP_INTRO}</p>
       <p className="mb-3">
         <a href="/about" className="text-xs font-semibold text-purple-700 hover:underline">

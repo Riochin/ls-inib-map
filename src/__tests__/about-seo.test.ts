@@ -12,8 +12,8 @@ import {
 import { AUTHOR_NAME, X_URL, GAME_NAMES } from '@/lib/site-config'
 
 describe('aboutTitle', () => {
-  it('「このアプリについて」を返す（layout テンプレートで「｜サイト名」が付く）', () => {
-    expect(aboutTitle()).toBe('このアプリについて')
+  it('「このサイトについて」を返す（layout テンプレートで「｜サイト名」が付く）', () => {
+    expect(aboutTitle()).toBe('このサイトについて')
   })
 })
 
@@ -33,10 +33,10 @@ describe('ABOUT_CANONICAL', () => {
 })
 
 describe('buildAboutBreadcrumbJsonLd', () => {
-  it('ホーム → このアプリについて の BreadcrumbList を返す', () => {
+  it('ホーム → このサイトについて の BreadcrumbList を返す', () => {
     const ld = buildAboutBreadcrumbJsonLd()
     expect(ld['@type']).toBe('BreadcrumbList')
-    expect(ld.itemListElement.map((e) => e.name)).toEqual(['ホーム', 'このアプリについて'])
+    expect(ld.itemListElement.map((e) => e.name)).toEqual(['ホーム', 'このサイトについて'])
     expect(ld.itemListElement.map((e) => e.position)).toEqual([1, 2])
     expect(ld.itemListElement[0].item).toBe(`${ABOUT_SITE_URL}/`)
     expect(ld.itemListElement[1].item).toBe(`${ABOUT_SITE_URL}/about`)
