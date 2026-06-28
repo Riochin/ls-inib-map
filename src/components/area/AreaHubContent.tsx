@@ -1,6 +1,7 @@
 import type { AreaSummary } from '@/lib/area'
 import { areaHubTitle } from '@/lib/area-seo'
 import { CATCH_FONT_STYLE, HEADING_FONT_STYLE } from '@/lib/heading-font'
+import { SiteFooter } from '@/components/SiteFooter'
 
 /**
  * エリア一覧ハブ `/area` の本文（同期・presentational）。
@@ -43,6 +44,8 @@ export function AreaHubContent({ areas }: { areas: AreaSummary[] }) {
           ))}
         </ul>
       </nav>
+
+      <SiteFooter />
     </article>
   )
 }
