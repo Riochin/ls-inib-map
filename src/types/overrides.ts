@@ -16,8 +16,18 @@ export interface OverrideEntry {
   attributeSources?: Partial<Record<StoreAttributeKey, Provenance>>
   /** ゲーム別台数の個別出どころ（任意。{@link OverrideEntry.attributeSources} の `machineCounts` 版） */
   countSources?: Partial<Record<GameTitle, Provenance>>
-  /** 人間用メモ（店名・報告元など。IDが変わって効かなくなった時の手がかり） */
+  /**
+   * 内部メモ（非公開）。店名・報告元・Issue番号・運用判断など、トリアージ用の手がかり。
+   * 地図には一切出さない。公開して良い補足は {@link OverrideEntry.remarks} に書く。
+   */
   note?: string
+  /**
+   * 補足（公開・任意）。構造化フィールド（営業時間・台数など）に収まらない自由記述を、
+   * 詳細モーダルの「補足」欄に運営編集テキストとして表示する。{@link OverrideEntry.note}
+   * （非公開）とは別物。SNS ID・Issue番号など内部情報は書かない。確定/未確認の出どころ
+   * 管理（attributeSources）の対象外＝運営が要約して書く編集物として中立表示する。
+   */
+  remarks?: string
   /**
    * このオーバーライドを最後に更新した日時（ISO 8601・任意）。
    * 管理GUIの保存時に内容が変わったエントリへ自動で打たれる。表示では店舗単位の

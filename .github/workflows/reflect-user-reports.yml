@@ -1,0 +1,171 @@
+name: ユーザー報告を自動反映
+
+# 「ユーザー報告」ラベルの open Issue を毎日1回読み、店舗オーバーライド
+# （src/data/overrides.json）に反映して PR を作る（人がレビュー・マージ）。
+#
+# 設計（structure-memo.yml と update-stores.yml の中間）:
+#  - 判断が要る整形は Claude（OAuth）にやらせ、PR作成は実績のある peter-evans に任せる
+#  - main への直 push はしない。PR のみ。マージで対象 Issue が Closes により自動クローズ
+#  - Claude が編集 → 決定論ゲート（tsc + validate-overrides）を通らなければ PR を作らない
+#  - 固定ブランチ auto/reflect-user-reports に毎日「現在 open の全報告」を再生（PR乱立防止）
+#  - Closes 行は Claude が実際に反映した Issue 番号だけから組み立てる
+#    （未登録店など反映できなかった Issue を誤クローズしない）
+
+on:
+  schedule:
+    # 毎日 11:34 JST（= 02:34 UTC）。他の定期ジョブ（00:24 / 01:24 UTC）と時間帯を分ける
+    - cron: '34 2 * * *'
+  workflow_dispatch:
+
+# PR 作成（ブランチ push + Pull Request）、失敗時の Issue 作成、Claude の OIDC に必要
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  id-token: write
+
+# 同時実行を直列化し、固定ブランチへの push 競合を防ぐ
+concurrency:
+  group: reflect-user-reports
+  cancel-in-progress: false
+
+jobs:
+  reflect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: pnpm をセットアップ
+        uses: pnpm/action-setup@v4
+
+      - name: Node.js をセットアップ
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: 依存関係をインストール
+        run: pnpm install --frozen-lockfile
+
+      # open な「ユーザー報告」Issue の件数を数え、0 件なら以降を丸ごとスキップする。
+      # 反映日付（JST）も後続の Claude プロンプトへ渡す。
+      - name: 対象Issueを集計
+        id: scan
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          count=$(gh issue list --label "ユーザー報告" --state open --json number --jq 'length')
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          echo "today=$(TZ=Asia/Tokyo date +%F)" >> "$GITHUB_OUTPUT"
+          echo "open な「ユーザー報告」Issue: ${count} 件"
+
+      # Claude（OAuth）が Issue を読み、overrides.json を編集する。
+      # 実際に反映できた Issue 番号は reflected-issues.txt に1行ずつ書き出させる
+      # （このファイルは PR には含めない＝後続ステップが Closes 行を組むためだけに使う）。
+      - name: Claudeで報告を反映
+        if: steps.scan.outputs.count != '0'
+        uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ github.token }}
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # gh 読み取り・ファイル編集・検証コマンドのみ許可。
+          # git push / gh pr / gh issue close|edit は許可しない（PR作成とクローズは別レーン）。
+          claude_args: |
+            --allowedTools "Bash(gh issue list:*),Bash(gh issue view:*),Bash(pnpm exec tsc:*),Bash(pnpm exec tsx:*),Read,Edit,Write,Glob,Grep"
+          prompt: |
+            あなたはリポジトリ ${{ github.repository }} のメンテナ補助です。
+            アプリ内「情報を提供」フォームから自動投稿された「ユーザー報告」ラベルの
+            open Issue を、店舗オーバーライド `src/data/overrides.json` に反映してください。
+
+            ## 背景（オーバーライド層）
+            - `src/data/overrides.json` は公式スクレイプ `stores.json` にランタイムで重ねる手動修正層。
+              店舗ID（store-id）をキーに `OverrideEntry` を持つ。型は `src/types/overrides.ts` 参照。
+            - 反映できるのは **既存 store-id に一致する店舗のみ**。未登録店の新規追加は不可。
+            - provenance（出どころ）の既定は `source`。`admin`＝確定（通常色）、それ以外
+              （`user-report`/`official`/`auto-scrape`）＝未確認バッジ表示。
+              フィールド個別に変えたいときは `attributeSources` / `countSources` を使う。
+            - ゲーム対応: ラスサバ/ジョジョ = `jojo-ls`、イニブ = `gundam-exvs`。
+            - 自由記述の補足は **公開用 `remarks`**（中立テキスト）に書く。内部メモ `note` とは別物で、
+              `note` には SNS ID・Issue番号・運用判断など非公開情報を残してよいが、`remarks` には書かない。
+
+            ## 手順
+            1. `gh issue list --label "ユーザー報告" --state open --json number,title` で対象一覧を取得し、
+               各 Issue を `gh issue view <番号>` で読む。
+            2. 各 Issue 本文の store-id と「提案値一覧」を読み、`overrides.json` の該当エントリを
+               追記/更新する（既存エントリがあればマージ。無ければ新規キーを末尾に追加）。
+               - 台数/営業時間/フロア/喫煙所/決済/録画台/配信台などを提案値どおりに反映。
+                 値は表記を整える（例「10時〜3時」→「10:00〜翌3:00」、「9:00〜0:00」→「9:00〜翌0:00」）。
+               - 「確定可否」が「確定可能（SNS ID提供あり）」の Issue は `source: "admin"`、
+                 SNS未記入は `source: "user-report"`。1エントリ内で確信度が違うときは
+                 `attributeSources`/`countSources` で個別指定する（既存 admin 値は user-report で上書きしない）。
+               - 同一 store-id の重複 Issue は1エントリにまとめる。
+               - 既存 override 値と食い違う新報告は、新しい報告値を採用しつつ `note` に旧値を残す。
+               - 「不明」の項目は override に書かない（公式値のまま）。
+               - 移設/閉店などの自由記述は、公開して良い範囲を `remarks` に要約して書く。
+                 伝聞（「らしい」等）は閉店フラグを立てず、必要なら台数のみ調整して `remarks` に経緯を残す。
+               - 直接編集なので各エントリの `updatedAt` を "${{ steps.scan.outputs.today }}" に更新する。
+            3. 編集後、`pnpm exec tsc --noEmit` と `pnpm exec tsx scripts/validate-overrides.ts` を実行し、
+               型エラー・ID不一致が無いことを自分で確認する（エラーが出たら直す）。
+            4. **実際に overrides.json へ反映できた Issue 番号だけ**を、リポジトリ直下の
+               `reflected-issues.txt` に1行1番号（先頭 `#` なし、例 `216`）で書き出す。
+               store-id が `stores.json` に存在せず反映できなかった Issue は、このファイルに書かない。
+
+            ## 禁止事項
+            - `src/data/overrides.json` と `reflected-issues.txt` 以外のファイルは編集しない。
+            - `git` での commit / push はしない（PR作成は後続の別ステップが行う）。
+            - `gh pr ...`、`gh issue close`、`gh issue edit`、`gh issue comment` は実行しない
+              （Issue のクローズはマージ時の Closes に任せる）。
+
+      # 決定論的な検証ゲート。Claude の編集を信用しすぎず、ここを通らなければ PR を作らない。
+      - name: オーバーライドを検証
+        if: steps.scan.outputs.count != '0'
+        run: |
+          pnpm exec tsc --noEmit
+          pnpm exec tsx scripts/validate-overrides.ts
+
+      # Claude が書いた reflected-issues.txt から PR 本文（Closes 行つき）を組み立てる。
+      # ファイルが無い/空＝反映できた Issue が無い → PR を作らない。
+      - name: PR本文を生成
+        id: body
+        if: steps.scan.outputs.count != '0'
+        run: |
+          if [ ! -s reflected-issues.txt ]; then
+            echo "反映できた Issue がありません。PR はスキップします。"
+            echo "has_reflected=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "has_reflected=true" >> "$GITHUB_OUTPUT"
+          {
+            echo 'body<<PR_BODY_EOF'
+            echo 'アプリ内「情報を提供」フォームからのユーザー報告を自動反映した差分です。'
+            echo ''
+            echo '- 反映先: `src/data/overrides.json`'
+            echo '- 生成: Claude Code Action（OAuth）/ 検証: `tsc` + `validate-overrides`'
+            echo '- 内容を確認のうえマージしてください。マージで対象 Issue が自動クローズされ、Vercel 本番デプロイが発火します。'
+            echo ''
+            echo '## 反映した報告'
+            while IFS= read -r n; do
+              n=$(echo "$n" | tr -dc '0-9')
+              [ -n "$n" ] && echo "Closes #${n}"
+            done < reflected-issues.txt
+          } >> "$GITHUB_OUTPUT"
+          echo 'PR_BODY_EOF' >> "$GITHUB_OUTPUT"
+
+      - name: 差分があればPRを作成
+        if: steps.scan.outputs.count != '0' && steps.body.outputs.has_reflected == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          # overrides.json のみを対象に含める（reflected-issues.txt は PR に入れない）
+          add-paths: |
+            src/data/overrides.json
+          commit-message: 'fix(overrides): ユーザー報告を自動反映'
+          branch: auto/reflect-user-reports
+          delete-branch: true
+          title: 'fix(overrides): ユーザー報告を自動反映'
+          body: ${{ steps.body.outputs.body }}
+
+      - name: 失敗したらIssueを作成
+        if: failure()
+        uses: ./.github/actions/report-failure

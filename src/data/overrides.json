@@ -39,6 +39,7 @@
       "source": "admin",
       "note": "GiGO赤羽駅前 イニブ8台（片面4台並びで計8, 3F, Issue #63）。報告者: ぬまくん。設備: 喫煙所は同階層(3F)、手洗い場はイニブ筐体の真後ろ、電子マネー対応。",
       "updatedAt": "2026-06-10",
+      "remarks": "お手洗いはイニブ筐体のすぐ裏手にあります。",
       "machineCounts": {
         "gundam-exvs": 8
       }
@@ -75,20 +76,25 @@
     },
     "2380eb9ab2af": {
       "source": "admin",
-      "note": "トヤマレジャーランド呉羽 ピン位置修正（Issue #51, 報告者が実店舗位置を画像提示）。Googleマップ実位置に補正（約370mズレていた）。ラスサバ6台・イニブ14台・喫煙所あり（Issue #136）。",
-      "updatedAt": "2026-06-19",
+      "note": "トヤマレジャーランド呉羽 ピン位置修正（Issue #51, 報告者が実店舗位置を画像提示）。Googleマップ実位置に補正（約370mズレていた）。ラスサバ6台・イニブ14台・喫煙所あり（Issue #136）。営業時間 9:00〜翌0:00（Issue #221）。SNS未記入のため営業時間は未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-06-28",
       "lat": 36.7154173,
       "lng": 137.1579387,
+      "attributeSources": {
+        "businessHours": "user-report"
+      },
       "machineCounts": {
         "jojo-ls": 6,
         "gundam-exvs": 14
       },
+      "businessHours": "9:00〜翌0:00",
       "smoking": "yes"
     },
     "2b7946698cc0": {
       "source": "user-report",
       "note": "アドアーズ船橋 イニブ18台・フロア地下1F（Issue #124）。録画台はないがライブモニターに録画機設置あり（エスカレーター降りてすぐの6台が録画対応）。",
       "updatedAt": "2026-06-19",
+      "remarks": "録画台はありませんが、ライブモニターに録画機があります（入口エスカレーターを降りてすぐの6台が録画対応）。",
       "machineCounts": {
         "gundam-exvs": 18
       },
@@ -238,6 +244,7 @@
       "source": "admin",
       "note": "タイトーステーション藤沢 イニブ筐体4台＋ライブモニター1台（公式5→筐体4, Issue #94）。@sylvaliongosvel。お礼可。",
       "updatedAt": "2026-06-12",
+      "remarks": "イニブは筐体4台＋ライブモニター1台です（公式表記の5台はモニター込みの数）。",
       "machineCounts": {
         "gundam-exvs": 4
       }
@@ -370,17 +377,18 @@
       "source": "admin",
       "note": "アピナ印西 イニブ筐体4台＋ライブモニター1台（公式5→筐体4, Issue #93）。@sylvaliongosvel。お礼可。",
       "updatedAt": "2026-06-12",
+      "remarks": "イニブは筐体4台＋ライブモニター1台です（公式表記の5台はモニター込みの数）。",
       "machineCounts": {
         "gundam-exvs": 4
       }
     },
     "809ce2bb59b4": {
       "source": "user-report",
-      "note": "ラウンドワンスタジアム金沢 ラスサバ4台・イニブ7台・1F・喫煙所あり・録画台あり（Issue #132）。v2.3.5: 配信台/録画台をタイトル別化。録画はRound1のGR-HD録画機・EXVS主体運用＝録画台イニブあり、ラスサバ/配信は不明（再報告待ち）。",
-      "updatedAt": "2026-06-23",
+      "note": "ラウンドワンスタジアム金沢 ラスサバ4台・イニブ7台・1F・喫煙所あり・録画台あり（Issue #132）。v2.3.5: 配信台/録画台をタイトル別化。録画はRound1のGR-HD録画機・EXVS主体運用＝録画台イニブあり、ラスサバ/配信は不明（再報告待ち）。Issue #224で イニブ4台に修正（旧7台）・録画(イニブ)あり/配信(イニブ)不明は既報と一致。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-06-28",
       "machineCounts": {
         "jojo-ls": 4,
-        "gundam-exvs": 7
+        "gundam-exvs": 4
       },
       "floor": "1F",
       "smoking": "yes",
@@ -470,6 +478,7 @@
       "source": "admin",
       "note": "フクイレジャーランドワイプラザ イニブ筐体4台＋ライブモニター1台（公式5→筐体4, Issue #80）。@kiyo_general。お礼可。",
       "updatedAt": "2026-06-12",
+      "remarks": "イニブは筐体4台＋ライブモニター1台です（公式表記の5台はモニター込みの数）。",
       "machineCounts": {
         "gundam-exvs": 4
       }
@@ -534,6 +543,7 @@
       "source": "admin",
       "note": "GiGO赤羽 イニブ8台（4台並びの計8）・ラスサバ3台（Issue #65）。ぬまくんと肩幅。設備: 同階層に手洗い場・喫煙所（狭い）、イニブ電子マネー対応、タイムレンタルあり、ラスサバ台はメンテ悪い。",
       "updatedAt": "2026-06-10",
+      "remarks": "同じ階にお手洗いと喫煙所（やや狭め）があります。タイムレンタルあり。",
       "machineCounts": {
         "jojo-ls": 3,
         "gundam-exvs": 8
@@ -551,6 +561,7 @@
       "source": "admin",
       "note": "GiGO 高山 イニブ筐体2台＋ライブモニター1台（公式HP3台の内訳, Issue #78）。@lorelei2_。お礼可。録画/配信設備なし・電子マネー非対応。",
       "updatedAt": "2026-06-12",
+      "remarks": "録画・配信の設備はありません。電子マネーは使えません。",
       "machineCounts": {
         "gundam-exvs": 2
       }
@@ -712,6 +723,7 @@
       "source": "admin",
       "note": "モーリーファンタジークロスガーデン川崎 営業10:00〜20:00・1F・喫煙所なし（店舗内なし／同建物内に喫煙所あり）・録画台(イニブ)不明・配信台(イニブ)不明（Issue #176）。SNS ID=かたはば 提供あり＝確定。",
       "updatedAt": "2026-06-25",
+      "remarks": "喫煙所は店内にはありませんが、同じ建物内にあります。",
       "businessHours": "10:00〜20:00",
       "floor": "1F",
       "smoking": "no"
@@ -789,6 +801,7 @@
       "source": "admin",
       "note": "ドリームキャンディー Issue #204 @1kAreta_8r0U(SNS提供=確定): 営業0:00～24:00・ワンフロア・喫煙所あり・録画台(イニブ)なし・配信台(イニブ)なし。memo: 金土日は10:00オープン／イニブ録画機・配信台は無いが配信機材を持込み店員に声かければ配信可。Issue #202(SNS未記入)は同一店の重複報告のため本エントリに統合。お礼可。",
       "updatedAt": "2026-06-26",
+      "remarks": "金・土・日は10:00オープンです。配信台はありませんが、配信機材を持ち込んで店員さんに声をかければ配信できます。",
       "businessHours": "0:00～24:00",
       "floor": "ワンフロア",
       "smoking": "yes",
@@ -889,6 +902,7 @@
       "source": "admin",
       "note": "GiGO 大宮西口 Issue #211 @ls_boushi(SNS提供=確定): イニブ6台・営業10:00-23:00・4階・喫煙所なし(memo「外に出ればあり」＝店内なし/店外に喫煙可)・決済多数・録画台(イニブ)なし・配信台(イニブ)なし。お礼可。",
       "updatedAt": "2026-06-26",
+      "remarks": "喫煙所は店内にはありませんが、店外に出ればあります。",
       "machineCounts": {
         "gundam-exvs": 6
       },
@@ -901,6 +915,77 @@
       },
       "hasStreamingByGame": {
         "gundam-exvs": "no"
+      }
+    },
+    "c237ede5b04d": {
+      "source": "user-report",
+      "note": "新宿スポーツランド本館 Issue #225: イニブ36台(公式39→修正)・営業10:00〜23:30・3F・喫煙所あり・決済(交通系IC/PayPay/nanaco/iD/WAON/d払い)・録画台(イニブ)あり・配信台(イニブ)あり。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-06-28",
+      "machineCounts": {
+        "gundam-exvs": 36
+      },
+      "businessHours": "10:00〜23:30",
+      "floor": "3F",
+      "smoking": "yes",
+      "payments": ["交通系IC（Suica/PASMOなど）", "PayPay", "nanaco", "iD", "WAON", "d払い"],
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "yes"
+      }
+    },
+    "a8c994636421": {
+      "source": "user-report",
+      "note": "メガパレス遊スペースアローズ Issue #222/#223(同一店の重複報告): 営業10:00〜24:00・録画台(イニブ)あり。台数報告なし＝公式値維持。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-06-28",
+      "businessHours": "10:00〜24:00",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      }
+    },
+    "42e39daa790c": {
+      "source": "admin",
+      "note": "GiGO 秋田 Issue #220 @alfinyua7(SNS提供=確定・お礼可): ジョジョ2台(公式3→修正)・イニブ4台(公式5→修正)・喫煙所あり・録画台(ラスサバ/イニブ)なし・配信台(ラスサバ/イニブ)なし。",
+      "updatedAt": "2026-06-28",
+      "machineCounts": {
+        "jojo-ls": 2,
+        "gundam-exvs": 4
+      },
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
+      }
+    },
+    "b78f34c106e6": {
+      "source": "user-report",
+      "note": "アミューズメントワールドららぽーと沼津 Issue #219: ラスサバ筐体が他店舗へ移設(店員談・移設先不明・移設完了済み)＝ジョジョ0台(公式2→修正)。伝聞のため未確認（みんなの報告）扱い。店舗自体は営業中のため閉店扱いにはしない。",
+      "updatedAt": "2026-06-28",
+      "remarks": "ラスサバの筐体は他店舗へ移設されたという情報があります（店員さん談・移設先は不明）。",
+      "machineCounts": {
+        "jojo-ls": 0
+      }
+    },
+    "d5e00a38988d": {
+      "source": "user-report",
+      "note": "泉大津フタバボウル Issue #216: ジョジョ4台(公式12→修正)・営業10:00〜翌3:00・1F・録画台(ラスサバ/イニブ)あり・配信台(ラスサバ)なし。喫煙所・配信台(イニブ)は不明のため省略。イニブ台数報告なし＝公式値維持。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-06-28",
+      "machineCounts": {
+        "jojo-ls": 4
+      },
+      "businessHours": "10:00〜翌3:00",
+      "floor": "1F",
+      "hasRecordingByGame": {
+        "jojo-ls": "yes",
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no"
       }
     }
   }
