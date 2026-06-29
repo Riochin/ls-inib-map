@@ -946,13 +946,16 @@
     },
     "42e39daa790c": {
       "source": "admin",
-      "note": "GiGO 秋田 Issue #220 @alfinyua7(SNS提供=確定・お礼可): ジョジョ2台(公式3→修正)・イニブ4台(公式5→修正)・喫煙所あり・録画台(ラスサバ/イニブ)なし・配信台(ラスサバ/イニブ)なし。",
-      "updatedAt": "2026-06-28",
+      "note": "GiGO 秋田 Issue #220 @alfinyua7(SNS提供=確定・お礼可): ジョジョ2台(公式3→修正)・イニブ4台(公式5→修正)・喫煙所あり・録画台(ラスサバ/イニブ)なし・配信台(ラスサバ/イニブ)なし。Issue #232 @alfinyua7: イニブ5台に修正(旧4台＝ターミナル除外の誤り)。Issue #234 @alfinyua7(お礼可): 営業10:00〜23:00(平日/土日/祝日共通)・フロア2F・電子マネー非対応(2026/6/28現在)。",
+      "updatedAt": "2026-06-29",
       "machineCounts": {
         "jojo-ls": 2,
-        "gundam-exvs": 4
+        "gundam-exvs": 5
       },
+      "businessHours": "10:00〜23:00",
+      "floor": "2F",
       "smoking": "yes",
+      "payments": [],
       "hasRecordingByGame": {
         "jojo-ls": "no",
         "gundam-exvs": "no"
@@ -986,6 +989,70 @@
       },
       "hasStreamingByGame": {
         "jojo-ls": "no"
+      }
+    },
+    "035b5ef8ae2d": {
+      "source": "admin",
+      "note": "プラサカプコン大曲 Issue #237 @alfinyua7(SNS提供=確定・お礼可): 営業10:00〜21:00・フロア2F・喫煙所あり(モール内)・配信台(ラスサバ)なし。",
+      "updatedAt": "2026-06-29",
+      "remarks": "喫煙所はゲーセン内ではなく、イオンモール大曲内にあります。",
+      "businessHours": "10:00〜21:00",
+      "floor": "2F",
+      "smoking": "yes",
+      "hasStreamingByGame": {
+        "jojo-ls": "no"
+      }
+    },
+    "db876e3b5c88": {
+      "source": "user-report",
+      "note": "ミラクルイン中村橋 Issue #236: ジョジョ2台。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-06-29",
+      "machineCounts": {
+        "jojo-ls": 2
+      }
+    },
+    "74f2970702de": {
+      "source": "user-report",
+      "note": "スポーツウェーブ鉄腕24稲毛長沼 Issue #235: 営業24時間・フロア2F(イニブ)・喫煙所あり・配信台(イニブ)なし。録画台(イニブ)は不明のため省略。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-06-29",
+      "businessHours": "24時間",
+      "floorByGame": {
+        "gundam-exvs": "2F"
+      },
+      "smoking": "yes",
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "4672b6b0e377": {
+      "source": "admin",
+      "note": "アクション草津 Issue #231 @1kAreta_8r0U(SNS提供=確定・お礼可): 営業10:00〜翌0:00・フロア1F・喫煙所あり・録画台(ラスサバ)不明/(イニブ)なし・配信台(ラスサバ/イニブ)なし。",
+      "updatedAt": "2026-06-29",
+      "businessHours": "10:00〜翌0:00",
+      "floor": "1F",
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
+      }
+    },
+    "ec45210425b6": {
+      "source": "admin",
+      "note": "アミパラ草津 Issue #230 @1kAreta_8r0U(SNS提供=確定・お礼可): 営業10:00〜翌0:00・フロア1F(イニブ)・喫煙所あり・録画台(イニブ)なし・配信台(イニブ)なし。",
+      "updatedAt": "2026-06-29",
+      "businessHours": "10:00〜翌0:00",
+      "floorByGame": {
+        "gundam-exvs": "1F"
+      },
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
       }
     }
   }
