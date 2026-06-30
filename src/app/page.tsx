@@ -24,6 +24,7 @@ import type { FilterOption, StoreFilter, Store } from '@/types/store'
 import { EMPTY_STORE_FILTER } from '@/types/store'
 import { loadSavedFilter, saveFilter, loadSavedStoreFilter, saveStoreFilter } from '@/lib/filter-storage'
 import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect'
+import { usePwaLaunchTracking } from '@/hooks/use-pwa-launch-tracking'
 import { trackEvent } from '@/lib/analytics'
 
 export default function MapPage() {
@@ -34,6 +35,8 @@ export default function MapPage() {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [focusStore, setFocusStore] = useState<Store | null>(null)
   const { location, isLocating, error, locate } = useGeolocation()
+
+  usePwaLaunchTracking()
 
   const addressIndex = useMemo(() => buildAddressIndex(stores), [])
 

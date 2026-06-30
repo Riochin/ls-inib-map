@@ -72,6 +72,8 @@ export type GAEventMap = {
   }
   /** 要望フォーム送信成功 */
   submit_feedback: Record<string, never>
+  /** ホーム画面アイコン等、PWA(standalone)表示でアプリが起動した */
+  pwa_launch: { display_mode: 'standalone' | 'fullscreen' | 'minimal-ui' }
 }
 
 export type GAEventName = keyof GAEventMap
