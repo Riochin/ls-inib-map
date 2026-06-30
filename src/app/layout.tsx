@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from 'next'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { SeoContent } from '@/components/SeoContent'
+import { SITE_URL } from '@/lib/site-config'
 import './globals.css'
 
-const SITE_URL = 'https://ls-inib-map.vercel.app'
 const SITE_NAME = 'ラスサバ・イニブ 設置店舗マップ'
 const DESCRIPTION =
   'ジョジョの奇妙な冒険 ラストサバイバー（ラスサバ）と機動戦士ガンダム EXTREME VS.2 INFINITEBOOST（イニブ）の設置店舗を、全国47都道府県・約760店舗から地図で検索。公式サイトから自動更新しています。'

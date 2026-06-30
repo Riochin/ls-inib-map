@@ -6,6 +6,8 @@ import {
   saveFilter,
   loadSavedStoreFilter,
   saveStoreFilter,
+  parseFilterFromSearch,
+  buildFilterQueryUrl,
 } from '@/lib/filter-storage'
 import { EMPTY_STORE_FILTER } from '@/types/store'
 import type { StoreFilter } from '@/types/store'
@@ -182,5 +184,51 @@ describe('saveStoreFilter', () => {
       }),
     })
     expect(() => saveStoreFilter(EMPTY_STORE_FILTER)).not.toThrow()
+  })
+})
+
+describe('parseFilterFromSearch', () => {
+  it('?game= が無ければ null', () => {
+    expect(parseFilterFromSearch('')).toBeNull()
+  })
+
+  it('?game= が不正値なら null', () => {
+    expect(parseFilterFromSearch('?game=foo')).toBeNull()
+  })
+
+  it('?game=jojo-ls を返す', () => {
+    expect(parseFilterFromSearch('?game=jojo-ls')).toBe('jojo-ls')
+  })
+
+  it('他のパラメータと併存していても読める', () => {
+    expect(parseFilterFromSearch('?store=abc&game=gundam-exvs')).toBe('gundam-exvs')
+  })
+})
+
+describe('buildFilterQueryUrl', () => {
+  it('all では ?game= を付けない（既定値は URL に載せない）', () => {
+    expect(buildFilterQueryUrl('https://example.com/', 'all')).toBe('/')
+  })
+
+  it('jojo-ls では ?game=jojo-ls を付ける', () => {
+    expect(buildFilterQueryUrl('https://example.com/', 'jojo-ls')).toBe('/?game=jojo-ls')
+  })
+
+  it('既存の ?game= を新しい値で上書きする', () => {
+    expect(buildFilterQueryUrl('https://example.com/?game=jojo-ls', 'gundam-exvs')).toBe(
+      '/?game=gundam-exvs'
+    )
+  })
+
+  it('他のクエリパラメータ（?store= 等）は維持する', () => {
+    expect(buildFilterQueryUrl('https://example.com/?store=abc', 'jojo-ls')).toBe(
+      '/?store=abc&game=jojo-ls'
+    )
+  })
+
+  it('all に戻すとき、他のクエリパラメータは維持しつつ ?game= だけ外す', () => {
+    expect(buildFilterQueryUrl('https://example.com/?store=abc&game=jojo-ls', 'all')).toBe(
+      '/?store=abc'
+    )
   })
 })

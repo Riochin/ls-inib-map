@@ -9,6 +9,12 @@ import type { GameTitle } from '@/types/store'
  * コンポーネント（/about）からもクライアントコンポーネント（モーダル）からも import できる。
  */
 
+/**
+ * 本番サイトの絶対 URL（canonical 原点）。layout/sitemap/robots/about-seo/area-seo の単一ソース。
+ * X 共有インテント用の {@link SHARE_SITE_URL} と同一ドメイン。
+ */
+export const SITE_URL = 'https://lsib.world'
+
 /** タイトルの正式名称・通称・別名（指名検索の被リンク面を広げるための単一ソース）。 */
 export interface GameNameInfo {
   /** 通称（UI で主に使う短縮名）。 */
@@ -49,11 +55,8 @@ export const X_HANDLE = 'ls_boushi'
 /** 開発者の X プロフィール URL。 */
 export const X_URL = `https://x.com/${X_HANDLE}`
 
-/**
- * X 共有インテント用のサイト URL（カスタムドメイン）。
- * ※ SEO の canonical 原点（`https://ls-inib-map.vercel.app`）とは別物。共有時の表示用。
- */
-export const SHARE_SITE_URL = 'https://lsib.world/'
+/** X 共有インテント用のサイト URL（{@link SITE_URL} と同一ドメイン、末尾スラッシュ付き）。 */
+export const SHARE_SITE_URL = `${SITE_URL}/`
 
 /** 投稿推奨ハッシュタグ（#なし）。 */
 export const TWEET_HASHTAG = 'ラストサバイニブ'

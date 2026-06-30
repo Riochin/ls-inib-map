@@ -1,4 +1,4 @@
-import { AUTHOR_NAME, X_URL, GAME_NAMES, gameFullWithShort } from '@/lib/site-config'
+import { AUTHOR_NAME, X_URL, GAME_NAMES, gameFullWithShort, SITE_URL } from '@/lib/site-config'
 
 /**
  * `/about`（このアプリについて）ページの SEO 用ヘルパー（純関数）。
@@ -8,8 +8,8 @@ import { AUTHOR_NAME, X_URL, GAME_NAMES, gameFullWithShort } from '@/lib/site-co
  * 呼び出され、ビルド時に評価される。個別店舗の LocalBusiness 化は行わない（area と同方針）。
  */
 
-/** 本番サイトの絶対 URL（layout/sitemap/area-seo と同値）。 */
-export const ABOUT_SITE_URL = 'https://ls-inib-map.vercel.app'
+/** 本番サイトの絶対 URL（{@link SITE_URL} のエイリアス。layout/sitemap/area-seo と同値）。 */
+export const ABOUT_SITE_URL = SITE_URL
 
 /** ページ／メタの見出し（layout の title テンプレートで「｜サイト名」が付く）。 */
 export function aboutTitle(): string {

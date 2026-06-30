@@ -12,6 +12,33 @@ function isFilterOption(value: string | null): value is FilterOption {
   return value !== null && (VALID_FILTERS as readonly string[]).includes(value)
 }
 
+/** URL クエリパラメータ名（タブ切替の共有・ブックマーク用。`?game=jojo-ls` 等）。 */
+export const FILTER_QUERY_PARAM = 'game'
+
+/**
+ * URL（`?game=`）からフィルタタブを読み出す。未指定・不正値では null。
+ * `all` は既定値のため URL には載せない（{@link buildFilterQueryUrl} 参照）。
+ */
+export function parseFilterFromSearch(search: string): FilterOption | null {
+  const value = new URLSearchParams(search).get(FILTER_QUERY_PARAM)
+  return isFilterOption(value) ? value : null
+}
+
+/**
+ * 現在の URL に対し、フィルタタブを反映した URL 文字列を組み立てる。
+ * `all`（既定値）では `?game=` を外し、それ以外では `?game=<filter>` を付与する。
+ * `?store=` 等の他のクエリパラメータはそのまま維持する。
+ */
+export function buildFilterQueryUrl(currentUrl: string, filter: FilterOption): string {
+  const url = new URL(currentUrl)
+  if (filter === 'all') {
+    url.searchParams.delete(FILTER_QUERY_PARAM)
+  } else {
+    url.searchParams.set(FILTER_QUERY_PARAM, filter)
+  }
+  return `${url.pathname}${url.search}${url.hash}`
+}
+
 /**
  * 保存済みのフィルタタブを読み出す。
  * 未保存・不正値・localStorage 不可環境（プライベートモード等）では null を返す。

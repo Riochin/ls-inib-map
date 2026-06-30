@@ -1,5 +1,6 @@
 import type { AreaDetail } from '@/lib/area'
 import type { GameTitle, Store } from '@/types/store'
+import { SITE_URL } from '@/lib/site-config'
 
 /**
  * エリア（県）ページの SEO 用ヘルパー（純関数）。
@@ -9,8 +10,8 @@ import type { GameTitle, Store } from '@/types/store'
  * ガイドラインリスク回避。Req 5.3）。`page.tsx` から呼び出され、ビルド時に評価される。
  */
 
-/** 本番サイトの絶対 URL（layout/sitemap と同値）。 */
-export const AREA_SITE_URL = 'https://ls-inib-map.vercel.app'
+/** 本番サイトの絶対 URL（{@link SITE_URL} のエイリアス。layout/sitemap と同値）。 */
+export const AREA_SITE_URL = SITE_URL
 
 /** タイトル別の出力順（県ページ・サマリと共通） */
 const GAME_TITLES: readonly GameTitle[] = ['gundam-exvs', 'jojo-ls']
