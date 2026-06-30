@@ -22,7 +22,14 @@ import { Onboarding } from '@/components/Onboarding'
 import { PairSchedulePanel } from '@/components/PairSchedulePanel'
 import type { FilterOption, StoreFilter, Store } from '@/types/store'
 import { EMPTY_STORE_FILTER } from '@/types/store'
-import { loadSavedFilter, saveFilter, loadSavedStoreFilter, saveStoreFilter } from '@/lib/filter-storage'
+import {
+  loadSavedFilter,
+  saveFilter,
+  loadSavedStoreFilter,
+  saveStoreFilter,
+  parseFilterFromSearch,
+  buildFilterQueryUrl,
+} from '@/lib/filter-storage'
 import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect'
 import { usePwaLaunchTracking } from '@/hooks/use-pwa-launch-tracking'
 import { trackEvent } from '@/lib/analytics'
@@ -40,10 +47,15 @@ export default function MapPage() {
 
   const addressIndex = useMemo(() => buildAddressIndex(stores), [])
 
-  // 前回開いていたタブを復元（localStorage 不可環境では既定の「すべて」のまま）。
-  // 初回ハイドレーションは SSR と同じ 'all' で一致させ、描画前に走る useLayoutEffect で
-  // 保存タブへ差し替えることで、'すべて'→保存タブの一瞬のちらつき（FOUC）を防ぐ。
+  // 開くタブを復元する。URL（?game=、共有/ブックマーク用）を localStorage（前回の選択）より
+  // 優先する。どちらも無ければ既定の「すべて」のまま。初回ハイドレーションは SSR と同じ
+  // 'all' で一致させ、描画前に走る useLayoutEffect で差し替えることで FOUC を防ぐ。
   useIsomorphicLayoutEffect(() => {
+    const fromUrl = parseFilterFromSearch(window.location.search)
+    if (fromUrl) {
+      setActiveFilter(fromUrl)
+      return
+    }
     const saved = loadSavedFilter()
     if (saved) setActiveFilter(saved)
   }, [])
@@ -64,6 +76,9 @@ export default function MapPage() {
   const handleFilterChange = useCallback((filter: FilterOption) => {
     setActiveFilter(filter)
     saveFilter(filter)
+    // タブ切替を URL に反映する（共有・ブックマーク用）。履歴は積まない
+    // （pushState だと「戻る」で他の操作と混ざり挙動が読みにくくなるため）。
+    window.history.replaceState(null, '', buildFilterQueryUrl(window.location.href, filter))
     trackEvent('filter_title', { filter })
   }, [])
 
