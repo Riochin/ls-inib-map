@@ -1,8 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { storesMeta } from '@/data/stores'
 import { getAreaPrefectures } from '@/lib/area'
-
-const SITE_URL = 'https://lsib.world'
+import { SITE_URL } from '@/lib/site-config'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = storesMeta?.lastUpdated
