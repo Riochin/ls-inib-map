@@ -14,7 +14,7 @@ import type { Store } from '@/types/store'
  * - 影響ゼロ（Req 7.2）: 既存の地図・フィルタ・検索・クラスタ系テストが緑のまま（本スイート全体で担保）。
  */
 
-const SITE_URL = 'https://ls-inib-map.vercel.app'
+const SITE_URL = 'https://lsib.world'
 
 function makeStore(over: Partial<Store> & Pick<Store, 'id' | 'name' | 'address'>): Store {
   return {

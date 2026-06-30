@@ -9,7 +9,7 @@ import { AUTHOR_NAME, X_URL, GAME_NAMES, gameFullWithShort } from '@/lib/site-co
  */
 
 /** 本番サイトの絶対 URL（layout/sitemap/area-seo と同値）。 */
-export const ABOUT_SITE_URL = 'https://ls-inib-map.vercel.app'
+export const ABOUT_SITE_URL = 'https://lsib.world'
 
 /** ページ／メタの見出し（layout の title テンプレートで「｜サイト名」が付く）。 */
 export function aboutTitle(): string {

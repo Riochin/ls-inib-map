@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next'
 
-const SITE_URL = 'https://ls-inib-map.vercel.app'
+const SITE_URL = 'https://lsib.world'
 
 export default function robots(): MetadataRoute.Robots {
   return {

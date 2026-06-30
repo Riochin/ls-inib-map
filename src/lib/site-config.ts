@@ -51,7 +51,7 @@ export const X_URL = `https://x.com/${X_HANDLE}`
 
 /**
  * X 共有インテント用のサイト URL（カスタムドメイン）。
- * ※ SEO の canonical 原点（`https://ls-inib-map.vercel.app`）とは別物。共有時の表示用。
+ * SEO の canonical 原点（layout.tsx 等の SITE_URL）と同一ドメイン。
  */
 export const SHARE_SITE_URL = 'https://lsib.world/'
 

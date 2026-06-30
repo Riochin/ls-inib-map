@@ -10,7 +10,7 @@ import type { GameTitle, Store } from '@/types/store'
  */
 
 /** 本番サイトの絶対 URL（layout/sitemap と同値）。 */
-export const AREA_SITE_URL = 'https://ls-inib-map.vercel.app'
+export const AREA_SITE_URL = 'https://lsib.world'
 
 /** タイトル別の出力順（県ページ・サマリと共通） */
 const GAME_TITLES: readonly GameTitle[] = ['gundam-exvs', 'jojo-ls']

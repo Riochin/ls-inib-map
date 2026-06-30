@@ -4,7 +4,7 @@ import robots from '@/app/robots'
 import { getAreaPrefectures } from '@/lib/area'
 import { storesMeta } from '@/data/stores'
 
-const SITE_URL = 'https://ls-inib-map.vercel.app'
+const SITE_URL = 'https://lsib.world'
 
 describe('sitemap', () => {
   it('トップ（/）の URL を含む', () => {
