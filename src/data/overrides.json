@@ -384,20 +384,23 @@
     },
     "809ce2bb59b4": {
       "source": "user-report",
-      "note": "ラウンドワンスタジアム金沢 ラスサバ4台・イニブ7台・1F・喫煙所あり・録画台あり（Issue #132）。v2.3.5: 配信台/録画台をタイトル別化。録画はRound1のGR-HD録画機・EXVS主体運用＝録画台イニブあり、ラスサバ/配信は不明（再報告待ち）。Issue #224で イニブ4台に修正（旧7台）・録画(イニブ)あり/配信(イニブ)不明は既報と一致。SNS未記入のため未確認（みんなの報告）扱い。",
-      "updatedAt": "2026-06-28",
+      "note": "ラウンドワンスタジアム金沢 ラスサバ4台・イニブ7台・1F・喫煙所あり・録画台あり（Issue #132）。v2.3.5: 配信台/録画台をタイトル別化。録画はRound1のGR-HD録画機・EXVS主体運用＝録画台イニブあり、ラスサバ/配信は不明（再報告待ち）。Issue #224で イニブ4台に修正（旧7台）・録画(イニブ)あり/配信(イニブ)不明は既報と一致。SNS未記入のため未確認（みんなの報告）扱い。Issue #259: フロア(ラスサバ)1F・(イニブ)2F・録画台(ラスサバ)あり・配信台(ラスサバ)なし。配信(イニブ)は不明のまま。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-07-01",
       "machineCounts": {
         "jojo-ls": 4,
         "gundam-exvs": 4
       },
-      "floor": "1F",
+      "floorByGame": {
+        "jojo-ls": "1F",
+        "gundam-exvs": "2F"
+      },
       "smoking": "yes",
       "hasRecordingByGame": {
-        "jojo-ls": "unknown",
+        "jojo-ls": "yes",
         "gundam-exvs": "yes"
       },
       "hasStreamingByGame": {
-        "jojo-ls": "unknown",
+        "jojo-ls": "no",
         "gundam-exvs": "unknown"
       }
     },
@@ -1050,6 +1053,60 @@
       "smoking": "yes",
       "hasRecordingByGame": {
         "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "aaeb59aa5385": {
+      "source": "user-report",
+      "note": "ラウンドワン梅田 Issue #252: 営業時間 平日8:00〜、土日6:00〜（閉店時刻の報告なし）。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-07-01",
+      "businessHours": "平日8:00〜、土日6:00〜"
+    },
+    "c4f6a18de8f8": {
+      "source": "admin",
+      "note": "ラッキー中央店フェリシダ Issue #253 @oikuman225(SNS提供=確定・お礼可): 営業9:00〜24:00・2F・喫煙所なし・録画台(イニブ)あり・配信台(ラスサバ)なし/(イニブ)あり。録画台(ラスサバ)は不明のため省略。配信はLINEでの事前予約が必要。公式X: https://x.com/luckyfelicidad",
+      "updatedAt": "2026-07-01",
+      "businessHours": "9:00〜24:00",
+      "floor": "2F",
+      "smoking": "no",
+      "remarks": "配信はLINEでの事前予約が必要です。イニブの録画機はセンターモニターに設置されています。",
+      "officialUrl": "https://x.com/luckyfelicidad",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "yes"
+      }
+    },
+    "49d804f1df50": {
+      "source": "admin",
+      "note": "GiGO 千葉 Issue #254 @oikuman225(SNS提供=確定・お礼可): 営業08:00〜23:00・2F・喫煙所なし・決済(交通系IC/d払い/LINE Pay/WAON/QUICPay/PayPay/楽天ペイ/nanaco/iD)・録画台(イニブ)なし・配信台(イニブ)なし。プレイ可能台数8台＋センターモニター1台（公式9台はモニター込みの数）。",
+      "updatedAt": "2026-07-01",
+      "machineCounts": {
+        "gundam-exvs": 8
+      },
+      "businessHours": "08:00〜23:00",
+      "floor": "2F",
+      "smoking": "no",
+      "payments": ["交通系IC（Suica/PASMOなど）", "d払い", "LINE Pay", "WAON", "QUICPay", "PayPay", "楽天ペイ", "nanaco", "iD"],
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "5765b296668e": {
+      "source": "user-report",
+      "note": "タイトーステーション戸塚西口 Issue #255: 営業10:00〜24:00・喫煙所あり・録画台(イニブ)あり・配信台(イニブ)なし。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-07-01",
+      "businessHours": "10:00〜24:00",
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
       },
       "hasStreamingByGame": {
         "gundam-exvs": "no"
