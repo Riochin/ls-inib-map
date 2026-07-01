@@ -1066,7 +1066,7 @@
     },
     "c4f6a18de8f8": {
       "source": "admin",
-      "note": "ラッキー中央店フェリシダ Issue #253 @oikuman225(SNS提供=確定・お礼可): 営業9:00〜24:00・2F・喫煙所なし・録画台(イニブ)あり・配信台(ラスサバ)なし/(イニブ)あり。録画台(ラスサバ)は不明のため省略。配信はLINEでの事前予約が必要。公式X: https://x.com/luckyfelicidad",
+      "note": "ラッキー中央店フェリシダ Issue #253 @oikuman225(SNS提供=確定・お礼可): 営業9:00〜24:00・2F・喫煙所なし・録画台(イニブ)あり・配信台(ラスサバ)なし/(イニブ)あり。録画台(ラスサバ)は不明のため省略。配信はLINEでの事前予約が必要。公式X: https://x.com/luckyfelicidad。Issue #265 @ahoudoriJojoLS(SNS提供=確定・お礼可): 営業・フロア・喫煙所・配信台は既報と一致、録画台(ラスサバ)ありを新たに確認。",
       "updatedAt": "2026-07-01",
       "businessHours": "9:00〜24:00",
       "floor": "2F",
@@ -1074,6 +1074,7 @@
       "remarks": "配信はLINEでの事前予約が必要です。イニブの録画機はセンターモニターに設置されています。",
       "officialUrl": "https://x.com/luckyfelicidad",
       "hasRecordingByGame": {
+        "jojo-ls": "yes",
         "gundam-exvs": "yes"
       },
       "hasStreamingByGame": {
@@ -1107,6 +1108,125 @@
       "smoking": "yes",
       "hasRecordingByGame": {
         "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "12dda0381c92": {
+      "source": "user-report",
+      "note": "ギガステーション戸田 Issue #271: イニブ6台(公式7→修正)・営業10:00〜24:00・フロア(イニブ)1F・配信台(イニブ)なし。録画台はあるが長期間故障中（remarksに記載）。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-07-01",
+      "remarks": "録画台はありますが、長いこと故障しています。",
+      "machineCounts": {
+        "gundam-exvs": 6
+      },
+      "businessHours": "10:00〜24:00",
+      "floorByGame": {
+        "gundam-exvs": "1F"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "994aeeab3dfd": {
+      "source": "admin",
+      "note": "タイトーステーション渋谷 Issue #270 @ls_boushi(SNS提供=確定・メンション不可): イニブ16台(公式18→修正)・営業10:00〜24:00・地下1階・喫煙所あり・決済(PayPay/QUICPay)・録画台(ラスサバ)なし/(イニブ)不明・配信台(ラスサバ/イニブ)なし。",
+      "updatedAt": "2026-07-01",
+      "remarks": "イニブのライブモニターの対応位置は見た目と逆になっています。カードをかざしてもリプレイが出ない場合は、もう片方のライブモニターでも試してみてください。",
+      "machineCounts": {
+        "gundam-exvs": 16
+      },
+      "businessHours": "10:00〜24:00",
+      "floor": "地下1階",
+      "smoking": "yes",
+      "payments": ["PayPay", "QUICPay"],
+      "hasRecordingByGame": {
+        "jojo-ls": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
+      }
+    },
+    "e501002ac533": {
+      "source": "admin",
+      "note": "タイトーステーション国分寺 Issue #269 @oashisu1311(SNS提供=確定・お礼可): 営業10:00〜23:30・3F・喫煙所あり・録画台(ラスサバ)あり・配信台(ラスサバ)なし。",
+      "updatedAt": "2026-07-01",
+      "businessHours": "10:00〜23:30",
+      "floor": "3F",
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "jojo-ls": "yes"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no"
+      }
+    },
+    "371a68f4bc3a": {
+      "source": "user-report",
+      "note": "アミューズメントパフェパレパレ稲毛長沼 Issue #268: 録画台(ラスサバ)あり(SDカードのみ対応)。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-07-01",
+      "remarks": "ラスサバの録画台はSDカードのみ対応です。",
+      "hasRecordingByGame": {
+        "jojo-ls": "yes"
+      }
+    },
+    "688d746ed1ad": {
+      "source": "admin",
+      "note": "タイトーステーション船橋 Issue #267 @hasikure_jojols(SNS提供=確定・お礼可): 営業09:00〜24:00・録画台(ラスサバ)あり・配信台(ラスサバ)なし。ラスサバは1台が交代制。",
+      "updatedAt": "2026-07-01",
+      "remarks": "ラスサバは1台が交代制で稼働しています。",
+      "businessHours": "09:00〜24:00",
+      "hasRecordingByGame": {
+        "jojo-ls": "yes"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no"
+      }
+    },
+    "a11206eebf81": {
+      "source": "admin",
+      "note": "アミューズメントエース津田沼 Issue #266 @hasikure_jojols(SNS提供=確定・お礼可): 録画台(ラスサバ)あり(SDカード/USB両対応)・配信台(ラスサバ)なし。",
+      "updatedAt": "2026-07-01",
+      "remarks": "ラスサバの録画台はSDカード・USBどちらにも対応しています。",
+      "hasRecordingByGame": {
+        "jojo-ls": "yes"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no"
+      }
+    },
+    "bec54e3f62ad": {
+      "source": "admin",
+      "note": "GiGO 西葛西 Issue #262 @Hiv-altermanOB(SNS提供=確定・お礼可): 営業10:00〜翌1:00・フロア(イニブ)2階・喫煙所あり・録画台(イニブ)なし・配信台(イニブ)なし。",
+      "updatedAt": "2026-07-01",
+      "businessHours": "10:00〜翌1:00",
+      "floorByGame": {
+        "gundam-exvs": "2階"
+      },
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "4fc1900ad6c7": {
+      "source": "user-report",
+      "note": "タイトーステーション札幌狸小路2丁目 Issue #261: イニブ6台(公式7→修正、稼働筐体6台+ライブモニター1台の構成)・営業10:00〜24:00・フロア(イニブ)1階・録画台(イニブ)なし・配信台(イニブ)なし。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-07-01",
+      "remarks": "イニブは稼働中のゲーム筐体6台＋ライブモニター1台の構成です（公式表記の7台はモニター込みの数）。",
+      "machineCounts": {
+        "gundam-exvs": 6
+      },
+      "businessHours": "10:00〜24:00",
+      "floorByGame": {
+        "gundam-exvs": "1階"
+      },
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
       },
       "hasStreamingByGame": {
         "gundam-exvs": "no"
