@@ -91,14 +91,20 @@
       "smoking": "yes"
     },
     "2b7946698cc0": {
-      "source": "user-report",
-      "note": "アドアーズ船橋 イニブ18台・フロア地下1F（Issue #124）。録画台はないがライブモニターに録画機設置あり（エスカレーター降りてすぐの6台が録画対応）。",
-      "updatedAt": "2026-06-19",
-      "remarks": "録画台はありませんが、ライブモニターに録画機があります（入口エスカレーターを降りてすぐの6台が録画対応）。",
+      "source": "admin",
+      "note": "アドアーズ船橋 イニブ18台・フロア地下1F（Issue #124, user-report）。2026-07-03 SNS確認済み報告（Issue #280, @takoyaki__BTS）でイニブ14台に修正（旧報告値18台）、録画台あり（USB接続の録画機）を確認。旧remarksの「録画台なし」情報は上書き。",
+      "updatedAt": "2026-07-03",
+      "remarks": "イニブ筐体にUSBで接続するタイプの録画機があります。",
       "machineCounts": {
-        "gundam-exvs": 18
+        "gundam-exvs": 14
       },
-      "floor": "地下1F"
+      "floor": "地下1F",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
     },
     "311e765f09c9": {
       "source": "admin",
@@ -1199,13 +1205,25 @@
     },
     "bec54e3f62ad": {
       "source": "admin",
-      "note": "GiGO 西葛西 Issue #262 @Hiv-altermanOB(SNS提供=確定・お礼可): 営業10:00〜翌1:00・フロア(イニブ)2階・喫煙所あり・録画台(イニブ)なし・配信台(イニブ)なし。",
-      "updatedAt": "2026-07-01",
+      "attributeSources": {
+        "payments": "user-report"
+      },
+      "note": "GiGO 西葛西 Issue #262 @Hiv-altermanOB(SNS提供=確定・お礼可): 営業10:00〜翌1:00・フロア(イニブ)2階・喫煙所あり・録画台(イニブ)なし・配信台(イニブ)なし。2026-07-03 追加報告（Issue #279, SNS未記入・未確認）で決済手段を追加。他項目は既存admin確認値と一致のため据え置き。",
+      "updatedAt": "2026-07-03",
       "businessHours": "10:00〜翌1:00",
       "floorByGame": {
         "gundam-exvs": "2階"
       },
       "smoking": "yes",
+      "payments": [
+        "交通系IC（Suica/PASMOなど）",
+        "PayPay",
+        "iD",
+        "nanaco",
+        "楽天ペイ",
+        "WAON",
+        "d払い"
+      ],
       "hasRecordingByGame": {
         "gundam-exvs": "no"
       },
@@ -1242,6 +1260,102 @@
       "smoking": "no",
       "hasRecordingByGame": {
         "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "yes"
+      }
+    },
+    "11ec67ad1dcc": {
+      "source": "user-report",
+      "note": "ゲームピコ鵜沼 Issue #278: 録画台(イニブ)なし・配信台(イニブ)なし。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-07-03",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "5808244e0890": {
+      "source": "admin",
+      "note": "ラウンドワンスタジアム所沢 Issue #281（SNS確認済み・@noname168211）: 録画台(イニブ)あり・配信台(イニブ)なし。",
+      "updatedAt": "2026-07-03",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "61159f87de5f": {
+      "source": "admin",
+      "note": "GiGO 所沢 Issue #282（SNS確認済み・@noname168211）: イニブ台数11→10に修正（旧公式値11台）、録画台あり(3台)・配信台あり(1台)。",
+      "updatedAt": "2026-07-03",
+      "remarks": "録画台が3台、配信台が1台設置されています。",
+      "machineCounts": {
+        "gundam-exvs": 10
+      },
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "yes"
+      }
+    },
+    "6f7ac90adbc0": {
+      "source": "admin",
+      "note": "タイトーステーション所沢 Issue #283（SNS確認済み・@noname168211）: 営業時間09:00〜24:00・配信台(イニブ)なしを確認。",
+      "updatedAt": "2026-07-03",
+      "businessHours": "09:00〜24:00",
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "cb53f873bb25": {
+      "source": "admin",
+      "note": "namcoららぽーと福岡 Issue #284（SNS確認済み・@matoi_EXVS_）: イニブ台数10→8に修正（旧公式値10台）、営業時間10:00〜21:00・録画台あり・配信台なしを確認。",
+      "updatedAt": "2026-07-03",
+      "remarks": "イニブ筐体にUSBを刺すタイプの録画機が1台あります。",
+      "businessHours": "10:00〜21:00",
+      "machineCounts": {
+        "gundam-exvs": 8
+      },
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "5dc2c30eca1d": {
+      "source": "admin",
+      "note": "ラウンドワン福岡天神 Issue #285（SNS確認済み・@matoi_exvs_）: 録画台(イニブ)あり・配信台(イニブ)なし。",
+      "updatedAt": "2026-07-03",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "89d00bf929d7": {
+      "source": "admin",
+      "note": "namco博多バスターミナル Issue #286（SNS確認済み・@matoi_exvs_）: 営業時間10:00〜22:00・録画台(イニブ)あり・配信台(イニブ)なしを確認。",
+      "updatedAt": "2026-07-03",
+      "businessHours": "10:00〜22:00",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "902811052a76": {
+      "source": "admin",
+      "note": "ADXマミー春日井出川 Issue #287（SNS確認済み・@takoyaki__bts）: イニブ台数10→8に修正（旧公式値10台）、配信台(イニブ)ありを確認。",
+      "updatedAt": "2026-07-03",
+      "machineCounts": {
+        "gundam-exvs": 8
       },
       "hasStreamingByGame": {
         "gundam-exvs": "yes"
