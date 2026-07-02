@@ -1231,6 +1231,21 @@
       "hasStreamingByGame": {
         "gundam-exvs": "no"
       }
+    },
+    "6164b5aefd27": {
+      "source": "user-report",
+      "note": "アミューズメントスペースコミ丸四日市 Issue #276: イニブ2台(公式3→修正)・喫煙所なし・録画台(イニブ)あり・配信台(イニブ)あり。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-07-02",
+      "machineCounts": {
+        "gundam-exvs": 2
+      },
+      "smoking": "no",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "yes"
+      }
     }
   }
 }
