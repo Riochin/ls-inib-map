@@ -107,10 +107,10 @@
     },
     "311e765f09c9": {
       "source": "admin",
-      "note": "蟹貴さんより提供",
-      "updatedAt": "2026-06-09",
+      "note": "蟹貴さんより提供。Issue #297: イニブ台数12との報告あり（SNS未記入のため未確認だが、運営判断により今回特別に確定値として採用）。",
+      "updatedAt": "2026-07-05",
       "machineCounts": {
-        "gundam-exvs": 8
+        "gundam-exvs": 12
       }
     },
     "331d0f612a68": {
@@ -1312,12 +1312,15 @@
     },
     "cb53f873bb25": {
       "source": "admin",
-      "note": "namcoららぽーと福岡 Issue #284（SNS確認済み・@matoi_EXVS_）: イニブ台数10→8に修正（旧公式値10台）、営業時間10:00〜21:00・録画台あり・配信台なしを確認。",
-      "updatedAt": "2026-07-03",
+      "note": "namcoららぽーと福岡 Issue #284（SNS確認済み・@matoi_EXVS_）: イニブ台数10→8に修正（旧公式値10台）、営業時間10:00〜21:00・録画台あり・配信台なしを確認。Issue #299 @seabook0123(SNS提供=確定・お礼可): フロア(イニブ)3F を追加確認。他項目は既報と一致。",
+      "updatedAt": "2026-07-05",
       "remarks": "イニブ筐体にUSBを刺すタイプの録画機が1台あります。",
       "businessHours": "10:00〜21:00",
       "machineCounts": {
         "gundam-exvs": 8
+      },
+      "floorByGame": {
+        "gundam-exvs": "3F"
       },
       "hasRecordingByGame": {
         "gundam-exvs": "yes"
@@ -1339,14 +1342,15 @@
     },
     "89d00bf929d7": {
       "source": "admin",
-      "note": "namco博多バスターミナル Issue #286（SNS確認済み・@matoi_exvs_）: 営業時間10:00〜22:00・録画台(イニブ)あり・配信台(イニブ)なしを確認。",
-      "updatedAt": "2026-07-03",
+      "note": "namco博多バスターミナル Issue #286（SNS確認済み・@matoi_exvs_）: 営業時間10:00〜22:00・録画台(イニブ)あり・配信台(イニブ)なしを確認。Issue #298 @seabook0123(SNS提供=確定・お礼可): フロア7Fを追加確認、配信台(イニブ)ありに訂正（#286時点は「なし」だったが新報告を採用）。",
+      "updatedAt": "2026-07-05",
       "businessHours": "10:00〜22:00",
+      "floor": "7F",
       "hasRecordingByGame": {
         "gundam-exvs": "yes"
       },
       "hasStreamingByGame": {
-        "gundam-exvs": "no"
+        "gundam-exvs": "yes"
       }
     },
     "902811052a76": {
@@ -1355,6 +1359,38 @@
       "updatedAt": "2026-07-03",
       "machineCounts": {
         "gundam-exvs": 8
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "yes"
+      }
+    },
+    "0651bfdff097": {
+      "source": "admin",
+      "note": "ラウンドワンスタジアム秋田 Issue #295/#296/#300 @alfinyua7(SNS提供=確定・お礼可): フロア(イニブ)2F・喫煙所あり(1F/2F)・配信台(イニブ)なし。#295時点は録画台(イニブ)なしと報告も、#296で「ターミナルに録画機能（USBメモリ）あり」と訂正（本人申告の記載漏れ）＝録画台(イニブ)ありを採用。営業時間はアミューズメントコーナーのもので変動が大きい（#295: 平日目安9:00〜11:59、#300: 土日祝9:00〜23:59、日により延長あり）ため remarks に要約し、構造化フィールドへの設定は見送り。",
+      "updatedAt": "2026-07-05",
+      "remarks": "喫煙所は1Fと2Fにあります。営業時間はアミューズメントコーナーのもので、日によって変動します（土日祝は目安9:00〜23:59）。参考程度にご覧ください。",
+      "floorByGame": {
+        "gundam-exvs": "2F"
+      },
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "8c1228bc5048": {
+      "source": "admin",
+      "note": "GiGO 船堀 Issue #293 @Hiv_altermanOB(SNS提供=確定・お礼可): 営業10:00〜24:00・フロア(イニブ)2階・喫煙所あり・録画台(イニブ)あり・配信台(イニブ)あり。",
+      "updatedAt": "2026-07-05",
+      "businessHours": "10:00〜24:00",
+      "floorByGame": {
+        "gundam-exvs": "2階"
+      },
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
       },
       "hasStreamingByGame": {
         "gundam-exvs": "yes"
