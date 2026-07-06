@@ -76,19 +76,23 @@
     },
     "2380eb9ab2af": {
       "source": "admin",
-      "note": "トヤマレジャーランド呉羽 ピン位置修正（Issue #51, 報告者が実店舗位置を画像提示）。Googleマップ実位置に補正（約370mズレていた）。ラスサバ6台・イニブ14台・喫煙所あり（Issue #136）。営業時間 9:00〜翌0:00（Issue #221）。SNS未記入のため営業時間は未確認（みんなの報告）扱い。",
-      "updatedAt": "2026-06-28",
+      "note": "トヤマレジャーランド呉羽 ピン位置修正（Issue #51, 報告者が実店舗位置を画像提示）。Googleマップ実位置に補正（約370mズレていた）。ラスサバ6台・イニブ14台・喫煙所あり（Issue #136）。営業時間 9:00〜翌0:00（Issue #221、SNS未記入のため当時未確認扱い）。Issue #304（@lorelei2, SNS提供=確定・お礼可）: 営業時間9:00〜翌0:00・喫煙所ありを再確認（確定値に更新）。録画台(イニブ)あり(ライブモニター設置、SDカードFAT32/SDHC対応)・配信台(イニブ)あり(予約不要・空いていれば利用可、1台のみ、OBS使用、マイクあり)。",
+      "updatedAt": "2026-07-06",
       "lat": 36.7154173,
       "lng": 137.1579387,
-      "attributeSources": {
-        "businessHours": "user-report"
-      },
+      "remarks": "イニブの配信台は予約不要で、空いていれば誰でも利用できます（1台のみ、配信ソフトはOBS、マイクあり）。録画台はライブモニターに設置されており、SDカード（FAT32/SDHC）に対応しています。",
       "machineCounts": {
         "jojo-ls": 6,
         "gundam-exvs": 14
       },
       "businessHours": "9:00〜翌0:00",
-      "smoking": "yes"
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "yes"
+      }
     },
     "2b7946698cc0": {
       "source": "admin",
@@ -1394,6 +1398,28 @@
       },
       "hasStreamingByGame": {
         "gundam-exvs": "yes"
+      }
+    },
+    "739a9db955eb": {
+      "source": "user-report",
+      "note": "GiGO 大森 Issue #303: 録画台(ラスサバ)あり・配信台(ラスサバ)なし。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-07-06",
+      "hasRecordingByGame": {
+        "jojo-ls": "yes"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no"
+      }
+    },
+    "aafc9c48f6e1": {
+      "source": "user-report",
+      "note": "GiGO 尾西 Issue #301: イニブ4台(公式5→修正)・配信台(イニブ)なし。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-07-06",
+      "machineCounts": {
+        "gundam-exvs": 4
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
       }
     }
   }
