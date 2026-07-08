@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-01T04:58:32.909Z",
+  "lastUpdated": "2026-07-08T03:50:53.500Z",
   "source": {
     "jojols": "https://bandainamco-am.co.jp/am/vg/jojols/location/",
     "gundam": "https://gundam-vs.jp/extreme/ac2ib/location/"
@@ -341,7 +341,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 14
-      }
+      },
+      "delisted": true
     },
     {
       "id": "069b3e6134d7",
@@ -705,6 +706,19 @@
       }
     },
     {
+      "id": "0e44c04794f6",
+      "name": "柏ガリバー",
+      "address": "千葉県柏市柏1-1-11 ファミリかしわB1F",
+      "lat": 35.8617921,
+      "lng": 139.9708973,
+      "games": [
+        "gundam-exvs"
+      ],
+      "machineCounts": {
+        "gundam-exvs": 9
+      }
+    },
+    {
       "id": "0ee089942686",
       "name": "トライセン中津",
       "address": "大分県中津市下池永67-3",
@@ -975,7 +989,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 13
-      }
+      },
+      "delisted": true
     },
     {
       "id": "14d32850a2a1",
@@ -2079,7 +2094,7 @@
         "gundam-exvs"
       ],
       "machineCounts": {
-        "gundam-exvs": 10
+        "gundam-exvs": 15
       }
     },
     {
@@ -3459,6 +3474,19 @@
       }
     },
     {
+      "id": "56798b0f1d93",
+      "name": "GiGO 本藤沢",
+      "address": "神奈川県藤沢市本藤沢5-6-8",
+      "lat": 35.3575453,
+      "lng": 139.4680955,
+      "games": [
+        "gundam-exvs"
+      ],
+      "machineCounts": {
+        "gundam-exvs": 14
+      }
+    },
+    {
       "id": "56fae2083cec",
       "name": "タイトーステーション広島本通",
       "address": "広島県広島市中区本通3-5 せらかぐ本通ビル",
@@ -4141,7 +4169,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 11
-      }
+      },
+      "delisted": true
     },
     {
       "id": "6ca1e7edac51",
@@ -6229,6 +6258,19 @@
       }
     },
     {
+      "id": "9a714433cd44",
+      "name": "GiGO 八王子高倉",
+      "address": "東京都八王子市高倉町55-4",
+      "lat": 35.6650798,
+      "lng": 139.3664767,
+      "games": [
+        "gundam-exvs"
+      ],
+      "machineCounts": {
+        "gundam-exvs": 11
+      }
+    },
+    {
       "id": "9b1ba06b105c",
       "name": "タイトーステーション秋葉原",
       "address": "東京都千代田区外神田4-2-2 貴三ビル",
@@ -7313,7 +7355,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 9
-      }
+      },
+      "delisted": true
     },
     {
       "id": "b2910489e0b2",
@@ -8098,7 +8141,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 11
-      }
+      },
+      "delisted": true
     },
     {
       "id": "c4b290b6e1d8",
@@ -9422,6 +9466,19 @@
       }
     },
     {
+      "id": "e62698ae41b9",
+      "name": "GiGO 足利朝倉",
+      "address": "栃木県足利市朝倉町244-1",
+      "lat": 36.3220945,
+      "lng": 139.4506949,
+      "games": [
+        "gundam-exvs"
+      ],
+      "machineCounts": {
+        "gundam-exvs": 13
+      }
+    },
+    {
       "id": "e63f5f03c5b3",
       "name": "あそVIVAゲームセンター",
       "address": "京都府福知山市堀上高田2146-1 あそVIVA1F",
@@ -9446,6 +9503,19 @@
       ],
       "machineCounts": {
         "gundam-exvs": 5
+      }
+    },
+    {
+      "id": "e6c0a1db8c7a",
+      "name": "GiGO 港北インター",
+      "address": "神奈川県横浜市都筑区東方町321-6",
+      "lat": 35.5191547,
+      "lng": 139.5845784,
+      "games": [
+        "gundam-exvs"
+      ],
+      "machineCounts": {
+        "gundam-exvs": 11
       }
     },
     {
@@ -9626,7 +9696,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 7
-      }
+      },
+      "delisted": true
     },
     {
       "id": "eaa8ebe32ba8",
@@ -9950,8 +10021,7 @@
       ],
       "machineCounts": {
         "gundam-exvs": 5
-      },
-      "delisted": true
+      }
     },
     {
       "id": "f20e508e7b68",
