@@ -405,6 +405,12 @@
     "precision": "APPROXIMATE",
     "partialMatch": true
   },
+  "千葉県柏市柏1-1-11": {
+    "lat": 35.8617921,
+    "lng": 139.9708973,
+    "precision": "ROOFTOP",
+    "partialMatch": true
+  },
   "千葉県浦安市入船1-4-1": {
     "lat": 35.649228,
     "lng": 139.9147031,
@@ -1728,6 +1734,11 @@
     "lng": 138.8377386,
     "precision": "ROOFTOP"
   },
+  "東京都八王子市高倉町55-4": {
+    "lat": 35.6650798,
+    "lng": 139.3664767,
+    "precision": "ROOFTOP"
+  },
   "東京都立川市羽衣町2-4-13": {
     "lat": 35.6964124,
     "lng": 139.4287931,
@@ -1974,11 +1985,21 @@
     "lng": 136.6215916,
     "precision": "APPROXIMATE"
   },
+  "神奈川県横浜市都筑区東方町321-6": {
+    "lat": 35.5191547,
+    "lng": 139.5845784,
+    "precision": "ROOFTOP"
+  },
   "神奈川県横須賀市大滝町1-13": {
     "lat": 35.2821738,
     "lng": 139.6696281,
     "precision": "ROOFTOP",
     "partialMatch": true
+  },
+  "神奈川県藤沢市本藤沢5-6-8": {
+    "lat": 35.3575453,
+    "lng": 139.4680955,
+    "precision": "ROOFTOP"
   },
   "福井県敦賀市木崎40": {
     "lat": 35.645182,
