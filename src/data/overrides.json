@@ -251,11 +251,22 @@
     },
     "4dafc607ce42": {
       "source": "admin",
-      "note": "タイトーステーション藤沢 イニブ筐体4台＋ライブモニター1台（公式5→筐体4, Issue #94）。@sylvaliongosvel。お礼可。",
-      "updatedAt": "2026-06-12",
+      "note": "タイトーステーション藤沢 イニブ筐体4台＋ライブモニター1台（公式5→筐体4, Issue #94）。@sylvaliongosvel。お礼可。営業時間10:00〜23:45・フロア地下1階(B1)・喫煙所なし・録画/配信台なし（Issue #308）。@seabook0123。お礼可。",
+      "updatedAt": "2026-07-08",
       "remarks": "イニブは筐体4台＋ライブモニター1台です（公式表記の5台はモニター込みの数）。",
       "machineCounts": {
         "gundam-exvs": 4
+      },
+      "businessHours": "10:00〜23:45",
+      "floorByGame": {
+        "gundam-exvs": "B1"
+      },
+      "smoking": "no",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
       }
     },
     "56015d135d11": {
