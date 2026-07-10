@@ -335,8 +335,12 @@
     },
     "6701f6561319": {
       "source": "admin",
-      "note": "GiGO 相模大野 SBGさん（ラスサバ3台）。Issue #153 @AzukiBAR1800（お礼可）: イニブ11台(マップ値据置・未確定/#171)・営業10:00〜23:00・2F・禁煙・決済(交通系IC/d払い/PayPay/楽天ペイ/nanaco)・録画台なし・配信台なし。報告者=ラスサバ勢のため台数はラスサバのみ確定、録画/配信もラスサバ側に割当・イニブ側は不明。",
-      "updatedAt": "2026-06-23",
+      "attributeSources": {
+        "hasRecordingByGame": "user-report",
+        "hasStreamingByGame": "user-report"
+      },
+      "note": "GiGO 相模大野 SBGさん（ラスサバ3台）。Issue #153 @AzukiBAR1800（お礼可）: イニブ11台(マップ値据置・未確定/#171)・営業10:00〜23:00・2F・禁煙・決済(交通系IC/d払い/PayPay/楽天ペイ/nanaco)・録画台なし・配信台なし。報告者=ラスサバ勢のため台数はラスサバのみ確定、録画/配信もラスサバ側に割当・イニブ側は不明。2026-07-10 追加報告（Issue #312, SNS未記入・未確認）: 録画台(イニブ)なし・配信台(イニブ)なし。他項目（営業時間/フロア/喫煙所/決済）は既存admin確認値と一致のため据え置き。",
+      "updatedAt": "2026-07-10",
       "machineCounts": {
         "jojo-ls": 3
       },
@@ -346,11 +350,11 @@
       "payments": ["交通系IC（Suica/PASMOなど）", "d払い", "PayPay", "楽天ペイ", "nanaco"],
       "hasRecordingByGame": {
         "jojo-ls": "no",
-        "gundam-exvs": "unknown"
+        "gundam-exvs": "no"
       },
       "hasStreamingByGame": {
         "jojo-ls": "no",
-        "gundam-exvs": "unknown"
+        "gundam-exvs": "no"
       }
     },
     "74a661a26350": {
@@ -1428,6 +1432,25 @@
       "updatedAt": "2026-07-06",
       "machineCounts": {
         "gundam-exvs": 4
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "05fe48d7f2b7": {
+      "source": "user-report",
+      "note": "GiGO 新杉田 Issue #311: イニブ8台(公式9→修正)・フロア(イニブ)1F・決済(交通系IC/PayPay/楽天ペイ)・録画台(イニブ)なし・配信台(イニブ)なし。喫煙所は不明のため未設定。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-07-10",
+      "remarks": "以前は録画機がありましたが、現在は撤去されています（スタッフ確認：再設置予定は未定とのことです）。",
+      "machineCounts": {
+        "gundam-exvs": 8
+      },
+      "floorByGame": {
+        "gundam-exvs": "1F"
+      },
+      "payments": ["交通系IC（Suica/PASMOなど）", "PayPay", "楽天ペイ"],
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
       },
       "hasStreamingByGame": {
         "gundam-exvs": "no"
