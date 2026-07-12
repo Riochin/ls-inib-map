@@ -467,10 +467,17 @@
     },
     "a4bf5a4b8d0b": {
       "source": "admin",
-      "note": "Yリオンさん",
-      "updatedAt": "2026-06-09",
+      "note": "Yリオンさん。Issue #323 @Yrion1998(SNS提供=確定・お礼可): 営業10:00〜翌0:00・喫煙所あり・決済(交通系IC/d払い/LINE Pay/WAON/QUICPay/PayPay/楽天ペイ/nanaco)・録画台(ラスサバ/イニブ)あり。",
+      "updatedAt": "2026-07-12",
       "machineCounts": {
         "jojo-ls": 2
+      },
+      "businessHours": "10:00〜翌0:00",
+      "smoking": "yes",
+      "payments": ["交通系IC（Suica/PASMOなど）", "d払い", "LINE Pay", "WAON", "QUICPay", "PayPay", "楽天ペイ", "nanaco"],
+      "hasRecordingByGame": {
+        "jojo-ls": "yes",
+        "gundam-exvs": "yes"
       }
     },
     "b2c469a9c6c6": {
@@ -830,8 +837,8 @@
       "attributeSources": {
         "hasRecordingByGame": "user-report"
       },
-      "note": "ドリームキャンディー Issue #204 @1kAreta_8r0U(SNS提供=確定): 営業0:00～24:00・ワンフロア・喫煙所あり・録画台(イニブ)なし・配信台(イニブ)なし。memo: 金土日は10:00オープン／イニブ録画機・配信台は無いが配信機材を持込み店員に声かければ配信可。Issue #202(SNS未記入)は同一店の重複報告のため本エントリに統合。お礼可。2026-07-11 追加報告（Issue #319, SNS未記入・未確認）: 録画台(ラスサバ)あり。営業時間12:00〜24:00・喫煙所なしは既存admin確認値（0:00〜24:00・喫煙所あり）と食い違うため据置。フロアは既存と一致。配信台(ラスサバ)は不明のため反映なし。memo(パソコン・キャプボがあれば許可取って配信可)は既存remarksの内容と概ね一致のため変更なし。",
-      "updatedAt": "2026-07-11",
+      "note": "ドリームキャンディー Issue #204 @1kAreta_8r0U(SNS提供=確定): 営業0:00～24:00・ワンフロア・喫煙所あり・録画台(イニブ)なし・配信台(イニブ)なし。memo: 金土日は10:00オープン／イニブ録画機・配信台は無いが配信機材を持込み店員に声かければ配信可。Issue #202(SNS未記入)は同一店の重複報告のため本エントリに統合。お礼可。2026-07-11 追加報告（Issue #319, SNS未記入・未確認）: 録画台(ラスサバ)あり。営業時間12:00〜24:00・喫煙所なしは既存admin確認値（0:00〜24:00・喫煙所あり）と食い違うため据置。フロアは既存と一致。配信台(ラスサバ)は不明のため反映なし。memo(パソコン・キャプボがあれば許可取って配信可)は既存remarksの内容と概ね一致のため変更なし。2026-07-12 追加報告（Issue #324, SNS未記入・未確認）: 営業時間12:00～24:00・喫煙所ありを再報告。営業時間は既存admin確認値（0:00〜24:00）と食い違うため据置（#319と同内容）。フロア/喫煙所/録画台(ラスサバ)/録画台(イニブ)/配信台(イニブ)は既存確認値と一致のため据え置き。",
+      "updatedAt": "2026-07-12",
       "remarks": "金・土・日は10:00オープンです。配信台はありませんが、配信機材を持ち込んで店員さんに声をかければ配信できます。",
       "businessHours": "0:00～24:00",
       "floor": "ワンフロア",
@@ -1469,6 +1476,59 @@
       "businessHours": "09:00〜23:30",
       "hasRecordingByGame": {
         "jojo-ls": "yes"
+      }
+    },
+    "0fbd745dae25": {
+      "source": "user-report",
+      "note": "DAIKEIEN Issue #322: ラスサバ3台(公式7→修正)・録画台(ラスサバ)なし・配信台(ラスサバ)なし（7月5日(日)確認）。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-07-12",
+      "machineCounts": {
+        "jojo-ls": 3
+      },
+      "hasRecordingByGame": {
+        "jojo-ls": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no"
+      }
+    },
+    "549d870c39b2": {
+      "source": "user-report",
+      "note": "ゲームパニック三郷 Issue #325: 喫煙所なし（店内）・録画台(ラスサバ)なし・配信台(ラスサバ)なし。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-07-12",
+      "remarks": "店内に喫煙所はありませんが、隣接するイトーヨーカドーのフードコート内に喫煙所があります（ラスサバから徒歩5分ほど）。",
+      "smoking": "no",
+      "hasRecordingByGame": {
+        "jojo-ls": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no"
+      }
+    },
+    "d4abe538aa76": {
+      "source": "admin",
+      "note": "タイトーFステーションセントポルタ大分 Issue #326 @qEzWzHk7B637916(SNS提供=確定・メンション不可): 営業10:00〜24:00・地下1階・録画台(ラスサバ)なし・配信台(ラスサバ)なし。喫煙所は不明のため未設定。",
+      "updatedAt": "2026-07-12",
+      "businessHours": "10:00〜24:00",
+      "floor": "地下1階",
+      "hasRecordingByGame": {
+        "jojo-ls": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no"
+      }
+    },
+    "1df270030ad7": {
+      "source": "user-report",
+      "note": "GiGO 札幌駅西口 Issue #327: フロア1階・喫煙所なし・録画台(ラスサバ)なし・配信台(ラスサバ)なし。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-07-12",
+      "floor": "1階",
+      "smoking": "no",
+      "hasRecordingByGame": {
+        "jojo-ls": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no"
       }
     }
   }
