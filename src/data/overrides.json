@@ -76,21 +76,27 @@
     },
     "2380eb9ab2af": {
       "source": "admin",
-      "note": "トヤマレジャーランド呉羽 ピン位置修正（Issue #51, 報告者が実店舗位置を画像提示）。Googleマップ実位置に補正（約370mズレていた）。ラスサバ6台・イニブ14台・喫煙所あり（Issue #136）。営業時間 9:00〜翌0:00（Issue #221、SNS未記入のため当時未確認扱い）。Issue #304（@lorelei2, SNS提供=確定・お礼可）: 営業時間9:00〜翌0:00・喫煙所ありを再確認（確定値に更新）。録画台(イニブ)あり(ライブモニター設置、SDカードFAT32/SDHC対応)・配信台(イニブ)あり(予約不要・空いていれば利用可、1台のみ、OBS使用、マイクあり)。",
-      "updatedAt": "2026-07-06",
+      "attributeSources": {
+        "floor": "user-report"
+      },
+      "note": "トヤマレジャーランド呉羽 ピン位置修正（Issue #51, 報告者が実店舗位置を画像提示）。Googleマップ実位置に補正（約370mズレていた）。ラスサバ6台・イニブ14台・喫煙所あり（Issue #136）。営業時間 9:00〜翌0:00（Issue #221、SNS未記入のため当時未確認扱い）。Issue #304（@lorelei2, SNS提供=確定・お礼可）: 営業時間9:00〜翌0:00・喫煙所ありを再確認（確定値に更新）。録画台(イニブ)あり(ライブモニター設置、SDカードFAT32/SDHC対応)・配信台(イニブ)あり(予約不要・空いていれば利用可、1台のみ、OBS使用、マイクあり)。Issue #332（SNS未記入・未確認）: フロア1F・録画台(ラスサバ)なし・配信台(ラスサバ)あり(配信には1週間前の事前連絡が必要とのこと)を新規追加。ジョジョ台数3との報告あるが、既存確定値(6台, Issue #136)と食い違うため据置。",
+      "updatedAt": "2026-07-13",
       "lat": 36.7154173,
       "lng": 137.1579387,
-      "remarks": "イニブの配信台は予約不要で、空いていれば誰でも利用できます（1台のみ、配信ソフトはOBS、マイクあり）。録画台はライブモニターに設置されており、SDカード（FAT32/SDHC）に対応しています。",
+      "remarks": "イニブの配信台は予約不要で、空いていれば誰でも利用できます（1台のみ、配信ソフトはOBS、マイクあり）。録画台はライブモニターに設置されており、SDカード（FAT32/SDHC）に対応しています。ラスサバの配信は、1週間前までの事前連絡が必要とのことです（未確認情報）。",
       "machineCounts": {
         "jojo-ls": 6,
         "gundam-exvs": 14
       },
       "businessHours": "9:00〜翌0:00",
+      "floor": "1F",
       "smoking": "yes",
       "hasRecordingByGame": {
+        "jojo-ls": "no",
         "gundam-exvs": "yes"
       },
       "hasStreamingByGame": {
+        "jojo-ls": "yes",
         "gundam-exvs": "yes"
       }
     },
@@ -176,19 +182,21 @@
     },
     "40beebc2cba3": {
       "source": "user-report",
-      "note": "バイパスレジャーランド藤江新館 ラスサバ6台・イニブ18台・喫煙所あり・録画台あり（Issue #131）。配信は事前予約が必要。v2.3.5: 配信台/録画台をタイトル別化。公式X(@l_l_f_s_1)がイニブ主力店＝録画台イニブあり、ラスサバ/配信は不明（再報告待ち）。",
-      "updatedAt": "2026-06-23",
+      "note": "バイパスレジャーランド藤江新館 ラスサバ6台・イニブ18台・喫煙所あり・録画台あり（Issue #131）。配信は事前予約が必要。v2.3.5: 配信台/録画台をタイトル別化。公式X(@l_l_f_s_1)がイニブ主力店＝録画台イニブあり、ラスサバ/配信は不明（再報告待ち）。Issue #329（SNS未記入・未確認）: フロア2F・録画台(ラスサバ)あり・配信台(ラスサバ)あり。配信は1週間前までの事前連絡が必要、ラスサバ6台での交流モードは利用不可（remarksに記載）。配信台(イニブ)は不明のまま。",
+      "updatedAt": "2026-07-13",
+      "remarks": "配信は１週間前までの事前連絡が必要です。ラスサバ６台での交流モードは利用できません。",
       "machineCounts": {
         "jojo-ls": 6,
         "gundam-exvs": 18
       },
+      "floor": "2F",
       "smoking": "yes",
       "hasRecordingByGame": {
-        "jojo-ls": "unknown",
+        "jojo-ls": "yes",
         "gundam-exvs": "yes"
       },
       "hasStreamingByGame": {
-        "jojo-ls": "unknown",
+        "jojo-ls": "yes",
         "gundam-exvs": "unknown"
       }
     },
@@ -289,13 +297,21 @@
     },
     "5019f0c1ffb4": {
       "source": "user-report",
-      "note": "上越レジャーランボウル ラスサバ3台・イニブ7台・喫煙所あり（Issue #137）。",
-      "updatedAt": "2026-06-19",
+      "note": "上越レジャーランボウル ラスサバ3台・イニブ7台・喫煙所あり（Issue #137）。Issue #333（SNS未記入・未確認）: 営業9:00〜24:00・フロア1F・録画台(ラスサバ)なし・配信台(ラスサバ)なし。喫煙所は既報と一致。",
+      "updatedAt": "2026-07-13",
       "machineCounts": {
         "jojo-ls": 3,
         "gundam-exvs": 7
       },
-      "smoking": "yes"
+      "businessHours": "9:00〜24:00",
+      "floor": "1F",
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "jojo-ls": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no"
+      }
     },
     "60a0ff908860": {
       "source": "user-report",
@@ -431,8 +447,8 @@
     },
     "83b41e611ba5": {
       "source": "user-report",
-      "note": "バイパスレジャーランド藤江本館 ラスサバ3台・イニブ9台・2F・喫煙所あり（Issue #130）。ピン位置修正（ピンが北にズレ → Googleマップ実位置に補正）。v2.3.5: 配信台/録画台をタイトル別化。店舗単位「なし」報告は片タイトルのみ確認の可能性があるため両タイトル不明に（再報告待ち）。",
-      "updatedAt": "2026-06-23",
+      "note": "バイパスレジャーランド藤江本館 ラスサバ3台・イニブ9台・2F・喫煙所あり（Issue #130）。ピン位置修正（ピンが北にズレ → Googleマップ実位置に補正）。v2.3.5: 配信台/録画台をタイトル別化。店舗単位「なし」報告は片タイトルのみ確認の可能性があるため両タイトル不明に（再報告待ち）。Issue #330（SNS未記入・未確認）: 録画台(ラスサバ)なし・配信台(ラスサバ)なし。フロア/喫煙所は既報と一致。録画台/配信台(イニブ)は不明のまま。",
+      "updatedAt": "2026-07-13",
       "lat": 36.5839552,
       "lng": 136.6215528,
       "machineCounts": {
@@ -442,11 +458,11 @@
       "floor": "２F",
       "smoking": "yes",
       "hasRecordingByGame": {
-        "jojo-ls": "unknown",
+        "jojo-ls": "no",
         "gundam-exvs": "unknown"
       },
       "hasStreamingByGame": {
-        "jojo-ls": "unknown",
+        "jojo-ls": "no",
         "gundam-exvs": "unknown"
       }
     },
@@ -550,20 +566,21 @@
     },
     "d3d5ea015d5f": {
       "source": "user-report",
-      "note": "ユーズランド高岡 ラスサバ2台・イニブ13台・2F（Issue #135）。v2.3.5: 配信台/録画台をタイトル別化。店舗単位「なし」報告は片タイトルのみ確認の可能性があるため両タイトル不明に（再報告待ち）。",
-      "updatedAt": "2026-06-23",
+      "note": "ユーズランド高岡 ラスサバ2台・イニブ13台・2F（Issue #135）。v2.3.5: 配信台/録画台をタイトル別化。店舗単位「なし」報告は片タイトルのみ確認の可能性があるため両タイトル不明に（再報告待ち）。Issue #331（SNS未記入・未確認）: 営業10:00〜21:00・フロア イオンモール東館2F・喫煙所なし・録画台(ラスサバ)なし・配信台(ラスサバ)なし。録画台/配信台(イニブ)は不明のまま。",
+      "updatedAt": "2026-07-13",
       "machineCounts": {
         "jojo-ls": 2,
         "gundam-exvs": 13
       },
-      "businessHours": "10:00~21:00",
-      "floor": "２F",
+      "businessHours": "10:00〜21:00",
+      "floor": "イオンモール東館2F",
+      "smoking": "no",
       "hasRecordingByGame": {
-        "jojo-ls": "unknown",
+        "jojo-ls": "no",
         "gundam-exvs": "unknown"
       },
       "hasStreamingByGame": {
-        "jojo-ls": "unknown",
+        "jojo-ls": "no",
         "gundam-exvs": "unknown"
       }
     },
@@ -1529,6 +1546,36 @@
       },
       "hasStreamingByGame": {
         "jojo-ls": "no"
+      }
+    },
+    "58941ac099ed": {
+      "source": "user-report",
+      "note": "ラウンドワンスタジアム盛岡 Issue #337: 営業10:00〜翌2:00・フロア(イニブ)1F・喫煙所あり・録画台(イニブ)あり・配信台(イニブ)なし。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-07-13",
+      "businessHours": "10:00〜翌2:00",
+      "floor": "1F",
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "8f9862006708": {
+      "source": "admin",
+      "note": "namcoイオンタウン大館西 Issue #334 @alfinyua7(SNS提供=確定・お礼可): 営業10:00〜21:00・フロア1F・喫煙所なし・録画台(ラスサバ/イニブ)なし・配信台(ラスサバ/イニブ)なし。",
+      "updatedAt": "2026-07-13",
+      "businessHours": "10:00〜21:00",
+      "floor": "1F",
+      "smoking": "no",
+      "hasRecordingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
       }
     }
   }
