@@ -1577,6 +1577,12 @@
         "jojo-ls": "no",
         "gundam-exvs": "no"
       }
+    },
+    "6be9be2d1273": {
+      "source": "user-report",
+      "note": "ドラマ港北インター Issue #342: GIGO港北インターに店名変更したとの報告（現地調査済とのことだがSNS未記入のため未確認）。",
+      "remarks": "「GIGO港北インター」に店名変更したという報告があります（未確認）。",
+      "updatedAt": "2026-07-14"
     }
   }
 }
