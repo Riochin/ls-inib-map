@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-08T03:50:53.500Z",
+  "lastUpdated": "2026-07-15T03:41:07.750Z",
   "source": {
     "jojols": "https://bandainamco-am.co.jp/am/vg/jojols/location/",
     "gundam": "https://gundam-vs.jp/extreme/ac2ib/location/"
@@ -2094,7 +2094,7 @@
         "gundam-exvs"
       ],
       "machineCounts": {
-        "gundam-exvs": 15
+        "gundam-exvs": 19
       }
     },
     {
@@ -2510,7 +2510,8 @@
       ],
       "machineCounts": {
         "jojo-ls": 3
-      }
+      },
+      "delisted": true
     },
     {
       "id": "3fc45fd60b1d",
@@ -4996,7 +4997,7 @@
       ],
       "machineCounts": {
         "jojo-ls": 6,
-        "gundam-exvs": 15
+        "gundam-exvs": 18
       }
     },
     {
@@ -8839,7 +8840,7 @@
       ],
       "machineCounts": {
         "jojo-ls": 2,
-        "gundam-exvs": 13
+        "gundam-exvs": 9
       }
     },
     {
