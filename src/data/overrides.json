@@ -79,8 +79,8 @@
       "attributeSources": {
         "floor": "user-report"
       },
-      "note": "トヤマレジャーランド呉羽 ピン位置修正（Issue #51, 報告者が実店舗位置を画像提示）。Googleマップ実位置に補正（約370mズレていた）。ラスサバ6台・イニブ14台・喫煙所あり（Issue #136）。営業時間 9:00〜翌0:00（Issue #221、SNS未記入のため当時未確認扱い）。Issue #304（@lorelei2, SNS提供=確定・お礼可）: 営業時間9:00〜翌0:00・喫煙所ありを再確認（確定値に更新）。録画台(イニブ)あり(ライブモニター設置、SDカードFAT32/SDHC対応)・配信台(イニブ)あり(予約不要・空いていれば利用可、1台のみ、OBS使用、マイクあり)。Issue #332（SNS未記入・未確認）: フロア1F・録画台(ラスサバ)なし・配信台(ラスサバ)あり(配信には1週間前の事前連絡が必要とのこと)を新規追加。ジョジョ台数3との報告あるが、既存確定値(6台, Issue #136)と食い違うため据置。",
-      "updatedAt": "2026-07-13",
+      "note": "トヤマレジャーランド呉羽 ピン位置修正（Issue #51, 報告者が実店舗位置を画像提示）。Googleマップ実位置に補正（約370mズレていた）。ラスサバ6台・イニブ14台・喫煙所あり（Issue #136）。営業時間 9:00〜翌0:00（Issue #221、SNS未記入のため当時未確認扱い）。Issue #304（@lorelei2, SNS提供=確定・お礼可）: 営業時間9:00〜翌0:00・喫煙所ありを再確認（確定値に更新）。録画台(イニブ)あり(ライブモニター設置、SDカードFAT32/SDHC対応)・配信台(イニブ)あり(予約不要・空いていれば利用可、1台のみ、OBS使用、マイクあり)。Issue #332（SNS未記入・未確認）: フロア1F・録画台(ラスサバ)なし・配信台(ラスサバ)あり(配信には1週間前の事前連絡が必要とのこと)を新規追加。ジョジョ台数3との報告あるが、既存確定値(6台, Issue #136)と食い違うため据置。Issue #358（SNS未記入・未確認）: ジョジョ台数3・営業9:00〜翌0:00・フロア1F・喫煙所あり・録画台(ラスサバ)なし/(イニブ)あり・配信台(ラスサバ)あり/(イニブ)ありを再報告。ジョジョ台数以外は既存確定値と一致のため据置（台数は#332と同様の食い違いで見送り、確定値6台を維持）。",
+      "updatedAt": "2026-07-21",
       "lat": 36.7154173,
       "lng": 137.1579387,
       "remarks": "イニブの配信台は予約不要で、空いていれば誰でも利用できます（1台のみ、配信ソフトはOBS、マイクあり）。録画台はライブモニターに設置されており、SDカード（FAT32/SDHC）に対応しています。ラスサバの配信は、1週間前までの事前連絡が必要とのことです（未確認情報）。",
@@ -117,10 +117,13 @@
     },
     "311e765f09c9": {
       "source": "admin",
-      "note": "蟹貴さんより提供。Issue #297: イニブ台数12との報告あり（SNS未記入のため未確認だが、運営判断により今回特別に確定値として採用）。",
-      "updatedAt": "2026-07-05",
+      "note": "蟹貴さんより提供。Issue #297: イニブ台数12との報告あり（SNS未記入のため未確認だが、運営判断により今回特別に確定値として採用）。Issue #348 @zgmfx20a_shin（SNS提供=確定・お礼可）: 配信台(イニブ)あり。",
+      "updatedAt": "2026-07-21",
       "machineCounts": {
         "gundam-exvs": 12
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "yes"
       }
     },
     "331d0f612a68": {
@@ -642,13 +645,16 @@
     },
     "55d17e4a6c8a": {
       "source": "admin",
-      "note": "ラウンドワン町田 Issue #151 @AzukiBAR1800（お礼可）。ラスサバ4台・イニブ18台(マップ値据置・未確定/#171)・営業10:00〜0:59（アミューズメントコーナー）・2F・喫煙所あり・録画台あり・配信台なし。報告者=ラスサバ勢のため台数はラスサバのみ確定、録画/配信もラスサバ側に割当。録画はRound1のGR-HD録画機（EXVS.2IB設置店）＝イニブ側も録画ありと判断、配信はイニブ不明。",
-      "updatedAt": "2026-06-23",
+      "note": "ラウンドワン町田 Issue #151 @AzukiBAR1800（お礼可）。ラスサバ4台・イニブ18台(マップ値据置・未確定/#171)・営業10:00〜0:59（アミューズメントコーナー）・2F・喫煙所あり・録画台あり・配信台なし。報告者=ラスサバ勢のため台数はラスサバのみ確定、録画/配信もラスサバ側に割当。録画はRound1のGR-HD録画機（EXVS.2IB設置店）＝イニブ側も録画ありと判断、配信はイニブ不明。Issue #354（SNS未記入・未確認）: フロアをラスサバ2F・イニブ1Fに分離（従来は単一フロア表記2Fだったが、イニブは別階と判明）。配信台(イニブ)なしを追加確認（従来不明）。録画台(イニブ)あり・喫煙所あり・営業時間は既報と一致。",
+      "updatedAt": "2026-07-21",
       "machineCounts": {
         "jojo-ls": 4
       },
       "businessHours": "10:00〜0:59（アミューズメントコーナー）",
-      "floor": "2F",
+      "floorByGame": {
+        "jojo-ls": "2F",
+        "gundam-exvs": "1F"
+      },
       "smoking": "yes",
       "hasRecordingByGame": {
         "jojo-ls": "yes",
@@ -656,13 +662,13 @@
       },
       "hasStreamingByGame": {
         "jojo-ls": "no",
-        "gundam-exvs": "unknown"
+        "gundam-exvs": "no"
       }
     },
     "8835e8a89d0c": {
       "source": "admin",
-      "note": "タイトーステーション町田 Issue #152 @AzukiBAR1800（お礼可）。ラスサバ2台・イニブ13台(マップ値据置・未確定/#171)・営業10:00〜24:00・2F・喫煙所あり・録画台なし・配信台なし。報告者=ラスサバ勢のため台数はラスサバのみ確定、録画/配信もラスサバ側に割当・イニブ側は不明。",
-      "updatedAt": "2026-06-23",
+      "note": "タイトーステーション町田 Issue #152 @AzukiBAR1800（お礼可）。ラスサバ2台・イニブ13台(マップ値据置・未確定/#171)・営業10:00〜24:00・2F・喫煙所あり・録画台なし・配信台なし。報告者=ラスサバ勢のため台数はラスサバのみ確定、録画/配信もラスサバ側に割当・イニブ側は不明。Issue #352（SNS未記入・未確認）: 録画台(イニブ)あり・配信台(イニブ)なしを追加確認（イニブ側は従来不明だったが今回報告により補完、未確認扱い）。営業時間・フロア・喫煙所・ラスサバ側は既報と一致。",
+      "updatedAt": "2026-07-21",
       "machineCounts": {
         "jojo-ls": 2
       },
@@ -671,11 +677,11 @@
       "smoking": "yes",
       "hasRecordingByGame": {
         "jojo-ls": "no",
-        "gundam-exvs": "unknown"
+        "gundam-exvs": "yes"
       },
       "hasStreamingByGame": {
         "jojo-ls": "no",
-        "gundam-exvs": "unknown"
+        "gundam-exvs": "no"
       }
     },
     "ae99c03b1679": {
@@ -1583,6 +1589,98 @@
       "note": "ドラマ港北インター Issue #342: GIGO港北インターに店名変更したとの報告（現地調査済とのことだがSNS未記入のため未確認）。",
       "remarks": "「GIGO港北インター」に店名変更したという報告があります（未確認）。",
       "updatedAt": "2026-07-14"
+    },
+    "88cd9f969795": {
+      "source": "admin",
+      "note": "モンキートリック Issue #346 @zgmfx20a_shin（SNS提供=確定・お礼可）: 配信台(イニブ)あり。",
+      "updatedAt": "2026-07-21",
+      "hasStreamingByGame": {
+        "gundam-exvs": "yes"
+      }
+    },
+    "072de7c5bd8c": {
+      "source": "admin",
+      "note": "アミューズメントCUE奈良三条 Issue #347 @zgmfx20a_shin（SNS提供=確定・お礼可）: 配信台(イニブ)あり。",
+      "updatedAt": "2026-07-21",
+      "hasStreamingByGame": {
+        "gundam-exvs": "yes"
+      }
+    },
+    "b4bd24e9492d": {
+      "source": "user-report",
+      "note": "GiGO 町田 Issue #353: 営業10:00〜23:30・フロア(イニブ)地下1階・喫煙所なし・決済(iD/nanaco/楽天ペイ/PayPay/交通系IC/d払い/WAON/LINE Pay/QUICPay)・録画台(イニブ)なし・配信台(イニブ)なし。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-07-21",
+      "businessHours": "10:00〜23:30",
+      "floorByGame": {
+        "gundam-exvs": "地下1階"
+      },
+      "smoking": "no",
+      "payments": ["iD", "nanaco", "楽天ペイ", "PayPay", "交通系IC（Suica/PASMOなど）", "d払い", "WAON", "LINE Pay", "QUICPay"],
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "1d8fa5eedf0d": {
+      "source": "user-report",
+      "note": "アドアーズ橋本 Issue #355: 営業10:00〜23:30・喫煙所なし・録画台(イニブ)あり・配信台(イニブ)なし。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-07-21",
+      "businessHours": "10:00〜23:30",
+      "smoking": "no",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "c18dde1794bf": {
+      "source": "user-report",
+      "note": "アピナ橋本 Issue #356: 喫煙所なし・録画台(イニブ)なし・配信台(イニブ)なし。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-07-21",
+      "smoking": "no",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "953a54c87cb9": {
+      "source": "user-report",
+      "note": "GiGO 枚方 Issue #357: イニブ台数8(公式9→修正)・営業10:00〜24:00・フロア(イニブ)2F・喫煙所あり・録画台(イニブ)なし・配信台(イニブ)なし。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-07-21",
+      "machineCounts": {
+        "gundam-exvs": 8
+      },
+      "businessHours": "10:00〜24:00",
+      "floorByGame": {
+        "gundam-exvs": "2F"
+      },
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "a6ad0e594c5f": {
+      "source": "admin",
+      "note": "GiGO 一関 Issue #359 @2000_OW（SNS提供=確定・お礼可）: フロア(イニブ)2F・喫煙所なし・録画台(イニブ)なし・配信台(イニブ)なし。",
+      "updatedAt": "2026-07-21",
+      "floorByGame": {
+        "gundam-exvs": "2F"
+      },
+      "smoking": "no",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
     }
   }
 }
