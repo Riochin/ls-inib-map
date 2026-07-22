@@ -1335,6 +1335,12 @@
     "lng": 134.5426658,
     "precision": "ROOFTOP"
   },
+  "愛媛県今治市東村1-14-2": {
+    "lat": 34.0432813,
+    "lng": 133.0282187,
+    "precision": "ROOFTOP",
+    "partialMatch": true
+  },
   "愛媛県今治市馬越町4-8-1": {
     "lat": 34.0562607,
     "lng": 132.9797877,
@@ -1704,6 +1710,12 @@
   "新潟県新潟市東区大形本町3-1-2": {
     "lat": 37.9247731,
     "lng": 139.1149478,
+    "precision": "ROOFTOP",
+    "partialMatch": true
+  },
+  "新潟県新潟市江南区下早通柳田1-1-1": {
+    "lat": 37.8761383,
+    "lng": 139.0813455,
     "precision": "ROOFTOP",
     "partialMatch": true
   },
