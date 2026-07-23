@@ -241,14 +241,20 @@
     },
     "4b62a97cfc5e": {
       "source": "admin",
-      "note": "シルクハット蒲田西口 イニブ28台・喫煙所あり・3階（Issue #126）。@dorodoro_numa。",
-      "updatedAt": "2026-06-19",
+      "note": "シルクハット蒲田西口 イニブ28台・喫煙所あり・3階（Issue #126）。@dorodoro_numa。Issue #363 @dorodoro_numa（SNS提供=確定・お礼可）: 録画台(イニブ)あり・配信台(イニブ)なし。",
+      "updatedAt": "2026-07-23",
       "machineCounts": {
         "gundam-exvs": 28
       },
       "businessHours": "10:00〜0:45",
       "floor": "3階",
-      "smoking": "yes"
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
     },
     "4ce462b628ed": {
       "source": "admin",
@@ -1681,6 +1687,40 @@
       "hasStreamingByGame": {
         "gundam-exvs": "no"
       }
+    },
+    "b887139b7465": {
+      "source": "admin",
+      "note": "タイトーステーション錦糸町楽天地 Issue #365 @Hiv_altermanOB（SNS提供=確定・お礼可）: 営業10:00〜24:00・フロアB1F・喫煙所なし・録画台(ラスサバ/イニブ)なし・配信台(ラスサバ/イニブ)なし。電子マネー決済機器が見当たらず恐らく使用不可とのこと（remarks参照）。",
+      "updatedAt": "2026-07-23",
+      "businessHours": "10:00〜24:00",
+      "floor": "B1F",
+      "smoking": "no",
+      "hasRecordingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
+      },
+      "remarks": "電子マネー決済ができる機器が見当たらず、使用できない可能性があります。"
+    },
+    "b5d0074ead94": {
+      "source": "admin",
+      "note": "タイトーFステーションオリナス錦糸町 Issue #364 @Hiv_altermanOB（SNS提供=確定・お礼可）: 営業10:00〜23:45・フロアB1F・喫煙所なし・録画台(ラスサバ/イニブ)なし・配信台(ラスサバ/イニブ)なし。バナパス読み込み機の横に電子マネー決済機器が見当たらず恐らく使用不可とのこと（remarks参照）。",
+      "updatedAt": "2026-07-23",
+      "businessHours": "10:00〜23:45",
+      "floor": "B1F",
+      "smoking": "no",
+      "hasRecordingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
+      },
+      "remarks": "バナパス読み込み機の横に電子マネー決済ができる機器が見当たらず、使用できない可能性があります。"
     }
   }
 }
