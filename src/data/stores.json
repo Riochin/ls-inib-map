@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-15T03:41:07.750Z",
+  "lastUpdated": "2026-07-22T03:52:50.113Z",
   "source": {
     "jojols": "https://bandainamco-am.co.jp/am/vg/jojols/location/",
     "gundam": "https://gundam-vs.jp/extreme/ac2ib/location/"
@@ -1424,6 +1424,19 @@
       }
     },
     {
+      "id": "1db724f7d53d",
+      "name": "Feedy Diner＆Arcade 新潟亀田インター",
+      "address": "新潟県新潟市江南区下早通柳田1-1-1 イオンモール新潟亀田インター2F",
+      "lat": 37.8761383,
+      "lng": 139.0813455,
+      "games": [
+        "gundam-exvs"
+      ],
+      "machineCounts": {
+        "gundam-exvs": 5
+      }
+    },
+    {
       "id": "1dc85308d662",
       "name": "サープラOZ浜松あそびタウン",
       "address": "静岡県浜松市中央区宮竹町322-1",
@@ -1683,7 +1696,7 @@
         "gundam-exvs"
       ],
       "machineCounts": {
-        "jojo-ls": 6,
+        "jojo-ls": 3,
         "gundam-exvs": 14
       },
       "approximateLocation": true
@@ -3335,6 +3348,19 @@
       }
     },
     {
+      "id": "5464fe9eaf27",
+      "name": "タイトーFステーション今治ワールドプラザ",
+      "address": "愛媛県今治市東村1-14-2 今治ワールドプラザ内",
+      "lat": 34.0432813,
+      "lng": 133.0282187,
+      "games": [
+        "gundam-exvs"
+      ],
+      "machineCounts": {
+        "gundam-exvs": 7
+      }
+    },
+    {
       "id": "548500a857a6",
       "name": "ゲームニュートン志村",
       "address": "東京都板橋区志村3-24-3 高橋ビル1F",
@@ -4596,7 +4622,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 7
-      }
+      },
+      "delisted": true
     },
     {
       "id": "76097a3c3798",
@@ -6735,7 +6762,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 16
-      }
+      },
+      "delisted": true
     },
     {
       "id": "a6ad0e594c5f",
