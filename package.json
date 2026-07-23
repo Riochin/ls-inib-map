@@ -15,6 +15,7 @@
   "dependencies": {
     "@googlemaps/markerclusterer": "^2.6.2",
     "@next/third-parties": "^16.2.7",
+    "@sentry/nextjs": "^10.67.0",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.38.0",
     "@vis.gl/react-google-maps": "^1.7.1",
