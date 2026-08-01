@@ -1749,6 +1749,22 @@
       "hasStreamingByGame": {
         "jojo-ls": "no"
       }
+    },
+    "d3bbdb36b91c": {
+      "source": "user-report",
+      "note": "アップルグランリバー大井川 Issue #377: ジョジョ1台(公式2→修正)。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-08-01",
+      "machineCounts": {
+        "jojo-ls": 1
+      }
+    },
+    "f805dfe8e425": {
+      "source": "user-report",
+      "note": "ゲームコーナー東部 Issue #380: 配信台(ラスサバ)あり。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-08-01",
+      "hasStreamingByGame": {
+        "jojo-ls": "yes"
+      }
     }
   }
 }
