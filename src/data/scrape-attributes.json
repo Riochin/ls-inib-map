@@ -3,19 +3,19 @@
     "100df894f54b": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002136",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-24:00"
     },
     "4fc1900ad6c7": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002138",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-24:00"
     },
     "7edf22f637e9": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002049",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-21:00",
       "lat": 35.120551,
       "lng": 136.103806
@@ -23,7 +23,7 @@
     "96a5540b4797": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002056",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "09:00-24:00",
       "lat": 35.692489,
       "lng": 139.926723
@@ -31,20 +31,20 @@
     "e6b5bf886a96": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002059",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "lat": 36.336022,
       "lng": 139.80743
     },
     "759b99cc9970": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002080",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "09:00-24:00"
     },
     "763c42af17ad": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002081",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-24:00",
       "lat": 37.148063,
       "lng": 138.258947
@@ -52,7 +52,7 @@
     "d5591d05d925": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002083",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-22:00",
       "lat": 34.9744115,
       "lng": 138.3832425
@@ -60,21 +60,21 @@
     "688d746ed1ad": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002102",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "09:00-24:00"
     },
     "46cc408616c6": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/01872102",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-21:00",
-      "lat": 34.6911693,
-      "lng": 135.1912005
+      "lat": 34.6914317,
+      "lng": 135.191598
     },
     "d4abe538aa76": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002114",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-24:00",
       "lat": 33.235403,
       "lng": 131.606349
@@ -82,19 +82,19 @@
     "56fae2083cec": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002123",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "11:00-20:00"
     },
     "4dafc607ce42": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002130",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-23:45"
     },
     "b5d0074ead94": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002132",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-23:45",
       "lat": 35.7007986,
       "lng": 139.8157855
@@ -102,43 +102,43 @@
     "e8bd59fa011c": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002149",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-24:00"
     },
     "04d26591304f": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002151",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-22:45"
     },
     "588b54120125": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002155",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "09:00-24:00"
     },
     "e501002ac533": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002161",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-23:30"
     },
     "cfe01c2a5d33": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002168",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-23:30"
     },
     "90b6bed96ec7": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002180",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "09:00-23:30"
     },
     "15393ce17869": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002212",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-23:00",
       "lat": 35.616475,
       "lng": 139.565071
@@ -146,7 +146,7 @@
     "9cea49f324c8": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002213",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-24:00",
       "lat": 32.106147,
       "lng": 130.345151
@@ -154,7 +154,7 @@
     "96756c10398c": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002221",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "09:30-23:30",
       "lat": 35.913809,
       "lng": 139.482893
@@ -162,175 +162,183 @@
     "b887139b7465": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002010",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-24:00"
     },
     "a983c4f4259a": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002024",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-24:00"
     },
     "bb13e03ac605": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001604",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "09:00-24:00"
     },
     "3e844d69a5e7": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001640",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-24:00"
     },
     "4a2b598ee2c6": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001649",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "09:00-24:00"
     },
     "19e20b1b0055": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001748",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "09:30-23:30"
     },
     "1944c608cd1d": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001749",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-24:00"
     },
     "8835e8a89d0c": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001760",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-24:00"
     },
     "9b1ba06b105c": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001802",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-23:30"
     },
     "598e68fadc4e": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001845",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-23:30"
     },
     "0a71b5eae84e": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001875",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "09:00-24:00"
     },
     "b3310219088b": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001910",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-24:00"
     },
     "c11b804317fa": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001931",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-24:00"
     },
     "e28853901294": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001932",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-24:00"
     },
     "263786264dae": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001942",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "11:00-24:00"
     },
     "6f7ac90adbc0": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001954",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "09:00-24:00"
     },
     "ba2bd10a7c7d": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001965",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "09:00-23:45"
     },
     "994aeeab3dfd": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001460",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-24:00"
     },
     "fc2c9fd20201": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001582",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-01:00"
     },
     "d2911eb60657": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001459",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-01:00"
     },
     "aca30cd2e852": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001406",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-24:00"
     },
     "49abfe60fffe": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001595",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-01:00"
     },
     "5765b296668e": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001108",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-24:00"
     },
     "cca1621b1a2f": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001173",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "09:00-24:00"
     },
     "ea1633867e64": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00001408",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-24:00"
     },
     "06065b2fc530": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002040",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-22:00"
     },
     "08fbd8311dd1": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002178",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-21:00"
     },
     "ea1cf31565a5": {
       "source": "auto-scrape",
       "officialUrl": "https://www.taito.co.jp/store/00002152",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-23:00"
+    },
+    "5464fe9eaf27": {
+      "source": "auto-scrape",
+      "officialUrl": "https://www.taito.co.jp/store/00002043",
+      "updatedAt": "2026-08-01",
+      "businessHours": "10:00-21:00",
+      "lat": 34.042681,
+      "lng": 133.027878
     },
     "21d1145039bd": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/matsudo-tokyogulliver/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-23:00",
       "lat": 35.783417,
       "lng": 139.900742
@@ -338,7 +346,7 @@
     "24327c83cc0c": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/laketown/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-21:00",
       "lat": 35.88226,
       "lng": 139.82774
@@ -346,7 +354,7 @@
     "38f78fd7228c": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/utsunomiya/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-23:00",
       "lat": 36.543897,
       "lng": 139.891549
@@ -354,7 +362,7 @@
     "3e3410623889": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/ouji/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-23:00",
       "lat": 35.7529261,
       "lng": 139.7388576
@@ -362,15 +370,15 @@
     "420e66ac88ad": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/ikebukuro/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-23:00",
-      "lat": 35.72976,
-      "lng": 139.715782
+      "lat": 35.7296611,
+      "lng": 139.7158123
     },
     "48c3a80bbbc8": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/saga-mallage/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-21:00",
       "lat": 33.251113,
       "lng": 130.319552
@@ -378,7 +386,7 @@
     "4cbd3529b6aa": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/hiroshima/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-21:00",
       "lat": 34.3946643,
       "lng": 132.499303
@@ -386,7 +394,7 @@
     "52a14743a4e6": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/sano/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-23:00",
       "lat": 36.297281,
       "lng": 139.605618
@@ -394,7 +402,7 @@
     "62ecb8dd115f": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/umeda/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-24:00",
       "lat": 34.702863,
       "lng": 135.500293
@@ -402,7 +410,7 @@
     "6d73c7687d8c": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/koriyama/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "09:00-23:00",
       "lat": 37.389307,
       "lng": 140.39066
@@ -410,7 +418,7 @@
     "78349f417e1c": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/kumamoto-minami/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-02:00",
       "lat": 32.78693,
       "lng": 130.71468
@@ -418,14 +426,14 @@
     "78e4de4638b9": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/nipponbashi/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "lat": 34.662968,
       "lng": 135.504374
     },
     "7c4ce4d75e5f": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/yomitan/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-22:00",
       "lat": 26.36801,
       "lng": 127.74605
@@ -433,7 +441,7 @@
     "89d00bf929d7": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/hakata/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-22:00",
       "lat": 33.59144,
       "lng": 130.41969
@@ -441,7 +449,7 @@
     "8c76f9be9be5": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/niigata-cirquedugulliver/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-23:00",
       "lat": 37.908427,
       "lng": 139.06392
@@ -449,7 +457,7 @@
     "8dea823b3f7e": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/hyuga/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-22:00",
       "lat": 32.45023,
       "lng": 131.6401
@@ -457,7 +465,7 @@
     "8f9862006708": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/odate/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-21:00",
       "lat": 40.2737065,
       "lng": 140.5299884
@@ -465,7 +473,7 @@
     "8fa39515bde4": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/toyooka/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-24:00",
       "lat": 35.554971,
       "lng": 134.81223
@@ -473,15 +481,15 @@
     "9a5e3a282c50": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/akihabara/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-23:00",
-      "lat": 35.69799,
-      "lng": 139.7724121
+      "lat": 35.6980772,
+      "lng": 139.7724403
     },
     "9bced433a87c": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/otaru1/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-20:00",
       "lat": 43.1839157,
       "lng": 141.0229322
@@ -489,7 +497,7 @@
     "a36f9855d8ce": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/kumagaya/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-23:00",
       "lat": 36.1391856,
       "lng": 139.3949194
@@ -497,7 +505,7 @@
     "b33e537a847a": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/suminoe/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-24:00",
       "lat": 34.610028,
       "lng": 135.4682751
@@ -505,7 +513,7 @@
     "cb53f873bb25": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/fukuoka-lalaport/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-21:00",
       "lat": 33.56491,
       "lng": 130.44068
@@ -513,7 +521,7 @@
     "cce48c564be4": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/saijo/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-23:30",
       "lat": 33.93068,
       "lng": 133.20151
@@ -521,7 +529,7 @@
     "d66178eb6b8a": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/nakano/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-23:00",
       "lat": 35.709122,
       "lng": 139.666137
@@ -529,7 +537,7 @@
     "f311a6e1f731": {
       "source": "auto-scrape",
       "officialUrl": "https://bandainamco-am.co.jp/game_center/loc/sendai-bivi/",
-      "updatedAt": "2026-06-21",
+      "updatedAt": "2026-08-01",
       "businessHours": "10:00-22:00",
       "lat": 38.261099,
       "lng": 140.883682
