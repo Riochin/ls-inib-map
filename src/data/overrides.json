@@ -1765,6 +1765,42 @@
       "hasStreamingByGame": {
         "jojo-ls": "yes"
       }
+    },
+    "5c327f04de47": {
+      "source": "user-report",
+      "note": "GiGO 岡崎 Issue #382: 営業時間・フロア・喫煙所・録画台・配信台の報告。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-08-02",
+      "businessHours": "10:00〜23:00",
+      "floorByGame": {
+        "gundam-exvs": "2F"
+      },
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "yes"
+      }
+    },
+    "5eaac74d1c29": {
+      "source": "user-report",
+      "note": "ムー大陸西尾 Issue #383: 営業時間・喫煙所の報告。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-08-02",
+      "businessHours": "10:00〜20:00",
+      "smoking": "yes"
+    },
+    "9f2ee50b306a": {
+      "source": "user-report",
+      "note": "GiGO 安城 Issue #384: 営業時間・フロア・喫煙所・録画台の報告。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-08-02",
+      "businessHours": "10:00〜翌0:00",
+      "floorByGame": {
+        "gundam-exvs": "2F"
+      },
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      }
     }
   }
 }
