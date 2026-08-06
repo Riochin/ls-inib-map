@@ -1801,6 +1801,54 @@
       "hasRecordingByGame": {
         "gundam-exvs": "yes"
       }
+    },
+    "62b90a28806d": {
+      "source": "user-report",
+      "note": "ソユーゲームフィールド旭川駅前 Issue #390: 録画台・配信台の報告。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-08-06",
+      "hasRecordingByGame": {
+        "jojo-ls": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no"
+      }
+    },
+    "2da90d8d5d54": {
+      "source": "user-report",
+      "note": "アミューズメントスペース遊ランド西御料 Issue #389: 録画台・配信台の報告。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-08-06",
+      "hasRecordingByGame": {
+        "jojo-ls": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no"
+      }
+    },
+    "eff12fbf0242": {
+      "source": "user-report",
+      "note": "アミューズメントスペース遊ランド春光 Issue #388: 配信台（ラスサバ/イニブ）の報告。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-08-06",
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
+      }
+    },
+    "71dde715b277": {
+      "source": "user-report",
+      "note": "ゲームパニック大高 Issue #387: 営業時間・フロア・喫煙所・録画台・配信台の報告。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-08-06",
+      "remarks": "年末年始（12月中旬〜1月中旬）は営業時間が1時間延長されます。",
+      "businessHours": "9:00〜23:45(受付終了23:30)",
+      "floorByGame": {
+        "gundam-exvs": "地下2階"
+      },
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
     }
   }
 }
