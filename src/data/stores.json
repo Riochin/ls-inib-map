@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-07-29T03:46:07.999Z",
+  "lastUpdated": "2026-08-05T03:40:35.339Z",
   "source": {
     "jojols": "https://bandainamco-am.co.jp/am/vg/jojols/location/",
     "gundam": "https://gundam-vs.jp/extreme/ac2ib/location/"
@@ -459,7 +459,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 5
-      }
+      },
+      "delisted": true
     },
     {
       "id": "08fbd8311dd1",
@@ -2589,7 +2590,8 @@
       ],
       "machineCounts": {
         "gundam-exvs": 7
-      }
+      },
+      "delisted": true
     },
     {
       "id": "40744a927189",
@@ -4685,12 +4687,10 @@
       "lat": 32.7875067,
       "lng": 130.716723,
       "games": [
-        "jojo-ls",
-        "gundam-exvs"
+        "jojo-ls"
       ],
       "machineCounts": {
-        "jojo-ls": 4,
-        "gundam-exvs": 5
+        "jojo-ls": 4
       }
     },
     {
@@ -4945,7 +4945,7 @@
     {
       "id": "7d82155af816",
       "name": "サープラ静岡あそびタウン",
-      "address": "静岡県静岡市葵区伝馬町6-1 けやきプラザ 3F",
+      "address": "静岡県静岡市葵区伝馬町6-1 けやきプラザ3F",
       "lat": 34.9744181,
       "lng": 138.3875715,
       "games": [
@@ -6038,7 +6038,7 @@
         "gundam-exvs"
       ],
       "machineCounts": {
-        "jojo-ls": 3,
+        "jojo-ls": 2,
         "gundam-exvs": 5
       }
     },
@@ -7931,7 +7931,7 @@
         "gundam-exvs"
       ],
       "machineCounts": {
-        "gundam-exvs": 11
+        "gundam-exvs": 12
       }
     },
     {
@@ -9543,7 +9543,7 @@
         "gundam-exvs"
       ],
       "machineCounts": {
-        "gundam-exvs": 11
+        "gundam-exvs": 12
       }
     },
     {
