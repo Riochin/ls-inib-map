@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { useMap, useMapsLibrary } from '@vis.gl/react-google-maps'
 import { MarkerClusterer, type Renderer } from '@googlemaps/markerclusterer'
 import type { Store } from '@/types/store'
-import { getThemeByKey, getThemeKey } from '@/lib/marker-color'
+import { getThemeByKey, getThemeKey, getStoreStatusLabel } from '@/lib/marker-color'
 import { getMarkerImage, MARKER_SHADOW_FILTER } from '@/lib/marker-image'
 
 /** フォーカス時にクラスタを解除して個別マーカーを表示するズームレベル（クラスタラの maxZoom 超） */
@@ -82,6 +82,12 @@ function markerSignature(store: Store): string {
   return `${getThemeKey(store)}|${store.lat}|${store.lng}|${store.games.includes('jojo-ls') ? 1 : 0}`
 }
 
+/** マーカーのアクセシブルネーム（スクリーンリーダー用の名前・マウスホバー時のツールチップ）。 */
+function markerTitle(store: Store): string {
+  const status = getStoreStatusLabel(store)
+  return status ? `${store.name}（${status}）` : store.name
+}
+
 /** クラスタバブルの DOM。配色（紫/青）を受け取り、件数を中央に表示する */
 function createClusterContent(count: number, color: string): HTMLDivElement {
   const size = count < 10 ? 36 : count < 100 ? 44 : 52
@@ -122,6 +128,8 @@ function createClusterRenderer(
         position: cluster.position,
         content: createClusterContent(cluster.count, color),
         zIndex: 1000 + cluster.count,
+        gmpClickable: true,
+        title: `${cluster.count}件の店舗（まとまったピン）`,
       })
     },
   }
@@ -204,6 +212,7 @@ export function useStoreClusterer({ stores, onMarkerClick }: UseStoreClustererPa
         position: { lat: store.lat, lng: store.lng },
         content: createMarkerContent(store),
         gmpClickable: true,
+        title: markerTitle(store),
       })
       const listener = marker.addListener('gmp-click', () => onMarkerClickRef.current(id))
       listenersRef.current.set(id, listener)
@@ -220,6 +229,7 @@ export function useStoreClusterer({ stores, onMarkerClick }: UseStoreClustererPa
       if (!marker || !store) continue
       marker.content = createMarkerContent(store)
       marker.position = { lat: store.lat, lng: store.lng }
+      marker.title = markerTitle(store)
       markerHasJojoRef.current.set(marker, store.games.includes('jojo-ls'))
       markerSigRef.current.set(id, markerSignature(store))
     }
