@@ -296,8 +296,9 @@ export function OverridesAdmin() {
 
       {/* 店舗検索 */}
       <section className="mb-6">
-        <label className="block text-xs font-semibold text-gray-600 mb-1">店舗を検索</label>
+        <label htmlFor="admin-store-search" className="block text-xs font-semibold text-gray-600 mb-1">店舗を検索</label>
         <input
+          id="admin-store-search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="店名・住所で検索"
