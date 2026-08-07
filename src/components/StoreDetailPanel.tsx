@@ -131,7 +131,7 @@ export function StoreDetailPanel({ store, onOpenInfoForm, onClose }: StoreDetail
         <div className="flex items-start gap-1.5 min-w-0 flex-1">
           {/* 店名は任意文字列でサブセット不可のため、丸ゴシックは当てずシステムフォント太字で統一
               （クイック表示の InfoWindow と同じ見た目。文字ごとの太さムラを防ぐ） */}
-          <h2 className="font-bold text-[18px] leading-snug break-words min-w-0">
+          <h2 id="store-detail-title" className="font-bold text-[18px] leading-snug break-words min-w-0">
             {store.name}
           </h2>
           {statusLabel && (
@@ -178,7 +178,7 @@ export function StoreDetailPanel({ store, onOpenInfoForm, onClose }: StoreDetail
           })}
         </div>
         {openSource && (
-          <p className="text-[11px] text-gray-500 mt-1.5 leading-snug">
+          <p className="text-[11px] text-gray-500 mt-1.5 leading-snug" role="status">
             {getGameLabel(openSource)}：{getCountSourceInfo(store.countSources?.[openSource]).label}
           </p>
         )}
@@ -282,7 +282,7 @@ export function StoreDetailPanel({ store, onOpenInfoForm, onClose }: StoreDetail
               <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
             </svg>
           )}
-          <span>{shareLabel}</span>
+          <span role="status" aria-live="polite">{shareLabel}</span>
         </button>
         {store.officialUrl && (
           <a

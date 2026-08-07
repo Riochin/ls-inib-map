@@ -5,6 +5,7 @@ import { HEADING_FONT_STYLE } from '@/lib/heading-font'
 import type { FeedbackCategory } from '@/lib/report'
 import { checkClientRateLimit, recordClientSubmission } from '@/lib/client-rate-limit'
 import { trackEvent } from '@/lib/analytics'
+import { useModalA11y } from '@/hooks/use-modal-a11y'
 
 interface FeedbackFormProps {
   onClose: () => void
@@ -18,6 +19,7 @@ const FEEDBACK_CATEGORIES: FeedbackCategory[] = [
 ]
 
 export function FeedbackForm({ onClose }: FeedbackFormProps) {
+  const dialogRef = useModalA11y<HTMLDivElement>({ onClose })
   const [category, setCategory] = useState<FeedbackCategory>('新機能の提案')
   const [content, setContent] = useState('')
   const [reporter, setReporter] = useState('')
@@ -69,11 +71,18 @@ export function FeedbackForm({ onClose }: FeedbackFormProps) {
   }
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events -- 背景クリックは意図的なクリックアウト操作。Escape/フォーカストラップは useModalA11y が担う
     <div
       className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4"
       onClick={onClose}
     >
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events -- クリックの背景への伝播を止めるためだけの onClick */}
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="feedback-form-title"
+        tabIndex={-1}
         className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-5 text-sm text-gray-800 relative"
         onClick={(e) => e.stopPropagation()}
       >
@@ -86,8 +95,8 @@ export function FeedbackForm({ onClose }: FeedbackFormProps) {
         </button>
 
         {status === 'done' ? (
-          <div>
-            <h3 className="text-lg text-gray-800 mb-1" style={HEADING_FONT_STYLE}>
+          <div role="alert">
+            <h3 id="feedback-form-title" className="text-lg text-gray-800 mb-1" style={HEADING_FONT_STYLE}>
               ありがとうございます！
             </h3>
             <p className="text-sm mb-4">
@@ -104,7 +113,7 @@ export function FeedbackForm({ onClose }: FeedbackFormProps) {
           </div>
         ) : (
           <form onSubmit={submit}>
-            <h2 className="text-lg text-gray-800 mb-0.5" style={HEADING_FONT_STYLE}>
+            <h2 id="feedback-form-title" className="text-lg text-gray-800 mb-0.5" style={HEADING_FONT_STYLE}>
               サイトへのご要望
             </h2>
             <p className="text-xs text-gray-500 mb-4 leading-snug">
@@ -176,10 +185,14 @@ export function FeedbackForm({ onClose }: FeedbackFormProps) {
               </label>
             )}
 
-            {status === 'error' && <p className="text-xs text-red-600 mb-3">{errorMsg}</p>}
+            {status === 'error' && (
+              <p className="text-xs text-red-600 mb-3" role="alert">
+                {errorMsg}
+              </p>
+            )}
 
             {isCoolingDown && (
-              <p className="text-xs text-amber-600 mb-3">
+              <p className="text-xs text-amber-600 mb-3" role="status">
                 10分間に3件まで送信できます（約{cooldownMin}分後に再送信可）
               </p>
             )}

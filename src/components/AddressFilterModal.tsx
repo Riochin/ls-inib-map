@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
+import { useModalA11y } from '@/hooks/use-modal-a11y'
 import type { AddressFilter, AddressIndex, FacilityFilter, StoreFilter, CompletenessLevel, FilterOption } from '@/types/store'
 import { EMPTY_STORE_FILTER } from '@/types/store'
 import { REGIONS, prefecturesOfRegion } from '@/lib/region'
@@ -69,6 +70,7 @@ export function AddressFilterModal({
   onClose,
   previewCount,
 }: AddressFilterModalProps) {
+  const dialogRef = useModalA11y<HTMLDivElement>({ onClose })
   // モーダルは開くたびに新規マウントされるため、初期値で filter を取り込めば十分
   const [draft, setDraft] = useState<StoreFilter>(filter)
   const [gameDraft, setGameDraft] = useState<FilterOption>(gameFilter)
@@ -220,9 +222,11 @@ export function AddressFilterModal({
         aria-hidden="true"
       />
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="filter-modal-title"
+        tabIndex={-1}
         className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-2xl shadow-2xl max-h-[85dvh] flex flex-col"
       >
         <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
