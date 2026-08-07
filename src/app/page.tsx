@@ -32,6 +32,7 @@ import {
 } from '@/lib/filter-storage'
 import { useIsomorphicLayoutEffect } from '@/hooks/use-isomorphic-layout-effect'
 import { usePwaLaunchTracking } from '@/hooks/use-pwa-launch-tracking'
+import { useKeyboardNavigationTracking } from '@/hooks/use-keyboard-navigation-tracking'
 import { trackEvent } from '@/lib/analytics'
 
 export default function MapPage() {
@@ -44,6 +45,7 @@ export default function MapPage() {
   const { location, isLocating, error, locate } = useGeolocation()
 
   usePwaLaunchTracking()
+  useKeyboardNavigationTracking()
 
   const addressIndex = useMemo(() => buildAddressIndex(stores), [])
 

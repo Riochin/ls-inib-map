@@ -33,4 +33,11 @@ describe('trackEvent', () => {
     trackEvent('click_geolocation_search')
     expect(gtag).toHaveBeenCalledWith('event', 'click_geolocation_search', {})
   })
+
+  it('keyboard_navigation_used もパラメータ無しイベントとして送れる', () => {
+    const gtag = vi.fn()
+    vi.stubGlobal('window', { gtag })
+    trackEvent('keyboard_navigation_used')
+    expect(gtag).toHaveBeenCalledWith('event', 'keyboard_navigation_used', {})
+  })
 })
