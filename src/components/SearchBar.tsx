@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useCallback } from 'react'
 import type { Store } from '@/types/store'
+import { VisuallyHiddenStatus } from './VisuallyHiddenStatus'
 
 interface SearchBarProps {
   query: string
@@ -23,9 +24,11 @@ export function SearchBar({ query, onChange, onSelect, results, onClose }: Searc
   }, [onSelect])
 
   const displayResults = query.trim() ? results.slice(0, 20) : []
+  const statusMessage = !query.trim() ? '' : results.length > 0 ? `${results.length}件` : '該当する店舗がありません'
 
   return (
     <div className="absolute top-16 left-4 right-4 z-20">
+      <VisuallyHiddenStatus message={statusMessage} />
       <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-lg flex items-center gap-2 px-3 py-2">
         <svg className="w-4 h-4 text-gray-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="11" cy="11" r="8" />

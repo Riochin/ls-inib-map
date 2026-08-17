@@ -57,6 +57,9 @@ importers:
       eslint-config-next:
         specifier: ^16.1.6
         version: 16.2.7(@typescript-eslint/parser@8.61.0(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3))(eslint@9.39.4(jiti@2.7.0))(typescript@5.9.3)
+      eslint-plugin-jsx-a11y:
+        specifier: 6.10.2
+        version: 6.10.2(eslint@9.39.4(jiti@2.7.0))
       node-html-parser:
         specifier: ^7.1.0
         version: 7.1.0

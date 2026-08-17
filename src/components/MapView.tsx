@@ -13,6 +13,7 @@ import { formatDateJst } from '@/lib/info-display'
 import { storesMeta } from '@/data/stores'
 import { getMarkerTheme, getGameLabel, getStoreStatusLabel, getCountSourceInfo } from '@/lib/marker-color'
 import { buildShareText } from '@/lib/share'
+import { VisuallyHiddenStatus } from './VisuallyHiddenStatus'
 import { CountBadge } from './CountBadge'
 import { useStoreClusterer } from '@/hooks/use-store-clusterer'
 import { trackEvent } from '@/lib/analytics'
@@ -240,7 +241,7 @@ function InfoWindowContent({
         })}
       </div>
       {openSource && (
-        <p className="text-[11px] text-gray-500 mb-1.5 leading-snug">
+        <p className="text-[11px] text-gray-500 mb-1.5 leading-snug" role="status">
           {getGameLabel(openSource)}：{getCountSourceInfo(store.countSources?.[openSource]).label}
         </p>
       )}
@@ -290,6 +291,7 @@ function InfoWindowContent({
               </svg>
             )}
           </button>
+          <VisuallyHiddenStatus message={shareState !== 'idle' ? shareLabel : ''} />
         </div>
         <button
           type="button"

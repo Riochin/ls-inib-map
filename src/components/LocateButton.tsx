@@ -36,6 +36,7 @@ export function LocateButton({ isLocating, error, onLocate }: LocateButtonProps)
         // コンパスアイコンは左に据え置き、閉じる「<」で丸ボタンへ畳む。閉じるまで位置取得は不可。
         // 外側で overflow-hidden + max-width アニメ、内側は固定幅でテキストの折返しを安定させる。
         <div
+          role="alert"
           className={`overflow-hidden rounded-full shadow-lg bg-white/95 backdrop-blur-sm max-w-[280px] ${closing ? 'animate-locate-collapse' : 'animate-locate-expand'}`}
           onAnimationEnd={() => {
             // 収縮アニメ終了時のみ丸ボタンへ差し替え（展開アニメ終了では何もしない）

@@ -10,6 +10,7 @@ import { HEADING_FONT_STYLE, CATCH_FONT_STYLE } from '@/lib/heading-font'
 import { releases, latestRelease, type Release, type ReleaseHighlight } from '@/data/releases'
 import { FeedbackForm } from './FeedbackForm'
 import { trackEvent } from '@/lib/analytics'
+import { useModalA11y } from '@/hooks/use-modal-a11y'
 // 開発者情報・SNS・データ方針・免責などの「事実」は /about ページと共有する単一ソース。
 import {
   AUTHOR_NAME,
@@ -526,7 +527,7 @@ function ScrollArea({ children }: { children: ReactNode }) {
   )
 }
 
-function OnboardingModal({
+export function OnboardingModal({
   initialPage = 0,
   onClose,
   onOpenFeedback,
@@ -536,13 +537,21 @@ function OnboardingModal({
   onOpenFeedback: () => void
 }) {
   const [page, setPage] = useState(initialPage)
+  const dialogRef = useModalA11y<HTMLDivElement>({ onClose })
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events -- 背景クリックは意図的なクリックアウト操作。Escape/フォーカストラップは useModalA11y が担う
     <div
       className="absolute inset-0 z-30 flex items-center justify-center bg-black/40 p-4"
       onClick={onClose}
     >
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events -- クリックの背景への伝播を止めるためだけの onClick */}
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="操作案内"
+        tabIndex={-1}
         // 高さを全ページで統一（footer=「次へ」の位置が固定され、溢れる分は本文が独自スクロール）。
         // 高さは1枚目（操作案内）がちょうど収まる値に合わせている。短い画面では 85vh で頭打ち。
         className="bg-white rounded-2xl shadow-xl max-w-sm w-full relative h-[500px] max-h-[85vh] flex flex-col"
@@ -593,10 +602,15 @@ function OnboardingModal({
           </div>
 
           {/* ページインジケータ（最下部） */}
-          <div className="flex justify-center gap-1.5 mt-3">
+          <div
+            className="flex justify-center gap-1.5 mt-3"
+            role="status"
+            aria-label={`${PAGE_COUNT}ページ中${page + 1}ページ目`}
+          >
             {Array.from({ length: PAGE_COUNT }, (_, i) => (
               <span
                 key={i}
+                aria-hidden="true"
                 className={`w-1.5 h-1.5 rounded-full transition-colors ${i === page ? 'bg-gray-800' : 'bg-gray-300'}`}
               />
             ))}

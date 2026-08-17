@@ -7,6 +7,7 @@ import { HEADING_FONT_STYLE } from '@/lib/heading-font'
 import { getGameLabel } from '@/lib/marker-color'
 import { checkClientRateLimit, recordClientSubmission } from '@/lib/client-rate-limit'
 import { trackEvent } from '@/lib/analytics'
+import { useModalA11y } from '@/hooks/use-modal-a11y'
 
 interface StoreInfoFormProps {
   store: Store
@@ -84,6 +85,7 @@ function TernarySelect({
 }
 
 export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
+  const dialogRef = useModalA11y<HTMLDivElement>({ onClose })
   const hasJojo = store.games.includes('jojo-ls')
   const hasGundam = store.games.includes('gundam-exvs')
 
@@ -254,17 +256,24 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
   }
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events -- 背景クリックは意図的なクリックアウト操作。Escape/フォーカストラップは useModalA11y が担う
     <div
       className="fixed inset-0 z-[70] flex items-end md:items-center justify-center bg-black/40"
       onClick={onClose}
     >
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events -- クリックの背景への伝播を止めるためだけの onClick */}
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="store-info-form-title"
+        tabIndex={-1}
         className="bg-white w-full max-h-[92dvh] overflow-y-auto rounded-t-2xl md:rounded-2xl md:max-w-lg shadow-xl text-sm text-gray-800"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="p-5">
           <div className="flex items-start justify-between gap-2 mb-1">
-            <h2 className="text-lg text-gray-800" style={HEADING_FONT_STYLE}>
+            <h2 id="store-info-form-title" className="text-lg text-gray-800" style={HEADING_FONT_STYLE}>
               店舗情報を提供する
             </h2>
             <button
@@ -278,7 +287,7 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
           <p className="text-xs text-gray-500 mb-4 break-words">{store.name}</p>
 
           {status === 'done' ? (
-            <div>
+            <div role="alert">
               <p className="text-sm mb-4">
                 情報を受け付けました🙏
                 <br />
@@ -569,11 +578,13 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
               )}
 
               {status === 'error' && (
-                <p className="text-xs text-red-600 mb-3">{errorMsg}</p>
+                <p className="text-xs text-red-600 mb-3" role="alert">
+                  {errorMsg}
+                </p>
               )}
 
               {isCoolingDown && (
-                <p className="text-xs text-amber-600 mb-3">
+                <p className="text-xs text-amber-600 mb-3" role="status">
                   10分間に3件まで送信できます（約{cooldownMin}分後に再送信可）
                 </p>
               )}

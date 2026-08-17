@@ -74,6 +74,11 @@ export type GAEventMap = {
   submit_feedback: Record<string, never>
   /** ホーム画面アイコン等、PWA(standalone)表示でアプリが起動した */
   pwa_launch: { display_mode: 'standalone' | 'fullscreen' | 'minimal-ui' }
+  /**
+   * セッション中に初めて Tab キーでフォーカス移動した（キーボード操作ユーザーの検知）。
+   * 正確なスクリーンリーダー利用率ではなく、あくまでキーボード操作をした割合の目安。
+   */
+  keyboard_navigation_used: Record<string, never>
 }
 
 export type GAEventName = keyof GAEventMap

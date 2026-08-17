@@ -2,6 +2,7 @@
 
 import type { Store } from '@/types/store'
 import { StoreDetailPanel } from './StoreDetailPanel'
+import { useModalA11y } from '@/hooks/use-modal-a11y'
 
 interface StoreDetailModalProps {
   store: Store
@@ -16,13 +17,21 @@ interface StoreDetailModalProps {
  * - オーバーレイクリックで閉じる
  */
 export function StoreDetailModal({ store, onClose, onOpenInfoForm }: StoreDetailModalProps) {
+  const dialogRef = useModalA11y<HTMLDivElement>({ onClose })
   return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events -- 背景クリックは意図的なクリックアウト操作。Escape/フォーカストラップは useModalA11y が担う
     <div
       className="fixed inset-0 bg-black/40 z-[60] md:flex md:items-center md:justify-center"
       onClick={onClose}
     >
       {/* モバイル: ボトムシート / PC: 中央モーダル */}
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/click-events-have-key-events -- クリックの背景への伝播を止めるためだけの onClick */}
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="store-detail-title"
+        tabIndex={-1}
         className="fixed bottom-0 inset-x-0 max-h-[85dvh] overflow-y-auto rounded-t-2xl bg-white shadow-xl md:static md:inset-auto md:max-h-[90vh] md:w-full md:max-w-lg md:rounded-2xl"
         onClick={(e) => e.stopPropagation()}
       >
