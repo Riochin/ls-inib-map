@@ -25,15 +25,27 @@
     },
     "0a3697626fe5": {
       "source": "user-report",
-      "note": "アピナ長岡 ラスサバ3台・イニブ10台・フロア2F（Issue #138, #144）。ピン位置修正（ピンが西にズレ → Googleマップ実位置に補正）。",
-      "updatedAt": "2026-06-22",
+      "attributeSources": {
+        "businessHours": "admin",
+        "hasRecordingByGame": "admin",
+        "hasStreamingByGame": "admin"
+      },
+      "note": "アピナ長岡 ラスサバ3台・イニブ10台・フロア2F（Issue #138, #144）。ピン位置修正（ピンが西にズレ → Googleマップ実位置に補正）。Issue #398（SNS提供=確定・メンション不可）: 営業10:00〜翌0:00・フロア2F(既報と一致)・録画台(ラスサバ)なし・配信台(ラスサバ)なし。Issue #397（SNS未記入・重複報告）: フロア2F・録画台(ラスサバ)なし・配信台(ラスサバ)なしを再報告（#398と同内容のため統合）。",
+      "updatedAt": "2026-08-17",
       "lat": 37.4578494,
       "lng": 138.8131163,
       "machineCounts": {
         "jojo-ls": 3,
         "gundam-exvs": 10
       },
-      "floor": "2F"
+      "floor": "2F",
+      "businessHours": "10:00〜翌0:00",
+      "hasRecordingByGame": {
+        "jojo-ls": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no"
+      }
     },
     "14d32850a2a1": {
       "source": "admin",
@@ -795,10 +807,14 @@
     },
     "f68ca1684b0f": {
       "source": "admin",
-      "note": "GiGO 高田馬場 地下1F・喫煙所なし・録画台なし(両タイトル)・配信台なし(両タイトル)（Issue #175）。SNS ID=かたはば 提供あり＝確定。",
-      "updatedAt": "2026-06-25",
+      "attributeSources": {
+        "payments": "user-report"
+      },
+      "note": "GiGO 高田馬場 地下1F・喫煙所なし・録画台なし(両タイトル)・配信台なし(両タイトル)（Issue #175）。SNS ID=かたはば 提供あり＝確定。Issue #410（SNS未記入・未確認）: 決済(交通系IC/PayPay/楽天ペイ/iD/nanaco)を追加。フロア/喫煙所/録画台/配信台は既報と一致。",
+      "updatedAt": "2026-08-17",
       "floor": "地下1F",
       "smoking": "no",
+      "payments": ["交通系IC（Suica/PASMOなど）", "PayPay", "楽天ペイ", "iD", "nanaco"],
       "hasRecordingByGame": {
         "jojo-ls": "no",
         "gundam-exvs": "no"
@@ -1841,6 +1857,134 @@
       "businessHours": "9:00〜23:45(受付終了23:30)",
       "floorByGame": {
         "gundam-exvs": "地下2階"
+      },
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "6d73c7687d8c": {
+      "source": "user-report",
+      "note": "namcoイオンタウン郡山 Issue #411: 営業09:00〜23:00・決済(交通系IC/WAON/iD)・録画台(ラスサバ)なし・配信台(ラスサバ)なし。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-08-17",
+      "businessHours": "09:00〜23:00",
+      "payments": ["交通系IC（Suica/PASMOなど）", "WAON", "iD"],
+      "hasRecordingByGame": {
+        "jojo-ls": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no"
+      }
+    },
+    "263786264dae": {
+      "source": "admin",
+      "note": "タイトーステーション千歳 Issue #409 @Pm3p2bA0FxAISH0（SNS提供=確定・お礼可）: イニブ筐体4台＋ライブモニター1台（公式5→筐体4）・営業11:00〜24:00・2階・喫煙所あり・録画台(ラスサバ)なし/(イニブ)あり・配信台(ラスサバ/イニブ)なし。",
+      "updatedAt": "2026-08-17",
+      "remarks": "イニブは筐体4台＋ライブモニター1台です（公式表記の5台はモニター込みの数）。ライブモニターはUSBメモリ・外付けHDDで録画可能です。",
+      "machineCounts": {
+        "gundam-exvs": 4
+      },
+      "businessHours": "11:00〜24:00",
+      "floor": "2階",
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
+      }
+    },
+    "9318a76d4561": {
+      "source": "admin",
+      "note": "GiGO 仙台 Issue #408 @Hiv_altermanOB（SNS提供=確定・お礼可）: 営業10:00〜23:30・4階・喫煙所あり・決済(PayPay/nanaco/楽天ペイ/iD/WAON/交通系IC/d払い)・録画台(イニブ)あり・配信台(イニブ)あり。録画機はUSB・microSD使用可。",
+      "updatedAt": "2026-08-17",
+      "remarks": "イニブの録画機はUSBメモリ・microSDカードに対応しています。",
+      "businessHours": "10:00〜23:30",
+      "floor": "4階",
+      "smoking": "yes",
+      "payments": ["PayPay", "nanaco", "楽天ペイ", "iD", "WAON", "交通系IC（Suica/PASMOなど）", "d払い"],
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "yes"
+      }
+    },
+    "04d26591304f": {
+      "source": "admin",
+      "note": "タイトーステーション仙台名掛丁 Issue #407 @Hiv_altermanOB（SNS提供=確定・お礼可）: 営業9:00〜24:00・3階・喫煙所あり・録画台(イニブ)あり・配信台(イニブ)なし。録画機はmicroSDのみ対応。",
+      "updatedAt": "2026-08-17",
+      "remarks": "イニブの録画機はmicroSDカードのみ対応です。",
+      "businessHours": "9:00〜24:00",
+      "floor": "3階",
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "f311a6e1f731": {
+      "source": "admin",
+      "note": "namcoBiVi仙台駅東口 Issue #406 @Hiv_altermanOB（SNS提供=確定・お礼可）: 営業10:00〜22:00・フロア(イニブ)2階・喫煙所なし・録画台(イニブ)なし・配信台(イニブ)なし。",
+      "updatedAt": "2026-08-17",
+      "businessHours": "10:00〜22:00",
+      "floorByGame": {
+        "gundam-exvs": "2階"
+      },
+      "smoking": "no",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "bcd2be52a11c": {
+      "source": "user-report",
+      "note": "サープラ沼津あそびタウン Issue #405: 録画台(ラスサバ)なし・配信台(ラスサバ)なし。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-08-17",
+      "hasRecordingByGame": {
+        "jojo-ls": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no"
+      }
+    },
+    "a06cb77de5f1": {
+      "source": "user-report",
+      "note": "アミューズランドモナコ調布駅前 Issue #403: 営業10:00〜24:00・フロア(イニブ)2F・喫煙所なし。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-08-17",
+      "businessHours": "10:00〜24:00",
+      "floorByGame": {
+        "gundam-exvs": "2F"
+      },
+      "smoking": "no"
+    },
+    "eb78885026c5": {
+      "source": "user-report",
+      "note": "ビデオゲームミュージアムロボット深谷 Issue #400: 喫煙所あり・録画台(イニブ)なし・配信台(イニブ)なし。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-08-17",
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "3d7b7843283a": {
+      "source": "user-report",
+      "note": "GiGO 籠原 Issue #399: フロア(イニブ)2F・喫煙所あり・録画台(イニブ)なし・配信台(イニブ)なし。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-08-17",
+      "floorByGame": {
+        "gundam-exvs": "2F"
       },
       "smoking": "yes",
       "hasRecordingByGame": {
