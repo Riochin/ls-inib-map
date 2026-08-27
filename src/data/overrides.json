@@ -1052,8 +1052,8 @@
     },
     "b78f34c106e6": {
       "source": "user-report",
-      "note": "アミューズメントワールドららぽーと沼津 Issue #219: ラスサバ筐体が他店舗へ移設(店員談・移設先不明・移設完了済み)＝ジョジョ0台(公式2→修正)。伝聞のため未確認（みんなの報告）扱い。店舗自体は営業中のため閉店扱いにはしない。",
-      "updatedAt": "2026-06-28",
+      "note": "アミューズメントワールドららぽーと沼津 Issue #219: ラスサバ筐体が他店舗へ移設(店員談・移設先不明・移設完了済み)＝ジョジョ0台(公式2→修正)。伝聞のため未確認（みんなの報告）扱い。店舗自体は営業中のため閉店扱いにはしない。Issue #422（SNS未記入・未確認）: ジョジョ0台を再報告（既報と一致）。ピン位置がズレているとの指摘あり（具体的な正しい座標の提供なし、要再調査）。",
+      "updatedAt": "2026-08-27",
       "remarks": "ラスサバの筐体は他店舗へ移設されたという情報があります（店員さん談・移設先は不明）。",
       "machineCounts": {
         "jojo-ls": 0
@@ -1284,8 +1284,9 @@
       "attributeSources": {
         "payments": "user-report"
       },
-      "note": "GiGO 西葛西 Issue #262 @Hiv-altermanOB(SNS提供=確定・お礼可): 営業10:00〜翌1:00・フロア(イニブ)2階・喫煙所あり・録画台(イニブ)なし・配信台(イニブ)なし。2026-07-03 追加報告（Issue #279, SNS未記入・未確認）で決済手段を追加。他項目は既存admin確認値と一致のため据え置き。",
-      "updatedAt": "2026-07-03",
+      "note": "GiGO 西葛西 Issue #262 @Hiv-altermanOB(SNS提供=確定・お礼可): 営業10:00〜翌1:00・フロア(イニブ)2階・喫煙所あり・録画台(イニブ)なし・配信台(イニブ)なし。2026-07-03 追加報告（Issue #279, SNS未記入・未確認）で決済手段を追加。他項目は既存admin確認値と一致のため据え置き。Issue #419 @Hiv_altermanOB(SNS提供=確定・お礼可): イニブ台数11(筐体10台+ライブモニター1台、公式12台との差分1台の内訳は不明)。営業時間/フロア/喫煙所/決済/録画台/配信台は既報と一致のため据え置き。",
+      "updatedAt": "2026-08-27",
+      "remarks": "イニブは筐体10台＋ライブモニター1台の計11台稼働を確認しています（公式表記12台との差分1台の内訳は不明です）。",
       "businessHours": "10:00〜翌1:00",
       "floorByGame": {
         "gundam-exvs": "2階"
@@ -1300,6 +1301,9 @@
         "WAON",
         "d払い"
       ],
+      "machineCounts": {
+        "gundam-exvs": 11
+      },
       "hasRecordingByGame": {
         "gundam-exvs": "no"
       },
@@ -1992,6 +1996,51 @@
       },
       "hasStreamingByGame": {
         "gundam-exvs": "no"
+      }
+    },
+    "ac739286906f": {
+      "source": "user-report",
+      "note": "ラウンドワンスタジアム千日前 Issue #425: フロア地下2階・喫煙所あり・録画台(ラスサバ)あり。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-08-27",
+      "floor": "地下2階",
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "jojo-ls": "yes"
+      }
+    },
+    "8e1900519b0f": {
+      "source": "user-report",
+      "note": "GiGO 北岡崎 Issue #424: フロア(イニブ)3F・喫煙所あり・決済(交通系IC)・録画台(イニブ)なし・配信台(イニブ)なし。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-08-27",
+      "floorByGame": {
+        "gundam-exvs": "3F"
+      },
+      "smoking": "yes",
+      "payments": ["交通系IC（Suica/PASMOなど）"],
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "0545a3e052cc": {
+      "source": "admin",
+      "note": "ゲームダイアナ・ネオ Issue #423 @かたはば(SNS提供=確定・お礼可): 2026年8月22日閉店。",
+      "updatedAt": "2026-08-27",
+      "remarks": "2026年8月22日をもって閉店しました。",
+      "closed": true
+    },
+    "7154f387083b": {
+      "source": "user-report",
+      "note": "ラウンドワン京都河原町 Issue #416: フロア3F・録画台(ラスサバ)あり・配信台(ラスサバ)なし。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-08-27",
+      "floor": "3F",
+      "hasRecordingByGame": {
+        "jojo-ls": "yes"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no"
       }
     }
   }
