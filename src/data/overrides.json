@@ -857,17 +857,22 @@
     },
     "c11b804317fa": {
       "source": "admin",
-      "note": "タイトーステーション柏 営業10:00〜24:00・喫煙所あり・録画台(ラスサバ)なし・配信台(ラスサバ)なし（Issue #193）。@LSyoshiyuki（お礼可）。SNS ID提供あり＝確定。報告者=ラスサバ勢のため録画/配信はラスサバ側に割当・イニブ側は不明。",
-      "updatedAt": "2026-06-26",
+      "note": "タイトーステーション柏 営業10:00〜24:00・喫煙所あり・録画台(ラスサバ)なし・配信台(ラスサバ)なし（Issue #193）。@LSyoshiyuki（お礼可）。SNS ID提供あり＝確定。報告者=ラスサバ勢のため録画/配信はラスサバ側に割当・イニブ側は不明。Issue #436 @seabook0123（SNS提供=確定・お礼可）: ジョジョ2台・イニブ6台・フロア3F・録画台(イニブ)なし・配信台(イニブ)なしを追加確認。",
+      "updatedAt": "2026-09-03",
+      "machineCounts": {
+        "jojo-ls": 2,
+        "gundam-exvs": 6
+      },
       "businessHours": "10:00〜24:00",
+      "floor": "3F",
       "smoking": "yes",
       "hasRecordingByGame": {
         "jojo-ls": "no",
-        "gundam-exvs": "unknown"
+        "gundam-exvs": "no"
       },
       "hasStreamingByGame": {
         "jojo-ls": "no",
-        "gundam-exvs": "unknown"
+        "gundam-exvs": "no"
       }
     },
     "6b1812154b52": {
@@ -2042,6 +2047,99 @@
       "hasStreamingByGame": {
         "jojo-ls": "no"
       }
+    },
+    "f197544b740c": {
+      "source": "admin",
+      "note": "ゲームセンターB-1 イニブ12台・営業9:00〜24:00・フロアB1F・喫煙所なし・録画台あり・配信台あり（Issue #437）。@seabook0123（お礼可）。SNS ID提供あり＝確定。",
+      "updatedAt": "2026-09-03",
+      "machineCounts": {
+        "gundam-exvs": 12
+      },
+      "businessHours": "9:00〜24:00",
+      "floorByGame": {
+        "gundam-exvs": "B1F"
+      },
+      "smoking": "no",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "yes"
+      }
+    },
+    "ba89fd73b812": {
+      "source": "admin",
+      "note": "GiGO 柏 イニブ6台（マップ7→6）・営業9:30〜22:30・フロアB1F・喫煙所なし・決済多数・録画台なし・配信台なし（Issue #435）。@seabook0123（お礼可）。SNS ID提供あり＝確定。夏のキャンペーンは終了とのこと。",
+      "updatedAt": "2026-09-03",
+      "machineCounts": {
+        "gundam-exvs": 6
+      },
+      "businessHours": "9:30〜22:30",
+      "floorByGame": {
+        "gundam-exvs": "B1F"
+      },
+      "smoking": "no",
+      "payments": ["交通系IC（Suica/PASMOなど）", "iD", "nanaco", "WAON", "楽天ペイ", "d払い", "QUICPay", "PayPay"],
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "d4f4c162fcee": {
+      "source": "admin",
+      "note": "アルファー柏 イニブ4台（マップ5→4）・営業9:00〜23:00・フロアB1F・喫煙所なし・録画台あり・配信台なし（Issue #434）。@seabook0123（お礼可）。SNS ID提供あり＝確定。",
+      "updatedAt": "2026-09-03",
+      "remarks": "イニブの録画はターミナルからのみ利用できます。",
+      "machineCounts": {
+        "gundam-exvs": 4
+      },
+      "businessHours": "9:00〜23:00",
+      "floorByGame": {
+        "gundam-exvs": "B1F"
+      },
+      "smoking": "no",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "0e44c04794f6": {
+      "source": "admin",
+      "note": "柏ガリバー イニブ8台（マップ9→8）・営業9:30〜22:30・フロアB1F・喫煙所なし・録画台なし・配信台なし（Issue #433）。@seabook0123（お礼可）。SNS ID提供あり＝確定。夏のキャンペーンは終了とのこと。",
+      "updatedAt": "2026-09-03",
+      "machineCounts": {
+        "gundam-exvs": 8
+      },
+      "businessHours": "9:30〜22:30",
+      "floorByGame": {
+        "gundam-exvs": "B1F"
+      },
+      "smoking": "no",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "76097a3c3798": {
+      "source": "user-report",
+      "note": "アミューズメントクラブ浦和 フロア2階（Issue #430）。ジョジョ2台（マップ3→2）・営業12:00〜21:00（Issue #429）。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-09-03",
+      "machineCounts": {
+        "jojo-ls": 2
+      },
+      "businessHours": "12:00〜21:00",
+      "floor": "2階"
+    },
+    "bfb166be0552": {
+      "source": "user-report",
+      "note": "ラウンドワン広島 住所に対してピンの位置がズレているとの指摘あり（Issue #421）。具体的な正しい座標の提供なし、要再調査。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-09-03"
     }
   }
 }
