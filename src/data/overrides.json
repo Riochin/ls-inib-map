@@ -2140,6 +2140,44 @@
       "source": "user-report",
       "note": "ラウンドワン広島 住所に対してピンの位置がズレているとの指摘あり（Issue #421）。具体的な正しい座標の提供なし、要再調査。SNS未記入のため未確認（みんなの報告）扱い。",
       "updatedAt": "2026-09-03"
+    },
+    "dfea4a45ffc6": {
+      "source": "user-report",
+      "note": "GIGO マーケットスクエアささしま 配信台(イニブ)あり（Issue #445）。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-09-06",
+      "hasStreamingByGame": {
+        "gundam-exvs": "yes"
+      }
+    },
+    "d02cead58132": {
+      "source": "user-report",
+      "note": "コムテックタワー 録画台(イニブ)あり（Issue #444）。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-09-06",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      }
+    },
+    "96a5540b4797": {
+      "source": "user-report",
+      "note": "タイトーFステーション市川妙典 営業09:00〜24:00・フロア2F・録画台(ラスサバ)なし・配信台(ラスサバ)なし（Issue #441）。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-09-06",
+      "remarks": "全台、充電には対応していない可能性があるとの情報があります（一番左の台のみ未確認、未確認情報）。",
+      "businessHours": "09:00〜24:00",
+      "floor": "2F",
+      "hasRecordingByGame": {
+        "jojo-ls": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no"
+      }
+    },
+    "fbee0f057f7d": {
+      "source": "user-report",
+      "note": "GiGO 総本店 配信台(イニブ)あり（Issue #440）。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-09-06",
+      "hasStreamingByGame": {
+        "gundam-exvs": "yes"
+      }
     }
   }
 }
