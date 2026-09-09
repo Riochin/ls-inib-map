@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-09-02T04:46:30.232Z",
+  "lastUpdated": "2026-09-09T04:53:41.961Z",
   "source": {
     "jojols": "https://bandainamco-am.co.jp/am/vg/jojols/location/",
     "gundam": "https://gundam-vs.jp/extreme/ac2ib/location/"
@@ -5523,7 +5523,7 @@
         "gundam-exvs"
       ],
       "machineCounts": {
-        "jojo-ls": 10,
+        "jojo-ls": 9,
         "gundam-exvs": 29
       }
     },
