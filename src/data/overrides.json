@@ -2184,6 +2184,19 @@
       "hasStreamingByGame": {
         "gundam-exvs": "yes"
       }
+    },
+    "e8bd59fa011c": {
+      "source": "admin",
+      "note": "タイトーステーション立川北口 Issue #450 @Mirai_cat_(SNS提供=確定・お礼不可): 営業10:00〜24:00・喫煙所あり・録画台(ラスサバ)あり・配信台(ラスサバ)なし。",
+      "updatedAt": "2026-09-16",
+      "businessHours": "10:00〜24:00",
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "jojo-ls": "yes"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no"
+      }
     }
   }
 }
