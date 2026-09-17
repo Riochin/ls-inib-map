@@ -17,6 +17,11 @@
 - pnpm のみ使う。コミットは論理単位（本計画は最終的に 2〜3 コミットに squash）。末尾に `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>`
 - dev / preview サーバーはこちらで起動しない（Remotion Studio も起動しない。検証は `tsc` と `remotion render` と書き出しフレームの目視）
 
+## 実施結果
+
+全タスク完了（2026-09-17）。`pnpm record` → `pnpm render` で `out/app-demo.mp4`（24.0 秒・1080×1920・約 8MB）を書き出し、各シーンのフレームを目視確認済み。
+設計からの変更点は設計書の「補足（実装時に分かったこと）」に記載。
+
 ## タスク
 
 ### Task 1: Chrome 起動・CDP 接続の共通化

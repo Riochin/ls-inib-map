@@ -18,6 +18,19 @@ export const CHROME_PATH = '/Applications/Google Chrome.app/Contents/MacOS/Googl
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
+/** ディレクトリを削除する。直前の Chrome が書き込み中で失敗したら少し待って再試行する。 */
+async function removeDirWithRetry(dir, attempts = 10) {
+  for (let i = 0; i < attempts; i++) {
+    try {
+      rmSync(dir, { recursive: true, force: true })
+      return
+    } catch (err) {
+      if (i === attempts - 1) throw err
+      await sleep(300)
+    }
+  }
+}
+
 /**
  * Chrome をヘッドレスで起動し、最初のページターゲットに CDP で接続する。
  * @param {object} options
@@ -27,7 +40,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
  * @param {string[]} [options.extraArgs] 追加の起動引数
  */
 export async function launchChrome({ port, profileDir, windowSize = [375, 812], extraArgs = [] }) {
-  rmSync(profileDir, { recursive: true, force: true })
+  await removeDirWithRetry(profileDir)
   const proc = spawn(
     CHROME_PATH,
     [
@@ -102,13 +115,25 @@ export async function launchChrome({ port, profileDir, windowSize = [375, 812], 
     return () => listeners.set(method, (listeners.get(method) ?? []).filter((h) => h !== handler))
   }
 
+  /** 接続を閉じ、Chrome プロセスの終了まで待つ（次の起動でプロファイル削除が競合しないように）。 */
   const close = async () => {
     try {
       ws.close()
     } catch {
       /* noop */
     }
-    proc.kill()
+    if (proc.exitCode !== null) return
+    await new Promise((resolve) => {
+      proc.once('exit', resolve)
+      proc.kill()
+      setTimeout(() => {
+        try {
+          proc.kill('SIGKILL')
+        } catch {
+          /* noop */
+        }
+      }, 3000)
+    })
   }
 
   return { send, evaluate, on, close, sleep }
