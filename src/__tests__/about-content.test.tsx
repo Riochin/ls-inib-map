@@ -4,6 +4,7 @@ import { AboutContent } from '@/components/about/AboutContent'
 import type { AreaSummary } from '@/lib/area'
 import { DISCLAIMER, PRIVACY_NOTE, X_URL, GAME_NAMES } from '@/lib/site-config'
 import { ABOUT_FAQ } from '@/lib/about-seo'
+import { ABOUT_CATCHPHRASE, ABOUT_PAIN_POINTS } from '@/lib/about-copy'
 
 /**
  * `/about` の本文（presentational）を検証する。
@@ -29,6 +30,11 @@ function render(lastUpdated?: string | null): string {
 describe('AboutContent — 構造', () => {
   it('単一の <h1> を出力する', () => {
     expect((render().match(/<h1/g) ?? []).length).toBe(1)
+  })
+
+  it('<h1> の文言はキャッチコピー', () => {
+    const h1Text = (render().match(/<h1[^>]*>(.*?)<\/h1>/)?.[1] ?? '').replace(/<[^>]+>/g, '').replace(/\s/g, '')
+    expect(h1Text).toBe(ABOUT_CATCHPHRASE)
   })
 
   it('共有文言（免責・プライバシー）を出力する', () => {
@@ -93,5 +99,32 @@ describe('AboutContent — データ最終更新', () => {
 
   it('lastUpdated が無ければ更新日表示を省略する', () => {
     expect(render(null)).not.toContain('データ最終更新')
+  })
+})
+
+describe('AboutContent — LP 部分', () => {
+  it('地図トップ（/）へのリンクをパンくず・ヒーロー・まとめ・フッターの計 4 つ持つ', () => {
+    expect((render().match(/href="\/"/g) ?? []).length).toBe(4)
+  })
+
+  it('困りごとの吹き出しと嬉しいポイント 3 つ（<h3>）を出す', () => {
+    const html = render()
+    for (const t of ABOUT_PAIN_POINTS) expect(html).toContain(t)
+    expect((html.match(/<h3/g) ?? []).length).toBe(3)
+  })
+
+  it('スクショ 4 枚すべてに代替テキストがある', () => {
+    const html = render()
+    const imgs = html.match(/<img[^>]*>/g) ?? []
+    expect(imgs.length).toBe(4)
+    for (const tag of imgs) expect(tag).toMatch(/alt="[^"]+"/)
+  })
+
+  it('旧「このサイトでできること」節は出さない（ポイント 3 つと重複するため）', () => {
+    expect(render()).not.toContain('このサイトでできること')
+  })
+
+  it('スクショ由来の固定数字「768」を本文に含まない', () => {
+    expect(render()).not.toContain('768')
   })
 })
