@@ -1,7 +1,7 @@
 import type { GameTitle } from '@/types/store'
 import type { AreaSummary } from '@/lib/area'
 import { formatLastUpdated } from '@/lib/info-display'
-import { CATCH_FONT_STYLE, HEADING_FONT_STYLE } from '@/lib/heading-font'
+import { HEADING_FONT_STYLE } from '@/lib/heading-font'
 import {
   AUTHOR_NAME,
   X_HANDLE,
@@ -12,15 +12,18 @@ import {
   PRIVACY_NOTE,
   DISCLAIMER,
   GAME_NAMES,
-  gameFullWithShort,
 } from '@/lib/site-config'
 import {
-  aboutTitle,
   ABOUT_FAQ,
   buildAboutBreadcrumbJsonLd,
   buildAboutPageJsonLd,
   buildFaqPageJsonLd,
 } from '@/lib/about-seo'
+import { BRAND_PURPLE } from '@/lib/brand'
+import { AboutHero } from '@/components/about/AboutHero'
+import { AboutPainPoints } from '@/components/about/AboutPainPoints'
+import { AboutFeatures } from '@/components/about/AboutFeatures'
+import { AboutSummaryCta } from '@/components/about/AboutSummaryCta'
 import { AboutFeedbackButton } from '@/components/about/AboutFeedbackButton'
 import { SiteFooter } from '@/components/SiteFooter'
 
@@ -28,23 +31,16 @@ import { SiteFooter } from '@/components/SiteFooter'
  * `/about`（このアプリについて）の本文（同期・presentational）。
  *
  * データ取得は親（`page.tsx`）が担い、本コンポーネントは描画のみ（SSR レンダリングで
- * 単体テスト可能にするため非同期処理を持たない）。オンボーディングモーダルと同じ事実
- * （免責・データ方針・開発者情報）を {@link ../../lib/site-config} から共有しつつ、検索向けに
- * 正式名称・対応タイトル・できること・FAQ・エリア導線を厚く出力する。
+ * 単体テスト可能にするため非同期処理を持たない）。
+ *
+ * 上半分は LP（ヒーロー → 困りごとの吹き出し → 嬉しいポイント3つ → まとめ＋ボタン。
+ * X で初めてリンクを見た人向け。文言は `about-copy.ts`）、下半分は検索・信頼性向けの
+ * 説明（対応タイトル・データについて・FAQ・エリア導線・プライバシー・免責・開発者情報）。
+ * 下半分はオンボーディングモーダルと同じ事実を {@link ../../lib/site-config} から共有する。
  */
 
-const BRAND_PURPLE = '#7B2FBE'
 /** タイトル別の出力順（area と共通）。 */
 const GAME_TITLES: readonly GameTitle[] = ['gundam-exvs', 'jojo-ls']
-
-/** このサイトでできること（オンボーディングの操作案内・凡例に対応）。 */
-const FEATURES: string[] = [
-  '全国のゲームセンターの設置店舗を地図でまとめて確認できます。',
-  'タイトル（ラスサバ／イニブ）で表示を切り替えられます。',
-  '都道府県・市区町村のエリアで絞り込めます。',
-  '現在地から近い設置店舗を探せます。',
-  '設置台数の確からしさ（公式の公表値／利用者報告／確認済み）を色で見分けられます。',
-]
 
 interface AboutContentProps {
   /** データ最終更新日時（ISO 8601・任意）。欠落時は更新日表示を省略する。 */
@@ -74,15 +70,14 @@ export function AboutContent({ lastUpdated, totalStores, prefectureCount, popula
         <span>このサイトについて</span>
       </nav>
 
-      <header>
-        <h1 className="text-2xl leading-snug" style={{ ...CATCH_FONT_STYLE, color: BRAND_PURPLE }}>
-          {aboutTitle()}
-        </h1>
-        <p className="mt-2 text-gray-700 leading-relaxed">
-          {gameFullWithShort('jojo-ls')}と{gameFullWithShort('gundam-exvs')}
-          の設置されたゲームセンターを、地図でまとめて確認できる非公式の個人開発サイトです。
-        </p>
-      </header>
+      <div className="flex flex-col gap-16 py-2 md:gap-24 md:py-6">
+        <AboutHero />
+        <AboutPainPoints />
+        <AboutFeatures totalStores={totalStores} />
+        <AboutSummaryCta totalStores={totalStores} />
+      </div>
+
+      <hr className="my-6 border-purple-100 md:my-10" />
 
       <section>
         <h2 className="mb-2 text-lg" style={{ ...HEADING_FONT_STYLE, color: BRAND_PURPLE }}>
@@ -101,17 +96,6 @@ export function AboutContent({ lastUpdated, totalStores, prefectureCount, popula
             )
           })}
         </dl>
-      </section>
-
-      <section>
-        <h2 className="mb-2 text-lg" style={{ ...HEADING_FONT_STYLE, color: BRAND_PURPLE }}>
-          このサイトでできること
-        </h2>
-        <ul className="flex flex-col gap-1.5 text-sm text-gray-700 leading-relaxed list-disc pl-5">
-          {FEATURES.map((f) => (
-            <li key={f}>{f}</li>
-          ))}
-        </ul>
       </section>
 
       <section>

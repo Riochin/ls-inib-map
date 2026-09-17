@@ -18,7 +18,7 @@ export default function AboutLayout({ children }: { children: ReactNode }) {
         rel="stylesheet"
       />
       <div className="h-screen overflow-y-auto bg-white text-gray-900">
-        <div className="mx-auto max-w-3xl px-4 py-8">{children}</div>
+        <div className="mx-auto max-w-3xl px-5 py-10 md:px-8 md:py-14">{children}</div>
       </div>
     </>
   )
