@@ -43,6 +43,8 @@ export interface PipelineDeps {
   source: StoresMeta['source']
   /** 最終更新日時として埋め込む生成時刻（ISO 8601・呼び出し側が注入） */
   now: string
+  /** 現行 `stores.json`（前回生成物・任意）。都道府県別更新日時の引き継ぎに使う。 */
+  current?: StoresFile | null
 }
 
 export interface PipelineResult {
@@ -86,6 +88,7 @@ export async function runPipeline(deps: PipelineDeps): Promise<PipelineResult> {
     stores: geocoded,
     source: deps.source,
     now: deps.now,
+    current: deps.current,
   })
 
   return { file, cache, scrapedAreas, geocodedCount, skipped }
@@ -167,6 +170,7 @@ export async function runPipelineToFiles(options: RunOptions = {}): Promise<RunF
     geocode: { cache },
     source,
     now,
+    current,
   })
 
   log(

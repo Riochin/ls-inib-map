@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next'
 import { GoogleAnalytics } from '@next/third-parties/google'
-import { SeoContent } from '@/components/SeoContent'
 import { SITE_URL } from '@/lib/site-config'
 import './globals.css'
 
@@ -120,7 +119,6 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <SeoContent />
         {children}
       </body>
       {gaId && <GoogleAnalytics gaId={gaId} />}

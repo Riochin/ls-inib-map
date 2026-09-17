@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getAreaPrefectures, getAreaForPrefecture } from '@/lib/area'
+import { getAreaPrefectures, getAreaForPrefecture, getAreaLastModified } from '@/lib/area'
 import type { Store } from '@/types/store'
 
 /** テスト用の最小 Store を生成するヘルパー。 */
@@ -128,5 +128,54 @@ describe('getAreaForPrefecture', () => {
   it('店舗0または未知スラッグは null', () => {
     expect(getAreaForPrefecture('hokkaido', fixtures)).toBeNull() // 店舗0
     expect(getAreaForPrefecture('atlantis', fixtures)).toBeNull() // 未知
+  })
+})
+
+describe('getAreaLastModified', () => {
+  const prefMap = {
+    東京都: '2026-07-01T00:00:00.000Z',
+    大阪府: '2026-08-01T00:00:00.000Z',
+  }
+
+  it('都道府県別更新日時（prefectureUpdatedAt）を返す', () => {
+    expect(getAreaLastModified('osaka', fixtures, prefMap)?.toISOString()).toBe(
+      '2026-08-01T00:00:00.000Z',
+    )
+  })
+
+  it('その県の店舗の infoUpdatedAt の方が新しければそちらを返す', () => {
+    const withInfo = fixtures.map((s) =>
+      s.id === 'tk-a' ? { ...s, infoUpdatedAt: '2026-09-01' } : s,
+    )
+    expect(getAreaLastModified('tokyo', withInfo, prefMap)?.toISOString()).toBe(
+      new Date('2026-09-01').toISOString(),
+    )
+  })
+
+  it('infoUpdatedAt が prefectureUpdatedAt より古ければ prefectureUpdatedAt を返す', () => {
+    const withInfo = fixtures.map((s) =>
+      s.id === 'tk-a' ? { ...s, infoUpdatedAt: '2026-06-01' } : s,
+    )
+    expect(getAreaLastModified('tokyo', withInfo, prefMap)?.toISOString()).toBe(
+      '2026-07-01T00:00:00.000Z',
+    )
+  })
+
+  it('県別更新日時も infoUpdatedAt も無い県は null（lastmod を出さない）', () => {
+    expect(getAreaLastModified('tokyo', fixtures, {})).toBeNull()
+    expect(getAreaLastModified('tokyo', fixtures, { 大阪府: '2026-08-01T00:00:00.000Z' })).toBeNull()
+  })
+
+  it('閉店・移設店の infoUpdatedAt は考慮しない（一覧に出ないため）', () => {
+    const withInfo = fixtures.map((s) =>
+      s.id === 'closed-1' ? { ...s, infoUpdatedAt: '2026-09-01' } : s,
+    )
+    expect(getAreaLastModified('tokyo', withInfo, prefMap)?.toISOString()).toBe(
+      '2026-07-01T00:00:00.000Z',
+    )
+  })
+
+  it('未知スラッグは null', () => {
+    expect(getAreaLastModified('atlantis', fixtures, prefMap)).toBeNull()
   })
 })

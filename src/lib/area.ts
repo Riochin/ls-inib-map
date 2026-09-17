@@ -1,4 +1,4 @@
-import { stores as defaultStores } from '@/data/stores'
+import { stores as defaultStores, storesMeta as defaultMeta } from '@/data/stores'
 import { parseAddress } from '@/lib/address-parser'
 import { prefectureToSlug } from '@/lib/prefecture-slug'
 import type { GameTitle, Store } from '@/types/store'
@@ -121,4 +121,35 @@ export function getAreaForPrefecture(
     total: summary.total,
     storesByGame,
   }
+}
+
+/**
+ * 県ページ（`/area/[slug]`）の最終更新日時（サイトマップ `lastmod` 用）。
+ *
+ * 次の2つの新しい方を返す（どちらも無ければ null＝lastmod を出さない）:
+ * - 生成器が記録した都道府県別の店舗集合の更新日時（{@link StoresMeta.prefectureUpdatedAt}）
+ * - その県の店舗の運営による情報更新日（オーバーライド由来の `Store.infoUpdatedAt`）
+ *
+ * 全県一律の `storesMeta.lastUpdated` へはフォールバックしない。他県だけが変わった週にも
+ * 全県ページが更新扱いになり、検索エンジンが lastmod を信用しなくなるのを避けるため。
+ */
+export function getAreaLastModified(
+  slug: string,
+  allStores: Store[] = defaultStores,
+  prefectureUpdatedAt: Record<string, string> | undefined = defaultMeta.prefectureUpdatedAt,
+): Date | null {
+  const detail = getAreaForPrefecture(slug, allStores)
+  if (!detail) return null
+
+  const candidates: number[] = []
+  const fromMeta = prefectureUpdatedAt?.[detail.prefecture]
+  if (fromMeta) candidates.push(new Date(fromMeta).getTime())
+  for (const game of GAME_TITLES) {
+    for (const store of detail.storesByGame[game]) {
+      if (store.infoUpdatedAt) candidates.push(new Date(store.infoUpdatedAt).getTime())
+    }
+  }
+  const valid = candidates.filter((t) => Number.isFinite(t))
+  if (valid.length === 0) return null
+  return new Date(Math.max(...valid))
 }
