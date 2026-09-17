@@ -912,8 +912,19 @@
     },
     "afddac5e0fb6": {
       "source": "user-report",
-      "note": "ラウンドワンスタジアム中川1号線 喫煙所あり・録画台(イニブ)あり・配信台(イニブ)なし（Issue #205）。SNS未記入のため未確認（みんなの報告）扱い。",
-      "updatedAt": "2026-06-26",
+      "attributeSources": {
+        "hasRecordingByGame": "admin",
+        "hasStreamingByGame": "admin"
+      },
+      "countSources": {
+        "gundam-exvs": "admin"
+      },
+      "note": "ラウンドワンスタジアム中川1号線 喫煙所あり・録画台(イニブ)あり・配信台(イニブ)なし（Issue #205）。SNS未記入のため未確認（みんなの報告）扱い。Issue #443（@shiro_kuro_ao_・SNS提供=確定・お礼可）: イニブ12台（マップ14→12）・録画台(イニブ)あり（モニターにUSB接続）・配信台(イニブ)なし。台数・録画台・配信台は確定、喫煙所は#205のまま未確認。",
+      "updatedAt": "2026-09-17",
+      "remarks": "録画台はモニターにUSBを接続する方式です。",
+      "machineCounts": {
+        "gundam-exvs": 12
+      },
       "smoking": "yes",
       "hasRecordingByGame": {
         "gundam-exvs": "yes"
