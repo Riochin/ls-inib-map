@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import sitemap from '@/app/sitemap'
 import robots from '@/app/robots'
-import { getAreaPrefectures } from '@/lib/area'
+import { getAreaPrefectures, getAreaLastModified } from '@/lib/area'
 import { storesMeta } from '@/data/stores'
 
 const SITE_URL = 'https://lsib.world'
@@ -31,17 +31,38 @@ describe('sitemap', () => {
     expect(prefUrls.length).toBe(getAreaPrefectures().length)
   })
 
-  it('各 URL に最終更新日（storesMeta.lastUpdated 由来）を付与する', () => {
+  it('トップ・/area・/about の最終更新日はデータ全体の生成日時（storesMeta.lastUpdated）', () => {
     const entries = sitemap()
-    const expected = storesMeta?.lastUpdated
-      ? new Date(storesMeta.lastUpdated).getTime()
-      : null
-    for (const entry of entries) {
-      expect(entry.lastModified).toBeInstanceOf(Date)
-      if (expected !== null) {
-        expect((entry.lastModified as Date).getTime()).toBe(expected)
+    const expected = new Date(storesMeta.lastUpdated).getTime()
+    for (const url of [SITE_URL, `${SITE_URL}/area`, `${SITE_URL}/about`]) {
+      const entry = entries.find((e) => e.url === url)
+      expect(entry?.lastModified).toBeInstanceOf(Date)
+      expect((entry!.lastModified as Date).getTime()).toBe(expected)
+    }
+  })
+
+  it('県ページの最終更新日はその県固有の更新日時（getAreaLastModified）を使う', () => {
+    const entries = sitemap()
+    for (const area of getAreaPrefectures()) {
+      const entry = entries.find((e) => e.url === `${SITE_URL}/area/${area.slug}`)
+      const expected = getAreaLastModified(area.slug)
+      if (expected === null) {
+        expect(entry?.lastModified).toBeUndefined()
+      } else {
+        expect((entry!.lastModified as Date).getTime()).toBe(expected.getTime())
       }
     }
+  })
+
+  it('県ページの最終更新日が全県一律（storesMeta.lastUpdated のコピー）になっていない', () => {
+    // 実データでは県ごとに更新時期が異なるはず。全県が同じ日時なら lastmod が根拠を失っている。
+    const entries = sitemap()
+    const times = new Set(
+      entries
+        .filter((e) => /\/area\/[^/]+$/.test(e.url))
+        .map((e) => (e.lastModified as Date | undefined)?.getTime()),
+    )
+    expect(times.size).toBeGreaterThan(1)
   })
 })
 

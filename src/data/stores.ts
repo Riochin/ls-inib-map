@@ -16,7 +16,9 @@ import overridesFile from './overrides.json'
  * - ビルド時にバンドルされ CDN エッジ配信される静的データ構成を維持する。
  * - 既存の `import { stores } from '@/data/stores'` 互換を維持する。
  */
-const data = storesFile as StoresFile
+// JSON の推論型（games: string[]）は Store のタプル型と直接比較できないため unknown を経由する。
+// 実データの妥当性（games の値・必須フィールド等）は stores-data.test.ts が担保する。
+const data = storesFile as unknown as StoresFile
 
 /** 設置店舗一覧（公式データ＋auto-scrape＋手動オーバーライド適用済み・read-only） */
 export const stores: Store[] = applyOverrides(
@@ -24,8 +26,9 @@ export const stores: Store[] = applyOverrides(
   overridesFile as OverridesFile,
 )
 
-/** データメタ情報（最終更新日時・出典） */
+/** データメタ情報（最終更新日時・出典・都道府県別更新日時） */
 export const storesMeta: StoresMeta = {
   lastUpdated: data.lastUpdated,
   source: data.source,
+  ...(data.prefectureUpdatedAt ? { prefectureUpdatedAt: data.prefectureUpdatedAt } : {}),
 }

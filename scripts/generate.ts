@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs'
 import { dirname } from 'node:path'
 import type { Store } from '@/types/store'
 import type { StoresFile, StoresMeta } from '@/types/stores-file'
+import { parseAddress } from '@/lib/address-parser'
 import { isApproximateLocation, type GeocodedStore } from './geocode'
 
 /**
@@ -15,6 +16,8 @@ import { isApproximateLocation, type GeocodedStore } from './geocode'
  * - 出力店舗は id 昇順に整列し、再生成時の差分を安定させる。
  * - 現行JSONと生成JSONを `lastUpdated` を除外して正規化比較し、実体差分が無ければ
  *   書き込み・コミットしない（Req2.7）。
+ * - 都道府県ごとに店舗集合の実体差分を判定し、変わった県だけ `prefectureUpdatedAt` を
+ *   生成時刻へ進める（サイトマップの県ページ `lastmod` 用。変わらない県は前回値を引き継ぐ）。
  */
 
 // ---------------------------------------------------------------------------
@@ -72,6 +75,57 @@ export interface GenerateInput {
   source: StoresMeta['source']
   /** 最終更新日時として埋め込む生成時刻（ISO 8601・呼び出し側が注入） */
   now: string
+  /**
+   * 現行 `stores.json`（前回生成物・任意）。都道府県別更新日時の引き継ぎと差分判定に使う。
+   * 無い（初回生成）場合は全県を `now` とする。
+   */
+  current?: StoresFile | null
+}
+
+/** 店舗集合を都道府県（正式名）でグループ化し、県ごとに正規化 JSON 文字列へ畳む。 */
+function fingerprintByPrefecture(stores: Store[]): Map<string, string> {
+  const byPref = new Map<string, Store[]>()
+  for (const store of stores) {
+    const { prefecture } = parseAddress(store.address)
+    if (!prefecture) continue
+    const list = byPref.get(prefecture) ?? []
+    list.push(store)
+    byPref.set(prefecture, list)
+  }
+  const result = new Map<string, string>()
+  for (const [prefecture, list] of byPref) {
+    const sorted = [...list].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+    result.set(prefecture, JSON.stringify(canonicalize(sorted)))
+  }
+  return result
+}
+
+/**
+ * 都道府県別の最終更新日時を組み立てる。
+ *
+ * 県ごとに現行と生成後の店舗集合（閉店・移設フラグ含む全店）を正規化比較し、
+ * 差分があった県・新たに店舗が現れた県は `now`、変わらない県は現行の
+ * `prefectureUpdatedAt` の値を引き継ぐ。現行に県別値が無い（旧生成物）場合は
+ * 現行の `lastUpdated` を「少なくともその時点では更新されていた」下限として使う。
+ * 店舗が無くなった県はキーごと落とす（サイトマップにも載らない）。
+ */
+export function computePrefectureUpdatedAt(
+  current: StoresFile | null | undefined,
+  nextStores: Store[],
+  now: string,
+): Record<string, string> {
+  const nextFp = fingerprintByPrefecture(nextStores)
+  const currentFp = current ? fingerprintByPrefecture(current.stores) : new Map<string, string>()
+  const result: Record<string, string> = {}
+  for (const [prefecture, fp] of [...nextFp.entries()].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))) {
+    const unchanged = current !== null && current !== undefined && currentFp.get(prefecture) === fp
+    if (!unchanged) {
+      result[prefecture] = now
+      continue
+    }
+    result[prefecture] = current!.prefectureUpdatedAt?.[prefecture] ?? current!.lastUpdated
+  }
+  return result
 }
 
 /**
@@ -88,6 +142,7 @@ export function generateStoresFile(input: GenerateInput): StoresFile {
   const file: StoresFile = {
     lastUpdated: input.now,
     source: input.source,
+    prefectureUpdatedAt: computePrefectureUpdatedAt(input.current, stores, input.now),
     stores,
   }
   return file
@@ -118,6 +173,8 @@ function stripLastUpdated(file: StoresFile): Omit<StoresFile, 'lastUpdated'> {
 /**
  * 現行JSONと生成JSONを `lastUpdated` を除外して正規化比較し、実体差分があれば true（Req2.7）。
  * 現行が存在しない（初回生成）場合は常に差分ありとみなす。
+ * `prefectureUpdatedAt` は比較に含める（店舗差分があった県だけ進むため、店舗差分と常に連動する。
+ * 旧生成物に県別値を初めて付ける回は、それ自体が意味のある差分として書き出される）。
  */
 export function hasMeaningfulDiff(current: StoresFile | null, next: StoresFile): boolean {
   if (!current) return true

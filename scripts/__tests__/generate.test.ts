@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { generateStoresFile, hasMeaningfulDiff } from '../generate'
+import { generateStoresFile, hasMeaningfulDiff, computePrefectureUpdatedAt } from '../generate'
 import type { GeocodedStore } from '../geocode'
 import type { StoresFile } from '@/types/stores-file'
 import type { GameTitle } from '@/types/store'
@@ -176,5 +176,74 @@ describe('hasMeaningfulDiff', () => {
       lastUpdated: 'different',
     } as StoresFile
     expect(hasMeaningfulDiff(base, reordered)).toBe(false)
+  })
+})
+
+describe('computePrefectureUpdatedAt', () => {
+  const NOW = '2026-09-16T00:00:00.000Z'
+  const PREV = '2026-09-09T00:00:00.000Z'
+  const tokyo = generateStoresFile({ stores: [geocodedStore({ id: 'tk-1' })], source: SOURCE, now: PREV }).stores[0]
+  const osaka = generateStoresFile({
+    stores: [geocodedStore({ id: 'os-1', address: '大阪府大阪市北区梅田1-1-1', area: 'JP-27' })],
+    source: SOURCE,
+    now: PREV,
+  }).stores[0]
+  const current: StoresFile = {
+    lastUpdated: PREV,
+    source: SOURCE,
+    prefectureUpdatedAt: { 東京都: '2026-08-01T00:00:00.000Z', 大阪府: '2026-07-01T00:00:00.000Z' },
+    stores: [tokyo, osaka],
+  }
+
+  it('現行が無い（初回）場合は全県を生成時刻にする', () => {
+    expect(computePrefectureUpdatedAt(null, [tokyo, osaka], NOW)).toEqual({
+      東京都: NOW,
+      大阪府: NOW,
+    })
+  })
+
+  it('店舗集合が変わらない県は前回値を引き継ぐ', () => {
+    expect(computePrefectureUpdatedAt(current, [tokyo, osaka], NOW)).toEqual(
+      current.prefectureUpdatedAt,
+    )
+  })
+
+  it('店舗の実体差分（台数変更・閉店フラグ等）があった県だけ生成時刻へ進める', () => {
+    const changedTokyo = { ...tokyo, machineCounts: { 'gundam-exvs': 9 } }
+    expect(computePrefectureUpdatedAt(current, [changedTokyo, osaka], NOW)).toEqual({
+      東京都: NOW,
+      大阪府: '2026-07-01T00:00:00.000Z',
+    })
+    const delistedOsaka = { ...osaka, delisted: true }
+    expect(computePrefectureUpdatedAt(current, [tokyo, delistedOsaka], NOW)).toEqual({
+      東京都: '2026-08-01T00:00:00.000Z',
+      大阪府: NOW,
+    })
+  })
+
+  it('新たに店舗が現れた県は生成時刻、店舗が無くなった県はキーごと落とす', () => {
+    const nagoya = { ...tokyo, id: 'ai-1', address: '愛知県名古屋市中区栄1-1-1' }
+    expect(computePrefectureUpdatedAt(current, [tokyo, nagoya], NOW)).toEqual({
+      東京都: '2026-08-01T00:00:00.000Z',
+      愛知県: NOW,
+    })
+  })
+
+  it('現行に県別値が無い（旧生成物）場合、変わらない県は現行の lastUpdated を下限として使う', () => {
+    const legacy: StoresFile = { lastUpdated: PREV, source: SOURCE, stores: [tokyo, osaka] }
+    expect(computePrefectureUpdatedAt(legacy, [tokyo, osaka], NOW)).toEqual({
+      東京都: PREV,
+      大阪府: PREV,
+    })
+  })
+
+  it('generateStoresFile は prefectureUpdatedAt を埋め込み、現行を渡すと引き継ぐ', () => {
+    const file = generateStoresFile({
+      stores: [geocodedStore({ id: 'tk-1' })],
+      source: SOURCE,
+      now: NOW,
+      current,
+    })
+    expect(file.prefectureUpdatedAt).toEqual({ 東京都: '2026-08-01T00:00:00.000Z' })
   })
 })
