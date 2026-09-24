@@ -218,10 +218,24 @@
     },
     "420e66ac88ad": {
       "source": "admin",
-      "note": "namco池袋 ラスサバ10台で確定（Issue #99）。報告者=管理者確認済み。",
-      "updatedAt": "2026-06-16",
+      "note": "namco池袋 ラスサバ10台で確定（Issue #99）。報告者=管理者確認済み。Issue #463 @ls_boushi（SNS提供=確定・お礼可）: 営業10:00〜23:00・地下1階・決済(PayPay/d払い/楽天ペイ/nanaco/iD/WAON/交通系IC)・配信台(ラスサバ)あり。",
+      "updatedAt": "2026-09-24",
       "machineCounts": {
         "jojo-ls": 10
+      },
+      "businessHours": "10:00〜23:00",
+      "floor": "地下1階",
+      "payments": [
+        "PayPay",
+        "d払い",
+        "楽天ペイ",
+        "nanaco",
+        "iD",
+        "WAON",
+        "交通系IC（Suica/PASMOなど）"
+      ],
+      "hasStreamingByGame": {
+        "jojo-ls": "yes"
       }
     },
     "4225cbfd493f": {
@@ -642,10 +656,22 @@
     },
     "f94e47ba4311": {
       "source": "user-report",
-      "note": "アミューズメントワールド メトロポリス小田原",
-      "updatedAt": "2026-06-18T04:11:54.074Z",
+      "note": "アミューズメントワールド メトロポリス小田原 Issue #461（SNS未記入・未確認）: 営業10:00〜23:50（土日祝は9:00〜）・1F・決済(交通系IC/nanaco)・録画台(ラスサバ)なし・配信台(ラスサバ)なし。イニブの録画/配信は不明のため未設定。",
+      "updatedAt": "2026-09-24",
       "machineCounts": {
         "jojo-ls": 4
+      },
+      "businessHours": "10:00〜23:50（土日祝は9:00〜）",
+      "floor": "1F",
+      "payments": [
+        "交通系IC（Suica/PASMOなど）",
+        "nanaco"
+      ],
+      "hasRecordingByGame": {
+        "jojo-ls": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no"
       }
     },
     "3614aed15784": {
