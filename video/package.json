@@ -1,0 +1,27 @@
+{
+  "name": "ls-exvs-map-video",
+  "version": "0.1.0",
+  "private": true,
+  "description": "アプリ紹介動画（X 投稿用・縦 1080×1920）を Remotion で書き出す独立パッケージ",
+  "type": "module",
+  "scripts": {
+    "record": "node scripts/record-clips.mjs",
+    "studio": "remotion studio",
+    "render": "remotion render AppDemo out/app-demo.mp4",
+    "typecheck": "tsc --noEmit",
+    "ffmpeg": "remotion ffmpeg"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.525",
+    "@remotion/google-fonts": "4.0.525",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "remotion": "4.0.525",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.9.3"
+  }
+}
