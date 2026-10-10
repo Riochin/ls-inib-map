@@ -2342,6 +2342,56 @@
       "hasStreamingByGame": {
         "jojo-ls": "no"
       }
+    },
+    "7eba24997639": {
+      "source": "admin",
+      "note": "GiGO 金山 ラスサバ3台・イニブ12台・営業10:00〜23:00・フロア3F・喫煙所あり・決済(交通系IC/PayPay/d払い/楽天ペイ/nanaco/WAON/iD/QUICPay)・録画台/配信台(ラスサバ・イニブ)なし（Issue #483, SNS提供=確定・お礼可）。",
+      "updatedAt": "2026-10-10",
+      "machineCounts": {
+        "jojo-ls": 3,
+        "gundam-exvs": 12
+      },
+      "businessHours": "10:00〜23:00",
+      "floor": "3F",
+      "smoking": "yes",
+      "payments": [
+        "交通系IC（Suica/PASMOなど）",
+        "PayPay",
+        "d払い",
+        "楽天ペイ",
+        "nanaco",
+        "WAON",
+        "iD",
+        "QUICPay"
+      ],
+      "hasRecordingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
+      }
+    },
+    "d705b1a45399": {
+      "source": "admin",
+      "note": "BOX.Q3 イニブ8台・営業14:00〜翌0:00・フロア(イニブ)1F・喫煙所なし・録画台/配信台(イニブ)なし（Issue #482, SNS提供=確定・メンション不可）。",
+      "remarks": "イニブ8台のうち4台は稼働停止中との報告があります。",
+      "updatedAt": "2026-10-10",
+      "machineCounts": {
+        "gundam-exvs": 8
+      },
+      "businessHours": "14:00〜翌0:00",
+      "floorByGame": {
+        "gundam-exvs": "1F"
+      },
+      "smoking": "no",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
     }
   }
 }
