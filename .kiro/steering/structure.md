@@ -26,6 +26,11 @@ Next.js App Routerの規約に従う。ページ数が少ないシンプルな�
 **目的**: 共有TypeScript型定義
 **例**: 店舗データの型、地図関連の型
 
+### 設計判断の記録
+**場所**: `docs/adr/`
+**目的**: データの持ち方・層の分け方・運用ルールの判断と、却下した案の理由（1判断＝1ファイル）
+**例**: `0002-unlimited-machines-as-per-game-equipment.md`。書き方は `docs/adr/README.md`
+
 ## 命名規約
 
 - **ファイル**: コンポーネントはPascalCase（`MapView.tsx`）、その他はkebab-case

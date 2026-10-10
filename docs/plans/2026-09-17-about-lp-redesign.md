@@ -1,7 +1,5 @@
 # `/about` LP風リデザイン 実装計画
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
-
 **Goal:** `/about` の上半分を「キャッチコピー＋実機画像 → 困りごとの吹き出し → 嬉しいポイント3つ → まとめ＋ボタン」の LP 風にし、下半分は既存の説明・FAQ・免責をそのまま残す。
 
 **Architecture:** 文言と画像メタ情報を `src/lib/about-copy.ts` に集約し、上半分を4つの同期・presentational コンポーネント（Hero / PainPoints / Features / SummaryCta）に分けて `AboutContent` が並べる。画像は `public/about/` の WebP を幅・高さ指定の素の `<img>` で出す。データ取得（店舗数）は既存どおり `src/app/about/page.tsx` がビルド時に集計して渡す。
@@ -16,7 +14,7 @@
 
 ## Global Constraints
 
-- 設計書: `docs/superpowers/specs/2026-09-17-about-lp-redesign-design.md`
+- 設計書: `docs/plans/2026-09-17-about-lp-redesign-design.md`
 - URL `/about`・メタタイトル「このサイトについて」・ディスクリプション・canonical・構造化データ（BreadcrumbList / AboutPage / FAQPage）は変更しない
 - h1 はページ内に1つ（文言は「戦場選びをサクッと10秒に。」）
 - 色: ブランド紫 `#7B2FBE`。見出しフォントは `CATCH_FONT_STYLE` / `HEADING_FONT_STYLE`（`src/lib/heading-font.ts`）
