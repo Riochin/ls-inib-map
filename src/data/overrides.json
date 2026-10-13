@@ -17,8 +17,9 @@
     },
     "07906e9552bc": {
       "source": "admin",
-      "note": "ウェアハウス一橋学園 イニブ8台（マップ9→8, Issue #101）。報告者=管理者確認済み。",
-      "updatedAt": "2026-06-16",
+      "note": "ウェアハウス一橋学園 イニブ8台（マップ9→8, Issue #101）。報告者=管理者確認済み。Issue #489（SNS未記入・未確認）: 2026年8月9日閉店との報告。stores.json 側で delisted 設定済みのため closed は立てず remarks のみ。",
+      "updatedAt": "2026-10-12",
+      "remarks": "2026年8月9日をもって閉店したとの情報があります。",
       "machineCounts": {
         "gundam-exvs": 8
       }
@@ -1285,8 +1286,14 @@
     },
     "e501002ac533": {
       "source": "admin",
-      "note": "タイトーステーション国分寺 Issue #269 @oashisu1311(SNS提供=確定・お礼可): 営業10:00〜23:30・3F・喫煙所あり・録画台(ラスサバ)あり・配信台(ラスサバ)なし。",
-      "updatedAt": "2026-07-01",
+      "note": "タイトーステーション国分寺 Issue #269 @oashisu1311(SNS提供=確定・お礼可): 営業10:00〜23:30・3F・喫煙所あり・録画台(ラスサバ)あり・配信台(ラスサバ)なし。Issue #488（SNS未記入・未確認）: イニブ9台→8台（誤入力？とのメモ付き）。他項目は#269と同値。台数のみ未確認扱い。",
+      "countSources": {
+        "gundam-exvs": "user-report"
+      },
+      "updatedAt": "2026-10-12",
+      "machineCounts": {
+        "gundam-exvs": 8
+      },
       "businessHours": "10:00〜23:30",
       "floor": "3F",
       "smoking": "yes",
@@ -2341,6 +2348,70 @@
       },
       "hasStreamingByGame": {
         "jojo-ls": "no"
+      }
+    },
+    "db6c197f31c5": {
+      "source": "user-report",
+      "note": "サープラ荒尾あそびタウン Issue #490: イニブ0台（公式5台→0台）・録画台(イニブ)なし・配信台(イニブ)なし。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-10-12",
+      "machineCounts": {
+        "gundam-exvs": 0
+      },
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "7eba24997639": {
+      "source": "admin",
+      "note": "GiGO 金山 Issue #483 @seebook0123(SNS提供=確定・お礼可): ラスサバ3台・イニブ12台（公式13台→12台）・営業10:00〜23:00・3F・喫煙所あり・決済（交通系IC/PayPay/d払い/楽天ペイ/nanaco/WAON/iD/QUICPay）・録画台/配信台は両タイトルなし。",
+      "updatedAt": "2026-10-12",
+      "machineCounts": {
+        "jojo-ls": 3,
+        "gundam-exvs": 12
+      },
+      "businessHours": "10:00〜23:00",
+      "floor": "3F",
+      "smoking": "yes",
+      "payments": [
+        "交通系IC（Suica/PASMOなど）",
+        "PayPay",
+        "d払い",
+        "楽天ペイ",
+        "nanaco",
+        "WAON",
+        "iD",
+        "QUICPay"
+      ],
+      "hasRecordingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
+      }
+    },
+    "d705b1a45399": {
+      "source": "admin",
+      "note": "BOX.Q3 Issue #482 @seebook0123(SNS提供=確定・お礼不可): イニブ8台（公式9台→8台、うち4台は稼働停止中）・営業14:00〜24:00・フロア(イニブ)1F・喫煙所なし・録画台(イニブ)なし・配信台(イニブ)なし。",
+      "updatedAt": "2026-10-12",
+      "remarks": "イニブは8台中4台が稼働停止中です。",
+      "machineCounts": {
+        "gundam-exvs": 8
+      },
+      "businessHours": "14:00〜24:00",
+      "floorByGame": {
+        "gundam-exvs": "1F"
+      },
+      "smoking": "no",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
       }
     }
   }
