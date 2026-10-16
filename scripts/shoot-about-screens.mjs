@@ -10,12 +10,13 @@
  *
  * データ（店舗数・ピン）が変わって画像が古くなったら、これで撮り直して `src/lib/about-copy.ts` の寸法を確認する。
  */
-import { spawn, spawnSync } from 'node:child_process'
-import { mkdirSync, rmSync, writeFileSync, existsSync } from 'node:fs'
+import { spawnSync } from 'node:child_process'
+import { mkdirSync, writeFileSync, existsSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
+import { CHROME_PATH, launchChrome, setupMobilePage, pageActions } from './lib/headless-chrome.mjs'
 
-const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+const CHROME = CHROME_PATH
 const PORT = 9333
 const SITE = 'https://lsib.world'
 const NEWS_VERSION = '2.4' // src/data/releases.ts の最新 version。新機能モーダルを出さないために合わせる
@@ -32,85 +33,13 @@ const SCENARIOS = {
   detail: { file: 'feature-detail', width: 560 },
 }
 
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
-
 async function shoot(scenario) {
-  rmSync(PROFILE, { recursive: true, force: true })
-  const chrome = spawn(
-    CHROME,
-    ['--headless=new', `--remote-debugging-port=${PORT}`, `--user-data-dir=${PROFILE}`, '--window-size=375,812', '--hide-scrollbars', '--no-first-run', '--lang=ja', 'about:blank'],
-    { stdio: 'ignore' },
-  )
-  let ws
-  let id = 0
-  const pending = new Map()
+  const chrome = await launchChrome({ port: PORT, profileDir: PROFILE })
+  const { sleep } = chrome
+  const { clickByLabel, clickByText, drag, clearSelection } = pageActions(chrome)
   try {
-    for (let i = 0; i < 40 && !ws; i++) {
-      try {
-        const list = await fetch(`http://127.0.0.1:${PORT}/json`).then((r) => r.json())
-        const page = list.find((t) => t.type === 'page')
-        if (page) ws = new WebSocket(page.webSocketDebuggerUrl)
-      } catch {
-        /* 起動待ち */
-      }
-      if (!ws) await sleep(250)
-    }
-    if (!ws) throw new Error('Chrome に接続できません')
-    await new Promise((r) => (ws.onopen = r))
-    ws.onmessage = (ev) => {
-      const msg = JSON.parse(ev.data)
-      if (msg.id && pending.has(msg.id)) {
-        pending.get(msg.id)(msg)
-        pending.delete(msg.id)
-      }
-    }
-    const send = (method, params = {}) =>
-      new Promise((resolve, reject) => {
-        const myId = ++id
-        pending.set(myId, (m) => (m.error ? reject(new Error(JSON.stringify(m.error))) : resolve(m.result)))
-        ws.send(JSON.stringify({ id: myId, method, params }))
-      })
-    const evaluate = (expression) =>
-      send('Runtime.evaluate', { expression, awaitPromise: true, returnByValue: true }).then((r) => r.result.value)
-    const clickByLabel = async (pattern, times = 1, gap = 700) => {
-      for (let i = 0; i < times; i++) {
-        const ok = await evaluate(
-          `(() => { const re = new RegExp(${JSON.stringify(pattern)}); const b = [...document.querySelectorAll('button')].find((el) => re.test(el.getAttribute('aria-label') ?? '') || re.test(el.title ?? '')); if (!b) return false; b.click(); return true })()`,
-        )
-        if (!ok) throw new Error(`ボタンが見つかりません: ${pattern}`)
-        await sleep(gap)
-      }
-    }
-    // モーダル内を優先して、表示文字が一致するボタン／ラベルを押す
-    const clickByText = async (text) => {
-      const ok = await evaluate(
-        `(() => { const root = document.querySelector('[role=dialog]') ?? document; const els = [...root.querySelectorAll('button, label, [role=tab]')]; const el = els.find((e) => e.textContent.trim() === ${JSON.stringify(text)}); if (!el) return false; el.click(); return true })()`,
-      )
-      if (!ok) throw new Error(`文言が見つかりません: ${text}`)
-      await sleep(300)
-    }
-    const drag = async (x1, y1, x2, y2) => {
-      await send('Input.dispatchMouseEvent', { type: 'mousePressed', x: x1, y: y1, button: 'left', clickCount: 1 })
-      const steps = 12
-      for (let i = 1; i <= steps; i++) {
-        await send('Input.dispatchMouseEvent', { type: 'mouseMoved', x: x1 + ((x2 - x1) * i) / steps, y: y1 + ((y2 - y1) * i) / steps, button: 'left' })
-        await sleep(30)
-      }
-      await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: x2, y: y2, button: 'left', clickCount: 1 })
-      await sleep(800)
-    }
-
-    await send('Page.enable')
-    await send('Runtime.enable')
-    await send('Emulation.setDeviceMetricsOverride', { width: 375, height: 812, deviceScaleFactor: 3, mobile: true })
-    await send('Emulation.setUserAgentOverride', {
-      userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
-    })
-    await send('Emulation.setTouchEmulationEnabled', { enabled: true })
-    await send('Page.addScriptToEvaluateOnNewDocument', {
-      source: `localStorage.setItem('ls-exvs-onboarded','1'); localStorage.setItem('ls-exvs-news-seen', '${NEWS_VERSION}');`,
-    })
-    await send('Page.navigate', { url: scenario === 'detail' ? `${SITE}/?store=${DETAIL_STORE_ID}` : `${SITE}/` })
+    await setupMobilePage(chrome, { newsVersion: NEWS_VERSION })
+    await chrome.send('Page.navigate', { url: scenario === 'detail' ? `${SITE}/?store=${DETAIL_STORE_ID}` : `${SITE}/` })
     await sleep(7000) // 地図タイル・マーカー読込待ち
 
     if (scenario === 'hero') {
@@ -123,22 +52,16 @@ async function shoot(scenario) {
       await sleep(600)
       for (const t of ['ラスサバ', '4台〜', '録画台あり']) await clickByText(t)
     }
-    // ドラッグ等で文字選択が残るとクラスタの数字が選択色になるため、撮影直前に解除する
-    await evaluate(`(() => { window.getSelection()?.removeAllRanges(); document.activeElement?.blur?.(); return true })()`)
+    await clearSelection()
     await sleep(2500)
-    const { data } = await send('Page.captureScreenshot', { format: 'png' })
+    const { data } = await chrome.send('Page.captureScreenshot', { format: 'png' })
     mkdirSync(OUT_PNG, { recursive: true })
     const png = join(OUT_PNG, `${SCENARIOS[scenario].file}.png`)
     writeFileSync(png, Buffer.from(data, 'base64'))
     console.log(`[shoot] ${scenario}: ${png}`)
     return png
   } finally {
-    try {
-      ws?.close()
-    } catch {
-      /* noop */
-    }
-    chrome.kill()
+    await chrome.close()
   }
 }
 
