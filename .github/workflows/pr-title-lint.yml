@@ -4,7 +4,7 @@ name: PR title lint
 #   合格: verN.N（例 ver2.2 / 機能リリース＝告知あり）
 #         N.N.N（例 2.1.1 / パッチ＝告知なし）
 #   表記ゆれ不可: スペースや先頭 v だけ（v2.2 / ver 2.2）は弾く。
-#   免除: head が *-release のPR（告知ドラフトPR）はチェック対象外。
+#   免除: head が *-release のPR（告知ドラフトPR）と dependabot/* のPR（依存更新・ADR-0007）はチェック対象外。
 # 不合格はチェック失敗としてマージをブロックする。
 
 on:
@@ -18,8 +18,8 @@ permissions:
 
 jobs:
   lint:
-    # 告知ドラフト（自動生成の *-release ブランチ）はバージョン名にしないので免除。
-    if: ${{ !endsWith(github.event.pull_request.head.ref, '-release') }}
+    # 告知ドラフト（自動生成の *-release ブランチ）と Dependabot の依存更新はバージョン名にしないので免除。
+    if: ${{ !endsWith(github.event.pull_request.head.ref, '-release') && !startsWith(github.event.pull_request.head.ref, 'dependabot/') }}
     runs-on: ubuntu-latest
     steps:
       - name: タイトル検証

@@ -1,0 +1,32 @@
+# 依存パッケージの更新 PR を Dependabot に作らせる（ADR-0007）。
+# - minor / patch は週1回1本にまとめる。major は1件ずつ PR にして個別に判断する
+# - セキュリティ更新はリポジトリ設定の Dependabot security updates で即時に別 PR が来る
+version: 2
+updates:
+  - package-ecosystem: npm # pnpm-lock.yaml もこれで更新される
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: Asia/Tokyo
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      minor-and-patch:
+        applies-to: version-updates
+        update-types: [minor, patch]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: Asia/Tokyo
+    commit-message:
+      prefix: "chore(ci)"
+    groups:
+      actions:
+        patterns: ["*"]
