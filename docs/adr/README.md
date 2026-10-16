@@ -36,3 +36,4 @@
 | [0004](0004-collapse-form-sections-by-fill-rate.md) | 提供フォームの折りたたみ対象は記入率で選ぶ | Accepted | 2026-10-10 |
 | [0005](0005-store-attribute-registry.md) | 店舗属性の定義を1か所に集約する | Accepted | 2026-10-10 |
 | [0006](0006-replace-kiro-specs-with-plan-mode.md) | kiro スペック駆動をやめ、plan mode＋ADR＋計画文書で進める | Accepted | 2026-10-10 |
+| [0007](0007-dependency-updates-with-dependabot.md) | 依存パッケージの更新は Dependabot に任せる | Accepted | 2026-10-16 |
