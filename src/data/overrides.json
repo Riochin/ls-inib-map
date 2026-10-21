@@ -2414,6 +2414,17 @@
       "hasStreamingByGame": {
         "gundam-exvs": "no"
       }
+    },
+    "c8e1a6a0521b": {
+      "source": "user-report",
+      "note": "カプコサーカス新潟東 Issue #497 (SNS未記入=未確認): イニブ 録画台なし・配信台なし。",
+      "updatedAt": "2026-10-19",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
     }
   }
 }
