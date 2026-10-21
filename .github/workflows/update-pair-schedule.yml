@@ -26,14 +26,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: リポジトリをチェックアウト
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: pnpm をセットアップ
         # バージョンは package.json の packageManager に従う（with: version を指定すると二重指定で ERR_PNPM_BAD_PM_VERSION になる）
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v6
 
       - name: Node.js をセットアップ
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 20
           cache: pnpm
@@ -51,7 +51,7 @@ jobs:
       # create-pull-request は何もせず PR を作らない。固定ブランチ auto/update-pair-schedule
       # を使い回すため再実行で PR が乱立せず、同じ PR が更新される。マージは人が行う。
       - name: 差分があればPRを作成
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           add-paths: src/data/pair-schedule.json
           commit-message: 'chore: ペア戦開催日程を自動更新'
