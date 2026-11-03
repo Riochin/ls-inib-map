@@ -185,13 +185,12 @@
     },
     "3ec1f3534a2a": {
       "source": "admin",
-      "attributeSources": {
-        "hasRecordingByGame": "user-report"
-      },
-      "note": "福井レジャーランド板垣 ピン位置修正（Issue #81）。住所ジオコードが南へズレていたのを店名ROOFTOP（下馬3丁目・交差点付近）へ補正。@kiyo_general。ラスサバ2台・イニブ18台・喫煙所あり（Issue #123/#134）。v2.3.5: 配信台/録画台をタイトル別化。Issue #166で再報告（録画ラスサバなし/イニブ不明・配信ラスサバなし/イニブ不明、SNS未記入＝未確認）。ラスサバ側を反映、イニブ側は不明のまま。Issue #473（SNS未記入・未確認）: 録画台(ラスサバ)あり（旧値: なし→新報告を採用）。喫煙所あり・配信台(ラスサバ)なしは既存値と一致、イニブの録画/配信は不明のため据置。",
-      "updatedAt": "2026-10-09",
+      "note": "福井レジャーランド板垣 ピン位置修正（Issue #81）。住所ジオコードが南へズレていたのを店名ROOFTOP（下馬3丁目・交差点付近）へ補正。@kiyo_general。ラスサバ2台・イニブ18台・喫煙所あり（Issue #123/#134）。v2.3.5: 配信台/録画台をタイトル別化。Issue #166で再報告（録画ラスサバなし/イニブ不明・配信ラスサバなし/イニブ不明、SNS未記入＝未確認）。ラスサバ側を反映、イニブ側は不明のまま。Issue #473（SNS未記入・未確認）: 録画台(ラスサバ)あり（旧値: なし→新報告を採用）。喫煙所あり・配信台(ラスサバ)なしは既存値と一致、イニブの録画/配信は不明のため据置。Issue #520（SNS提供=確定・お礼不可）: 営業時間10:00〜24:00・フロア ワンフロア（新規）。喫煙所あり・録画台(ラスサバ)あり・配信台(ラスサバ)なしは既存値と一致（録画台(ラスサバ)はSNS提供で確定扱いに）、イニブの録画/配信は不明のため据置。",
+      "updatedAt": "2026-11-03",
       "lat": 36.0422008,
       "lng": 136.2336664,
+      "businessHours": "10:00〜24:00",
+      "floor": "ワンフロア",
       "machineCounts": {
         "jojo-ls": 2,
         "gundam-exvs": 18
@@ -1815,12 +1814,15 @@
       "remarks": "バナパス読み込み機の横に電子マネー決済ができる機器が見当たらず、使用できない可能性があります。"
     },
     "2bed4a19db1a": {
-      "source": "user-report",
-      "note": "GiGO 甲西 Issue #374: イニブ3台(公式5→修正)・喫煙所あり・録画台(イニブ)なし・配信台(イニブ)なし。1台が故障中（remarksに記載）。SNS未記入のため未確認（みんなの報告）扱い。",
-      "updatedAt": "2026-07-26",
-      "remarks": "1台が故障中です。",
+      "source": "admin",
+      "note": "GiGO 甲西 Issue #374: イニブ3台(公式5→修正)・喫煙所あり・録画台(イニブ)なし・配信台(イニブ)なし。1台が故障中（SNS未記入・未確認）。Issue #507/#508（SNS提供=確定・お礼可）: イニブ4台（旧値: 3台→新報告を採用）・営業時間10:00〜24:00・フロア(イニブ)2F・喫煙所あり・配信台(イニブ)なし。故障は10月18日時点で復旧し4台稼働中（#508）のため故障の旨のremarksは削除。録画台(イニブ)は #507 あり／#508 なしで食い違い、新しい #508 のなしを採用（既存値と同じ）。#508 のピン位置ズレ報告（県道4号線の近江ちゃんぽん亭夏見店のほぼ真南・道の斜向かい、現在のピンは南西にズレ）は座標が特定できないため lat/lng 未修正、要現地確認。",
+      "updatedAt": "2026-11-03",
+      "businessHours": "10:00〜24:00",
+      "floorByGame": {
+        "gundam-exvs": "2F"
+      },
       "machineCounts": {
-        "gundam-exvs": 3
+        "gundam-exvs": 4
       },
       "smoking": "yes",
       "hasRecordingByGame": {
@@ -2424,6 +2426,68 @@
       },
       "hasStreamingByGame": {
         "gundam-exvs": "no"
+      }
+    },
+    "3ff49a04041d": {
+      "source": "admin",
+      "note": "GiGO イオン新浦安ショッピングセンター Issue #519 (SNS提供=確定・お礼可): イニブ5台（筐体4台+ターミナル1台）・営業時間9:00〜24:00・フロア(イニブ)4F・喫煙所なし・録画台(イニブ)なし・配信台(イニブ)なし。",
+      "updatedAt": "2026-11-03",
+      "remarks": "イニブは筐体4台＋ターミナル1台の計5台です。",
+      "machineCounts": {
+        "gundam-exvs": 5
+      },
+      "businessHours": "9:00〜24:00",
+      "floorByGame": {
+        "gundam-exvs": "4F"
+      },
+      "smoking": "no",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "51044bf6a18e": {
+      "source": "user-report",
+      "note": "彦根パスカ Issue #518 (SNS未記入=未確認): 営業時間13:00〜24:00・フロア2F（ワンフロア）・喫煙所あり・録画台/配信台は両タイトルともなし。",
+      "updatedAt": "2026-11-03",
+      "businessHours": "13:00〜24:00",
+      "floor": "2F（ワンフロア）",
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
+      }
+    },
+    "28949d9702d5": {
+      "source": "user-report",
+      "note": "INTER PARK +1 宇都宮 Issue #516 (SNS未記入=未確認): 録画台(イニブ)あり。",
+      "updatedAt": "2026-11-03",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      }
+    },
+    "ea9fd311c284": {
+      "source": "user-report",
+      "note": "遊道楽新合川 Issue #510 (SNS未記入=未確認): 2026年6月に閉店との報告。イニブ0台。stores.json 側は delisted 済み。",
+      "updatedAt": "2026-11-03",
+      "remarks": "2026年6月に閉店したとの報告があります。",
+      "closed": true,
+      "machineCounts": {
+        "gundam-exvs": 0
+      }
+    },
+    "07c125dc30cf": {
+      "source": "user-report",
+      "note": "GiGO 大阪道頓堀本店 Issue #504 (SNS未記入=未確認): 配信台(イニブ)あり。",
+      "updatedAt": "2026-11-03",
+      "hasStreamingByGame": {
+        "gundam-exvs": "yes"
       }
     }
   }
