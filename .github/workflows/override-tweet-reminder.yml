@@ -7,7 +7,9 @@ name: Override tweet reminder
 # このワークフロー自体は node + gh の薄いプラミングに徹する。
 #   - 2ツイート目: 今回 push の差分から「変化した台数・閉店」を店舗名つきで自動生成
 #   - 位置・店舗詳細（フロア/喫煙所/録画/配信/営業時間/決済）の変化は店名だけの告知に回す
-#   - 3ツイート目: お礼の定型（@メンションは公開の場由来のみ＝人手で。提供メモを参考表示）
+#   - 3ツイート目: お礼の定型。今回 note に新しく書かれた「ユーザー報告」Issue のうち
+#     「お礼リプライ: 可」の報告者を実IDでメンションし、出典 Issue をリンクする
+#     （フォーム以外＝リプ・引用等でくれた人は人手で足す）
 #   - 同じ未対応Issueが開いていればコメントで集約（投稿後に手動クローズ→次の更新で新規作成）
 #   - さらに当月の updates/override-reports/YYYY-MM.md へ下書きを自動追記し main に直コミット
 #     （override-reports は paths 対象外＋[skip ci] で再発火しない。同一コミットは二重追記しない）
@@ -54,6 +56,11 @@ jobs:
           today=$(date +%Y-%m-%d)
           short="${GITHUB_SHA:0:7}"
 
+          # お礼メンションの当て先（SNS ID・お礼リプライ可否）は報告 Issue 本文にある。
+          # マージ時に Closes で閉じられるので closed も含めて取る
+          gh issue list --label "ユーザー報告" --state all --limit 1000 \
+            --json number,url,body > /tmp/reports.json
+
           # 差分検知〜下書き生成のロジックは scripts/override-tweet-draft.mjs に集約。
           # 依存 import を持たない自己完結 ESM なので runner の node で追加 install なしに実行できる。
           #   - /tmp/draft.md  … Issue 用の下書き本文
@@ -61,7 +68,7 @@ jobs:
           #   - 標準出力 … 告知対象(admin の台数/閉店/位置/店舗詳細の変化)が有れば "true"
           has=$(node scripts/override-tweet-draft.mjs \
             --before /tmp/before.json --after /tmp/after.json --stores src/data/stores.json \
-            --today "$today" --commit "$short" \
+            --today "$today" --commit "$short" --reports /tmp/reports.json \
             --out-draft /tmp/draft.md --out-report /tmp/report.md)
 
           if [ "$has" != "true" ]; then
