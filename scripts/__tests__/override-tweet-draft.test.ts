@@ -1,5 +1,12 @@
 import { describe, it, expect } from 'vitest'
-import { buildDraft, detectChanges, countLine, deepEqual } from '../override-tweet-draft.mjs'
+import {
+  buildDraft,
+  detectChanges,
+  countLine,
+  deepEqual,
+  normalizeSnsId,
+  parseThanksTarget,
+} from '../override-tweet-draft.mjs'
 
 const stores = {
   stores: [
@@ -130,5 +137,63 @@ describe('buildDraft', () => {
       after: { overrides: { s1: { source: 'admin', machineCounts: { 'jojo-ls': 4 } } } },
     })
     expect(r.reportBody).toContain('## 2026-06-19 追加分（自動記録 / コミット abc1234）')
+  })
+})
+
+/** フォーム（src/lib/report.ts）が作る Issue 本文の該当行だけを再現する。@ 直後はゼロ幅スペース */
+const reportBody = (sns: string, thanks: string) =>
+  [`- SNS ID: ${sns}`, '- 確定可否: SNS ID提供あり → 確定可能', `- お礼リプライ: ${thanks}`].join('\n')
+const issue = (number: number, sns: string, thanks = '可') => ({
+  number,
+  url: `https://github.com/o/r/issues/${number}`,
+  body: reportBody(sns, thanks),
+})
+
+describe('normalizeSnsId', () => {
+  it('ゼロ幅スペース・@・URL の揺れを吸収する', () => {
+    expect(normalizeSnsId('@\u200Bfoo_1')).toBe('foo_1')
+    expect(normalizeSnsId('foo_1')).toBe('foo_1')
+    expect(normalizeSnsId('https://x.com/foo_1?s=20')).toBe('foo_1')
+  })
+  it('ハンドルとして読めなければ null', () => {
+    expect(normalizeSnsId('ふー')).toBeNull()
+  })
+})
+
+describe('parseThanksTarget', () => {
+  it('お礼リプライ可のときだけ対象', () => {
+    expect(parseThanksTarget(reportBody('@\u200Bfoo', '可'))).toEqual({ handle: 'foo', raw: '@foo' })
+    expect(parseThanksTarget(reportBody('@\u200Bfoo', '不可（メンション希望なし）'))).toBeNull()
+    expect(parseThanksTarget(reportBody('（未記入）', '—'))).toBeNull()
+  })
+})
+
+describe('buildDraft のお礼メンション', () => {
+  const run = (before: Record<string, any>, after: Record<string, any>, reports: any[]) =>
+    buildDraft({ ...base, before: { overrides: before }, after: { overrides: after }, reports })
+
+  it('今回 note に増えた Issue のお礼可の報告者を実IDで載せ、出典をリンクする', () => {
+    const r = run(
+      { s1: { source: 'admin', note: 'Issue #10', floor: '1F' } },
+      {
+        s1: { source: 'admin', note: 'Issue #10。Issue #12/#13', floor: '2F' },
+        s2: { source: 'admin', note: 'Issue #14', machineCounts: { 'gundam-exvs': 5 } },
+      },
+      [issue(10, '@\u200Bold'), issue(12, '@\u200Bfoo'), issue(13, 'foo'), issue(14, '@\u200Bbar', '不可（メンション希望なし）')],
+    )
+    expect(r.issueDraft).toContain('@foo\n```')
+    expect(r.issueDraft).not.toContain('@old') // 以前から note にあった Issue は対象外
+    expect(r.issueDraft).not.toContain('bar') // お礼不可
+    expect(r.issueDraft).not.toContain('@xxx')
+    expect(r.issueDraft).toContain(
+      '> - `@foo`：テスト店1（[#12](https://github.com/o/r/issues/12), [#13](https://github.com/o/r/issues/13)）',
+    )
+    expect(r.reportBody).toContain('@foo\n```')
+  })
+
+  it('該当者がいなければメンション行を出さない', () => {
+    const r = run({}, { s1: { source: 'admin', machineCounts: { 'jojo-ls': 4 } } }, [])
+    expect(r.issueDraft).toContain('変化があればまたお知らせください。\n```')
+    expect(r.issueDraft).toContain('メンション可の報告者なし')
   })
 })

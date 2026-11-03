@@ -105,6 +105,8 @@ jobs:
                - 「不明」の項目は override に書かない（公式値のまま）。
                - 移設/閉店などの自由記述は、公開して良い範囲を `remarks` に要約して書く。
                  伝聞（「らしい」等）は閉店フラグを立てず、必要なら台数のみ調整して `remarks` に経緯を残す。
+               - 反映した Issue 番号は、そのエントリの `note` に必ず `Issue #番号` の形で残す
+                 （修正ツイート下書きが note の新しい Issue 番号から報告者を辿り、お礼メンションと出典リンクを作る）。
                - 直接編集なので各エントリの `updatedAt` を "${{ steps.scan.outputs.today }}" に更新する。
             3. 編集後、`pnpm exec tsc --noEmit` と `pnpm exec tsx scripts/validate-overrides.ts` を実行し、
                型エラー・ID不一致が無いことを自分で確認する（エラーが出たら直す）。

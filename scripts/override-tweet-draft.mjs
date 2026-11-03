@@ -122,6 +122,102 @@ function parentPost(header, lead, lines) {
 
 /** @typedef {{ id: string, entry: Record<string, any>, counts: boolean, pos: boolean, details: boolean }} Change */
 
+/** @typedef {{ number: number, url: string, body: string }} ReportIssue */
+
+/**
+ * note 中の Issue 参照（#123）を番号の集合で返す。
+ * @param {unknown} note
+ * @returns {Set<number>}
+ */
+export function issueRefs(note) {
+  if (typeof note !== 'string') return new Set()
+  return new Set([...note.matchAll(/#(\d+)/g)].map((m) => Number(m[1])))
+}
+
+/**
+ * フォームの SNS ID 入力を X のハンドル（@なし）に正規化する。
+ * Issue 本文は誤メンション防止で「@」直後にゼロ幅スペースが入っているので取り除く。
+ * URL（x.com/twitter.com）や @ 有無の揺れを吸収し、ハンドルとして読めなければ null。
+ * @param {string} raw
+ * @returns {string | null}
+ */
+export function normalizeSnsId(raw) {
+  const s = raw
+    .replace(/[​-‍﻿]/g, '')
+    .trim()
+    .replace(/^https?:\/\/(www\.)?(x|twitter)\.com\//i, '')
+    .replace(/^@/, '')
+    .replace(/[/?].*$/, '')
+  return /^[A-Za-z0-9_]{1,15}$/.test(s) ? s : null
+}
+
+/**
+ * 「ユーザー報告」Issue 本文から SNS ID とお礼リプライ可否を読む。
+ * SNS ID が未記入、またはお礼リプライが「可」でなければ null（メンション対象外）。
+ * @param {string} body
+ * @returns {{ handle: string | null, raw: string } | null}
+ */
+export function parseThanksTarget(body) {
+  const sns = body.match(/^- SNS ID: (.+)$/m)?.[1]?.trim()
+  const thanks = body.match(/^- お礼リプライ: (.+)$/m)?.[1]?.trim()
+  if (!sns || sns === '（未記入）' || thanks !== '可') return null
+  return { handle: normalizeSnsId(sns), raw: sns.replace(/[​-‍﻿]/g, '') }
+}
+
+/**
+ * 告知対象の変化について、今回新たに note へ書かれた Issue を情報源として辿り、
+ * お礼リプライ可の報告者をハンドル単位でまとめる（店名・出典 Issue つき、Issue 番号順）。
+ * @param {Change[]} announced
+ * @param {Record<string, any>} beforeOv
+ * @param {ReportIssue[]} reports
+ * @param {(id: string) => string} nameOf
+ */
+export function collectThanks(announced, beforeOv, reports, nameOf) {
+  const byNumber = new Map(reports.map((r) => [r.number, r]))
+  /** @type {Map<string, { handle: string | null, raw: string, stores: Set<string>, issues: ReportIssue[] }>} */
+  const people = new Map()
+  for (const c of announced) {
+    const before = issueRefs(beforeOv[c.id]?.note)
+    const added = [...issueRefs(c.entry.note)].filter((n) => !before.has(n)).sort((a, b) => a - b)
+    for (const n of added) {
+      const issue = byNumber.get(n)
+      const target = issue && parseThanksTarget(issue.body)
+      if (!issue || !target) continue
+      const key = (target.handle ?? target.raw).toLowerCase()
+      const p = people.get(key) ?? { ...target, stores: new Set(), issues: [] }
+      p.stores.add(nameOf(c.id))
+      if (!p.issues.some((i) => i.number === n)) p.issues.push(issue)
+      people.set(key, p)
+    }
+  }
+  return [...people.values()].sort((a, b) => a.issues[0].number - b.issues[0].number)
+}
+
+/**
+ * お礼リプの本文と、その下に添える情報源リストを組む。
+ * 情報源の ID はバッククォートで囲み、GitHub 上で同名ユーザーへ通知が飛ばないようにする。
+ * @param {ReturnType<typeof collectThanks>} people
+ */
+function thanksBlock(people) {
+  const mentions = people.filter((p) => p.handle).map((p) => `@${p.handle}`)
+  const reply = [
+    '```',
+    '情報提供ありがとうございました🙏 変化があればまたお知らせください。',
+    ...(mentions.length ? [mentions.join(' ')] : []),
+    '```',
+  ]
+  const sources = people.map((p) => {
+    const who = p.handle ? `\`@${p.handle}\`` : `要確認（IDとして読めない）: \`${p.raw}\``
+    const links = p.issues.map((i) => `[#${i.number}](${i.url})`).join(', ')
+    return `> - ${who}：${[...p.stores].join('、')}（${links}）`
+  })
+  const notes = [
+    '> メンションは、フォームで「お礼リプライ: 可」を選んだ報告者だけを自動で載せています。リプ・引用など公開の場でくれた人は手で足してください（DM由来は出さない）。',
+    ...(people.length ? ['> 情報源:', ...sources] : ['> 情報源: メンション可の報告者なし']),
+  ]
+  return { reply, notes }
+}
+
 /**
  * push 差分から Issue 下書き・月次レポート本文を生成する純粋関数。
  * @param {object} input
@@ -130,8 +226,9 @@ function parentPost(header, lead, lines) {
  * @param {{ stores?: Array<{ id: string, name: string }> }} input.stores
  * @param {string} input.today      レポート見出し用の日付（YYYY-MM-DD）
  * @param {string} input.commitShort レポート見出し・二重追記判定用の短縮SHA
+ * @param {ReportIssue[]} [input.reports] お礼メンションの当て先と出典リンクに使う「ユーザー報告」Issue
  */
-export function buildDraft({ before, after, stores, today, commitShort }) {
+export function buildDraft({ before, after, stores, today, commitShort, reports = [] }) {
   const beforeOv = before.overrides ?? {}
   const afterOv = after.overrides ?? {}
   const nameById = Object.fromEntries((stores.stores ?? []).map((s) => [s.id, s.name]))
@@ -157,9 +254,11 @@ export function buildDraft({ before, after, stores, today, commitShort }) {
 
   const hasAnnouncement = lines.length > 0 || posLines.length > 0 || detailLines.length > 0
 
+  const announced = changes.filter((c) => isAdmin(c) && (c.counts || c.pos || c.details))
+  const thanks = thanksBlock(collectThanks(announced, beforeOv, reports, nameOf))
+
   // 提供メモ(note)を @メンションの当て先ヒントとして集約。告知対象(admin)分のみ・重複排除＆整列。
-  const adminNotes = changes
-    .filter((c) => isAdmin(c) && (c.counts || c.pos || c.details))
+  const adminNotes = announced
     .map((c) => c.entry.note)
     .filter((n) => n != null && n !== '')
   const providers = [...new Set(adminNotes)].sort().join(', ')
@@ -180,12 +279,10 @@ export function buildDraft({ before, after, stores, today, commitShort }) {
   if (postDetail) draft.push('**親ポスト（【店舗情報更新】）**', '```', postDetail, '```', '')
   draft.push(
     '**ぶら下げリプ（お礼＋メンション）**',
-    '```',
-    '情報提供ありがとうございました🙏 変化があればまたお知らせください。',
-    '@xxx @yyy @zzz',
-    '```',
+    ...thanks.reply,
     '',
-    '> メンションは公開の場（リプ・引用等）で情報をくれた人のみ。DM等の個人的なやりとり由来は名前を出さない。',
+    ...thanks.notes,
+    '>',
     `> 提供メモ（参考）: ${providersOrNone}`,
   )
   if (unconfirmed.length) {
@@ -205,12 +302,11 @@ export function buildDraft({ before, after, stores, today, commitShort }) {
   if (postDetail) report.push('親ポスト（店舗情報）:', '```', postDetail, '```', '')
   report.push(
     'ぶら下げリプ:',
-    '```',
-    '情報提供ありがとうございました🙏 変化があればまたお知らせください。',
-    '@xxx',
-    '```',
+    ...thanks.reply,
     '',
-    `> メンションは公開の場由来のみ（DM由来は伏せる）。提供メモ参考: ${providersOrNone}`,
+    ...thanks.notes,
+    '>',
+    `> 提供メモ参考: ${providersOrNone}`,
   )
   if (unconfirmed.length) {
     report.push(
@@ -248,6 +344,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     stores: readJson(args.stores),
     today: args.today,
     commitShort: args.commit,
+    reports: args.reports ? readJson(args.reports) : [],
   })
   if (args['out-draft']) writeFileSync(args['out-draft'], result.issueDraft)
   if (args['out-report']) writeFileSync(args['out-report'], result.reportBody)
