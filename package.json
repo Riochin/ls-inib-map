@@ -14,30 +14,30 @@
   },
   "dependencies": {
     "@googlemaps/markerclusterer": "^2.6.2",
-    "@next/third-parties": "^16.4.3",
+    "@next/third-parties": "^16.4.5",
     "@sentry/nextjs": "^10.67.0",
     "@upstash/ratelimit": "^2.2.0",
-    "@upstash/redis": "^1.40.0",
-    "@vis.gl/react-google-maps": "^1.10.1",
-    "next": "^16.4.3",
+    "@upstash/redis": "^1.41.0",
+    "@vis.gl/react-google-maps": "^1.10.2",
+    "next": "^16.4.5",
     "react": "^19.3.1",
     "react-dom": "^19.3.1"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.3.3",
+    "@tailwindcss/postcss": "^4.3.4",
     "@types/google.maps": "^3.66.9",
     "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "eslint": "^9.39.4",
-    "eslint-config-next": "^16.4.3",
+    "eslint-config-next": "^16.4.5",
     "eslint-plugin-jsx-a11y": "6.10.2",
-    "node-html-parser": "^9.0.5",
+    "node-html-parser": "^9.0.6",
     "postcss": "^8.5.32",
     "sharp": "^0.35.5",
-    "tailwindcss": "^4.3.3",
+    "tailwindcss": "^4.3.4",
     "tsx": "^4.23.15",
     "typescript": "^6.0.3",
-    "vitest": "^5.0.5"
+    "vitest": "^5.1.0"
   }
 }
