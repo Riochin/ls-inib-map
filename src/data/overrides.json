@@ -2491,6 +2491,36 @@
       "hasStreamingByGame": {
         "gundam-exvs": "yes"
       }
+    },
+    "ea1633867e64": {
+      "source": "user-report",
+      "note": "タイトーステーション池袋ロサ ラスサバ0台（Issue #533）。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-11-14",
+      "remarks": "ラスサバは設置終了したとの情報があります。",
+      "machineCounts": {
+        "jojo-ls": 0
+      },
+      "businessHours": "10:00〜24:00"
+    },
+    "1d5eb4f03924": {
+      "source": "user-report",
+      "note": "アミューズメントプラザマルシン 営業時間・イニブ録画台/配信台なし（Issue #532）。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-11-14",
+      "businessHours": "10:00〜24:00",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "c79ffdf94e3e": {
+      "source": "user-report",
+      "note": "ラウンドワンスタジアム高槻 イニブ録画台あり（Issue #528）。SNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-11-14",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      }
     }
   }
 }
