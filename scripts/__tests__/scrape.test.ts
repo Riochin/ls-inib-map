@@ -9,7 +9,7 @@ import {
   ScrapeAbortError,
   ALL_AREA_TARGETS,
 } from '../scrape'
-import type { RawStore, SiteKey } from '../types'
+import type { RawStore, ScrapeResult, SiteKey } from '../types'
 
 /**
  * 公式一覧HTMLの実構造を模した固定フィクスチャ。
@@ -141,6 +141,12 @@ describe('ALL_AREA_TARGETS', () => {
 describe('isAreaReliable', () => {
   it('取得件数が0なら不確定（false）', () => {
     expect(isAreaReliable(0, 10)).toBe(false)
+    // 前回件数が分からない0件も不確定（構造変化の可能性）
+    expect(isAreaReliable(0, undefined)).toBe(false)
+  })
+
+  it('前回もそのサイトの掲載が0件なら、0件でも信頼（true）', () => {
+    expect(isAreaReliable(0, 0)).toBe(true)
   })
 
   it('比較対象（前回件数）が無ければ取得できている限り信頼（true）', () => {
@@ -169,6 +175,11 @@ describe('isNationalTotalAnomalous', () => {
     expect(isNationalTotalAnomalous(500, 0)).toBe(false)
   })
 })
+
+/** サイトの正常取得エリアを並べ替えて返す */
+function areasOf(result: ScrapeResult, site: SiteKey): string[] {
+  return [...(result.scrapedAreas.get(site) ?? [])].sort()
+}
 
 describe('scrapeStores', () => {
   // 2エリア×2サイトの最小フィクスチャを返すフェッチャを構築する
@@ -209,7 +220,9 @@ describe('scrapeStores', () => {
 
     // 2エリア × 2サイト = 4店舗
     expect(result.stores).toHaveLength(4)
-    expect([...result.scrapedAreas].sort()).toEqual(['JP-01', 'JP-02'])
+    expect(areasOf(result, 'jojols')).toEqual(['JP-01', 'JP-02'])
+    expect(areasOf(result, 'gundam')).toEqual(['JP-01', 'JP-02'])
+    expect(result.skippedSites).toEqual([])
     // 過負荷回避のためリクエスト間隔を空ける（sleep が呼ばれる）
     expect(sleep).toHaveBeenCalled()
   })
@@ -221,8 +234,45 @@ describe('scrapeStores', () => {
       sleep: vi.fn().mockResolvedValue(undefined),
     })
 
-    expect([...result.scrapedAreas]).toEqual(['JP-01'])
+    expect(areasOf(result, 'jojols')).toEqual(['JP-01'])
+    expect(areasOf(result, 'gundam')).toEqual(['JP-01'])
     expect(result.stores.every((s) => s.area === 'JP-01')).toBe(true)
+  })
+
+  it('片方のサイトの1エリアだけ失敗したら、そのサイト×エリアだけ除外する', async () => {
+    const result = await scrapeStores({
+      fetcher: buildFetcher({ 'ac2ib/location/list?area=JP-02': new Error('HTTP 403') }),
+      areas: twoAreas,
+      sleep: vi.fn().mockResolvedValue(undefined),
+    })
+
+    expect(areasOf(result, 'jojols')).toEqual(['JP-01', 'JP-02'])
+    expect(areasOf(result, 'gundam')).toEqual(['JP-01'])
+    // jojols×2 + gundam×1
+    expect(result.stores).toHaveLength(3)
+    expect(result.skippedSites).toEqual([])
+  })
+
+  it('イニブ公式が全エリアで失敗しても、ラスサバの分だけ返しイニブを skippedSites に入れる', async () => {
+    const log = vi.fn()
+    const result = await scrapeStores({
+      fetcher: buildFetcher({ 'gundam-vs.jp': new Error('HTTP 403') }),
+      areas: twoAreas,
+      prevTotals: new Map([
+        ['jojols', 2],
+        ['gundam', 2],
+      ]),
+      sleep: vi.fn().mockResolvedValue(undefined),
+      log,
+    })
+
+    expect(result.skippedSites).toEqual(['gundam'])
+    expect(areasOf(result, 'jojols')).toEqual(['JP-01', 'JP-02'])
+    expect(result.scrapedAreas.has('gundam')).toBe(false)
+    expect(result.stores.every((s) => s.site === 'jojols')).toBe(true)
+    expect(result.stores).toHaveLength(2)
+    const messages = log.mock.calls.map((c) => c[0] as string)
+    expect(messages.some((m) => m.includes('サイト除外') && m.includes('gundam'))).toBe(true)
   })
 
   it('0件のエリアは不確定として除外する', async () => {
@@ -232,11 +282,51 @@ describe('scrapeStores', () => {
       areas: twoAreas,
       sleep: vi.fn().mockResolvedValue(undefined),
     })
-    expect([...result.scrapedAreas]).toEqual(['JP-01'])
+    expect(areasOf(result, 'jojols')).toEqual(['JP-01'])
+    expect(areasOf(result, 'gundam')).toEqual(['JP-01'])
+  })
+
+  it('片方のサイトだけ取れた週、そのサイトの店が前回も無かったエリアの0件は正常取得として扱う', async () => {
+    const empty = fixtureHtml([])
+    const result = await scrapeStores({
+      fetcher: buildFetcher({
+        'gundam-vs.jp': new Error('HTTP 403'),
+        'jojols/location/list?area=JP-02': empty,
+      }),
+      areas: twoAreas,
+      // jojols は JP-02 に前回店舗なし（記載の無い area は前回0件）
+      prevAreaCounts: new Map([
+        ['jojols', new Map([['JP-01', 1]])],
+        ['gundam', new Map([['JP-01', 1], ['JP-02', 1]])],
+      ]),
+      prevTotals: new Map([
+        ['jojols', 1],
+        ['gundam', 2],
+      ]),
+      sleep: vi.fn().mockResolvedValue(undefined),
+    })
+    expect(result.skippedSites).toEqual(['gundam'])
+    expect(areasOf(result, 'jojols')).toEqual(['JP-01', 'JP-02'])
+  })
+
+  it('両サイト取れたエリアは件数を合算して判定し、片方の0件だけでは不確定にしない', async () => {
+    const empty = fixtureHtml([])
+    const result = await scrapeStores({
+      // gundam は JP-02 の最後の1店が消えて0件、jojols は掲載継続
+      fetcher: buildFetcher({ 'ac2ib/location/list?area=JP-02': empty }),
+      areas: twoAreas,
+      prevAreaCounts: new Map([
+        ['jojols', new Map([['JP-01', 1], ['JP-02', 1]])],
+        ['gundam', new Map([['JP-01', 1], ['JP-02', 1]])],
+      ]),
+      sleep: vi.fn().mockResolvedValue(undefined),
+    })
+    // 合算 1件 / 前回 2件 = 50% → 信頼。gundam も JP-02 を正常取得扱い（消えた店を移設判定できる）
+    expect(areasOf(result, 'gundam')).toEqual(['JP-01', 'JP-02'])
   })
 
   it('全国総数が前回比で極端に減少した場合は中断し既存データを破壊しない', async () => {
-    // 両エリア取得失敗で全国総数が0 → 前回1000比で異常中断
+    // 両サイトとも全エリア取得失敗で全国件数が0 → 両サイト除外で中断
     await expect(
       scrapeStores({
         fetcher: buildFetcher({
@@ -244,7 +334,10 @@ describe('scrapeStores', () => {
           'area=JP-02': new Error('down'),
         }),
         areas: twoAreas,
-        prevTotal: 1000,
+        prevTotals: new Map([
+          ['jojols', 500],
+          ['gundam', 500],
+        ]),
         sleep: vi.fn().mockResolvedValue(undefined),
       }),
     ).rejects.toBeInstanceOf(ScrapeAbortError)
@@ -263,7 +356,7 @@ describe('scrapeStores', () => {
     // リクエストごとの進捗（件数つき）
     expect(messages.some((m) => /\(\d+\/\d+\).*JP-01.*jojols.*1件/.test(m))).toBe(true)
     // 完了サマリー
-    expect(messages.some((m) => /完了: 成功エリア=2\/2, 総店舗=4件/.test(m))).toBe(true)
+    expect(messages.some((m) => /完了: jojols 2\/2エリア, gundam 2\/2エリア, 総店舗=4件/.test(m))).toBe(true)
   })
 
   it('フェッチのタイムアウト（例外）はそのエリアを失敗扱いにし log へ記録する', async () => {
@@ -278,7 +371,7 @@ describe('scrapeStores', () => {
       log,
     })
 
-    expect([...result.scrapedAreas]).toEqual(['JP-01'])
+    expect(areasOf(result, 'jojols')).toEqual(['JP-01'])
     const messages = log.mock.calls.map((c) => c[0] as string)
     expect(messages.some((m) => m.includes('JP-02') && m.includes('失敗'))).toBe(true)
   })
@@ -292,7 +385,8 @@ describe('scrapeStores', () => {
       ],
       sleep: vi.fn().mockResolvedValue(undefined),
     })
-    expect([...result.scrapedAreas]).toEqual(['JP-13'])
+    expect(areasOf(result, 'jojols')).toEqual(['JP-13'])
+    expect(areasOf(result, 'gundam')).toEqual(['JP-13'])
     // sw1/sw0 × 2サイト = 4店舗
     expect(result.stores).toHaveLength(4)
   })

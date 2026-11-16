@@ -1,5 +1,5 @@
 import { parse, HTMLElement } from 'node-html-parser'
-import type { RawStore, ScrapeResult, SiteKey } from './types'
+import type { RawStore, ScrapeResult, ScrapedAreasBySite, SiteKey } from './types'
 
 /**
  * 公式サイトスクレイパ（Req2.1, 2.2, 2.6, 3.2）。
@@ -187,25 +187,35 @@ export function parseListHtml(html: string, site: SiteKey, area: string): RawSto
 
 /** area 単位で「前回比これ未満なら急減＝不確定」とみなす比率の既定値 */
 const DEFAULT_MIN_AREA_RATIO = 0.5
-/** 全国総数が「前回比これ未満なら全体異常」とみなす比率の既定値 */
+/** サイトごとの全国件数が「前回比これ未満なら全体異常」とみなす比率の既定値 */
 const DEFAULT_MIN_NATIONAL_RATIO = 0.5
+
+/** サイトの表示名（ログ・通知用。アプリの表示語にそろえる） */
+export const SITE_LABELS: Record<SiteKey, string> = {
+  jojols: 'ラスサバ',
+  gundam: 'イニブ',
+}
 
 /**
  * area 単位の信頼性判定。0件・前回比急減を不確定（false）とみなす。
- * 比較対象（前回件数）が無い初回は、取得できている限り信頼する。
+ *
+ * - 0件は、前回も（今回取れたサイトの）掲載が0件だった（`prevCount === 0`）ときだけ信頼する。
+ *   片方のサイトだけ取れた週に、そのサイトの店が元々無い地域を不確定にしないため。
+ *   前回件数が分からない（`undefined`）0件は、構造変化の可能性があるので不確定のまま。
+ * - 比較対象（前回件数）が無い初回は、取得できている限り信頼する。
  */
 export function isAreaReliable(
   scrapedCount: number,
   prevCount: number | undefined,
   minRatio: number = DEFAULT_MIN_AREA_RATIO,
 ): boolean {
-  if (scrapedCount <= 0) return false
+  if (scrapedCount <= 0) return prevCount === 0
   if (prevCount === undefined || prevCount <= 0) return true
   return scrapedCount >= prevCount * minRatio
 }
 
 /**
- * 全国総数の異常判定。前回比で極端に減少した場合に true（全体中断の根拠）。
+ * 全国件数の異常判定。前回比で極端に減少した場合に true。
  * 比較対象が無い初回は正常とみなす。
  */
 export function isNationalTotalAnomalous(
@@ -218,7 +228,7 @@ export function isNationalTotalAnomalous(
 }
 
 /**
- * 全国総数の急減を検知した際に投げる中断エラー。
+ * すべてのサイトが全国件数の急減で除外されたときに投げる中断エラー。
  * 既存 `stores.json` を破壊せず、呼び出し側（パイプライン）は非ゼロ終了する。
  */
 export class ScrapeAbortError extends Error {
@@ -270,29 +280,35 @@ export interface ScrapeDeps {
   areas?: AreaTarget[]
   /** 対象サイト（既定: 両サイト） */
   sites?: SiteKey[]
-  /** 前回データの area 別件数（急減判定の基準・任意） */
-  prevAreaCounts?: Map<string, number>
-  /** 前回データの全国総数（全体異常判定の基準・任意） */
-  prevTotal?: number
+  /**
+   * 前回データのサイト別・area 別件数（急減判定の基準・任意）。
+   * 渡した場合、記載の無い area は前回0件として扱う。
+   */
+  prevAreaCounts?: Map<SiteKey, Map<string, number>>
+  /** 前回データのサイト別全国件数（サイト単位の全体異常判定の基準・任意） */
+  prevTotals?: Map<SiteKey, number>
   /** 進捗ログ出力（既定: console.log）。area ごとの取得状況を通知する */
   log?: (msg: string) => void
 }
 
 interface AreaAccumulator {
-  /** その area の全フェッチが成功したか */
+  /** その site×area の全フェッチ（東京は sw 分割の両方）が成功したか */
   ok: boolean
-  /** 取得した店舗の生件数（両サイト合算） */
+  /** 取得した店舗の件数 */
   count: number
   /** 取得した店舗 */
   stores: RawStore[]
 }
 
 /**
- * 公式2サイトの全国一覧をスクレイプし、取得成功エリア集合とともに返す。
+ * 公式2サイトの全国一覧をスクレイプし、サイトごとの取得成功エリア集合とともに返す（ADR-0008）。
  *
- * - area 単位でフェッチ成否・件数を検証し、失敗/0件/前回比急減のエリアは
- *   `scrapedAreas` から除外し、その店舗も出力に含めない（前回状態は merger が維持）。
- * - 全国総数が前回比で極端に減少した場合は {@link ScrapeAbortError} を投げ、
+ * - フェッチ成否はサイト×area 単位で見る。失敗した site×area は `scrapedAreas` から除外し、
+ *   その店舗も出力に含めない（前回状態は merger が維持）。
+ * - 0件・前回比急減の検証は area 単位で、その area を取れたサイトの件数を合算して行う。
+ * - サイトごとの全国件数が前回比で極端に減少した場合は、そのサイトを丸ごと除外して
+ *   `skippedSites` に入れる。片方のサイトが取れなくても、もう片方だけで更新を続ける。
+ * - すべてのサイトが除外された場合は {@link ScrapeAbortError} を投げ、
  *   既存データを破壊せず中断する（Req2.6）。
  */
 export async function scrapeStores(deps: ScrapeDeps = {}): Promise<ScrapeResult> {
@@ -304,12 +320,14 @@ export async function scrapeStores(deps: ScrapeDeps = {}): Promise<ScrapeResult>
   const sites = deps.sites ?? ALL_SITES
   const log = deps.log ?? ((msg: string) => console.log(msg))
 
-  const perArea = new Map<string, AreaAccumulator>()
-  const acc = (area: string): AreaAccumulator => {
-    let entry = perArea.get(area)
+  const accKey = (site: SiteKey, area: string): string => `${site}|${area}`
+  const perSiteArea = new Map<string, AreaAccumulator>()
+  const acc = (site: SiteKey, area: string): AreaAccumulator => {
+    const key = accKey(site, area)
+    let entry = perSiteArea.get(key)
     if (!entry) {
       entry = { ok: true, count: 0, stores: [] }
-      perArea.set(area, entry)
+      perSiteArea.set(key, entry)
     }
     return entry
   }
@@ -323,7 +341,7 @@ export async function scrapeStores(deps: ScrapeDeps = {}): Promise<ScrapeResult>
       // 過負荷回避: 各リクエスト前に間隔を空ける
       await sleep(delayMs)
       done++
-      const entry = acc(target.area)
+      const entry = acc(site, target.area)
       try {
         const html = await fetcher(buildListUrl(site, target))
         const stores = parseListHtml(html, site, target.area)
@@ -331,35 +349,80 @@ export async function scrapeStores(deps: ScrapeDeps = {}): Promise<ScrapeResult>
         entry.stores.push(...stores)
         log(`[scrape] (${done}/${totalRequests}) ${label} ${site}: ${stores.length}件`)
       } catch (err) {
-        // area 単位の取得失敗（タイムアウト含む） → 当該 area を不確定にマーク
+        // site×area 単位の取得失敗（タイムアウト含む） → 当該 site×area を不確定にマーク
         entry.ok = false
         log(`[scrape] (${done}/${totalRequests}) ${label} ${site}: 失敗 — ${String(err)}`)
       }
     }
   }
 
-  const scrapedAreas = new Set<string>()
-  const stores: RawStore[] = []
-  let nationalTotal = 0
+  // 東京の sw 分割を1地域にまとめた地域コード列（取得順）
+  const areaCodes = [...new Set(targets.map((t) => t.area))]
+  const entryOf = (site: SiteKey, area: string): AreaAccumulator | undefined =>
+    perSiteArea.get(accKey(site, area))
 
-  for (const [area, entry] of perArea) {
-    const reliable = entry.ok && isAreaReliable(entry.count, deps.prevAreaCounts?.get(area))
-    if (!reliable) {
-      log(`[scrape] エリア除外（不確定）: ${area} (count=${entry.count}, ok=${entry.ok})`)
-      continue
+  // 1) サイト単位の全体異常: 取得できた分の全国件数が前回比で急減したサイトは丸ごと外す。
+  //    アクセス拒否（全エリア HTTP 403 等）や一覧構造の変化で、そのサイトだけ取れない週を想定。
+  const skippedSites: SiteKey[] = []
+  for (const site of sites) {
+    let siteTotal = 0
+    for (const area of areaCodes) {
+      const entry = entryOf(site, area)
+      if (entry?.ok) siteTotal += entry.count
     }
-    scrapedAreas.add(area)
-    stores.push(...entry.stores)
-    nationalTotal += entry.count
+    const prevTotal = deps.prevTotals?.get(site)
+    if (isNationalTotalAnomalous(siteTotal, prevTotal)) {
+      log(
+        `[scrape] サイト除外（全国件数が前回比で急減）: ${site} (scraped=${siteTotal}, prev=${prevTotal})。` +
+          `${SITE_LABELS[site]}の店舗は前回の状態を維持します。`,
+      )
+      skippedSites.push(site)
+    }
   }
 
-  log(`[scrape] 完了: 成功エリア=${scrapedAreas.size}/${perArea.size}, 総店舗=${nationalTotal}件`)
-
-  if (isNationalTotalAnomalous(nationalTotal, deps.prevTotal)) {
+  if (sites.length > 0 && skippedSites.length === sites.length) {
     throw new ScrapeAbortError(
-      `全国総数が前回比で極端に減少（scraped=${nationalTotal}, prev=${deps.prevTotal}）。既存データを破壊せず中断します。`,
+      `全サイトの全国件数が前回比で極端に減少（${sites.join(', ')}）。既存データを破壊せず中断します。`,
     )
   }
 
-  return { stores, scrapedAreas }
+  // 2) area 単位の件数検証: その area を正常取得できたサイトの件数を合算し、同じサイトの
+  //    前回件数の合算と比べる。両サイト取れた area は従来（area 単位）と同じ判定になり、
+  //    片方のサイトにしか店が無い area でも、もう片方の0件で誤って不確定にならない。
+  const activeSites = sites.filter((site) => !skippedSites.includes(site))
+  const scrapedAreas: ScrapedAreasBySite = new Map(activeSites.map((site) => [site, new Set<string>()]))
+  const stores: RawStore[] = []
+  let nationalTotal = 0
+
+  for (const area of areaCodes) {
+    const okSites = activeSites.filter((site) => entryOf(site, area)?.ok)
+    for (const site of activeSites) {
+      if (!okSites.includes(site)) log(`[scrape] エリア除外（取得失敗）: ${site} ${area}`)
+    }
+    if (okSites.length === 0) continue
+
+    const count = okSites.reduce((sum, site) => sum + (entryOf(site, area)?.count ?? 0), 0)
+    // 基準が渡されていれば、記載の無い area は前回0件（そのサイトの店が無い地域）
+    const prev = deps.prevAreaCounts
+      ? okSites.reduce((sum, site) => sum + (deps.prevAreaCounts?.get(site)?.get(area) ?? 0), 0)
+      : undefined
+    if (!isAreaReliable(count, prev)) {
+      log(`[scrape] エリア除外（不確定）: ${area} (count=${count}, prev=${prev}, sites=${okSites.join('+')})`)
+      continue
+    }
+    for (const site of okSites) {
+      scrapedAreas.get(site)?.add(area)
+      stores.push(...(entryOf(site, area)?.stores ?? []))
+    }
+    nationalTotal += count
+  }
+
+  const summaries = sites.map((site) =>
+    skippedSites.includes(site)
+      ? `${site} 除外`
+      : `${site} ${scrapedAreas.get(site)?.size ?? 0}/${areaCodes.length}エリア`,
+  )
+  log(`[scrape] 完了: ${summaries.join(', ')}, 総店舗=${nationalTotal}件`)
+
+  return { stores, scrapedAreas, skippedSites }
 }

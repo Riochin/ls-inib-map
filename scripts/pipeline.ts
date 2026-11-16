@@ -1,8 +1,10 @@
 import type { Store } from '@/types/store'
 import type { StoresFile, StoresMeta } from '@/types/stores-file'
 import { DEFAULT_DATA_SOURCE } from '@/lib/info-display'
-import { scrapeStores, type ScrapeDeps } from './scrape'
-import { mergeStores, prefectureToArea } from './merge'
+import { appendFileSync } from 'node:fs'
+import { scrapeStores, SITE_LABELS, type ScrapeDeps } from './scrape'
+import { GAME_TO_SITE, mergeStores, prefectureToArea } from './merge'
+import type { ScrapedAreasBySite, SiteKey } from './types'
 import {
   geocodeStores,
   loadCache,
@@ -52,8 +54,10 @@ export interface PipelineResult {
   file: StoresFile
   /** 追記後のジオコードキャッシュ（書き戻し対象） */
   cache: GeocodeCache
-  /** 今回正常取得できた地域コードの集合 */
-  scrapedAreas: Set<string>
+  /** サイトごとの正常取得地域 */
+  scrapedAreas: ScrapedAreasBySite
+  /** 全国件数の急減で今回の更新から外したサイト（前回状態を維持・ADR-0008） */
+  skippedSites: SiteKey[]
   /** 今回新規にジオコードした件数 */
   geocodedCount: number
   /** ジオコード失敗でスキップした店舗ID */
@@ -71,7 +75,7 @@ export interface PipelineResult {
  * 全体異常（全国総数の急減等）はスクレイパが例外で中断し、本関数も伝播する（Req2.6）。
  */
 export async function runPipeline(deps: PipelineDeps): Promise<PipelineResult> {
-  const { stores: raw, scrapedAreas } = await scrapeStores(deps.scrape)
+  const { stores: raw, scrapedAreas, skippedSites } = await scrapeStores(deps.scrape)
 
   const merged = mergeStores({
     raw,
@@ -91,32 +95,53 @@ export async function runPipeline(deps: PipelineDeps): Promise<PipelineResult> {
     current: deps.current,
   })
 
-  return { file, cache, scrapedAreas, geocodedCount, skipped }
+  return { file, cache, scrapedAreas, skippedSites, geocodedCount, skipped }
 }
 
 /**
- * 前回 `stores.json` から、スクレイプ急減ガード（Req2.6）の比較基準を組み立てる。
+ * 前回 `stores.json` から、スクレイプ急減ガード（Req2.6）の比較基準をサイト別に組み立てる。
  *
- * スクレイパの全国総数・area別件数は「サイトごとの生掲載数」（両対応店は2サイト分=2件）で
- * 数えるため、前回店舗も `games.length` で重み付けして同じ尺度に揃える。
+ * スクレイパはサイト×area 単位で掲載数を数える（ADR-0008）ため、前回店舗も
+ * `games` の各ゲームを対応サイトの1件として数え、同じ尺度に揃える。
  * 公式一覧から既に消えている店舗（`delisted`）や手動閉店（`closed`）は今回も掲載されない
  * 想定なので基準から除外し、ガードが正規の更新を誤って中断しない保守的な下限とする。
  */
 export function computePrevBaseline(prev: Store[]): {
-  prevAreaCounts: Map<string, number>
-  prevTotal: number
+  prevAreaCounts: Map<SiteKey, Map<string, number>>
+  prevTotals: Map<SiteKey, number>
 } {
-  const prevAreaCounts = new Map<string, number>()
-  let prevTotal = 0
+  const prevAreaCounts = new Map<SiteKey, Map<string, number>>()
+  const prevTotals = new Map<SiteKey, number>()
   for (const p of prev) {
     if (p.closed || p.delisted) continue
     const area = prefectureToArea(p.address)
     if (area === null) continue
-    const weight = p.games.length
-    prevAreaCounts.set(area, (prevAreaCounts.get(area) ?? 0) + weight)
-    prevTotal += weight
+    for (const game of p.games) {
+      const site = GAME_TO_SITE[game]
+      let counts = prevAreaCounts.get(site)
+      if (!counts) {
+        counts = new Map()
+        prevAreaCounts.set(site, counts)
+      }
+      counts.set(area, (counts.get(area) ?? 0) + 1)
+      prevTotals.set(site, (prevTotals.get(site) ?? 0) + 1)
+    }
   }
-  return { prevAreaCounts, prevTotal }
+  return { prevAreaCounts, prevTotals }
+}
+
+/**
+ * GitHub Actions のステップ出力へ、今回外したサイトの表示名（カンマ区切り）を書く。
+ * ワークフローはこれを見て「一部サイトを取得できず」の Issue と PR 本文の注記を出す。
+ * `GITHUB_OUTPUT` が無い（手元実行）ときは何もしない。
+ */
+export function writeSkippedSitesOutput(
+  skippedSites: SiteKey[],
+  outputPath: string | undefined = process.env.GITHUB_OUTPUT,
+): void {
+  if (!outputPath) return
+  const labels = skippedSites.map((s) => SITE_LABELS[s]).join(',')
+  appendFileSync(outputPath, `skipped_sites=${labels}\n`)
 }
 
 // ---------------------------------------------------------------------------
@@ -162,11 +187,11 @@ export async function runPipelineToFiles(options: RunOptions = {}): Promise<RunF
   // 前回データを急減ガード（Req2.6）の比較基準として注入する。これが無いと
   // scrape.ts の area別/全国総数バリデーションが基準なし扱いで素通りし、公式サイトの
   // HTML 構造変化で取得が激減しても中断されず、痩せ細った stores.json を上書きしてしまう。
-  const { prevAreaCounts, prevTotal } = computePrevBaseline(prev)
+  const { prevAreaCounts, prevTotals } = computePrevBaseline(prev)
 
   const result = await runPipeline({
     prev,
-    scrape: { prevAreaCounts, prevTotal },
+    scrape: { prevAreaCounts, prevTotals },
     geocode: { cache },
     source,
     now,
@@ -176,8 +201,15 @@ export async function runPipelineToFiles(options: RunOptions = {}): Promise<RunF
   log(
     `[pipeline] 生成: 店舗=${result.file.stores.length}件, ` +
       `新規ジオコード=${result.geocodedCount}件, スキップ=${result.skipped.length}件, ` +
-      `取得成功エリア=${result.scrapedAreas.size}`,
+      `取得成功エリア=${[...result.scrapedAreas].map(([site, areas]) => `${site}:${areas.size}`).join(', ')}`,
   )
+  if (result.skippedSites.length > 0) {
+    log(
+      `[pipeline] 今回取得できなかったサイト: ${result.skippedSites.map((s) => SITE_LABELS[s]).join(', ')}` +
+        '（該当ゲームの店舗は前回の状態を維持）',
+    )
+  }
+  writeSkippedSitesOutput(result.skippedSites)
 
   // 新規ジオコード結果は差分有無に関わらず常にキャッシュへ永続化する
   saveCache(result.cache)

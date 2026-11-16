@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { normalizeAddress, deriveId, mergeStores } from '../merge'
-import type { RawStore, MergedStore } from '../types'
+import type { RawStore, MergedStore, ScrapedAreasBySite, SiteKey } from '../types'
 import type { Store } from '@/types/store'
 
 // ---------------------------------------------------------------------------
@@ -14,6 +14,19 @@ function raw(overrides: Partial<RawStore> & Pick<RawStore, 'site' | 'name' | 'ad
     area: overrides.area ?? 'JP-13',
     ...overrides,
   }
+}
+
+/** 両サイトとも同じ地域を正常取得できた状態（従来の地域単位の判定と同じ） */
+function bothSites(areas: string[]): ScrapedAreasBySite {
+  return new Map<SiteKey, Set<string>>([
+    ['jojols', new Set(areas)],
+    ['gundam', new Set(areas)],
+  ])
+}
+
+/** 片方のサイトだけ取得できた状態（もう片方は全地域で取得失敗） */
+function onlySite(site: SiteKey, areas: string[]): ScrapedAreasBySite {
+  return new Map<SiteKey, Set<string>>([[site, new Set(areas)]])
 }
 
 /** MergedStore を次回 prev として再投入するための Store 化（座標を補完） */
@@ -85,7 +98,7 @@ describe('deriveId', () => {
 // ---------------------------------------------------------------------------
 
 describe('mergeStores', () => {
-  const allAreas = new Set(['JP-13'])
+  const allAreas = bothSites(['JP-13'])
 
   it('両サイト掲載の同一店舗を1件へ統合しゲームを合成する', () => {
     const result = mergeStores({
@@ -166,7 +179,7 @@ describe('mergeStores', () => {
         games: ['gundam-exvs'],
       },
     ]
-    const result = mergeStores({ raw: [], prev, scrapedAreas: new Set(['JP-13']) })
+    const result = mergeStores({ raw: [], prev, scrapedAreas: bothSites(['JP-13']) })
 
     expect(result).toHaveLength(1)
     expect(result[0].delisted).toBe(true)
@@ -187,7 +200,7 @@ describe('mergeStores', () => {
       },
     ]
     // 大阪（JP-27）は今回スクレイプ失敗 → scrapedAreas に含めない
-    const result = mergeStores({ raw: [], prev, scrapedAreas: new Set(['JP-13']) })
+    const result = mergeStores({ raw: [], prev, scrapedAreas: bothSites(['JP-13']) })
 
     expect(result).toHaveLength(1)
     expect(result[0].delisted).toBeUndefined()
@@ -208,7 +221,7 @@ describe('mergeStores', () => {
     const result = mergeStores({
       raw: [raw({ site: 'jojols', name: '復活ゲーセン', address: '東京都新宿区新宿3-22-12' })],
       prev,
-      scrapedAreas: new Set(['JP-13']),
+      scrapedAreas: bothSites(['JP-13']),
     })
 
     expect(result).toHaveLength(1)
@@ -282,7 +295,7 @@ describe('mergeStores', () => {
         machineCounts: { 'jojo-ls': 2, 'gundam-exvs': 5 },
       },
     ]
-    const result = mergeStores({ raw: [], prev, scrapedAreas: new Set(['JP-13']) })
+    const result = mergeStores({ raw: [], prev, scrapedAreas: bothSites(['JP-13']) })
 
     expect(result).toHaveLength(1)
     expect(result[0].delisted).toBe(true)
@@ -305,10 +318,96 @@ describe('mergeStores', () => {
     const result = mergeStores({
       raw: [raw({ site: 'jojols', name: '閉店店舗', address: '東京都新宿区新宿3-22-12' })],
       prev,
-      scrapedAreas: new Set(['JP-13']),
+      scrapedAreas: bothSites(['JP-13']),
     })
 
     expect(result).toHaveLength(1)
     expect(result[0].closed).toBe(true)
+  })
+  describe('片方のサイトだけ取得できた場合（ADR-0008）', () => {
+    const both: Store = {
+      id: 'b',
+      name: '両対応店',
+      address: '東京都新宿区新宿3-22-12',
+      lat: 35.69,
+      lng: 139.7,
+      games: ['jojo-ls', 'gundam-exvs'],
+      machineCounts: { 'jojo-ls': 6, 'gundam-exvs': 4 },
+    }
+
+    it('両対応店がラスサバに掲載・イニブ未取得なら、イニブのゲームと台数を前回から引き継ぐ', () => {
+      const result = mergeStores({
+        raw: [raw({ site: 'jojols', name: '両対応店', address: '東京都新宿区新宿3-22-12', machineCount: 8 })],
+        prev: [both],
+        scrapedAreas: onlySite('jojols', ['JP-13']),
+      })
+
+      expect(result).toHaveLength(1)
+      expect(result[0].games).toEqual(['jojo-ls', 'gundam-exvs'])
+      // ラスサバは今回の台数、イニブは前回の台数
+      expect(result[0].machineCounts).toEqual({ 'jojo-ls': 8, 'gundam-exvs': 4 })
+      expect(Object.keys(result[0].machineCounts!)).toEqual(['jojo-ls', 'gundam-exvs'])
+      expect(result[0].delisted).toBeUndefined()
+    })
+
+    it('両サイト取得済みでイニブから消えた両対応店は、従来どおりラスサバだけになる', () => {
+      const result = mergeStores({
+        raw: [raw({ site: 'jojols', name: '両対応店', address: '東京都新宿区新宿3-22-12', machineCount: 6 })],
+        prev: [both],
+        scrapedAreas: bothSites(['JP-13']),
+      })
+
+      expect(result[0].games).toEqual(['jojo-ls'])
+      expect(result[0].machineCounts).toEqual({ 'jojo-ls': 6 })
+    })
+
+    it('ラスサバから消えた両対応店は、イニブ未取得ならイニブだけで掲載を続ける', () => {
+      const result = mergeStores({
+        raw: [],
+        prev: [both],
+        scrapedAreas: onlySite('jojols', ['JP-13']),
+      })
+
+      expect(result).toHaveLength(1)
+      expect(result[0].games).toEqual(['gundam-exvs'])
+      expect(result[0].machineCounts).toEqual({ 'gundam-exvs': 4 })
+      expect(result[0].delisted).toBeUndefined()
+      // ID は前回と同じ統合キーから採番される
+      expect(result[0].id).toBe(deriveId('東京都新宿区新宿3-22-12|両対応店'))
+    })
+
+    it('ラスサバだけの店がラスサバから消えたら、イニブ未取得でも移設判定する', () => {
+      const result = mergeStores({
+        raw: [],
+        prev: [{ ...both, games: ['jojo-ls'], machineCounts: { 'jojo-ls': 6 } }],
+        scrapedAreas: onlySite('jojols', ['JP-13']),
+      })
+
+      expect(result[0].delisted).toBe(true)
+      expect(result[0].games).toEqual(['jojo-ls'])
+    })
+
+    it('イニブだけの店は、イニブ未取得なら前回の状態を維持する', () => {
+      const result = mergeStores({
+        raw: [],
+        prev: [{ ...both, games: ['gundam-exvs'], machineCounts: { 'gundam-exvs': 4 } }],
+        scrapedAreas: onlySite('jojols', ['JP-13']),
+      })
+
+      expect(result[0].delisted).toBeUndefined()
+      expect(result[0].games).toEqual(['gundam-exvs'])
+      expect(result[0].machineCounts).toEqual({ 'gundam-exvs': 4 })
+    })
+
+    it('前回すでに移設判定済みの店は、未取得サイトがあっても移設のまま', () => {
+      const result = mergeStores({
+        raw: [],
+        prev: [{ ...both, delisted: true }],
+        scrapedAreas: onlySite('jojols', ['JP-13']),
+      })
+
+      expect(result[0].delisted).toBe(true)
+      expect(result[0].games).toEqual(['jojo-ls', 'gundam-exvs'])
+    })
   })
 })

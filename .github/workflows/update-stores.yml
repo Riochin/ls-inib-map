@@ -43,7 +43,10 @@ jobs:
 
       # スクレイプ→マージ→ジオコード→生成を連結。失敗時は process.exitCode=1 で
       # このステップが失敗し、後続のコミット段へ進まない（既存データを破壊しない・Req2.6）。
+      # 片方の公式サイトだけ取れなかった週は成功扱いで、取れたサイトの分だけ更新し、
+      # 外したサイトの表示名を outputs.skipped_sites（例: イニブ）に書く（ADR-0008）。
       - name: データ更新パイプラインを実行
+        id: pipeline
         env:
           # 地図表示用とは分離したジオコーディング専用キー（CI Secret 管理）
           GOOGLE_GEOCODING_API_KEY: ${{ secrets.GOOGLE_GEOCODING_API_KEY }}
@@ -70,7 +73,17 @@ jobs:
             - `src/data/stores.json`
             - `scripts/cache/geocode.json`
 
+            ${{ steps.pipeline.outputs.skipped_sites != '' && format('> ⚠️ 今回は {0}の公式サイトを取得できなかったため、{0}の店舗は前回の状態のままです。', steps.pipeline.outputs.skipped_sites) || '' }}
+
             内容を確認のうえ問題なければマージしてください。マージで Vercel の本番デプロイが発火します。
+
+      # 片方の公式サイトを取得できなかった週は、失敗とは別の Issue で知らせる（取れない状態の放置を防ぐ）
+      - name: 取得できなかったサイトをIssueで知らせる
+        if: success() && steps.pipeline.outputs.skipped_sites != ''
+        uses: ./.github/actions/report-failure
+        with:
+          title: '🟡 一部サイトを取得できず: 設置店舗データ自動更新'
+          message: ${{ format('{0}の公式サイトから店舗一覧を取得できませんでした。取得できたサイトの分だけ更新し、{0}の店舗は前回の状態のままにしています。', steps.pipeline.outputs.skipped_sites) }}
 
       # いずれかのステップが失敗したらIssueを作成（急減ガード中断・取得失敗の見逃し防止）
       - name: 失敗したらIssueを作成
