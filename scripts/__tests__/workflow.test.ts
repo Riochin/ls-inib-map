@@ -70,6 +70,16 @@ describe('update-stores ワークフロー', () => {
     expect(yml).not.toMatch(/git push/)
   })
 
+  it('一部サイトを取得できなかった週は、失敗とは別タイトルの Issue で知らせる（ADR-0008）', () => {
+    const yml = readWorkflow()
+    // パイプライン段の出力 skipped_sites を参照する
+    expect(yml).toMatch(/id:\s*pipeline/)
+    expect(yml).toMatch(/if:\s*success\(\) && steps\.pipeline\.outputs\.skipped_sites != ''/)
+    expect(yml).toMatch(/title:\s*'🟡 一部サイトを取得できず: 設置店舗データ自動更新'/)
+    // 失敗時の Issue 作成は従来どおり残す
+    expect(yml).toMatch(/if:\s*failure\(\)/)
+  })
+
   it('PR 作成のための contents: write / pull-requests: write 権限を持つ', () => {
     const yml = readWorkflow()
     expect(yml).toMatch(/contents:\s*write/)

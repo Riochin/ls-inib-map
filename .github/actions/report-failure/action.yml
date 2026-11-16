@@ -6,6 +6,19 @@ description: >-
 # 各ワークフローの最後に `if: failure()` ステップとして呼ぶ共通アクション。
 # トークンは GITHUB_TOKEN（github.token）を使うため、呼び出し側のジョブに
 # `permissions: issues: write` が必要。
+#
+# 失敗以外の注意（例: 一部サイトを取得できなかった）にも使えるよう、タイトルと本文の
+# 冒頭文を差し替えられる。未指定なら従来の「🔴 ワークフロー失敗」の文面になる。
+
+inputs:
+  title:
+    description: 'Issue タイトル（同じタイトルの open Issue へコメント集約する）。未指定なら「🔴 ワークフロー失敗: <ワークフロー名>」'
+    required: false
+    default: ''
+  message:
+    description: '本文の冒頭文。未指定なら「ワークフロー **<名前>** が失敗しました。ログを確認してください。」'
+    required: false
+    default: ''
 
 runs:
   using: 'composite'
@@ -14,10 +27,14 @@ runs:
       shell: bash
       env:
         GH_TOKEN: ${{ github.token }}
+        # 入力は env 経由で渡し、run 内へ直接展開しない（シェルインジェクション対策）
+        INPUT_TITLE: ${{ inputs.title }}
+        INPUT_MESSAGE: ${{ inputs.message }}
       run: |
         set -euo pipefail
         label='ci-failure'
-        title="🔴 ワークフロー失敗: ${GITHUB_WORKFLOW}"
+        title="${INPUT_TITLE:-🔴 ワークフロー失敗: ${GITHUB_WORKFLOW}}"
+        message="${INPUT_MESSAGE:-ワークフロー **${GITHUB_WORKFLOW}** が失敗しました。ログを確認してください。}"
         run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
 
         # ラベルが無ければ作成（既存ならスキップ）
@@ -31,10 +48,10 @@ runs:
           "$run_url" "$GITHUB_WORKFLOW" "$GITHUB_REF_NAME" "$GITHUB_SHA" "$GITHUB_EVENT_NAME")
 
         if [ -n "$existing" ]; then
-          gh issue comment "$existing" --body "$(printf '🔁 再発しました。\n\n%s' "$details")"
+          gh issue comment "$existing" --body "$(printf '🔁 再発しました。\n\n%s\n\n%s' "$message" "$details")"
           echo "既存Issue #$existing にコメントしました"
         else
           gh issue create --title "$title" --label "$label" \
-            --body "$(printf 'ワークフロー **%s** が失敗しました。ログを確認してください。\n\n%s\n\n---\n同じワークフローの再失敗は本Issueにコメントで集約します。原因を解消したら手動でクローズしてください。' "$GITHUB_WORKFLOW" "$details")"
+            --body "$(printf '%s\n\n%s\n\n---\n同じ内容の再発は本Issueにコメントで集約します。原因を解消したら手動でクローズしてください。' "$message" "$details")"
           echo "新規Issueを作成しました"
         fi
