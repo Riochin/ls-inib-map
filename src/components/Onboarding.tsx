@@ -33,22 +33,6 @@ const STORAGE_KEY = 'ls-exvs-onboarded'
 const NEWS_VERSION = latestRelease.version
 const NEWS_SEEN_KEY = 'ls-exvs-news-seen'
 
-/**
- * 一時的な注意（データ取得の不具合など）。非 null の間はお知らせの1ページ目に出し、
- * 新機能を既読の再訪ユーザーにも `id` ごとに一度だけ自動で開く。解消したら null にする。
- */
-export const NOTICE: { id: string; title: string; paragraphs: string[] } | null = {
-  // Issue #514: イニブ公式が自動取得に応答せず、イニブの店舗データが更新できていない
-  id: 'inib-stale-2026-10',
-  title: 'イニブの店舗情報について',
-  paragraphs: [
-    '10月下旬から、イニブ公式サイトの店舗ページを読み込めない状態が続いています。',
-    'そのため、このサイトのイニブの店舗情報（設置店や台数など）は、最新ではない可能性があります。お出かけ前に、公式サイトやお店の情報もあわせてご確認ください。',
-    'ラスサバの店舗情報は、これまでどおり更新しています。',
-  ],
-}
-const NOTICE_SEEN_KEY = 'ls-exvs-notice-seen'
-
 // 開発者情報・SNS・共有 URL は src/lib/site-config.ts に集約（/about ページと共有）。
 
 // --- ブランド/外部リンク用アイコン ---
@@ -162,24 +146,6 @@ function HelpButton({ onClick }: { onClick: () => void }) {
         ?
       </button>
     </div>
-  )
-}
-
-/** 一時的な注意ページ（{@link NOTICE} が非 null の間だけ1ページ目に出る） */
-function NoticePage() {
-  if (!NOTICE) return null
-  return (
-    <>
-      <span className="inline-block bg-amber-100 text-amber-800 text-[11px] font-bold px-2.5 py-1 rounded-full mb-2">
-        お知らせ
-      </span>
-      <h2 className="text-lg text-gray-800 mb-3" style={HEADING_FONT_STYLE}>{NOTICE.title}</h2>
-      <div className="flex flex-col gap-2">
-        {NOTICE.paragraphs.map((p) => (
-          <p key={p} className="text-sm text-gray-700 leading-relaxed">{p}</p>
-        ))}
-      </div>
-    </>
   )
 }
 
@@ -451,31 +417,11 @@ function NewsPage() {
   )
 }
 
-// 注意（NOTICE）がある間は先頭に注意ページを足す。
-const PAGES = [...(NOTICE ? [NoticePage] : []), HowToPage, LegendPage, AboutPage, DataPrivacyPage, NewsPage]
-export const PAGE_COUNT = PAGES.length
+const PAGES = [HowToPage, LegendPage, AboutPage, DataPrivacyPage, NewsPage]
+const PAGE_COUNT = PAGES.length
 // 新機能ページは末尾。再訪ユーザーの自動オープン時はここから開く。
-export const NEWS_PAGE_INDEX = PAGES.length - 1
+const NEWS_PAGE_INDEX = PAGES.length - 1
 const ABOUT_PAGE_INDEX = PAGES.indexOf(AboutPage)
-
-/**
- * 自動オープンの判定（localStorage の値を受け取る純関数）。
- * 優先順: 初回 → 先頭から / 注意が未読 → 先頭（注意ページ）から / 新機能が未読 → 新機能ページから / それ以外 → 開かない。
- */
-export function decideAutoOpen({
-  onboarded,
-  newsSeen,
-  noticeSeen,
-}: {
-  onboarded: string | null
-  newsSeen: string | null
-  noticeSeen: string | null
-}): { page: number; source: 'auto_first_visit' | 'auto_notice' | 'auto_news' } | null {
-  if (!onboarded) return { page: 0, source: 'auto_first_visit' }
-  if (NOTICE && noticeSeen !== NOTICE.id) return { page: 0, source: 'auto_notice' }
-  if (newsSeen !== NEWS_VERSION) return { page: NEWS_PAGE_INDEX, source: 'auto_news' }
-  return null
-}
 
 /**
  * 独自スクロールバー付きのスクロール領域。
@@ -684,20 +630,22 @@ export function Onboarding() {
   // クライアント専用値で初期表示を決めるため、ハイドレーション後の同期 setState が必須。
   useEffect(() => {
     try {
-      // 初回はチュートリアル先頭から（新機能告知は邪魔しない）、注意が未読なら注意ページから、
-      // 新機能が未読なら新機能ページから。すべて既読なら自動表示しない（「?」からはいつでも閲覧可）
-      const decision = decideAutoOpen({
-        onboarded: localStorage.getItem(STORAGE_KEY),
-        newsSeen: localStorage.getItem(NEWS_SEEN_KEY),
-        noticeSeen: localStorage.getItem(NOTICE_SEEN_KEY),
-      })
-      if (decision) {
-        /* eslint-disable react-hooks/set-state-in-effect -- 上記理由によりハイドレーション後の同期が必要 */
-        setInitialPage(decision.page)
+      const onboarded = localStorage.getItem(STORAGE_KEY)
+      const newsSeen = localStorage.getItem(NEWS_SEEN_KEY)
+      /* eslint-disable react-hooks/set-state-in-effect -- 上記理由によりハイドレーション後の同期が必要 */
+      if (!onboarded) {
+        // 初回ユーザー: チュートリアル先頭から（新機能告知は邪魔しない）
+        setInitialPage(0)
         setIsOpen(true)
-        /* eslint-enable react-hooks/set-state-in-effect */
-        trackEvent('open_help', { source: decision.source, initial_page: decision.page })
+        trackEvent('open_help', { source: 'auto_first_visit', initial_page: 0 })
+      } else if (newsSeen !== NEWS_VERSION) {
+        // 再訪ユーザー＆新機能が未読: 新機能ページから自動オープン
+        setInitialPage(NEWS_PAGE_INDEX)
+        setIsOpen(true)
+        trackEvent('open_help', { source: 'auto_news', initial_page: NEWS_PAGE_INDEX })
       }
+      /* eslint-enable react-hooks/set-state-in-effect */
+      // 新機能を既読の再訪ユーザーには自動表示しない（「?」からはいつでも閲覧可）
     } catch {
       // localStorage 不可（プライベートモード等）の場合は自動表示しない
     }
@@ -716,8 +664,6 @@ export function Onboarding() {
       localStorage.setItem(STORAGE_KEY, '1')
       // 現バージョンの新機能を既読として記録（次回からは自動ポップしない）
       localStorage.setItem(NEWS_SEEN_KEY, NEWS_VERSION)
-      // 注意も既読として記録（同じ id の注意は再び自動ポップしない）
-      if (NOTICE) localStorage.setItem(NOTICE_SEEN_KEY, NOTICE.id)
     } catch {
       // 永続化できなくても表示自体は閉じる
     }
