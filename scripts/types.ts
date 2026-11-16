@@ -28,14 +28,22 @@ export interface RawStore {
 }
 
 /**
- * スクレイパの出力。後段（merger）は `scrapedAreas` に含まれる地域でのみ
- * 移設判定（`delisted`）を適用し、取得失敗地域の店舗は前回状態を維持する。
+ * サイトごとの正常取得地域。サイトをキーに、そのサイトを正常に取れた地域コードの集合を持つ。
+ * キーが無いサイトは、どの地域も取れなかったものとして扱う（ADR-0008）。
+ */
+export type ScrapedAreasBySite = Map<SiteKey, Set<string>>
+
+/**
+ * スクレイパの出力。後段（merger）は、そのゲームのサイトを正常に取れた地域でのみ
+ * 移設判定（`delisted`）を適用し、取れなかったサイトのゲームは前回状態を維持する。
  */
 export interface ScrapeResult {
-  /** 取得に成功した地域の店舗一覧（両サイト混在・未マージ） */
+  /** 取得に成功した（サイト×地域の）店舗一覧（両サイト混在・未マージ） */
   stores: RawStore[]
-  /** 今回正常取得できた地域コードの集合 */
-  scrapedAreas: Set<string>
+  /** サイトごとの正常取得地域 */
+  scrapedAreas: ScrapedAreasBySite
+  /** 全国件数の急減で今回の更新から丸ごと外したサイト */
+  skippedSites: SiteKey[]
 }
 
 /**

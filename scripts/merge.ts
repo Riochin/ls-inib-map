@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto'
 import { normalizeTextBasics } from '@/lib/text-normalize'
 import type { GameTitle, Store } from '@/types/store'
-import type { MergedStore, RawStore, SiteKey } from './types'
+import type { MergedStore, RawStore, ScrapedAreasBySite, SiteKey } from './types'
 
 /**
  * 店舗マージと住所正規化（Req2.3, 2.4, 2.6）。
@@ -13,6 +13,7 @@ import type { MergedStore, RawStore, SiteKey } from './types'
  * - 統合キーから決定論的ハッシュIDを採番し、再生成で同一住所→同一IDを保証する。
  * - 前回データに存在し直近スクレイプに無い店舗は、当該地域が正常取得できた場合のみ
  *   `delisted` を付与して保持し、取得失敗地域の店舗は前回状態を維持する（誤った一斉移設を防止）。
+ * - 正常取得の判定はサイト×地域単位（ADR-0008）。取れなかったサイトのゲーム・台数は前回値を引き継ぐ。
  */
 
 // ---------------------------------------------------------------------------
@@ -70,9 +71,24 @@ export function deriveId(key: string): string {
 // ---------------------------------------------------------------------------
 
 /** サイト識別子→ゲームタイトル */
-const SITE_TO_GAME: Record<SiteKey, GameTitle> = {
+export const SITE_TO_GAME: Record<SiteKey, GameTitle> = {
   jojols: 'jojo-ls',
   gundam: 'gundam-exvs',
+}
+
+/** ゲームタイトル→サイト識別子（{@link SITE_TO_GAME} の逆引き） */
+export const GAME_TO_SITE: Record<GameTitle, SiteKey> = {
+  'jojo-ls': 'jojols',
+  'gundam-exvs': 'gundam',
+}
+
+/** そのゲームのサイトを、その地域で正常に取得できたか */
+function isGameScraped(
+  scrapedAreas: ScrapedAreasBySite,
+  game: GameTitle,
+  area: string | null,
+): boolean {
+  return area !== null && (scrapedAreas.get(GAME_TO_SITE[game])?.has(area) ?? false)
 }
 
 /** ゲームの正準順序（出力の決定論性のため） */
@@ -116,8 +132,8 @@ export interface MergeInput {
   raw: RawStore[]
   /** 前回 `stores.json` の店舗（移設判定・closed/座標の引き継ぎ基準） */
   prev: Store[]
-  /** 今回正常取得できた地域コードの集合（移設判定の適用範囲） */
-  scrapedAreas: Set<string>
+  /** サイトごとの正常取得地域（ゲームごとの移設判定・前回値引き継ぎの適用範囲） */
+  scrapedAreas: ScrapedAreasBySite
 }
 
 /**
@@ -134,6 +150,8 @@ export function mergeStores(input: MergeInput): MergedStore[] {
 
   // 今回スクレイプ分を統合キーで集約
   const merged = new Map<string, MergedStore>()
+  // 今回掲載あり・前回にも存在した店舗（未取得サイトのゲーム引き継ぎに使う）
+  const prevMatches = new Map<string, Store>()
   for (const r of raw) {
     const normalizedAddress = normalizeAddress(r.address)
     const key = buildMergeKey(normalizedAddress, r.name)
@@ -150,6 +168,7 @@ export function mergeStores(input: MergeInput): MergedStore[] {
     }
 
     const prevMatch = prevByKey.get(key)
+    if (prevMatch) prevMatches.set(key, prevMatch)
     const machineCounts = buildMachineCounts({ [game]: r.machineCount })
     merged.set(key, {
       id: deriveId(key),
@@ -169,6 +188,24 @@ export function mergeStores(input: MergeInput): MergedStore[] {
     })
   }
 
+  // 今回掲載ありの店舗のうち、前回あったゲームのサイトを今回取れなかった地域では、
+  // そのゲームと台数を前回から引き継ぐ（取れなかっただけで「設置終了」にしない・ADR-0008）
+  for (const [key, store] of merged) {
+    const prevMatch = prevMatches.get(key)
+    if (!prevMatch) continue
+    const carried = prevMatch.games.filter(
+      (g) => !store.games.includes(g) && !isGameScraped(scrapedAreas, g, store.area),
+    )
+    if (carried.length === 0) continue
+    store.games = canonicalGames([...store.games, ...carried])
+    const counts = buildMachineCounts({
+      ...Object.fromEntries(carried.map((g) => [g, prevMatch.machineCounts?.[g]])),
+      ...store.machineCounts,
+    })
+    if (counts) store.machineCounts = counts
+    else delete store.machineCounts
+  }
+
   const result: MergedStore[] = [...merged.values()]
 
   // 前回存在し今回スクレイプに無い店舗の扱い（移設判定 / 前回状態維持）
@@ -178,21 +215,28 @@ export function mergeStores(input: MergeInput): MergedStore[] {
     if (merged.has(key)) continue // 今回も掲載 → マージ済み
 
     const area = prefectureToArea(p.address)
-    const areaScraped = area !== null && scrapedAreas.has(area)
+    // 今回取れなかったサイトのゲーム（掲載が消えたとは言い切れない）
+    const unconfirmed = p.games.filter((g) => !isGameScraped(scrapedAreas, g, area))
+    // 全ゲームとも正常取得の地域で消失→移設判定。前回の delisted 状態はそのまま維持。
+    const delisted = unconfirmed.length === 0 || p.delisted === true
+    // 一部のゲームだけ消失を確認できたときは、そのゲームを外し残りで掲載を続ける
+    const games = delisted ? p.games : unconfirmed
 
     // 今回スクレイプに無く台数を再取得できないため、前回の台数を引き継ぐ
-    const machineCounts = p.machineCounts ? buildMachineCounts(p.machineCounts) : undefined
+    const prevCounts = p.machineCounts
+      ? Object.fromEntries(games.map((g) => [g, p.machineCounts?.[g]]))
+      : undefined
+    const machineCounts = prevCounts ? buildMachineCounts(prevCounts) : undefined
     result.push({
       id: deriveId(key),
       name: p.name,
       address: p.address,
       normalizedAddress,
-      games: canonicalGames(p.games),
+      games: canonicalGames(games),
       area: area ?? '',
       ...(machineCounts ? { machineCounts } : {}),
       ...(p.closed ? { closed: true } : {}),
-      // 正常取得エリアでの消失→移設判定。取得失敗エリアは前回の delisted 状態を維持。
-      ...(areaScraped || p.delisted ? { delisted: true } : {}),
+      ...(delisted ? { delisted: true } : {}),
       ...(p.lat !== undefined && p.lng !== undefined ? { lat: p.lat, lng: p.lng } : {}),
     })
   }

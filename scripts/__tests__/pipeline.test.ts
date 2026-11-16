@@ -1,5 +1,8 @@
 import { describe, it, expect, vi } from 'vitest'
-import { runPipeline, computePrevBaseline } from '../pipeline'
+import { mkdtempSync, readFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { runPipeline, computePrevBaseline, writeSkippedSitesOutput } from '../pipeline'
 import type { GeocodeResult } from '../geocode'
 import type { Store } from '@/types/store'
 import type { StoresMeta } from '@/types/stores-file'
@@ -137,8 +140,10 @@ describe('runPipeline', () => {
     expect(result.geocodedCount).toBe(1)
     expect(result.skipped).toEqual([])
 
-    // 取得成功エリア集合を伝搬する
-    expect([...result.scrapedAreas].sort()).toEqual(['JP-01', 'JP-27'])
+    // サイトごとの取得成功エリア集合を伝搬する
+    expect([...(result.scrapedAreas.get('jojols') ?? [])].sort()).toEqual(['JP-01', 'JP-27'])
+    expect([...(result.scrapedAreas.get('gundam') ?? [])].sort()).toEqual(['JP-01', 'JP-27'])
+    expect(result.skippedSites).toEqual([])
 
     // 出力は id 昇順（決定論的な差分）
     const ids = file.stores.map((s) => s.id)
@@ -196,10 +201,67 @@ describe('runPipeline', () => {
       now: NOW,
     })
 
-    expect(result.scrapedAreas.has('JP-01')).toBe(false)
+    expect(result.scrapedAreas.get('jojols')?.has('JP-01')).toBe(false)
+    expect(result.scrapedAreas.get('gundam')?.has('JP-01')).toBe(false)
     const hk = result.file.stores.find((s) => s.name === '店HK')
     expect(hk).toBeDefined()
     expect(hk?.delisted).toBeUndefined()
+  })
+})
+
+describe('runPipeline（イニブ公式が取れない週・ADR-0008）', () => {
+  it('イニブが全エリア 403 でも、ラスサバの分で生成しイニブの店舗は前回のまま残す', async () => {
+    const fetcher = async (url: string): Promise<string> => {
+      if (url.includes('gundam-vs.jp')) throw new Error(`HTTP 403 for ${url}`)
+      return fixtureHtml([
+        { locId: 'a', name: '店A', address: '北海道札幌市中央区南1-1-1', machine: '3台設置' },
+      ])
+    }
+    const prev: Store[] = [
+      {
+        id: 'a-old',
+        name: '店A',
+        address: '北海道札幌市中央区南1-1-1',
+        lat: 43.06,
+        lng: 141.35,
+        games: ['jojo-ls', 'gundam-exvs'],
+        machineCounts: { 'jojo-ls': 2, 'gundam-exvs': 5 },
+      },
+      {
+        id: 'g-old',
+        name: '店G',
+        address: '北海道札幌市中央区南3-3-3',
+        lat: 43.05,
+        lng: 141.34,
+        games: ['gundam-exvs'],
+        machineCounts: { 'gundam-exvs': 1 },
+      },
+    ]
+    const { prevAreaCounts, prevTotals } = computePrevBaseline(prev)
+
+    const result = await runPipeline({
+      scrape: {
+        fetcher,
+        areas: [{ area: 'JP-01' }],
+        prevAreaCounts,
+        prevTotals,
+        sleep: vi.fn().mockResolvedValue(undefined),
+        delayMs: 0,
+      },
+      prev,
+      geocode: { geocodeFn: vi.fn(), apiKey: 'test-key', sleep: vi.fn().mockResolvedValue(undefined) },
+      source: SOURCE,
+      now: NOW,
+    })
+
+    expect(result.skippedSites).toEqual(['gundam'])
+    const a = result.file.stores.find((s) => s.name === '店A')
+    expect(a?.games).toEqual(['jojo-ls', 'gundam-exvs'])
+    // ラスサバは今回の台数、イニブは前回の台数
+    expect(a?.machineCounts).toEqual({ 'jojo-ls': 3, 'gundam-exvs': 5 })
+    const g = result.file.stores.find((s) => s.name === '店G')
+    expect(g?.delisted).toBeUndefined()
+    expect(g?.machineCounts).toEqual({ 'gundam-exvs': 1 })
   })
 })
 
@@ -214,25 +276,48 @@ describe('computePrevBaseline', () => {
     ...overrides,
   })
 
-  it('area別/全国総数を games.length で重み付けし、scrape の生掲載数と同じ尺度に揃える', () => {
-    const { prevAreaCounts, prevTotal } = computePrevBaseline([
-      store({ address: '東京都新宿区新宿3-1', games: ['jojo-ls', 'gundam-exvs'] }), // 2件分
-      store({ address: '東京都渋谷区渋谷1-1', games: ['gundam-exvs'] }), // 1件分
-      store({ address: '大阪府大阪市北区梅田1-1', games: ['jojo-ls'] }), // 1件分
+  it('サイト別に area 別/全国件数を数え、scrape の生掲載数と同じ尺度に揃える', () => {
+    const { prevAreaCounts, prevTotals } = computePrevBaseline([
+      store({ address: '東京都新宿区新宿3-1', games: ['jojo-ls', 'gundam-exvs'] }), // 両サイト1件ずつ
+      store({ address: '東京都渋谷区渋谷1-1', games: ['gundam-exvs'] }),
+      store({ address: '大阪府大阪市北区梅田1-1', games: ['jojo-ls'] }),
     ])
-    expect(prevAreaCounts.get('JP-13')).toBe(3) // 東京の2店舗 = 2 + 1
-    expect(prevAreaCounts.get('JP-27')).toBe(1) // 大阪
-    expect(prevTotal).toBe(4)
+    expect(prevAreaCounts.get('jojols')?.get('JP-13')).toBe(1)
+    expect(prevAreaCounts.get('gundam')?.get('JP-13')).toBe(2)
+    expect(prevAreaCounts.get('jojols')?.get('JP-27')).toBe(1)
+    expect(prevAreaCounts.get('gundam')?.get('JP-27')).toBeUndefined()
+    expect(prevTotals.get('jojols')).toBe(2)
+    expect(prevTotals.get('gundam')).toBe(2)
   })
 
   it('閉店・移設・都道府県不明の店舗は基準から除外する（ガードの誤中断防止）', () => {
-    const { prevAreaCounts, prevTotal } = computePrevBaseline([
+    const { prevAreaCounts, prevTotals } = computePrevBaseline([
       store({ address: '東京都新宿区新宿3-1', closed: true }),
       store({ address: '東京都新宿区新宿3-2', delisted: true }),
       store({ address: '海外某所1-1' }), // prefectureToArea が null
       store({ address: '東京都新宿区新宿3-3' }), // 唯一の有効店舗
     ])
-    expect(prevTotal).toBe(1)
-    expect(prevAreaCounts.get('JP-13')).toBe(1)
+    expect(prevTotals.get('gundam')).toBe(1)
+    expect(prevAreaCounts.get('gundam')?.get('JP-13')).toBe(1)
+  })
+})
+
+describe('writeSkippedSitesOutput', () => {
+  it('外したサイトの表示名をカンマ区切りで GITHUB_OUTPUT に書く', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'pipeline-output-'))
+    const out = join(dir, 'output')
+    writeSkippedSitesOutput(['gundam'], out)
+    expect(readFileSync(out, 'utf-8')).toBe('skipped_sites=イニブ\n')
+  })
+
+  it('外したサイトが無ければ空の値を書く', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'pipeline-output-'))
+    const out = join(dir, 'output')
+    writeSkippedSitesOutput([], out)
+    expect(readFileSync(out, 'utf-8')).toBe('skipped_sites=\n')
+  })
+
+  it('GITHUB_OUTPUT が無い手元実行では何もしない', () => {
+    expect(() => writeSkippedSitesOutput(['gundam'], undefined)).not.toThrow()
   })
 })
