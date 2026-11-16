@@ -67,7 +67,7 @@ export type GAEventMap = {
   select_search_result: { store_id: string }
   /** ヘルプ（オンボーディング）モーダル展開 */
   open_help: {
-    source: 'help_button' | 'auto_first_visit' | 'auto_news'
+    source: 'help_button' | 'auto_first_visit' | 'auto_notice' | 'auto_news'
     initial_page: number
   }
   /** 要望フォーム送信成功 */
