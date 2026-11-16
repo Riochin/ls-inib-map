@@ -2491,6 +2491,36 @@
       "hasStreamingByGame": {
         "gundam-exvs": "yes"
       }
+    },
+    "ea1633867e64": {
+      "source": "user-report",
+      "note": "タイトーステーション池袋ロサ Issue #533 (SNS未記入=未確認): ラスサバ0台（マップ3→0）、営業時間10:00-24:00、種別=閉店・移設、メモ「ラスサバ無くなりました」。",
+      "updatedAt": "2026-11-16",
+      "remarks": "ラスサバは撤去されたとの情報があります。",
+      "businessHours": "10:00〜24:00",
+      "machineCounts": {
+        "jojo-ls": 0
+      }
+    },
+    "1d5eb4f03924": {
+      "source": "user-report",
+      "note": "アミューズメントプラザマルシン Issue #532 (SNS未記入=未確認): 営業時間10:00~24:00、録画台・配信台(イニブ)なし。",
+      "updatedAt": "2026-11-16",
+      "businessHours": "10:00〜24:00",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "c79ffdf94e3e": {
+      "source": "user-report",
+      "note": "ラウンドワンスタジアム高槻 Issue #528 (SNS未記入=未確認): 録画台(イニブ)あり。",
+      "updatedAt": "2026-11-16",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      }
     }
   }
 }
