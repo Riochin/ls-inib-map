@@ -1947,15 +1947,21 @@
     },
     "6d73c7687d8c": {
       "source": "user-report",
-      "note": "namcoイオンタウン郡山 Issue #411: 営業09:00〜23:00・決済(交通系IC/WAON/iD)・録画台(ラスサバ)なし・配信台(ラスサバ)なし。SNS未記入のため未確認（みんなの報告）扱い。",
-      "updatedAt": "2026-08-17",
+      "note": "namcoイオンタウン郡山 Issue #411: 営業09:00〜23:00・決済(交通系IC/WAON/iD)・録画台(ラスサバ)なし・配信台(ラスサバ)なし。Issue #540: イニブ6台・喫煙所なし・録画台/配信台(イニブ)なし（営業時間・決済・ラスサバ録画/配信は #411 と同値）。いずれもSNS未記入のため未確認（みんなの報告）扱い。",
+      "updatedAt": "2026-11-17",
+      "machineCounts": {
+        "gundam-exvs": 6
+      },
       "businessHours": "09:00〜23:00",
+      "smoking": "no",
       "payments": ["交通系IC（Suica/PASMOなど）", "WAON", "iD"],
       "hasRecordingByGame": {
-        "jojo-ls": "no"
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
       },
       "hasStreamingByGame": {
-        "jojo-ls": "no"
+        "jojo-ls": "no",
+        "gundam-exvs": "no"
       }
     },
     "263786264dae": {
