@@ -82,3 +82,39 @@ describe('StoreInfoForm — 店のサービス', () => {
     expect(html).not.toContain('貸切の内容（')
   })
 })
+
+describe('StoreInfoForm — 折りたたみ', () => {
+  const both: Store = { ...store, games: ['jojo-ls', 'gundam-exvs'] }
+
+  it('決済・電子マネーと店のサービスは初期は閉じ、無制限台より後ろに並ぶ', () => {
+    const html = renderToStaticMarkup(<StoreInfoForm store={both} onClose={noop} />)
+    const buttons = html.match(/<button type="button"[^>]*aria-expanded="[^"]*"[^>]*>/g) ?? []
+    expect(buttons).toHaveLength(2)
+    for (const b of buttons) expect(b).toContain('aria-expanded="false"')
+    expect(html.indexOf('無制限台')).toBeLessThan(html.indexOf('決済・電子マネー'))
+    expect(html.indexOf('決済・電子マネー')).toBeLessThan(html.indexOf('店のサービス'))
+    expect(html.indexOf('店のサービス')).toBeLessThan(html.indexOf('修正・通報'))
+    expect((html.match(/>未入力</g) ?? []).length).toBe(2)
+  })
+
+  it('たたんだ見出しに要約と登録済みを出す', () => {
+    const html = renderToStaticMarkup(
+      <StoreInfoForm
+        store={{
+          ...both,
+          payments: ['PayPay', 'iD', 'WAON'],
+          creditServiceByGame: { 'gundam-exvs': 'yes' },
+        }}
+        onClose={noop}
+      />,
+    )
+    expect(html).toContain('3件選択')
+    expect(html).toContain('クレジットサービス あり（イニブ）')
+    const header = (title: string) => {
+      const start = html.lastIndexOf('<button', html.indexOf(`>${title}<`))
+      return html.slice(start, html.indexOf('</button>', start))
+    }
+    expect(header('決済・電子マネー')).toContain('登録済み')
+    expect(header('店のサービス')).toContain('登録済み')
+  })
+})

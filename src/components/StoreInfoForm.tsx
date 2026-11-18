@@ -9,6 +9,8 @@ import { getGameLabel } from '@/lib/marker-color'
 import { checkClientRateLimit, recordClientSubmission } from '@/lib/client-rate-limit'
 import { trackEvent } from '@/lib/analytics'
 import { useModalA11y } from '@/hooks/use-modal-a11y'
+import { summarizePayments, summarizeServices } from '@/lib/form-summary'
+import { FoldSection } from './FoldSection'
 
 interface StoreInfoFormProps {
   store: Store
@@ -295,6 +297,7 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
     payments: (store.payments?.length ?? 0) > 0,
   }
   const ternaryFilled = (key: GameTernaryKey, game: GameTitle) => store[key]?.[game] !== undefined
+  const servicesFilled = SERVICE_FIELDS.some(({ key }) => formGames.some((game) => ternaryFilled(key, game)))
   const hasExistingInfo =
     Object.values(filled).some(Boolean) ||
     GAME_TERNARY_KEYS.some((key) => store.games.some((game) => ternaryFilled(key, game)))
@@ -545,31 +548,12 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
                 </select>
               </label>
 
-              {/* 決済/電子マネー */}
-              <fieldset className="mb-3">
-                <legend className="text-xs font-semibold text-gray-600 mb-1.5">
-                  決済・電子マネー（使えるものをすべて選択）{filled.payments && <FilledBadge />}
-                </legend>
-                <div className="grid grid-cols-2 gap-x-3 gap-y-1">
-                  {PAYMENT_OPTIONS.map((opt) => (
-                    <label key={opt} className="flex items-center gap-1.5 text-xs text-gray-700">
-                      <input
-                        type="checkbox"
-                        checked={payments.includes(opt)}
-                        onChange={() => togglePayment(opt)}
-                      />
-                      {opt}
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
-
               {/* 録画台・配信台・無制限台（タイトル別の2列） */}
               {(
                 [
                   { key: 'hasRecordingByGame', title: '録画台', className: 'mb-3' },
                   { key: 'hasStreamingByGame', title: '配信台', className: 'mb-3' },
-                  { key: 'hasUnlimitedByGame', title: '無制限台', className: 'mb-4' },
+                  { key: 'hasUnlimitedByGame', title: '無制限台', className: 'mb-5' },
                 ] as const
               ).map(({ key, title, className }) => (
                 <div key={key} className={className}>
@@ -609,44 +593,76 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
                 </div>
               ))}
 
-              {/* 店のサービス（ラスサバ、内容、イニブ、内容 の縦積み） */}
-              <div className="mb-4">
-                <p className="text-xs font-semibold text-gray-600 mb-2">店のサービス</p>
-                {SERVICE_FIELDS.map(({ key, noteKey, title, placeholder }) => (
-                  <div key={key} className="mb-3 last:mb-0">
-                    <p className="text-xs font-semibold text-gray-600 mb-1.5">{title}</p>
-                    <div className="grid gap-2.5">
-                      {formGames.map((game) => (
-                        <div key={game}>
-                          <TernarySelect
-                            label={getGameLabel(game)}
-                            filled={ternaryFilled(key, game)}
-                            value={ternaries[key][game] ?? ''}
-                            onChange={(v) => setTernary(key, game, v)}
+              {/* 記入率の低い項目はたたむ（ADR-0004）。初期は閉じる */}
+              <div className="mb-4 space-y-2.5">
+                <FoldSection
+                  title="決済・電子マネー"
+                  summary={summarizePayments(payments)}
+                  badge={filled.payments ? <FilledBadge /> : undefined}
+                >
+                  <fieldset>
+                    <legend className="sr-only">決済・電子マネー</legend>
+                    <p className="text-[11px] text-gray-400 mb-2">使えるものをすべて選んでください。</p>
+                    <div className="grid grid-cols-2 gap-x-3 gap-y-1">
+                      {PAYMENT_OPTIONS.map((opt) => (
+                        <label key={opt} className="flex items-center gap-1.5 text-xs text-gray-700">
+                          <input
+                            type="checkbox"
+                            checked={payments.includes(opt)}
+                            onChange={() => togglePayment(opt)}
                           />
-                          {ternaries[key][game] === 'yes' && (
-                            <label className="block mt-1.5">
-                              <span className="text-[11px] text-gray-400">内容</span>
-                              <input
-                                type="text"
-                                maxLength={100}
-                                value={serviceNotes[noteKey][game] ?? ''}
-                                onChange={(e) => {
-                                  const v = e.target.value
-                                  setServiceNotes((prev) => ({ ...prev, [noteKey]: { ...prev[noteKey], [game]: v } }))
-                                  mark()
-                                }}
-                                placeholder={placeholder}
-                                aria-label={`${title}の内容（${getGameLabel(game)}）`}
-                                className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
-                              />
-                            </label>
-                          )}
-                        </div>
+                          {opt}
+                        </label>
                       ))}
                     </div>
-                  </div>
-                ))}
+                  </fieldset>
+                </FoldSection>
+
+                {/* 店のサービス（ラスサバ、内容、イニブ、内容 の縦積み） */}
+                <FoldSection
+                  title="店のサービス"
+                  summary={summarizeServices(
+                    formGames,
+                    SERVICE_FIELDS.map(({ key, title }) => ({ label: title, values: ternaries[key] })),
+                  )}
+                  badge={servicesFilled ? <FilledBadge /> : undefined}
+                >
+                  {SERVICE_FIELDS.map(({ key, noteKey, title, placeholder }) => (
+                    <div key={key} className="mb-3 last:mb-0">
+                      <p className="text-xs font-semibold text-gray-600 mb-1.5">{title}</p>
+                      <div className="grid gap-2.5">
+                        {formGames.map((game) => (
+                          <div key={game}>
+                            <TernarySelect
+                              label={getGameLabel(game)}
+                              filled={ternaryFilled(key, game)}
+                              value={ternaries[key][game] ?? ''}
+                              onChange={(v) => setTernary(key, game, v)}
+                            />
+                            {ternaries[key][game] === 'yes' && (
+                              <label className="block mt-1.5">
+                                <span className="text-[11px] text-gray-400">内容</span>
+                                <input
+                                  type="text"
+                                  maxLength={100}
+                                  value={serviceNotes[noteKey][game] ?? ''}
+                                  onChange={(e) => {
+                                    const v = e.target.value
+                                    setServiceNotes((prev) => ({ ...prev, [noteKey]: { ...prev[noteKey], [game]: v } }))
+                                    mark()
+                                  }}
+                                  placeholder={placeholder}
+                                  aria-label={`${title}の内容（${getGameLabel(game)}）`}
+                                  className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
+                                />
+                              </label>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </FoldSection>
               </div>
 
               {/* 修正・通報セクション */}
