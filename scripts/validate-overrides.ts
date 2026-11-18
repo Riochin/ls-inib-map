@@ -1,6 +1,7 @@
 import storesFile from '@/data/stores.json'
 import overridesFile from '@/data/overrides.json'
 import { applyOverrides } from '@/lib/apply-overrides'
+import { listMissingCountBaselines, listStaleCountOverrides } from '@/lib/count-baseline'
 import type { Store } from '@/types/store'
 import type { OverridesFile } from '@/types/overrides'
 
@@ -16,6 +17,9 @@ import type { OverridesFile } from '@/types/overrides'
  *  2. 全エントリに `source` があること
  *  3. `applyOverrides` を通したとき、どの店舗にも一致しない override ID が無いこと
  *     （ID不一致＝陳腐化 or 未登録店への誤反映。applyOverrides が console.warn する）
+ *  4. 台数の上書きに基準値（countBaselines・ADR-0009）があること。無ければ書き込み経路の入れ忘れ
+ *     （`pnpm exec tsx scripts/sync-count-baselines.ts` で埋める）。公式の台数が変わって
+ *     使われなくなった上書きは異常ではないので、失敗にせず件数だけ出す
  *
  * 問題があれば一覧を出して exit 1。CI のこのステップが失敗すれば後続の PR 作成へ進まない。
  */
@@ -45,6 +49,15 @@ function main(): void {
   }
   for (const w of warnings) problems.push(`ID不一致: ${w}`)
 
+  // 4. 台数の上書きの基準値
+  for (const { id, game } of listMissingCountBaselines(file)) {
+    problems.push(
+      `override "${id}" の ${game} の台数に基準値（countBaselines）がありません` +
+        '（pnpm exec tsx scripts/sync-count-baselines.ts で埋める）',
+    )
+  }
+  const staleCount = listStaleCountOverrides(stores, file).length
+
   if (problems.length > 0) {
     console.error(`❌ overrides.json 検証失敗（${problems.length}件）:`)
     for (const p of problems) console.error(`  - ${p}`)
@@ -55,6 +68,9 @@ function main(): void {
   console.log(
     `✅ overrides.json OK（${entries.length}エントリ / remarks ${remarksCount}店舗 / ID不一致なし）`,
   )
+  if (staleCount > 0) {
+    console.log(`ℹ️ 公式の台数が変わったため使われていない台数の上書き: ${staleCount}件`)
+  }
 }
 
 main()

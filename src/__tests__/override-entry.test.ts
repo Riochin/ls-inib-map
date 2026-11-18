@@ -9,6 +9,7 @@ const full: OverrideEntry = {
   remarks: '2Fに移動',
   updatedAt: '2026-11-01T00:00:00.000Z',
   machineCounts: { 'jojo-ls': 4 },
+  countBaselines: { 'jojo-ls': 5 },
   businessHours: '10:00-23:00',
   floor: '2F',
   floorByGame: { 'gundam-exvs': '3F' },
@@ -69,6 +70,7 @@ describe('mergeFormEntry', () => {
     expect(out.machineCounts).toEqual({ 'jojo-ls': 3 })
     expect(out.businessHours).toBe('10:00-23:00')
     expect(out.hasRecordingByGame).toEqual({ 'jojo-ls': 'yes' })
+    expect(out.countBaselines).toEqual({ 'jojo-ls': 5 })
     expect(out.updatedAt).toBe(full.updatedAt)
   })
 
@@ -109,8 +111,8 @@ describe('mergeFormEntry', () => {
 })
 
 describe('hasOverrideContent', () => {
-  it('出どころ・メモだけなら false、営業時間などがあれば true', () => {
-    expect(hasOverrideContent({ source: 'admin', note: 'x', attributeSources: { floor: 'admin' } })).toBe(false)
+  it('出どころ・メモ・基準値だけなら false、営業時間などがあれば true', () => {
+    expect(hasOverrideContent({ source: 'admin', note: 'x', countBaselines: { 'jojo-ls': 1 } })).toBe(false)
     expect(hasOverrideContent({ source: 'admin', businessHours: '10:00-' })).toBe(true)
   })
 })

@@ -10,8 +10,12 @@ import { PairSchedulePanel } from '@/components/PairSchedulePanel'
 import type { GameTitle, Provenance, Store } from '@/types/store'
 import type { OverrideEntry, OverridesFile } from '@/types/overrides'
 import { hasOverrideContent, mergeFormEntry } from '@/lib/override-entry'
+import { listStaleCountOverrides, type StaleCountOverride } from '@/lib/count-baseline'
+import storesFile from '@/data/stores.json'
 
 const GAMES: GameTitle[] = ['jojo-ls', 'gundam-exvs']
+// 上書き前の公式データ（台数の上書きが古くなったかの判定に使う。@/data/stores は上書き適用済み）
+const officialStores = (storesFile as unknown as { stores: Store[] }).stores
 const SOURCES: Provenance[] = ['user-report', 'admin', 'auto-scrape', 'official']
 const SOURCE_LABEL: Record<Provenance, string> = {
   'user-report': 'ユーザー報告（未確認）',
@@ -116,6 +120,11 @@ function entryFromForm(f: FormState): OverrideEntry {
   return entry
 }
 
+/** 公式の台数の表示（0＝公式に台数が載っていない） */
+function formatOfficial(n: number): string {
+  return n > 0 ? `${n}台` : '台数なし'
+}
+
 export function OverridesAdmin() {
   const [file, setFile] = useState<OverridesFile>({ overrides: {} })
   const [query, setQuery] = useState('')
@@ -123,6 +132,8 @@ export function OverridesAdmin() {
   const [form, setForm] = useState<FormState>(emptyForm())
   const [status, setStatus] = useState<string>('')
   const [saving, setSaving] = useState(false)
+  // 古くなった台数の上書きを「この台数で確認した」として、今の公式台数を基準にし直すか
+  const [confirmCounts, setConfirmCounts] = useState(false)
 
   const storeById = useMemo(() => new Map(stores.map((s) => [s.id, s])), [])
   const formRef = useRef<HTMLDivElement | null>(null)
@@ -152,10 +163,21 @@ export function OverridesAdmin() {
 
   const selected = selectedId ? storeById.get(selectedId) ?? null : null
 
+  // 公式の台数が基準値から変わったため、今は使われていない台数の上書き（店舗ID → ゲームごとの一覧）
+  const staleById = useMemo(() => {
+    const map = new Map<string, StaleCountOverride[]>()
+    for (const s of listStaleCountOverrides(officialStores, file)) {
+      map.set(s.id, [...(map.get(s.id) ?? []), s])
+    }
+    return map
+  }, [file])
+  const selectedStale = selected ? staleById.get(selected.id) : undefined
+
   function selectStore(store: Store, scroll = false) {
     setSelectedId(store.id)
     const existing = file.overrides[store.id]
     setForm(existing ? formFromEntry(existing) : emptyForm())
+    setConfirmCounts(false)
     setStatus('')
     if (scroll) {
       requestAnimationFrame(() => formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
@@ -167,6 +189,7 @@ export function OverridesAdmin() {
   async function persist(
     computeNext: (current: OverridesFile) => OverridesFile,
     message: string,
+    confirmIds: string[] = [],
   ) {
     setSaving(true)
     setStatus('')
@@ -185,7 +208,7 @@ export function OverridesAdmin() {
       const res = await fetch('/api/overrides', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(next),
+        body: JSON.stringify({ ...next, confirmIds }),
       })
       if (!res.ok) {
         const err = await res.json().catch(() => ({}))
@@ -218,7 +241,9 @@ export function OverridesAdmin() {
         },
       }),
       `保存しました: ${selected.name} (${selected.id})`,
+      confirmCounts ? [selected.id] : [],
     )
+    setConfirmCounts(false)
   }
 
   async function remove(id: string) {
@@ -392,6 +417,28 @@ export function OverridesAdmin() {
             ))}
           </div>
 
+          {selectedStale && (
+            <div className="mb-3 rounded border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-800">
+              {selectedStale.map((s) => (
+                <p key={s.game} className="mb-1">
+                  {getGameLabel(s.game)}: 公式の台数が {s.baseline}台 → {formatOfficial(s.official)} に変わったため、
+                  この上書き（{s.override}台）は今使われていません。地図には公式の台数が出ています。
+                </p>
+              ))}
+              <label className="flex items-center gap-1.5 mt-1 font-semibold">
+                <input
+                  type="checkbox"
+                  checked={confirmCounts}
+                  onChange={(e) => setConfirmCounts(e.target.checked)}
+                />
+                この台数で確認した（今の公式の台数を基準にし直して、上書きを使う）
+              </label>
+              <span className="block text-[10px] text-amber-700 mt-0.5">
+                台数を書き換えて保存した場合も、そのゲームは今の公式の台数が基準になります。
+              </span>
+            </div>
+          )}
+
           <label className="block mb-3">
             <span className="text-xs font-semibold text-gray-600">出どころ（source）</span>
             <select
@@ -533,6 +580,9 @@ export function OverridesAdmin() {
                     </span>
                     {!store && (
                       <span className="ml-2 text-[10px] text-red-600 font-semibold">ID不一致</span>
+                    )}
+                    {staleById.has(id) && (
+                      <span className="ml-2 text-[10px] text-amber-600 font-semibold">台数 要確認</span>
                     )}
                     <span className="block text-xs text-gray-500">
                       {SOURCE_LABEL[entry.source]}

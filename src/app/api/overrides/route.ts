@@ -2,18 +2,24 @@ import { NextResponse } from 'next/server'
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import type { OverridesFile, OverrideEntry } from '@/types/overrides'
+import type { Store } from '@/types/store'
 import { sanitizeOverrideEntry } from '@/lib/override-entry'
+import { syncCountBaselines } from '@/lib/count-baseline'
 
 /**
  * 手動オーバーライド（src/data/overrides.json）の読み書きAPI。
  *
  * - localhost の管理GUI（/admin/overrides）専用。本番では 404 を返す。
  * - 書き込みは dev サーバの Node 実行を前提（Vercel 本番のFSは書込不可なので無効化）。
+ * - 保存時に台数の上書きの基準値（ADR-0009）を入れる。台数を変えた・足したゲームと、
+ *   本文の `confirmIds`（「この台数で確認した」）の店は、今の公式台数を基準にし直す。
  */
 
 export const dynamic = 'force-dynamic'
 
 const OVERRIDES_PATH = path.join(process.cwd(), 'src', 'data', 'overrides.json')
+// 上書き前の公式データ（@/data/stores は上書き適用済みなので基準値には使えない）
+const STORES_PATH = path.join(process.cwd(), 'src', 'data', 'stores.json')
 
 /** 本番では利用不可。ガードに引っかかれば 404 レスポンスを返す。 */
 function blockInProduction(): NextResponse | null {
@@ -45,9 +51,20 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid overrides payload' }, { status: 400 })
   }
 
-  // 内容が変わった（or 新規）エントリにだけ更新日時を打つ。無変更は既存の updatedAt を保持。
+  const confirmIds = readConfirmIds(body)
+  if (!confirmIds) {
+    return NextResponse.json({ error: 'Invalid confirmIds' }, { status: 400 })
+  }
+
+  // 台数を変えた・足したゲームと「この台数で確認した」店に、今の公式台数を基準値として入れる
   const current = await readOverrides()
-  const stamped = stampUpdatedAt(file, current, new Date().toISOString())
+  const { file: synced } = syncCountBaselines(file, await readOfficialStores(), {
+    base: current,
+    confirmIds,
+  })
+
+  // 内容が変わった（or 新規）エントリにだけ更新日時を打つ。無変更は既存の updatedAt を保持。
+  const stamped = stampUpdatedAt(synced, current, new Date().toISOString())
 
   await writeOverrides(stamped)
   return NextResponse.json({ ok: true, file: stamped })
@@ -88,6 +105,19 @@ async function readOverrides(): Promise<OverridesFile> {
   } catch {
     return { overrides: {} }
   }
+}
+
+/** 本文の `confirmIds`（任意・店舗IDの配列）。形が不正なら null。 */
+function readConfirmIds(body: unknown): string[] | null {
+  const raw = (body as Record<string, unknown>).confirmIds
+  if (raw === undefined) return []
+  if (!Array.isArray(raw) || !raw.every((id) => typeof id === 'string')) return null
+  return raw
+}
+
+async function readOfficialStores(): Promise<Store[]> {
+  const raw = await fs.readFile(STORES_PATH, 'utf-8')
+  return (JSON.parse(raw) as { stores: Store[] }).stores
 }
 
 async function writeOverrides(file: OverridesFile): Promise<void> {
