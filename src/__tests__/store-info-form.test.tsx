@@ -50,3 +50,35 @@ describe('StoreInfoForm — 無制限台', () => {
     expect(html).toMatch(/value="4"/)
   })
 })
+
+describe('StoreInfoForm — 店のサービス', () => {
+  it('クレジットサービス・貸切を出し、「あり」でなければ内容欄は出さない', () => {
+    const html = renderToStaticMarkup(<StoreInfoForm store={store} onClose={noop} />)
+    expect(html).toContain('店のサービス')
+    expect(html).toContain('クレジットサービス')
+    expect(html).toContain('貸切')
+    expect(html).not.toContain('クレサ')
+    expect(html).not.toContain('の内容（')
+  })
+
+  it('両ゲーム店は ラスサバ、内容、イニブ、内容 の順に縦に並べる（内容は「あり」のゲームだけ）', () => {
+    const html = renderToStaticMarkup(
+      <StoreInfoForm
+        store={{
+          ...store,
+          games: ['jojo-ls', 'gundam-exvs'],
+          creditServiceByGame: { 'jojo-ls': 'yes', 'gundam-exvs': 'yes' },
+          creditServiceNoteByGame: { 'jojo-ls': '100円3クレ', 'gundam-exvs': '100円2クレ' },
+          rentalByGame: { 'gundam-exvs': 'no' },
+        }}
+        onClose={noop}
+      />,
+    )
+    const jojoNote = html.indexOf('aria-label="クレジットサービスの内容（ラスサバ）"')
+    const gundamNote = html.indexOf('aria-label="クレジットサービスの内容（イニブ）"')
+    expect(jojoNote).toBeGreaterThan(-1)
+    expect(gundamNote).toBeGreaterThan(jojoNote)
+    expect(html).toContain('value="100円3クレ"')
+    expect(html).not.toContain('貸切の内容（')
+  })
+})

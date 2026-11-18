@@ -4,6 +4,7 @@ import {
   formatLastUpdated,
   formatByGameTernary,
   formatFloorByGame,
+  formatByGameNotes,
   DEFAULT_DATA_SOURCE,
 } from '@/lib/info-display'
 import type { GameTitle } from '@/types/store'
@@ -213,5 +214,26 @@ describe('DEFAULT_DATA_SOURCE', () => {
   it('公式2サイトのURLを既定値として保持する（Req6.4）', () => {
     expect(DEFAULT_DATA_SOURCE.jojols).toContain('bandainamco-am.co.jp')
     expect(DEFAULT_DATA_SOURCE.gundam).toContain('gundam-vs.jp')
+  })
+})
+
+describe('formatByGameNotes', () => {
+  it('複数タイトル店はゲーム名つき、空文字は出さない', () => {
+    expect(
+      formatByGameNotes({ games: BOTH, notesByGame: { 'jojo-ls': '', 'gundam-exvs': '100円2クレ' } }),
+    ).toEqual([{ game: 'gundam-exvs', gameLabel: 'イニブ', text: '100円2クレ' }])
+  })
+
+  it('単一タイトル店はゲーム名なし。その店に無いゲームの内容は出さない', () => {
+    expect(
+      formatByGameNotes({
+        games: ['gundam-exvs'],
+        notesByGame: { 'jojo-ls': 'x', 'gundam-exvs': '要予約' },
+      }),
+    ).toEqual([{ game: 'gundam-exvs', gameLabel: undefined, text: '要予約' }])
+  })
+
+  it('未設定なら空配列', () => {
+    expect(formatByGameNotes({ games: BOTH, notesByGame: undefined })).toEqual([])
   })
 })

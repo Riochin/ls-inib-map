@@ -175,6 +175,23 @@ describe('buildStructuredStoreIssue', () => {
     expect(body.indexOf('配信台（イニブ）')).toBeLessThan(body.indexOf('無制限台（ラスサバ）'))
   })
 
+  it('店のサービスは有無と内容をゲーム別の行で出す（無制限台の後ろ）', () => {
+    const { body } = buildStructuredStoreIssue({
+      ...base,
+      attributes: {
+        hasUnlimitedByGame: { 'gundam-exvs': 'yes' },
+        creditServiceByGame: { 'jojo-ls': 'no', 'gundam-exvs': 'yes' },
+        creditServiceNoteByGame: { 'gundam-exvs': '100円2クレ | 平日' },
+        rentalByGame: { 'gundam-exvs': 'unknown' },
+      },
+    })
+    expect(body).toContain('| クレジットサービス（ラスサバ） | なし |')
+    expect(body).toContain('| クレジットサービス（イニブ） | あり |')
+    expect(body).toContain('| クレジットサービス 内容（イニブ） | 100円2クレ \\| 平日 |')
+    expect(body).toContain('| 貸切（イニブ） | 不明 |')
+    expect(body.indexOf('無制限台（イニブ）')).toBeLessThan(body.indexOf('クレジットサービス（ラスサバ）'))
+  })
+
   it('タイトルに店名が含まれる', () => {
     const { title } = buildStructuredStoreIssue(base)
     expect(title).toContain('テスト店')

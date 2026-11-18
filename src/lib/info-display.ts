@@ -93,6 +93,36 @@ export function formatFloorByGame({
   return { value: segments.join(' ／ '), soft: unconfirmed }
 }
 
+/** 行の下に出す、ゲーム別の内容（自由記述）1行分 */
+export interface ByGameNote {
+  game: GameTitle
+  /** 複数タイトル店だけゲーム名を付ける。単一タイトル店は undefined */
+  gameLabel: string | undefined
+  text: string
+}
+
+/**
+ * ゲーム別の自由記述（クレジットサービス・貸切の内容）を、行の下に出す1行ずつに整形する。
+ * 複数タイトル店はゲーム名つき、単一タイトル店はゲーム名なし。空文字・その店に無いゲームは出さない。
+ */
+export function formatByGameNotes({
+  games,
+  notesByGame,
+}: {
+  games: readonly GameTitle[]
+  notesByGame: Partial<Record<GameTitle, string>> | undefined
+}): ByGameNote[] {
+  if (!notesByGame) return []
+  const multi = games.length > 1
+  const notes: ByGameNote[] = []
+  for (const game of games) {
+    const text = notesByGame[game]
+    if (!text) continue
+    notes.push({ game, gameLabel: multi ? getGameLabel(game) : undefined, text })
+  }
+  return notes
+}
+
 /** 詳細モーダルの属性1行分の表示 */
 export interface AttributeDisplay {
   /** 表示値（undefined なら「未登録」） */
@@ -101,6 +131,8 @@ export interface AttributeDisplay {
   soft: boolean
   /** value に「（未確認）」を埋め込み済みか（ゲーム別・フロア） */
   preformatted: boolean
+  /** 行の下に出すゲーム別の内容（店のサービス）。確定/未確認の対象外 */
+  notes: ByGameNote[]
 }
 
 /**
@@ -118,11 +150,12 @@ export function formatAttribute(store: Store, def: AttributeDef): AttributeDispl
       storeWideFloor: store.floor,
       unconfirmed,
     })
-    return { value: floor.value, soft: floor.soft, preformatted: true }
+    return { value: floor.value, soft: floor.soft, preformatted: true, notes: [] }
   }
   const value = readAttribute(store, def)
   if (def.scope === 'game' && def.kind === 'ternary') {
     const countDef = childAttributes(def.key).find((c) => c.kind === 'number')
+    const noteDef = childAttributes(def.key).find((c) => c.kind === 'text')
     return {
       value: formatByGameTernary({
         games: store.games,
@@ -134,6 +167,12 @@ export function formatAttribute(store: Store, def: AttributeDef): AttributeDispl
       }),
       soft: unconfirmed,
       preformatted: true,
+      notes: noteDef
+        ? formatByGameNotes({
+            games: store.games,
+            notesByGame: readAttribute(store, noteDef) as Partial<Record<GameTitle, string>> | undefined,
+          })
+        : [],
     }
   }
   switch (def.kind) {
@@ -142,16 +181,23 @@ export function formatAttribute(store: Store, def: AttributeDef): AttributeDispl
         value: value !== undefined ? TERNARY_LABELS[value as TernaryState] : undefined,
         soft: unconfirmed,
         preformatted: false,
+        notes: [],
       }
     case 'list': {
       const items = value as string[] | undefined
-      return { value: items?.length ? items.join('、') : undefined, soft: unconfirmed, preformatted: false }
+      return {
+        value: items?.length ? items.join('、') : undefined,
+        soft: unconfirmed,
+        preformatted: false,
+        notes: [],
+      }
     }
     default:
       return {
         value: value === undefined ? undefined : String(value),
         soft: unconfirmed,
         preformatted: false,
+        notes: [],
       }
   }
 }

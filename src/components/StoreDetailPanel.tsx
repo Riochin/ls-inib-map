@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react'
 import type { Store, GameTitle } from '@/types/store'
-import { formatDateJst, formatAttribute } from '@/lib/info-display'
+import { formatDateJst, formatAttribute, type ByGameNote } from '@/lib/info-display'
 import { panelAttributes } from '@/lib/store-attributes'
 import { storesMeta } from '@/data/stores'
 import { getMarkerTheme, getGameLabel, getCountSourceInfo, getStoreStatusLabel } from '@/lib/marker-color'
@@ -21,6 +21,7 @@ function AttributeRow({
   value,
   unconfirmed,
   preformatted = false,
+  notes = [],
 }: {
   label: string
   value: string | undefined
@@ -28,9 +29,15 @@ function AttributeRow({
   unconfirmed: boolean
   /** value 側で既に「（未確認）」を埋め込み済みの場合 true（録画台/配信台/フロアのタイトル別表示） */
   preformatted?: boolean
+  /** 行の下に1行ずつ出すゲーム別の内容（店のサービス）。中立表示 */
+  notes?: ByGameNote[]
 }) {
   return (
-    <div className="flex justify-between items-start gap-2 py-1.5 border-b border-gray-100 last:border-0">
+    <div
+      className={`flex justify-between items-start gap-2 py-1.5 border-b border-gray-100 last:border-0${
+        notes.length > 0 ? ' flex-wrap' : ''
+      }`}
+    >
       <span className="text-xs text-gray-500 shrink-0">{label}</span>
       {value === undefined ? (
         <span className="text-xs text-gray-400">未登録</span>
@@ -40,6 +47,12 @@ function AttributeRow({
           {unconfirmed && !preformatted ? '（未確認）' : ''}
         </span>
       )}
+      {notes.map((note) => (
+        <span key={note.game} className="basis-full text-xs text-gray-700 leading-relaxed pt-0.5 break-words">
+          {note.gameLabel && <span className="text-gray-500">{note.gameLabel} </span>}
+          {note.text}
+        </span>
+      ))}
     </div>
   )
 }
@@ -167,6 +180,24 @@ export function StoreDetailPanel({ store, onOpenInfoForm, onClose }: StoreDetail
               value={display.value}
               unconfirmed={display.soft}
               preformatted={display.preformatted}
+            />
+          )
+        })}
+      </div>
+
+      {/* 店のサービス（クレジットサービス・貸切。有無はゲーム別、行の下にゲーム別の内容） */}
+      <p className="text-xs font-semibold text-gray-500 mb-1.5">店のサービス</p>
+      <div className="bg-gray-50 rounded-xl px-3 py-0.5 mb-3">
+        {panelAttributes('service').map((def) => {
+          const display = formatAttribute(store, def)
+          return (
+            <AttributeRow
+              key={def.key}
+              label={def.label}
+              value={display.value}
+              unconfirmed={display.soft}
+              preformatted={display.preformatted}
+              notes={display.notes}
             />
           )
         })}

@@ -55,14 +55,38 @@ function byGame<T>(
   return Object.keys(out).length > 0 ? out : undefined
 }
 
-/** 2列（有無だけ）で並べるゲーム別三値の属性。台数・内容のような付随欄は個別に描く */
-type GameTernaryKey = 'hasRecordingByGame' | 'hasStreamingByGame' | 'hasUnlimitedByGame'
+/** ゲーム別三値の属性。台数・内容のような付随欄は個別に描く */
+type GameTernaryKey =
+  | 'hasRecordingByGame'
+  | 'hasStreamingByGame'
+  | 'hasUnlimitedByGame'
+  | 'creditServiceByGame'
+  | 'rentalByGame'
 const GAME_TERNARY_KEYS: readonly GameTernaryKey[] = [
   'hasRecordingByGame',
   'hasStreamingByGame',
   'hasUnlimitedByGame',
+  'creditServiceByGame',
+  'rentalByGame',
 ]
 type GameTernaryValues = Record<GameTernaryKey, Partial<Record<GameTitle, TernaryState | ''>>>
+
+/** 店のサービス。内容欄を持つため2列に詰めず、ゲームごとに縦に並べる（ADR-0003） */
+type ServiceNoteKey = 'creditServiceNoteByGame' | 'rentalNoteByGame'
+const SERVICE_FIELDS: readonly {
+  key: 'creditServiceByGame' | 'rentalByGame'
+  noteKey: ServiceNoteKey
+  title: string
+  placeholder: string
+}[] = [
+  {
+    key: 'creditServiceByGame',
+    noteKey: 'creditServiceNoteByGame',
+    title: 'クレジットサービス',
+    placeholder: '例）100円2クレ、平日のみ',
+  },
+  { key: 'rentalByGame', noteKey: 'rentalNoteByGame', title: '貸切', placeholder: '例）1時間3,000円、要予約' },
+]
 
 /** 無制限台の台数欄の値を、送れる値（1〜99 の整数）だけに絞る。それ以外は送らない。 */
 function parseUnlimitedCount(v: string | undefined): number | undefined {
@@ -148,7 +172,15 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
     hasRecordingByGame: { ...store.hasRecordingByGame },
     hasStreamingByGame: { ...store.hasStreamingByGame },
     hasUnlimitedByGame: { ...store.hasUnlimitedByGame },
+    creditServiceByGame: { ...store.creditServiceByGame },
+    rentalByGame: { ...store.rentalByGame },
   }))
+  const [serviceNotes, setServiceNotes] = useState<Record<ServiceNoteKey, Partial<Record<GameTitle, string>>>>(
+    () => ({
+      creditServiceNoteByGame: { ...store.creditServiceNoteByGame },
+      rentalNoteByGame: { ...store.rentalNoteByGame },
+    }),
+  )
   const [unlimitedCounts, setUnlimitedCounts] = useState<Partial<Record<GameTitle, string>>>(() => {
     const out: Partial<Record<GameTitle, string>> = {}
     for (const game of store.games) {
@@ -229,6 +261,19 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
       store.games,
     )
     if (counts) out.unlimitedCountByGame = counts
+    // 内容は「あり」のゲームだけ送る
+    for (const { key, noteKey } of SERVICE_FIELDS) {
+      const notes = byGame<string>(
+        Object.fromEntries(
+          store.games.map((game) => [
+            game,
+            ternaries[key][game] === 'yes' ? serviceNotes[noteKey][game]?.trim() : undefined,
+          ]),
+        ),
+        store.games,
+      )
+      if (notes) out[noteKey] = notes
+    }
     return out
   })()
 
@@ -563,6 +608,46 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
                   </div>
                 </div>
               ))}
+
+              {/* 店のサービス（ラスサバ、内容、イニブ、内容 の縦積み） */}
+              <div className="mb-4">
+                <p className="text-xs font-semibold text-gray-600 mb-2">店のサービス</p>
+                {SERVICE_FIELDS.map(({ key, noteKey, title, placeholder }) => (
+                  <div key={key} className="mb-3 last:mb-0">
+                    <p className="text-xs font-semibold text-gray-600 mb-1.5">{title}</p>
+                    <div className="grid gap-2.5">
+                      {formGames.map((game) => (
+                        <div key={game}>
+                          <TernarySelect
+                            label={getGameLabel(game)}
+                            filled={ternaryFilled(key, game)}
+                            value={ternaries[key][game] ?? ''}
+                            onChange={(v) => setTernary(key, game, v)}
+                          />
+                          {ternaries[key][game] === 'yes' && (
+                            <label className="block mt-1.5">
+                              <span className="text-[11px] text-gray-400">内容</span>
+                              <input
+                                type="text"
+                                maxLength={100}
+                                value={serviceNotes[noteKey][game] ?? ''}
+                                onChange={(e) => {
+                                  const v = e.target.value
+                                  setServiceNotes((prev) => ({ ...prev, [noteKey]: { ...prev[noteKey], [game]: v } }))
+                                  mark()
+                                }}
+                                placeholder={placeholder}
+                                aria-label={`${title}の内容（${getGameLabel(game)}）`}
+                                className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
+                              />
+                            </label>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
 
               {/* 修正・通報セクション */}
               <div className="border-t border-gray-200 pt-4 mb-4">

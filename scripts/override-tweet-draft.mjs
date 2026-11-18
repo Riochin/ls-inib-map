@@ -39,6 +39,10 @@ const DETAIL_FIELDS = [
   'hasStreamingByGame',
   'hasUnlimitedByGame',
   'unlimitedCountByGame',
+  'creditServiceByGame',
+  'creditServiceNoteByGame',
+  'rentalByGame',
+  'rentalNoteByGame',
 ]
 
 /**

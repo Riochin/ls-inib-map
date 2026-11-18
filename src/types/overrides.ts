@@ -60,6 +60,17 @@ export interface OverrideEntry {
   hasUnlimitedByGame?: Partial<Record<GameTitle, TernaryState>>
   /** ゲーム別 無制限台の台数（任意。指定したゲームのみ置換する。出どころは hasUnlimitedByGame と共有） */
   unlimitedCountByGame?: Partial<Record<GameTitle, number>>
+  /** ゲーム別 クレジットサービスの有無（任意。指定したゲームのみ置換する） */
+  creditServiceByGame?: Partial<Record<GameTitle, TernaryState>>
+  /**
+   * ゲーム別 クレジットサービスの内容（任意・各100文字まで。指定したゲームのみ置換する）。
+   * 公開される中立な1文（SNS ID 等は書かない）。補足（remarks）ではなくこちらに書く。
+   */
+  creditServiceNoteByGame?: Partial<Record<GameTitle, string>>
+  /** ゲーム別 貸切の有無（任意。指定したゲームのみ置換する） */
+  rentalByGame?: Partial<Record<GameTitle, TernaryState>>
+  /** ゲーム別 貸切の内容（任意・各100文字まで。{@link OverrideEntry.creditServiceNoteByGame} と同じ扱い） */
+  rentalNoteByGame?: Partial<Record<GameTitle, string>>
   /** 公式店舗ページURL（任意） */
   officialUrl?: string
 }

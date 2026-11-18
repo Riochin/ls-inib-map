@@ -101,6 +101,20 @@ export interface Store {
    * 出どころは有無と共有（`attributeSources.hasUnlimitedByGame`）。
    */
   unlimitedCountByGame?: Partial<Record<GameTitle, number>>
+  /**
+   * ゲーム別 クレジットサービス（100円2クレなど）の有無（任意。{@link Store.hasRecordingByGame} と
+   * 同パターン）。店の料金の決まりとして「店のサービス」枠に出す（ADR-0003）。
+   */
+  creditServiceByGame?: Partial<Record<GameTitle, TernaryState>>
+  /**
+   * ゲーム別 クレジットサービスの内容（任意・各100文字まで。{@link Store.floorByGame} と同じ持ち方）。
+   * 自由記述のため確定/未確認の対象外で中立表示する。出どころのキーは有無と共有。
+   */
+  creditServiceNoteByGame?: Partial<Record<GameTitle, string>>
+  /** ゲーム別 貸切の有無（任意。{@link Store.creditServiceByGame} と同パターン） */
+  rentalByGame?: Partial<Record<GameTitle, TernaryState>>
+  /** ゲーム別 貸切の内容（任意・各100文字まで。{@link Store.creditServiceNoteByGame} と同パターン） */
+  rentalNoteByGame?: Partial<Record<GameTitle, string>>
   /** 公式店舗ページURL（例: "https://location.taito.co.jp/locs/stores/1234/"・任意） */
   officialUrl?: string
   /**

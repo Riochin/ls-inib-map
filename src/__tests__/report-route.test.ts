@@ -284,6 +284,23 @@ describe('POST /api/report - mode=structured-store', () => {
     expect(sent.body).toContain('| 無制限台 台数（イニブ） | 4 |')
   })
 
+  it('店のサービスの内容は trim して100文字で切り、本文に出す', async () => {
+    const res = await POST(
+      req({
+        ...baseStore,
+        attributes: {
+          rentalByGame: { 'gundam-exvs': 'yes' },
+          rentalNoteByGame: { 'gundam-exvs': `  ${'あ'.repeat(120)}  ` },
+        },
+      }),
+    )
+    expect(res.status).toBe(200)
+    const [, init] = (fetch as unknown as { mock: { calls: [string, RequestInit][] } }).mock.calls[0]
+    const sent = JSON.parse(init.body as string)
+    expect(sent.body).toContain('| 貸切（イニブ） | あり |')
+    expect(sent.body).toContain(`| 貸切 内容（イニブ） | ${'あ'.repeat(100)} |`)
+  })
+
   it('honeypot 充填は ok:true かつ fetch未呼出', async () => {
     const res = await POST(req({ ...baseStore, attributes: { businessHours: '10:00-23:00' }, website: 'bot' }))
     expect(res.status).toBe(200)
