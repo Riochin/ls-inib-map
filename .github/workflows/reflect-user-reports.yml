@@ -60,6 +60,11 @@ jobs:
           echo "today=$(TZ=Asia/Tokyo date +%F)" >> "$GITHUB_OUTPUT"
           echo "open な「ユーザー報告」Issue: ${count} 件"
 
+      # 台数の基準値（ADR-0009）を「編集前から台数が変わったか」で入れるため、編集前のファイルを控える
+      - name: 編集前の overrides.json を控える
+        if: steps.scan.outputs.count != '0'
+        run: cp src/data/overrides.json "$RUNNER_TEMP/overrides-base.json"
+
       # Claude（OAuth）が Issue を読み、overrides.json を編集する。
       # 実際に反映できた Issue 番号は reflected-issues.txt に1行ずつ書き出させる
       # （このファイルは PR には含めない＝後続ステップが Closes 行を組むためだけに使う）。
@@ -108,7 +113,8 @@ jobs:
                - 反映した Issue 番号は、そのエントリの `note` に必ず `Issue #番号` の形で残す
                  （修正ツイート下書きが note の新しい Issue 番号から報告者を辿り、お礼メンションと出典リンクを作る）。
                - 直接編集なので各エントリの `updatedAt` を "${{ steps.scan.outputs.today }}" に更新する。
-            3. 編集後、`pnpm exec tsc --noEmit` と `pnpm exec tsx scripts/validate-overrides.ts` を実行し、
+            3. 編集後、`pnpm exec tsx scripts/sync-count-baselines.ts --base ${{ runner.temp }}/overrides-base.json`
+               で台数の基準値を入れてから、`pnpm exec tsc --noEmit` と `pnpm exec tsx scripts/validate-overrides.ts` を実行し、
                型エラー・ID不一致が無いことを自分で確認する（エラーが出たら直す）。
             4. **実際に overrides.json へ反映できた Issue 番号だけ**を、リポジトリ直下の
                `reflected-issues.txt` に1行1番号（先頭 `#` なし、例 `216`）で書き出す。
@@ -116,9 +122,17 @@ jobs:
 
             ## 禁止事項
             - `src/data/overrides.json` と `reflected-issues.txt` 以外のファイルは編集しない。
+            - `countBaselines`（台数の基準値）は手で書かない・消さない（手順3のスクリプトが入れる）。
             - `git` での commit / push はしない（PR作成は後続の別ステップが行う）。
             - `gh pr ...`、`gh issue close`、`gh issue edit`、`gh issue comment` は実行しない
               （Issue のクローズはマージ時の Closes に任せる）。
+
+      # 台数の上書きの基準値（ADR-0009）はスクリプトが入れる。Claude には書かせない。
+      # 編集前と比べて台数が変わった・足したゲームは、今の公式台数を基準にする
+      # （Claude も手順3で同じコマンドを回すが、回し忘れても確実に入るようここでも回す。何度回しても同じ結果）。
+      - name: 台数の基準値を入れる
+        if: steps.scan.outputs.count != '0'
+        run: pnpm exec tsx scripts/sync-count-baselines.ts --base "$RUNNER_TEMP/overrides-base.json"
 
       # 決定論的な検証ゲート。Claude の編集を信用しすぎず、ここを通らなければ PR を作らない。
       - name: オーバーライドを検証

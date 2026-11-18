@@ -348,3 +348,66 @@ describe('applyOverrides - 新属性（attributeSources）', () => {
     expect(stores[0]).toEqual(before)
   })
 })
+
+describe('applyOverrides - 台数の基準値（ADR-0009）', () => {
+  const ov = (entry: OverridesFile['overrides'][string]): OverridesFile => ({ overrides: { abc123: entry } })
+
+  it('公式の台数が基準値と同じなら上書きを使う', () => {
+    const [s] = applyOverrides(
+      [makeStore({ machineCounts: { 'jojo-ls': 5 } })],
+      ov({ source: 'admin', machineCounts: { 'jojo-ls': 4 }, countBaselines: { 'jojo-ls': 5 } }),
+    )
+    expect(s.machineCounts?.['jojo-ls']).toBe(4)
+    expect(s.countSources?.['jojo-ls']).toBe('admin')
+  })
+
+  it('公式が 5→2 に減ったら上書きを使わず公式の 2 を出し、出どころも上書きしない', () => {
+    const [s] = applyOverrides(
+      [makeStore({ machineCounts: { 'jojo-ls': 2 } })],
+      ov({ source: 'admin', machineCounts: { 'jojo-ls': 4 }, countBaselines: { 'jojo-ls': 5 } }),
+    )
+    expect(s.machineCounts?.['jojo-ls']).toBe(2)
+    expect(s.countSources?.['jojo-ls']).toBeUndefined()
+  })
+
+  it('公式の台数が無くなったら、台数なし（不明）のまま出す', () => {
+    const [s] = applyOverrides(
+      [makeStore({ machineCounts: undefined })],
+      ov({ source: 'admin', machineCounts: { 'jojo-ls': 4 }, countBaselines: { 'jojo-ls': 5 } }),
+    )
+    expect(s.machineCounts?.['jojo-ls']).toBeUndefined()
+  })
+
+  it('公式が増えた場合も上書きを使わない', () => {
+    const [s] = applyOverrides(
+      [makeStore({ machineCounts: { 'jojo-ls': 6 } })],
+      ov({ source: 'admin', machineCounts: { 'jojo-ls': 4 }, countBaselines: { 'jojo-ls': 5 } }),
+    )
+    expect(s.machineCounts?.['jojo-ls']).toBe(6)
+  })
+
+  it('基準値が無い上書き（移行前のデータ）はこれまでどおり使う', () => {
+    const [s] = applyOverrides(
+      [makeStore({ machineCounts: { 'jojo-ls': 2 } })],
+      ov({ source: 'admin', machineCounts: { 'jojo-ls': 4 } }),
+    )
+    expect(s.machineCounts?.['jojo-ls']).toBe(4)
+  })
+
+  it('古くなったゲームだけ外し、もう一方のゲームと台数以外の項目は使う', () => {
+    const [s] = applyOverrides(
+      [makeStore({ machineCounts: { 'jojo-ls': 2, 'gundam-exvs': 9 } })],
+      ov({
+        source: 'admin',
+        machineCounts: { 'jojo-ls': 4, 'gundam-exvs': 8 },
+        countBaselines: { 'jojo-ls': 5, 'gundam-exvs': 9 },
+        businessHours: '10:00-23:00',
+        remarks: '2Fに移動',
+      }),
+    )
+    expect(s.machineCounts).toEqual({ 'jojo-ls': 2, 'gundam-exvs': 8 })
+    expect(s.countSources).toEqual({ 'gundam-exvs': 'admin' })
+    expect(s.businessHours).toBe('10:00-23:00')
+    expect(s.remarks).toBe('2Fに移動')
+  })
+})

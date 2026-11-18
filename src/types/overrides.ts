@@ -36,6 +36,12 @@ export interface OverrideEntry {
   updatedAt?: string
   /** ゲーム別台数の上書き（指定したゲームのみ置換する） */
   machineCounts?: Partial<Record<GameTitle, number>>
+  /**
+   * 台数を上書きした時点の公式台数（ゲーム別・ADR-0009）。公式に台数が無かったときは 0。
+   * 公式の現在値がこれと違うゲームでは、台数の上書きを使わず公式の値を出す（前提が崩れたため）。
+   * 手で書かない。管理GUIの保存・`scripts/sync-count-baselines.ts` が `stores.json` から入れる。
+   */
+  countBaselines?: Partial<Record<GameTitle, number>>
   closed?: boolean
   delisted?: boolean
   name?: string

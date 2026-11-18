@@ -38,3 +38,4 @@
 | [0006](0006-replace-kiro-specs-with-plan-mode.md) | kiro スペック駆動をやめ、plan mode＋ADR＋計画文書で進める | Accepted | 2026-10-10 |
 | [0007](0007-dependency-updates-with-dependabot.md) | 依存パッケージの更新は Dependabot に任せる | Accepted | 2026-10-16 |
 | [0008](0008-partial-update-per-official-site.md) | 公式サイトの片方が取れなくても、取れたサイトの分だけで店舗データを更新する | Accepted | 2026-11-17 |
+| [0009](0009-override-count-baseline.md) | 台数の上書きに「その時点の公式台数」を添え、公式が変わったら上書きをやめる | Accepted | 2026-11-18 |
