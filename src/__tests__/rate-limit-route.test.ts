@@ -34,7 +34,7 @@ const validStructured = {
   storeId: 'abc123',
   storeName: 'テスト店',
   storeAddress: '東京都',
-  businessHours: '10:00-23:00',
+  attributes: { businessHours: '10:00-23:00' },
 }
 
 describe('POST /api/report — レート制限', () => {

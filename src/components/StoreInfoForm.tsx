@@ -1,8 +1,8 @@
 'use client'
 
 import { useState, useEffect, type FormEvent, type ReactNode } from 'react'
-import type { Store, TernaryState } from '@/types/store'
-import type { CorrectionType } from '@/lib/report'
+import type { GameTitle, Store, TernaryState } from '@/types/store'
+import type { CorrectionType, StructuredAttributes } from '@/lib/report'
 import { HEADING_FONT_STYLE } from '@/lib/heading-font'
 import { getGameLabel } from '@/lib/marker-color'
 import { checkClientRateLimit, recordClientSubmission } from '@/lib/client-rate-limit'
@@ -39,6 +39,19 @@ function parseCount(v: string): number | undefined {
   if (t === '') return undefined
   const n = Number(t)
   return Number.isFinite(n) ? n : undefined
+}
+
+/** ゲーム別の入力からゲーム別マップを組む（未入力・その店に無いゲームは除く）。空なら undefined。 */
+function byGame<T>(
+  values: Partial<Record<GameTitle, T | '' | undefined>>,
+  games: readonly GameTitle[],
+): Partial<Record<GameTitle, T>> | undefined {
+  const out: Partial<Record<GameTitle, T>> = {}
+  for (const game of games) {
+    const v = values[game]
+    if (v !== undefined && v !== '') out[game] = v as T
+  }
+  return Object.keys(out).length > 0 ? out : undefined
 }
 
 /** すでに登録済みの項目に添えるバッジ（既存情報だと一目で分かるように・配色は既存の gray 系に統一） */
@@ -222,17 +235,26 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
       website,
     }
 
-    if (hasJojo && jojoNum !== undefined) payload.machineCountsJojoLs = jojoNum
-    if (hasGundam && gundamNum !== undefined) payload.machineCountsGundamExvs = gundamNum
-    if (businessHours.trim()) payload.businessHours = businessHours.trim()
-    if (floors.jojo !== undefined) payload.floorJojoLs = floors.jojo
-    if (floors.gundam !== undefined) payload.floorGundamExvs = floors.gundam
-    if (smoking !== '') payload.smoking = smoking
-    if (payments.length > 0) payload.payments = payments
-    if (hasJojo && recordingJojo !== '') payload.hasRecordingJojoLs = recordingJojo
-    if (hasGundam && recordingGundam !== '') payload.hasRecordingGundamExvs = recordingGundam
-    if (hasJojo && streamingJojo !== '') payload.hasStreamingJojoLs = streamingJojo
-    if (hasGundam && streamingGundam !== '') payload.hasStreamingGundamExvs = streamingGundam
+    // ゲーム別は OverrideEntry と同じマップで送る（ADR-0005）
+    const machineCounts = byGame({ 'jojo-ls': jojoNum, 'gundam-exvs': gundamNum }, store.games)
+    if (machineCounts) payload.machineCounts = machineCounts
+    const attributes: StructuredAttributes = {}
+    if (businessHours.trim()) attributes.businessHours = businessHours.trim()
+    const floorByGame = byGame({ 'jojo-ls': floors.jojo, 'gundam-exvs': floors.gundam }, store.games)
+    if (floorByGame) attributes.floorByGame = floorByGame
+    if (smoking !== '') attributes.smoking = smoking
+    if (payments.length > 0) attributes.payments = payments
+    const recording = byGame<TernaryState>(
+      { 'jojo-ls': recordingJojo, 'gundam-exvs': recordingGundam },
+      store.games,
+    )
+    if (recording) attributes.hasRecordingByGame = recording
+    const streaming = byGame<TernaryState>(
+      { 'jojo-ls': streamingJojo, 'gundam-exvs': streamingGundam },
+      store.games,
+    )
+    if (streaming) attributes.hasStreamingByGame = streaming
+    if (Object.keys(attributes).length > 0) payload.attributes = attributes
     if (correctionType !== '') payload.correctionType = correctionType
     if (correctionNote.trim()) payload.correctionNote = correctionNote.trim()
 
