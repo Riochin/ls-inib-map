@@ -55,6 +55,21 @@ describe('buildAboutPageJsonLd', () => {
   it('店舗を LocalBusiness としてマークアップしない', () => {
     expect(JSON.stringify(buildAboutPageJsonLd())).not.toContain('LocalBusiness')
   })
+
+  it('対応タイトルを VideoGame として、画面と同じ別名を alternateName に持つ', () => {
+    const { about } = buildAboutPageJsonLd()
+    expect(about).toHaveLength(2)
+    for (const game of ['gundam-exvs', 'jojo-ls'] as const) {
+      const n = GAME_NAMES[game]
+      const entry = about.find((a) => a.name === n.full)
+      expect(entry?.['@type']).toBe('VideoGame')
+      expect(entry?.alternateName).toEqual([n.short, ...n.aliases])
+    }
+  })
+
+  it('前作（オバブ）は alternateName に入れない', () => {
+    expect(JSON.stringify(buildAboutPageJsonLd())).not.toContain('オバブ')
+  })
 })
 
 describe('buildFaqPageJsonLd', () => {

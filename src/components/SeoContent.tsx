@@ -1,4 +1,5 @@
 import { getAreaPrefectures } from '@/lib/area'
+import { gameFullWithShort } from '@/lib/site-config'
 
 /**
  * トップページ（地図）専用の、検索エンジン／スクリーンリーダー向け本文とサイト内リンク。
@@ -29,8 +30,8 @@ export function SeoContent() {
       {/* 静的リンクのため、クライアントJS非依存の素の<a>を使う（area ページと同方針） */}
       {/* eslint-disable @next/next/no-html-link-for-pages */}
       <p>
-        ジョジョの奇妙な冒険 ラストサバイバー（ラスサバ）と機動戦士ガンダム EXTREME
-        VS.2 INFINITEBOOST（イニブ）の設置店舗を地図で検索できる非公式サイトです。
+        {gameFullWithShort('jojo-ls')}と{gameFullWithShort('gundam-exvs')}
+        の設置店舗を地図で検索できる非公式サイトです。
         タイトル別フィルタ・店舗名検索・都道府県／市区町村での絞り込み・現在地からの検索に対応。
         都道府県別の設置店舗は<a href="/area">エリア一覧</a>から、サイトの説明は
         <a href="/about">このサイトについて</a>から確認できます。

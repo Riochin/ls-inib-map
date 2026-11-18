@@ -1,4 +1,5 @@
 import { AUTHOR_NAME, X_URL, GAME_NAMES, gameFullWithShort, SITE_URL } from '@/lib/site-config'
+import type { GameTitle } from '@/types/store'
 
 /**
  * `/about`（このアプリについて）ページの SEO 用ヘルパー（純関数）。
@@ -71,6 +72,9 @@ export function buildAboutBreadcrumbJsonLd(siteUrl: string = ABOUT_SITE_URL) {
   }
 }
 
+/** `/about` の対応タイトル欄（AboutContent）と同じ並び（イニブ → ラスサバ）。 */
+const ABOUT_GAME_ORDER: readonly GameTitle[] = ['gundam-exvs', 'jojo-ls']
+
 /** ページ自体を表す AboutPage 構造化データ（著者 Person を sameAs=X で紐づけ・E-E-A-T）。 */
 export function buildAboutPageJsonLd(siteUrl: string = ABOUT_SITE_URL) {
   return {
@@ -84,6 +88,14 @@ export function buildAboutPageJsonLd(siteUrl: string = ABOUT_SITE_URL) {
       name: AUTHOR_NAME,
       sameAs: [X_URL],
     },
+    // 対応タイトル。別名は画面の「別名・表記：」と同じ GAME_NAMES から作る（画面と一致させる）。
+    // 前作（predecessor）は別名ではないため alternateName に入れない。
+    about: ABOUT_GAME_ORDER.map((game) => ({
+      '@type': 'VideoGame',
+      name: GAME_NAMES[game].full,
+      alternateName: [GAME_NAMES[game].short, ...GAME_NAMES[game].aliases],
+      gamePlatform: 'アーケード',
+    })),
   }
 }
 

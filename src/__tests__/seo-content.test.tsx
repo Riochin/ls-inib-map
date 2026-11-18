@@ -79,3 +79,20 @@ describe('SeoContent — 視覚的影響ゼロ', () => {
     expect(render()).toContain('sr-only')
   })
 })
+
+describe('SeoContent — タイトル名', () => {
+  it('両タイトルの正式名称と通称を説明文に含める', () => {
+    expect(render()).toContain(
+      'ジョジョの奇妙な冒険 ラストサバイバー（ラスサバ）と機動戦士ガンダム EXTREME VS.2 INFINITEBOOST（イニブ）の設置店舗を地図で検索できる非公式サイトです。',
+    )
+  })
+})
+
+describe('SeoContent — 隠しテキストに別名を足さない', () => {
+  it('読み上げ用本文に別名・前作の通称を出さない', () => {
+    const html = render()
+    for (const word of ['インフィニットブースト', 'エクバ', 'EXVS2IB', 'オバブ']) {
+      expect(html).not.toContain(word)
+    }
+  })
+})

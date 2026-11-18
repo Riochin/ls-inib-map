@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next'
+import { GAME_NAMES } from '@/lib/site-config'
 
 /**
  * Web アプリマニフェスト。Android/PWA で「ホーム画面に追加」したときの
@@ -9,8 +10,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'ラスサバ・イニブ 設置店舗マップ',
     short_name: 'ラストサバイニブ',
-    description:
-      'ジョジョの奇妙な冒険 ラストサバイバーと機動戦士ガンダム EXTREME VS.2 INFINITEBOOST の設置店舗を地図で検索。',
+    description: `${GAME_NAMES['jojo-ls'].full}と${GAME_NAMES['gundam-exvs'].full} の設置店舗を地図で検索。`,
     start_url: '/',
     display: 'standalone',
     background_color: '#ffffff',

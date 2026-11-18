@@ -1,11 +1,8 @@
 import type { Metadata, Viewport } from 'next'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { SITE_URL } from '@/lib/site-config'
+import { SITE_NAME, SITE_DESCRIPTION as DESCRIPTION, SITE_KEYWORDS, buildSiteJsonLd } from '@/lib/site-seo'
 import './globals.css'
-
-const SITE_NAME = 'ラスサバ・イニブ 設置店舗マップ'
-const DESCRIPTION =
-  'ジョジョの奇妙な冒険 ラストサバイバー（ラスサバ）と機動戦士ガンダム EXTREME VS.2 INFINITEBOOST（イニブ）の設置店舗を、全国47都道府県・約760店舗から地図で検索。公式サイトから自動更新しています。'
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -14,21 +11,7 @@ export const metadata: Metadata = {
     template: '%s｜ラスサバ・イニブ 設置店舗マップ',
   },
   description: DESCRIPTION,
-  keywords: [
-    'ラスサバ',
-    'ラストサバイバー',
-    'ジョジョの奇妙な冒険 ラストサバイバー',
-    'イニブ',
-    '機動戦士ガンダム EXTREME VS.2 INFINITEBOOST',
-    'ガンダム EXVS2',
-    '設置店舗',
-    '設置店',
-    '筐体',
-    'ゲームセンター',
-    'マップ',
-    '地図検索',
-    'ラストサバイニブ',
-  ],
+  keywords: SITE_KEYWORDS,
   alternates: {
     canonical: '/',
   },
@@ -61,23 +44,8 @@ export const metadata: Metadata = {
   },
 }
 
-/**
- * 構造化データ（JSON-LD）。サイト自体を表す WebApplication として宣言し、
- * リッチリザルト/サイトリンク等の対象になりやすくする。店舗（第三者施設・個別ページ無し）の
- * LocalBusiness 化はガイドライン上のリスクがあるため意図的に含めない。
- */
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebApplication',
-  name: SITE_NAME,
-  url: SITE_URL,
-  description: DESCRIPTION,
-  applicationCategory: 'ReferenceApplication',
-  operatingSystem: 'Web',
-  inLanguage: 'ja',
-  isAccessibleForFree: true,
-  offers: { '@type': 'Offer', price: '0', priceCurrency: 'JPY' },
-}
+/** 構造化データ（JSON-LD）。中身と方針は {@link buildSiteJsonLd} を参照。 */
+const jsonLd = buildSiteJsonLd()
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -103,7 +71,7 @@ export default function RootLayout({
           キャッチフレーズは 700、各セクション見出しは 500。
           固定文言（戦場選びを、サクッと10秒に。／ピンの見かた／台数の見かた／
           このサイトについて／データとプライバシー／その台数、「信じていい？」がわかる。／
-          情報の修正を報告／ありがとうございます！／フィルタタブ：すべて・ラサバ・イニブ／絞り込み）
+          情報の修正を報告／ありがとうございます！／フィルタタブ：すべて・ラスサバ・イニブ／絞り込み）
           の使用文字のみを &text= でサブセットし、数KBに絞って読み込む。本文・UI はシステムフォントのまま。
           ※見出しの文言を変更したら、この &text= も合わせて更新すること（共有スタイルは src/lib/heading-font.ts）。
         */}
