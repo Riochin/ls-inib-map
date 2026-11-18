@@ -11,7 +11,11 @@ const FACILITY_LABELS: Record<keyof Omit<FacilityFilter, 'minMachines'>, string>
   hasRecording: '録画台あり',
   hasSmoking: '喫煙所あり',
   openOnly: '営業中',
+  hasUnlimited: '無制限台あり',
 }
+
+/** 設備条件のチップ・要約の並び（絞り込み画面のチェックと同じ順） */
+const FACILITY_TOGGLE_KEYS = ['hasStreaming', 'hasRecording', 'hasSmoking', 'openOnly', 'hasUnlimited'] as const
 
 /** 現在かかっている絞り込み条件をチップの配列に展開する（地方→都県→市区→区→設備→充実度の順）。 */
 export function activeFilterChips(filter: StoreFilter): FilterChip[] {
@@ -24,7 +28,7 @@ export function activeFilterChips(filter: StoreFilter): FilterChip[] {
   for (const ward of address.wards) chips.push({ key: `ward:${ward}`, label: ward })
 
   if (facility.minMachines !== null) chips.push({ key: 'minMachines', label: `${facility.minMachines}台以上` })
-  for (const k of ['hasStreaming', 'hasRecording', 'hasSmoking', 'openOnly'] as const) {
+  for (const k of FACILITY_TOGGLE_KEYS) {
     if (facility[k]) chips.push({ key: `facility:${k}`, label: FACILITY_LABELS[k] })
   }
 
@@ -90,7 +94,7 @@ export function describeAddress(address: AddressFilter): string {
 export function describeFacility(facility: FacilityFilter): string {
   const parts: string[] = []
   if (facility.minMachines !== null) parts.push(`${facility.minMachines}台以上`)
-  for (const k of ['hasStreaming', 'hasRecording', 'hasSmoking', 'openOnly'] as const) {
+  for (const k of FACILITY_TOGGLE_KEYS) {
     if (facility[k]) parts.push(FACILITY_LABELS[k])
   }
   return parts.length > 0 ? parts.join('・') : '指定なし'

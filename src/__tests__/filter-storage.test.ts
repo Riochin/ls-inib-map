@@ -77,7 +77,14 @@ describe('saveFilter', () => {
 
 const SAMPLE_FILTER: StoreFilter = {
   address: { region: '関東', prefectures: ['東京都'], cities: ['新宿区'], wards: [] },
-  facility: { minMachines: 3, hasStreaming: true, hasRecording: false, hasSmoking: true, openOnly: true },
+  facility: {
+    minMachines: 3,
+    hasStreaming: true,
+    hasRecording: false,
+    hasSmoking: true,
+    openOnly: true,
+    hasUnlimited: true,
+  },
   completeness: 'poor',
 }
 

@@ -25,14 +25,20 @@ const GAME_LABEL = /** @type {Record<string, string>} */ ({
 
 const HASHTAG = '#ラストサバイニブ'
 
-/** 店舗詳細として変化を監視するフィールド。値はツイートに出さず店名だけ告知する。 */
+/**
+ * 店舗詳細として変化を監視するフィールド。値はツイートに出さず店名だけ告知する。
+ * キーは overrides.json のフィールド名（src/lib/store-attributes.ts の key）と一致させる。
+ */
 const DETAIL_FIELDS = [
   'businessHours',
   'floor',
+  'floorByGame',
   'smoking',
   'payments',
-  'hasRecording',
-  'hasStreaming',
+  'hasRecordingByGame',
+  'hasStreamingByGame',
+  'hasUnlimitedByGame',
+  'unlimitedCountByGame',
 ]
 
 /**

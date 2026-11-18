@@ -49,6 +49,7 @@ export type GAEventMap = {
     has_recording: boolean
     has_smoking: boolean
     open_only: boolean
+    has_unlimited: boolean
     completeness: string
     result_count: number
     is_filtered: boolean

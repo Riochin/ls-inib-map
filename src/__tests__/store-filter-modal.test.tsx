@@ -130,6 +130,7 @@ describe('AddressFilterModal — 設備・条件セクション', () => {
     expect(html).toContain('録画台')
     expect(html).toContain('喫煙所')
     expect(html).toContain('営業中')
+    expect(html).toContain('無制限台あり')
   })
 
   it('facility.hasStreaming が true のとき配信台チェックが checked', () => {
@@ -147,6 +148,15 @@ describe('AddressFilterModal — 設備・条件セクション', () => {
       facility: { ...EMPTY_STORE_FILTER.facility, openOnly: true },
     })
     expect(inputByName(html, 'facility-openOnly')).toContain('checked')
+  })
+
+  it('facility.hasUnlimited が true のとき無制限台チェックが checked（営業中のみの後ろ）', () => {
+    const html = render({
+      ...EMPTY_STORE_FILTER,
+      facility: { ...EMPTY_STORE_FILTER.facility, hasUnlimited: true },
+    })
+    expect(inputByName(html, 'facility-hasUnlimited')).toContain('checked')
+    expect(html.indexOf('facility-openOnly')).toBeLessThan(html.indexOf('facility-hasUnlimited'))
   })
 })
 

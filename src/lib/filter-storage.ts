@@ -93,6 +93,7 @@ function sanitizeFacility(raw: unknown): FacilityFilter {
     hasRecording: o.hasRecording === true,
     hasSmoking: o.hasSmoking === true,
     openOnly: o.openOnly === true,
+    hasUnlimited: o.hasUnlimited === true,
   }
 }
 

@@ -100,6 +100,25 @@ describe('filterStoresByFacility', () => {
 })
 
 describe('filterStoresByFacility（ゲーム連動）', () => {
+  it('無制限台あり（すべて）は、いずれかのゲームが yes の店だけ通す（unknown・未設定は除外）', () => {
+    const stores = [
+      store({ id: 'exvs', hasUnlimitedByGame: { 'jojo-ls': 'no', 'gundam-exvs': 'yes' } }),
+      store({ id: 'unknown', hasUnlimitedByGame: { 'gundam-exvs': 'unknown' } }),
+      store({ id: 'none' }),
+    ]
+    const result = filterStoresByFacility(stores, facility({ hasUnlimited: true }), 'all')
+    expect(result.map((s) => s.id)).toEqual(['exvs'])
+  })
+
+  it('無制限台あり＋ラスサバ選択は、イニブだけ無制限台ありの店を除外する', () => {
+    const stores = [
+      store({ id: 'ls', hasUnlimitedByGame: { 'jojo-ls': 'yes' } }),
+      store({ id: 'exvs-only', hasUnlimitedByGame: { 'jojo-ls': 'no', 'gundam-exvs': 'yes' } }),
+    ]
+    const result = filterStoresByFacility(stores, facility({ hasUnlimited: true }), 'jojo-ls')
+    expect(result.map((s) => s.id)).toEqual(['ls'])
+  })
+
   it('録画台あり＋ラスサバ選択は、イニブのみ録画台ありの店を除外する', () => {
     const stores = [
       store({ id: 'ls', hasRecordingByGame: { 'jojo-ls': 'yes', 'gundam-exvs': 'no' } }),

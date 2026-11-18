@@ -163,6 +163,8 @@ export interface FacilityFilter {
   hasSmoking: boolean
   /** 営業中のみ（closed/delisted を除外。時刻判定はしない） */
   openOnly: boolean
+  /** 無制限台あり（hasUnlimitedByGame のいずれかが 'yes'。台数では絞らない・ADR-0002） */
+  hasUnlimited: boolean
 }
 
 export const EMPTY_FACILITY_FILTER: FacilityFilter = {
@@ -171,6 +173,7 @@ export const EMPTY_FACILITY_FILTER: FacilityFilter = {
   hasRecording: false,
   hasSmoking: false,
   openOnly: false,
+  hasUnlimited: false,
 }
 
 /** 情報の充実度レベル（all＝すべて / rich＝充実 / poor＝不足） */

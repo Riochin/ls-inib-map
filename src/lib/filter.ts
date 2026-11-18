@@ -64,6 +64,7 @@ export function isStoreFilterActive(filter: StoreFilter): boolean {
     facility.hasStreaming ||
     facility.hasRecording ||
     facility.hasSmoking ||
-    facility.openOnly
+    facility.openOnly ||
+    facility.hasUnlimited
   return addressActive || facilityActive || completeness !== 'all'
 }
