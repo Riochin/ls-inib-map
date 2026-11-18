@@ -1,10 +1,11 @@
 'use client'
 
 import { useState, useCallback, useEffect, useRef } from 'react'
-import type { Store, GameTitle, StoreAttributeKey } from '@/types/store'
-import { formatDateJst, formatByGameTernary, formatFloorByGame } from '@/lib/info-display'
+import type { Store, GameTitle } from '@/types/store'
+import { formatDateJst, formatAttribute } from '@/lib/info-display'
+import { panelAttributes } from '@/lib/store-attributes'
 import { storesMeta } from '@/data/stores'
-import { getMarkerTheme, getGameLabel, getCountSourceInfo, getStoreStatusLabel, isConfirmedSource } from '@/lib/marker-color'
+import { getMarkerTheme, getGameLabel, getCountSourceInfo, getStoreStatusLabel } from '@/lib/marker-color'
 import { buildShareText } from '@/lib/share'
 import { CountBadge } from './CountBadge'
 import { trackEvent } from '@/lib/analytics'
@@ -13,12 +14,6 @@ interface StoreDetailPanelProps {
   store: Store
   onOpenInfoForm: () => void
   onClose: () => void
-}
-
-const TERNARY_LABELS: Record<string, string> = {
-  yes: 'あり',
-  no: 'なし',
-  unknown: '不明',
 }
 
 function AttributeRow({
@@ -100,30 +95,6 @@ export function StoreDetailPanel({ store, onOpenInfoForm, onClose }: StoreDetail
         ? 'コピーに失敗しました'
         : 'この店舗を共有'
 
-  // 確定は出どころが admin のときのみ。それ以外（公式/自動取得/みんなの報告/未登録）は未確認。
-  function unconfirmed(key: StoreAttributeKey): boolean {
-    return !isConfirmedSource(store.attributeSources?.[key])
-  }
-
-  const smokingValue = store.smoking !== undefined ? TERNARY_LABELS[store.smoking] : undefined
-  const recordingValue = formatByGameTernary({
-    games: store.games,
-    byGame: store.hasRecordingByGame,
-    unconfirmed: unconfirmed('hasRecordingByGame'),
-  })
-  const streamingValue = formatByGameTernary({
-    games: store.games,
-    byGame: store.hasStreamingByGame,
-    unconfirmed: unconfirmed('hasStreamingByGame'),
-  })
-  const paymentsValue = store.payments?.length ? store.payments.join('、') : undefined
-  const floor = formatFloorByGame({
-    games: store.games,
-    floorByGame: store.floorByGame,
-    storeWideFloor: store.floor,
-    unconfirmed: unconfirmed('floor'),
-  })
-
   return (
     <div className="p-4 text-sm text-gray-800">
       {/* ヘッダ：店名・状態ラベル・閉じるボタン */}
@@ -186,12 +157,19 @@ export function StoreDetailPanel({ store, onOpenInfoForm, onClose }: StoreDetail
 
       {/* 拡張属性一覧 */}
       <div className="bg-gray-50 rounded-xl px-3 py-0.5 mb-3">
-        <AttributeRow label="営業時間" value={store.businessHours} unconfirmed={unconfirmed('businessHours')} />
-        <AttributeRow label="フロア" value={floor.value} unconfirmed={floor.soft} preformatted />
-        <AttributeRow label="喫煙所" value={smokingValue} unconfirmed={unconfirmed('smoking')} />
-        <AttributeRow label="決済/電子マネー" value={paymentsValue} unconfirmed={unconfirmed('payments')} />
-        <AttributeRow label="録画台" value={recordingValue} unconfirmed={unconfirmed('hasRecordingByGame')} preformatted />
-        <AttributeRow label="配信台" value={streamingValue} unconfirmed={unconfirmed('hasStreamingByGame')} preformatted />
+        {panelAttributes('facility').map((def) => {
+          // 確定は出どころが admin のときのみ。それ以外（公式/自動取得/みんなの報告/未登録）は未確認。
+          const display = formatAttribute(store, def)
+          return (
+            <AttributeRow
+              key={def.key}
+              label={def.label}
+              value={display.value}
+              unconfirmed={display.soft}
+              preformatted={display.preformatted}
+            />
+          )
+        })}
       </div>
 
       {/* 補足（自由記述・運営編集の中立テキスト。確定/未確認の対象外） */}
