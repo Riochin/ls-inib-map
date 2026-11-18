@@ -52,6 +52,12 @@ jobs:
           GOOGLE_GEOCODING_API_KEY: ${{ secrets.GOOGLE_GEOCODING_API_KEY }}
         run: pnpm exec tsx scripts/pipeline.ts
 
+      # 新しい stores.json で公式の台数が基準値から変わった台数の上書きを一覧にする（ADR-0009）。
+      # マージ後はこれらの上書きが使われず公式の台数が出るため、PR 本文に載せて見直しを促す。
+      - name: 使われなくなる台数の上書きを一覧にする
+        id: stale
+        run: pnpm exec tsx scripts/report-stale-count-overrides.ts
+
       # 実体差分がある場合のみ PR を作成・更新する。差分ゲートにより stores.json は
       # 実体差分が無ければ書き換わらないため、変更が無ければ create-pull-request は
       # 何もせず PR を作らない（Req2.7）。ジオコードキャッシュの追記分も対象に含める。
@@ -74,6 +80,8 @@ jobs:
             - `scripts/cache/geocode.json`
 
             ${{ steps.pipeline.outputs.skipped_sites != '' && format('> ⚠️ 今回は {0}の公式サイトを取得できなかったため、{0}の店舗は前回の状態のままです。', steps.pipeline.outputs.skipped_sites) || '' }}
+
+            ${{ steps.stale.outputs.stale_count_overrides }}
 
             内容を確認のうえ問題なければマージしてください。マージで Vercel の本番デプロイが発火します。
 

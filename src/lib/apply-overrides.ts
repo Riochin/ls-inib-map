@@ -1,5 +1,6 @@
 import type { Store, GameTitle, StoreAttributeKey, Provenance } from '@/types/store'
 import type { OverridesFile, OverrideEntry } from '@/types/overrides'
+import { isCountOverrideStale, officialCount } from '@/lib/count-baseline'
 
 const GAME_TITLES: GameTitle[] = ['jojo-ls', 'gundam-exvs']
 
@@ -31,6 +32,8 @@ function mergeByGame<T>(
  *
  * - 店舗ID一致で {@link OverrideEntry} を適用し、上書きしたゲーム台数の出どころを
  *   `countSources` に記録する（表示側がユーザー報告/未確認の見た目を出すため）。
+ * - 公式の台数が基準値（`countBaselines`）から変わったゲームは、台数の上書きを使わず
+ *   公式の値をそのまま出す（ADR-0009。上書きの前提だった公式値が変わったため）。
  * - 入力は破壊せず、変更があった店舗のみ新オブジェクトを返す（read-only 構成を維持）。
  * - どの店舗にも当たらない override ID は陳腐化の可能性として `console.warn` する。
  *
@@ -77,6 +80,7 @@ function applyEntry(store: Store, entry: OverrideEntry): Store {
     const countSources = { ...store.countSources }
     for (const game of GAME_TITLES) {
       const value = entry.machineCounts[game]
+      if (isCountOverrideStale(officialCount(store, game), entry.countBaselines?.[game])) continue
       if (typeof value === 'number' && Number.isFinite(value)) {
         machineCounts[game] = value
         countSources[game] = countSource(game)
