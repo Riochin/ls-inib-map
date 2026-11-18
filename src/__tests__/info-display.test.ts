@@ -94,6 +94,30 @@ describe('formatByGameTernary', () => {
   })
 })
 
+describe('formatByGameTernary — 台数を添える（無制限台）', () => {
+  it('「あり」のゲームにだけ台数を添え、未確認は台数の後ろ', () => {
+    expect(
+      formatByGameTernary({
+        games: ['jojo-ls', 'gundam-exvs'],
+        byGame: { 'jojo-ls': 'no', 'gundam-exvs': 'yes' },
+        countByGame: { 'jojo-ls': 3, 'gundam-exvs': 4 },
+        unconfirmed: true,
+      }),
+    ).toBe('ラスサバ なし（未確認） ／ イニブ あり・4台（未確認）')
+  })
+
+  it('台数が無ければ「あり」のみ', () => {
+    expect(
+      formatByGameTernary({
+        games: ['gundam-exvs'],
+        byGame: { 'gundam-exvs': 'yes' },
+        countByGame: {},
+        unconfirmed: false,
+      }),
+    ).toBe('あり')
+  })
+})
+
 describe('formatFloorByGame', () => {
   it('複数タイトル店でゲーム別フロアをタイトル別に併記する', () => {
     const out = formatFloorByGame({

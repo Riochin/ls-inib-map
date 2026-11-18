@@ -23,3 +23,30 @@ describe('StoreInfoForm — アクセシビリティ', () => {
     expect(html).toContain('id="store-info-form-title"')
   })
 })
+
+describe('StoreInfoForm — 無制限台', () => {
+  it('配信台の下に無制限台の欄がある（説明文なし）', () => {
+    const html = renderToStaticMarkup(<StoreInfoForm store={store} onClose={noop} />)
+    expect(html).toContain('無制限台')
+    expect(html.indexOf('配信台')).toBeLessThan(html.indexOf('無制限台'))
+    // 「あり」でなければ台数欄は出さない
+    expect(html).not.toContain('台数（わかれば）')
+  })
+
+  it('登録済みで「あり」のゲームは台数欄を既存値つきで出す', () => {
+    const html = renderToStaticMarkup(
+      <StoreInfoForm
+        store={{
+          ...store,
+          games: ['jojo-ls', 'gundam-exvs'],
+          hasUnlimitedByGame: { 'jojo-ls': 'no', 'gundam-exvs': 'yes' },
+          unlimitedCountByGame: { 'gundam-exvs': 4 },
+        }}
+        onClose={noop}
+      />,
+    )
+    expect((html.match(/台数（わかれば）/g) ?? []).length).toBe(1)
+    expect(html).toContain('aria-label="無制限台の台数（イニブ）"')
+    expect(html).toMatch(/value="4"/)
+  })
+})

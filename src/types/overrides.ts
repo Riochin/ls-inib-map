@@ -56,6 +56,10 @@ export interface OverrideEntry {
   hasRecordingByGame?: Partial<Record<GameTitle, TernaryState>>
   /** ゲーム別 配信台の有無（任意。指定したゲームのみ置換する） */
   hasStreamingByGame?: Partial<Record<GameTitle, TernaryState>>
+  /** ゲーム別 無制限台の有無（任意。指定したゲームのみ置換する） */
+  hasUnlimitedByGame?: Partial<Record<GameTitle, TernaryState>>
+  /** ゲーム別 無制限台の台数（任意。指定したゲームのみ置換する。出どころは hasUnlimitedByGame と共有） */
+  unlimitedCountByGame?: Partial<Record<GameTitle, number>>
   /** 公式店舗ページURL（任意） */
   officialUrl?: string
 }

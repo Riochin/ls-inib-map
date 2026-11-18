@@ -132,6 +132,29 @@ export const STORE_ATTRIBUTES = [
     filterable: true,
   },
   {
+    // 無制限台（ADR-0002）。録画台・配信台と同じゲーム別三値で、「あり」のとき台数を添える
+    key: 'hasUnlimitedByGame',
+    sourceKey: 'hasUnlimitedByGame',
+    label: '無制限台',
+    scope: 'game',
+    kind: 'ternary',
+    panel: 'facility',
+    completeness: 'machineEquipment',
+    reportable: true,
+    filterable: true,
+  },
+  {
+    key: 'unlimitedCountByGame',
+    sourceKey: 'hasUnlimitedByGame',
+    label: '無制限台 台数',
+    scope: 'game',
+    kind: 'number',
+    min: 1,
+    max: 99,
+    parent: 'hasUnlimitedByGame',
+    reportable: true,
+  },
+  {
     // 詳細モーダルではリンクとして出すため行は作らない
     key: 'officialUrl',
     sourceKey: 'officialUrl',

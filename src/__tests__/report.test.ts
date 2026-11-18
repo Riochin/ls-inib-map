@@ -158,6 +158,23 @@ describe('buildStructuredStoreIssue', () => {
     expect(body).not.toContain('配信台')
   })
 
+  it('無制限台は有無と台数を別の行で出す（台数はゲーム別）', () => {
+    const { body } = buildStructuredStoreIssue({
+      ...base,
+      attributes: {
+        hasStreamingByGame: { 'gundam-exvs': 'no' },
+        hasUnlimitedByGame: { 'jojo-ls': 'no', 'gundam-exvs': 'yes' },
+        unlimitedCountByGame: { 'gundam-exvs': 4 },
+      },
+    })
+    expect(body).toContain('| 無制限台（ラスサバ） | なし |')
+    expect(body).toContain('| 無制限台（イニブ） | あり |')
+    expect(body).toContain('| 無制限台 台数（イニブ） | 4 |')
+    expect(body).not.toContain('無制限台 台数（ラスサバ）')
+    // 並びは配信台の後ろ
+    expect(body.indexOf('配信台（イニブ）')).toBeLessThan(body.indexOf('無制限台（ラスサバ）'))
+  })
+
   it('タイトルに店名が含まれる', () => {
     const { title } = buildStructuredStoreIssue(base)
     expect(title).toContain('テスト店')

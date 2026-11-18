@@ -258,6 +258,32 @@ describe('POST /api/report - mode=structured-store', () => {
     expect(sent.body).toContain('| フロア | 2F |')
   })
 
+  it('無制限台の台数が範囲外（0・100）なら400', async () => {
+    for (const n of [0, 100]) {
+      const res = await POST(
+        req({
+          ...baseStore,
+          attributes: { hasUnlimitedByGame: { 'gundam-exvs': 'yes' }, unlimitedCountByGame: { 'gundam-exvs': n } },
+        }),
+      )
+      expect(res.status).toBe(400)
+    }
+  })
+
+  it('無制限台の有無と台数で200・本文に2行出る', async () => {
+    const res = await POST(
+      req({
+        ...baseStore,
+        attributes: { hasUnlimitedByGame: { 'gundam-exvs': 'yes' }, unlimitedCountByGame: { 'gundam-exvs': 4 } },
+      }),
+    )
+    expect(res.status).toBe(200)
+    const [, init] = (fetch as unknown as { mock: { calls: [string, RequestInit][] } }).mock.calls[0]
+    const sent = JSON.parse(init.body as string)
+    expect(sent.body).toContain('| 無制限台（イニブ） | あり |')
+    expect(sent.body).toContain('| 無制限台 台数（イニブ） | 4 |')
+  })
+
   it('honeypot 充填は ok:true かつ fetch未呼出', async () => {
     const res = await POST(req({ ...baseStore, attributes: { businessHours: '10:00-23:00' }, website: 'bot' }))
     expect(res.status).toBe(200)

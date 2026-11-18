@@ -91,6 +91,16 @@ export interface Store {
   hasRecordingByGame?: Partial<Record<GameTitle, TernaryState>>
   /** ゲーム別 配信台の有無（任意。{@link Store.hasRecordingByGame} と同パターン） */
   hasStreamingByGame?: Partial<Record<GameTitle, TernaryState>>
+  /**
+   * ゲーム別 無制限台（交代なしで続けて遊べる台）の有無（任意。{@link Store.hasRecordingByGame} と
+   * 同パターン）。台の性質としてゲームごとに持つ（ADR-0002）。
+   */
+  hasUnlimitedByGame?: Partial<Record<GameTitle, TernaryState>>
+  /**
+   * ゲーム別 無制限台の台数（任意）。{@link Store.hasUnlimitedByGame} が `yes` のゲームに添える。
+   * 出どころは有無と共有（`attributeSources.hasUnlimitedByGame`）。
+   */
+  unlimitedCountByGame?: Partial<Record<GameTitle, number>>
   /** 公式店舗ページURL（例: "https://location.taito.co.jp/locs/stores/1234/"・任意） */
   officialUrl?: string
   /**
