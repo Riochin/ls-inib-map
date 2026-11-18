@@ -9,6 +9,7 @@ import { CountBadge } from '@/components/CountBadge'
 import { PairSchedulePanel } from '@/components/PairSchedulePanel'
 import type { GameTitle, Provenance, Store } from '@/types/store'
 import type { OverrideEntry, OverridesFile } from '@/types/overrides'
+import { hasOverrideContent, mergeFormEntry } from '@/lib/override-entry'
 
 const GAMES: GameTitle[] = ['jojo-ls', 'gundam-exvs']
 const SOURCES: Provenance[] = ['user-report', 'admin', 'auto-scrape', 'official']
@@ -66,10 +67,12 @@ function formFromEntry(entry: OverrideEntry): FormState {
   return f
 }
 
-/** フォーム → OverrideEntry（空項目は含めない）。上書き項目が無ければ null。 */
-function entryFromForm(f: FormState): OverrideEntry | null {
+/**
+ * フォーム → OverrideEntry（空項目は含めない）。フォームが扱う項目だけを返す。
+ * 既存エントリとの重ね合わせは {@link mergeFormEntry}、空かどうかは {@link hasOverrideContent} で見る。
+ */
+function entryFromForm(f: FormState): OverrideEntry {
   const entry: OverrideEntry = { source: f.source }
-  let hasOverride = false
 
   const counts: Partial<Record<GameTitle, number>> = {}
   for (const g of GAMES) {
@@ -81,45 +84,36 @@ function entryFromForm(f: FormState): OverrideEntry | null {
   }
   if (Object.keys(counts).length > 0) {
     entry.machineCounts = counts
-    hasOverride = true
   }
 
   const trimmedNote = f.note.trim()
   if (trimmedNote) entry.note = trimmedNote
   const trimmedRemarks = f.remarks.trim()
   if (trimmedRemarks) {
-    // 補足は公開表示される実データ＝これ単体でも有効な override とみなす
     entry.remarks = trimmedRemarks
-    hasOverride = true
   }
   if (f.closed) {
     entry.closed = true
-    hasOverride = true
   }
   if (f.delisted) {
     entry.delisted = true
-    hasOverride = true
   }
   if (f.name.trim()) {
     entry.name = f.name.trim()
-    hasOverride = true
   }
   if (f.address.trim()) {
     entry.address = f.address.trim()
-    hasOverride = true
   }
   const lat = Number(f.lat)
   if (f.lat.trim() && Number.isFinite(lat)) {
     entry.lat = lat
-    hasOverride = true
   }
   const lng = Number(f.lng)
   if (f.lng.trim() && Number.isFinite(lng)) {
     entry.lng = lng
-    hasOverride = true
   }
 
-  return hasOverride ? entry : null
+  return entry
 }
 
 export function OverridesAdmin() {
@@ -209,14 +203,19 @@ export function OverridesAdmin() {
 
   async function save() {
     if (!selected) return
-    const entry = entryFromForm(form)
-    if (!entry) {
+    const formEntry = entryFromForm(form)
+    // フォームに無い項目（営業時間・録画台など）は既存エントリのまま残す
+    const preview = mergeFormEntry(file.overrides[selected.id], formEntry, selected.name)
+    if (!hasOverrideContent(preview)) {
       setStatus('上書きする項目がありません（台数・閉店・移設・店名等のいずれかを入力）')
       return
     }
     await persist(
       (current) => ({
-        overrides: { ...current.overrides, [selected.id]: { note: selected.name, ...entry } },
+        overrides: {
+          ...current.overrides,
+          [selected.id]: mergeFormEntry(current.overrides[selected.id], formEntry, selected.name),
+        },
       }),
       `保存しました: ${selected.name} (${selected.id})`,
     )

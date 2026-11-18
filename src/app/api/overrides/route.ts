@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { promises as fs } from 'node:fs'
 import path from 'node:path'
 import type { OverridesFile, OverrideEntry } from '@/types/overrides'
-import type { GameTitle, Provenance } from '@/types/store'
+import { sanitizeOverrideEntry } from '@/lib/override-entry'
 
 /**
  * 手動オーバーライド（src/data/overrides.json）の読み書きAPI。
@@ -14,8 +14,6 @@ import type { GameTitle, Provenance } from '@/types/store'
 export const dynamic = 'force-dynamic'
 
 const OVERRIDES_PATH = path.join(process.cwd(), 'src', 'data', 'overrides.json')
-const PROVENANCES: Provenance[] = ['official', 'auto-scrape', 'user-report', 'admin']
-const GAME_TITLES: GameTitle[] = ['jojo-ls', 'gundam-exvs']
 
 /** 本番では利用不可。ガードに引っかかれば 404 レスポンスを返す。 */
 function blockInProduction(): NextResponse | null {
@@ -83,7 +81,7 @@ async function readOverrides(): Promise<OverridesFile> {
     // 1件の不正エントリでファイル全体を破棄しないよう、個別にスキップする
     const overrides: Record<string, OverrideEntry> = {}
     for (const [id, entryRaw] of Object.entries(overridesRaw as Record<string, unknown>)) {
-      const entry = validateEntry(entryRaw)
+      const entry = sanitizeOverrideEntry(entryRaw)
       if (entry) overrides[id] = entry
     }
     return { overrides }
@@ -112,38 +110,9 @@ function validateFile(body: unknown): OverridesFile | null {
 
   const overrides: Record<string, OverrideEntry> = {}
   for (const [id, entryRaw] of Object.entries(overridesRaw as Record<string, unknown>)) {
-    const entry = validateEntry(entryRaw)
+    const entry = sanitizeOverrideEntry(entryRaw)
     if (!entry) return null
     overrides[id] = entry
   }
   return { overrides }
-}
-
-function validateEntry(raw: unknown): OverrideEntry | null {
-  if (!raw || typeof raw !== 'object') return null
-  const r = raw as Record<string, unknown>
-  if (!PROVENANCES.includes(r.source as Provenance)) return null
-
-  const entry: OverrideEntry = { source: r.source as Provenance }
-
-  if (typeof r.note === 'string' && r.note.trim()) entry.note = r.note
-  if (typeof r.updatedAt === 'string' && r.updatedAt.trim()) entry.updatedAt = r.updatedAt
-
-  if (r.machineCounts && typeof r.machineCounts === 'object') {
-    const counts: Partial<Record<GameTitle, number>> = {}
-    for (const game of GAME_TITLES) {
-      const v = (r.machineCounts as Record<string, unknown>)[game]
-      if (typeof v === 'number' && Number.isFinite(v)) counts[game] = v
-    }
-    if (Object.keys(counts).length > 0) entry.machineCounts = counts
-  }
-
-  if (typeof r.closed === 'boolean') entry.closed = r.closed
-  if (typeof r.delisted === 'boolean') entry.delisted = r.delisted
-  if (typeof r.name === 'string' && r.name.trim()) entry.name = r.name
-  if (typeof r.address === 'string' && r.address.trim()) entry.address = r.address
-  if (typeof r.lat === 'number' && Number.isFinite(r.lat)) entry.lat = r.lat
-  if (typeof r.lng === 'number' && Number.isFinite(r.lng)) entry.lng = r.lng
-
-  return entry
 }
