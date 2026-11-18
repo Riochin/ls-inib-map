@@ -76,7 +76,7 @@ describe('buildStructuredStoreIssue', () => {
   }
 
   it('入力済みフィールドのみが本文に出力される（businessHours）', () => {
-    const { body } = buildStructuredStoreIssue({ ...base, businessHours: '10:00-23:00' })
+    const { body } = buildStructuredStoreIssue({ ...base, attributes: { businessHours: '10:00-23:00' } })
     expect(body).toContain('10:00-23:00')
   })
 
@@ -87,33 +87,39 @@ describe('buildStructuredStoreIssue', () => {
   })
 
   it('部分入力（smoking のみ）で smoking のみ出力する', () => {
-    const { body } = buildStructuredStoreIssue({ ...base, smoking: 'no' })
+    const { body } = buildStructuredStoreIssue({ ...base, attributes: { smoking: 'no' } })
     expect(body).toContain('喫煙所')
     expect(body).not.toContain('営業時間')
     expect(body).not.toContain('フロア')
   })
 
   it('payments 配列をカンマ区切りで整形する', () => {
-    const { body } = buildStructuredStoreIssue({ ...base, payments: ['Suica', 'PayPay', 'iD'] })
+    const { body } = buildStructuredStoreIssue({ ...base, attributes: { payments: ['Suica', 'PayPay', 'iD'] } })
     expect(body).toContain('Suica')
     expect(body).toContain('PayPay')
     expect(body).toContain('iD')
   })
 
-  it('machineCountsJojoLs を本文に含める', () => {
-    const { body } = buildStructuredStoreIssue({ ...base, machineCountsJojoLs: 3 })
+  it('machineCounts を本文に含める', () => {
+    const { body } = buildStructuredStoreIssue({ ...base, machineCounts: { 'jojo-ls': 3 } })
     expect(body).toContain('3')
   })
 
   it('フロアが両ゲーム同値なら1行（フロア）にまとめる', () => {
-    const { body } = buildStructuredStoreIssue({ ...base, floorJojoLs: '2F', floorGundamExvs: '2F' })
+    const { body } = buildStructuredStoreIssue({
+      ...base,
+      attributes: { floorByGame: { 'jojo-ls': '2F', 'gundam-exvs': '2F' } },
+    })
     expect(body).toContain('| フロア | 2F |')
     expect(body).not.toContain('フロア（ラスサバ）')
     expect(body).not.toContain('フロア（イニブ）')
   })
 
   it('フロアが別値ならタイトル別の2行で出力する', () => {
-    const { body } = buildStructuredStoreIssue({ ...base, floorJojoLs: '2F', floorGundamExvs: '3F' })
+    const { body } = buildStructuredStoreIssue({
+      ...base,
+      attributes: { floorByGame: { 'jojo-ls': '2F', 'gundam-exvs': '3F' } },
+    })
     expect(body).toContain('フロア（ラスサバ）')
     expect(body).toContain('2F')
     expect(body).toContain('フロア（イニブ）')
@@ -122,7 +128,7 @@ describe('buildStructuredStoreIssue', () => {
   })
 
   it('片方のゲームのフロアのみ入力されたときはそのタイトルだけ出力する', () => {
-    const { body } = buildStructuredStoreIssue({ ...base, floorGundamExvs: '4F' })
+    const { body } = buildStructuredStoreIssue({ ...base, attributes: { floorByGame: { 'gundam-exvs': '4F' } } })
     expect(body).toContain('フロア（イニブ）')
     expect(body).toContain('4F')
     expect(body).not.toContain('フロア（ラスサバ）')
@@ -136,18 +142,54 @@ describe('buildStructuredStoreIssue', () => {
   it('録画台/配信台はタイトル別の行で出力する', () => {
     const { body } = buildStructuredStoreIssue({
       ...base,
-      hasRecordingGundamExvs: 'yes',
-      hasStreamingJojoLs: 'no',
+      attributes: {
+        hasRecordingByGame: { 'gundam-exvs': 'yes' },
+        hasStreamingByGame: { 'jojo-ls': 'no' },
+      },
     })
     expect(body).toContain('録画台（イニブ）')
     expect(body).toContain('配信台（ラスサバ）')
   })
 
   it('入力されたタイトルの録画台/配信台のみ出力する', () => {
-    const { body } = buildStructuredStoreIssue({ ...base, hasRecordingJojoLs: 'unknown' })
+    const { body } = buildStructuredStoreIssue({ ...base, attributes: { hasRecordingByGame: { 'jojo-ls': 'unknown' } } })
     expect(body).toContain('録画台（ラスサバ）')
     expect(body).not.toContain('録画台（イニブ）')
     expect(body).not.toContain('配信台')
+  })
+
+  it('無制限台は有無と台数を別の行で出す（台数はゲーム別）', () => {
+    const { body } = buildStructuredStoreIssue({
+      ...base,
+      attributes: {
+        hasStreamingByGame: { 'gundam-exvs': 'no' },
+        hasUnlimitedByGame: { 'jojo-ls': 'no', 'gundam-exvs': 'yes' },
+        unlimitedCountByGame: { 'gundam-exvs': 4 },
+      },
+    })
+    expect(body).toContain('| 無制限台（ラスサバ） | なし |')
+    expect(body).toContain('| 無制限台（イニブ） | あり |')
+    expect(body).toContain('| 無制限台 台数（イニブ） | 4 |')
+    expect(body).not.toContain('無制限台 台数（ラスサバ）')
+    // 並びは配信台の後ろ
+    expect(body.indexOf('配信台（イニブ）')).toBeLessThan(body.indexOf('無制限台（ラスサバ）'))
+  })
+
+  it('店のサービスは有無と内容をゲーム別の行で出す（無制限台の後ろ）', () => {
+    const { body } = buildStructuredStoreIssue({
+      ...base,
+      attributes: {
+        hasUnlimitedByGame: { 'gundam-exvs': 'yes' },
+        creditServiceByGame: { 'jojo-ls': 'no', 'gundam-exvs': 'yes' },
+        creditServiceNoteByGame: { 'gundam-exvs': '100円2クレ | 平日' },
+        rentalByGame: { 'gundam-exvs': 'unknown' },
+      },
+    })
+    expect(body).toContain('| クレジットサービス（ラスサバ） | なし |')
+    expect(body).toContain('| クレジットサービス（イニブ） | あり |')
+    expect(body).toContain('| クレジットサービス 内容（イニブ） | 100円2クレ \\| 平日 |')
+    expect(body).toContain('| 貸切（イニブ） | 不明 |')
+    expect(body.indexOf('無制限台（イニブ）')).toBeLessThan(body.indexOf('クレジットサービス（ラスサバ）'))
   })
 
   it('タイトルに店名が含まれる', () => {
@@ -187,7 +229,7 @@ describe('buildStructuredStoreIssue', () => {
   it('テーブルセル内の | をエスケープし、改行を空白へ潰す（行崩れ防止）', () => {
     const { body } = buildStructuredStoreIssue({
       ...base,
-      businessHours: '10:00-23:00 | 不定休',
+      attributes: { businessHours: '10:00-23:00 | 不定休' },
       correctionNote: '1行目\n2行目',
     })
     // 生の | はセル区切りなのでエスケープされている
@@ -203,5 +245,110 @@ describe('buildStructuredStoreIssue', () => {
 describe('定数', () => {
   it('FEEDBACK_LABEL は アプリ要望', () => {
     expect(FEEDBACK_LABEL).toBe('アプリ要望')
+  })
+})
+
+// --------  Issue 本文スナップショット（ver2.6 属性レジストリ化の前後で一致させる基準）  --------
+
+describe('buildStructuredStoreIssue — 本文スナップショット', () => {
+  const base: StructuredStoreInput = {
+    storeId: 'store-001',
+    storeName: 'テスト店',
+    storeAddress: '東京都新宿区1-1-1',
+  }
+
+  it('全項目入り（両ゲーム同フロア）', () => {
+    const { title, body } = buildStructuredStoreIssue({
+      ...base,
+      reporter: 'myid',
+      noMention: true,
+      machineCounts: { 'jojo-ls': 3, 'gundam-exvs': 0 },
+      attributes: {
+        businessHours: '10:00〜23:00',
+        floorByGame: { 'jojo-ls': '2F', 'gundam-exvs': '2F' },
+        smoking: 'unknown',
+        payments: ['PayPay', 'iD'],
+        hasRecordingByGame: { 'jojo-ls': 'yes', 'gundam-exvs': 'yes' },
+        hasStreamingByGame: { 'jojo-ls': 'no', 'gundam-exvs': 'unknown' },
+      },
+      correctionType: '位置ズレ',
+      correctionNote: 'ピンが南側にずれています',
+    })
+    expect(title).toMatchInlineSnapshot(`"[ユーザー報告] テスト店 — 店舗情報の提供"`)
+    expect(body).toMatchInlineSnapshot(`
+      "[自動投稿] アプリ内「情報を提供」フォームからの報告です。
+
+      - store-id: store-001
+      - 店名: テスト店
+      - 住所: 東京都新宿区1-1-1
+      - SNS ID: myid
+      - 確定可否: SNS ID提供あり → 確定可能
+      - お礼リプライ: 不可（メンション希望なし）
+
+      ## 提案値一覧
+      | 項目 | 提案値 |
+      |------|--------|
+      | ジョジョ台数 | 3 |
+      | イニブ台数 | 0 |
+      | 営業時間 | 10:00〜23:00 |
+      | フロア | 2F |
+      | 喫煙所 | 不明 |
+      | 決済/電子マネー | PayPay, iD |
+      | 録画台（ラスサバ） | あり |
+      | 録画台（イニブ） | あり |
+      | 配信台（ラスサバ） | なし |
+      | 配信台（イニブ） | 不明 |
+      | 修正・通報種別 | 位置ズレ |
+      | 修正・通報メモ | ピンが南側にずれています |"
+    `)
+  })
+
+  it('別フロア・片方のゲームだけの設備', () => {
+    const { body } = buildStructuredStoreIssue({
+      ...base,
+      attributes: {
+        floorByGame: { 'jojo-ls': '2F', 'gundam-exvs': '3F' },
+        hasStreamingByGame: { 'gundam-exvs': 'yes' },
+      },
+    })
+    expect(body).toMatchInlineSnapshot(`
+      "[自動投稿] アプリ内「情報を提供」フォームからの報告です。
+
+      - store-id: store-001
+      - 店名: テスト店
+      - 住所: 東京都新宿区1-1-1
+      - SNS ID: （未記入）
+      - 確定可否: SNS ID未記入 → 未確認（みんなの報告）扱い
+      - お礼リプライ: —
+
+      ## 提案値一覧
+      | 項目 | 提案値 |
+      |------|--------|
+      | フロア（ラスサバ） | 2F |
+      | フロア（イニブ） | 3F |
+      | 配信台（イニブ） | あり |"
+    `)
+  })
+
+  it('片方のゲームのフロアだけ・決済は空配列', () => {
+    const { body } = buildStructuredStoreIssue({
+      ...base,
+      attributes: { floorByGame: { 'gundam-exvs': '4F' }, payments: [] },
+    })
+    expect(body).toMatchInlineSnapshot(`
+      "[自動投稿] アプリ内「情報を提供」フォームからの報告です。
+
+      - store-id: store-001
+      - 店名: テスト店
+      - 住所: 東京都新宿区1-1-1
+      - SNS ID: （未記入）
+      - 確定可否: SNS ID未記入 → 未確認（みんなの報告）扱い
+      - お礼リプライ: —
+
+      ## 提案値一覧
+      | 項目 | 提案値 |
+      |------|--------|
+      | フロア（イニブ） | 4F |"
+    `)
   })
 })

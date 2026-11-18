@@ -347,4 +347,45 @@ describe('applyOverrides - 新属性（attributeSources）', () => {
     })
     expect(stores[0]).toEqual(before)
   })
+
+  it('無制限台の有無と台数をゲーム単位でマージし、出どころは有無のキーで1つ', () => {
+    const stores = [
+      makeStore({
+        hasUnlimitedByGame: { 'jojo-ls': 'no' },
+        unlimitedCountByGame: { 'jojo-ls': 1 },
+      }),
+    ]
+    const file: OverridesFile = {
+      overrides: {
+        abc123: {
+          source: 'user-report',
+          hasUnlimitedByGame: { 'gundam-exvs': 'yes' },
+          unlimitedCountByGame: { 'gundam-exvs': 4 },
+        },
+      },
+    }
+    const [s] = applyOverrides(stores, file)
+    expect(s.hasUnlimitedByGame).toEqual({ 'jojo-ls': 'no', 'gundam-exvs': 'yes' })
+    expect(s.unlimitedCountByGame).toEqual({ 'jojo-ls': 1, 'gundam-exvs': 4 })
+    expect(s.attributeSources).toEqual({ hasUnlimitedByGame: 'user-report' })
+  })
+
+  it('店のサービスの有無と内容をゲーム単位でマージし、出どころは有無のキーで1つ', () => {
+    const stores = [makeStore({ creditServiceByGame: { 'jojo-ls': 'yes' }, creditServiceNoteByGame: { 'jojo-ls': '100円3クレ' } })]
+    const file: OverridesFile = {
+      overrides: {
+        abc123: {
+          source: 'admin',
+          creditServiceByGame: { 'gundam-exvs': 'yes' },
+          creditServiceNoteByGame: { 'gundam-exvs': '100円2クレ' },
+          rentalByGame: { 'gundam-exvs': 'no' },
+        },
+      },
+    }
+    const [s] = applyOverrides(stores, file)
+    expect(s.creditServiceByGame).toEqual({ 'jojo-ls': 'yes', 'gundam-exvs': 'yes' })
+    expect(s.creditServiceNoteByGame).toEqual({ 'jojo-ls': '100円3クレ', 'gundam-exvs': '100円2クレ' })
+    expect(s.rentalByGame).toEqual({ 'gundam-exvs': 'no' })
+    expect(s.attributeSources).toEqual({ creditServiceByGame: 'admin', rentalByGame: 'admin' })
+  })
 })

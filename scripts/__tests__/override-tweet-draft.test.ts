@@ -47,6 +47,20 @@ describe('detectChanges', () => {
     expect(c.find((x) => x.id === 's3')).toMatchObject({ counts: false, pos: true, details: false })
   })
 
+  it('ゲーム別の設備（録画台・無制限台）の変化を詳細の変化として検知する', () => {
+    const before = {
+      s1: { source: 'admin', hasRecordingByGame: { 'jojo-ls': 'no' } },
+      s2: { source: 'admin' },
+    }
+    const after = {
+      s1: { source: 'admin', hasRecordingByGame: { 'jojo-ls': 'yes' } },
+      s2: { source: 'admin', hasUnlimitedByGame: { 'gundam-exvs': 'yes' }, unlimitedCountByGame: { 'gundam-exvs': 4 } },
+    }
+    const c = detectChanges(before, after)
+    expect(c.find((x) => x.id === 's1')).toMatchObject({ details: true })
+    expect(c.find((x) => x.id === 's2')).toMatchObject({ details: true })
+  })
+
   it('閉店フラグの立ち上がりを台数変化として検知する', () => {
     const c = detectChanges({ s1: { source: 'admin' } }, { s1: { source: 'admin', closed: true } })
     expect(c[0].counts).toBe(true)

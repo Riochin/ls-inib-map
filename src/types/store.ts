@@ -1,3 +1,5 @@
+import type { AttributeSourceKey } from '@/lib/store-attributes'
+
 /** ゲームタイトル識別子 */
 export type GameTitle = 'jojo-ls' | 'gundam-exvs'
 
@@ -13,15 +15,11 @@ export type Provenance = 'official' | 'auto-scrape' | 'user-report' | 'admin'
 /** 三値状態（あり / なし / 不明） */
 export type TernaryState = 'yes' | 'no' | 'unknown'
 
-/** 店舗属性キー（attributeSources で provenance を管理する対象） */
-export type StoreAttributeKey =
-  | 'businessHours'
-  | 'floor'
-  | 'smoking'
-  | 'payments'
-  | 'hasRecordingByGame'
-  | 'hasStreamingByGame'
-  | 'officialUrl'
+/**
+ * 店舗属性キー（attributeSources で provenance を管理する対象）。
+ * 属性レジストリ（`@/lib/store-attributes`）の `sourceKey` から導出する。
+ */
+export type StoreAttributeKey = AttributeSourceKey
 
 /** 設置店舗 */
 export interface Store {
@@ -93,6 +91,30 @@ export interface Store {
   hasRecordingByGame?: Partial<Record<GameTitle, TernaryState>>
   /** ゲーム別 配信台の有無（任意。{@link Store.hasRecordingByGame} と同パターン） */
   hasStreamingByGame?: Partial<Record<GameTitle, TernaryState>>
+  /**
+   * ゲーム別 無制限台（交代なしで続けて遊べる台）の有無（任意。{@link Store.hasRecordingByGame} と
+   * 同パターン）。台の性質としてゲームごとに持つ（ADR-0002）。
+   */
+  hasUnlimitedByGame?: Partial<Record<GameTitle, TernaryState>>
+  /**
+   * ゲーム別 無制限台の台数（任意）。{@link Store.hasUnlimitedByGame} が `yes` のゲームに添える。
+   * 出どころは有無と共有（`attributeSources.hasUnlimitedByGame`）。
+   */
+  unlimitedCountByGame?: Partial<Record<GameTitle, number>>
+  /**
+   * ゲーム別 クレジットサービス（100円2クレなど）の有無（任意。{@link Store.hasRecordingByGame} と
+   * 同パターン）。店の料金の決まりとして「店のサービス」枠に出す（ADR-0003）。
+   */
+  creditServiceByGame?: Partial<Record<GameTitle, TernaryState>>
+  /**
+   * ゲーム別 クレジットサービスの内容（任意・各100文字まで。{@link Store.floorByGame} と同じ持ち方）。
+   * 自由記述のため確定/未確認の対象外で中立表示する。出どころのキーは有無と共有。
+   */
+  creditServiceNoteByGame?: Partial<Record<GameTitle, string>>
+  /** ゲーム別 貸切の有無（任意。{@link Store.creditServiceByGame} と同パターン） */
+  rentalByGame?: Partial<Record<GameTitle, TernaryState>>
+  /** ゲーム別 貸切の内容（任意・各100文字まで。{@link Store.creditServiceNoteByGame} と同パターン） */
+  rentalNoteByGame?: Partial<Record<GameTitle, string>>
   /** 公式店舗ページURL（例: "https://location.taito.co.jp/locs/stores/1234/"・任意） */
   officialUrl?: string
   /**
@@ -155,6 +177,8 @@ export interface FacilityFilter {
   hasSmoking: boolean
   /** 営業中のみ（closed/delisted を除外。時刻判定はしない） */
   openOnly: boolean
+  /** 無制限台あり（hasUnlimitedByGame のいずれかが 'yes'。台数では絞らない・ADR-0002） */
+  hasUnlimited: boolean
 }
 
 export const EMPTY_FACILITY_FILTER: FacilityFilter = {
@@ -163,6 +187,7 @@ export const EMPTY_FACILITY_FILTER: FacilityFilter = {
   hasRecording: false,
   hasSmoking: false,
   openOnly: false,
+  hasUnlimited: false,
 }
 
 /** 情報の充実度レベル（all＝すべて / rich＝充実 / poor＝不足） */

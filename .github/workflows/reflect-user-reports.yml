@@ -87,6 +87,13 @@ jobs:
               （`user-report`/`official`/`auto-scrape`）＝未確認バッジ表示。
               フィールド個別に変えたいときは `attributeSources` / `countSources` を使う。
             - ゲーム対応: ラスサバ/ジョジョ = `jojo-ls`、イニブ = `gundam-exvs`。
+            - 提案値一覧の項目ラベルと overrides.json のフィールド名の対応は、属性レジストリ
+              `src/lib/store-attributes.ts`（`STORE_ATTRIBUTES` の `label` → `key`）を読んで決める。
+              「ラベル（イニブ）」の行はゲーム別フィールドの該当ゲームへ入れる（例「無制限台（イニブ）」→
+              `hasUnlimitedByGame["gundam-exvs"]`、「無制限台 台数（イニブ）」→ `unlimitedCountByGame["gundam-exvs"]`）。
+              台数行「ジョジョ台数」「イニブ台数」は `machineCounts`。「フロア」（ゲーム名なし）は両ゲーム共通のフロア。
+            - 付随フィールドの出どころは本体のキーで1つ（台数は `hasUnlimitedByGame`、内容は
+              `creditServiceByGame` / `rentalByGame` の `attributeSources` に従う）。
             - 自由記述の補足は **公開用 `remarks`**（中立テキスト）に書く。内部メモ `note` とは別物で、
               `note` には SNS ID・Issue番号・運用判断など非公開情報を残してよいが、`remarks` には書かない。
 
@@ -95,7 +102,10 @@ jobs:
                各 Issue を `gh issue view <番号>` で読む。
             2. 各 Issue 本文の store-id と「提案値一覧」を読み、`overrides.json` の該当エントリを
                追記/更新する（既存エントリがあればマージ。無ければ新規キーを末尾に追加）。
-               - 台数/営業時間/フロア/喫煙所/決済/録画台/配信台などを提案値どおりに反映。
+               - 台数/営業時間/フロア/喫煙所/決済/録画台/配信台/無制限台/クレジットサービス/貸切などを提案値どおりに反映。
+               - 「クレジットサービス 内容」「貸切 内容」の自由記述は、SNS ID・URL・個人を特定できる情報を除いた
+                 中立な1文（100文字以内）に整え、ゲーム別の専用欄（`creditServiceNoteByGame` / `rentalNoteByGame`）へ入れる。
+                 `remarks` には入れない。そのゲームの有無が「あり」でない内容は反映しない。
                  値は表記を整える（例「10時〜3時」→「10:00〜翌3:00」、「9:00〜0:00」→「9:00〜翌0:00」）。
                - 「確定可否」が「確定可能（SNS ID提供あり）」の Issue は `source: "admin"`、
                  SNS未記入は `source: "user-report"`。1エントリ内で確信度が違うときは

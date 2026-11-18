@@ -1,12 +1,12 @@
 import type { StoresMeta } from '@/types/stores-file'
-import type { GameTitle, TernaryState } from '@/types/store'
-import { getGameLabel } from '@/lib/marker-color'
-
-const TERNARY_LABELS: Record<TernaryState, string> = {
-  yes: 'あり',
-  no: 'なし',
-  unknown: '不明',
-}
+import type { GameTitle, Store, StoreAttributeKey, TernaryState } from '@/types/store'
+import { getGameLabel, isConfirmedSource } from '@/lib/marker-color'
+import {
+  TERNARY_LABELS,
+  childAttributes,
+  readAttribute,
+  type AttributeDef,
+} from '@/lib/store-attributes'
 
 /**
  * ゲーム別の三値（録画台/配信台）を店舗詳細パネル用の文字列に整形する。
@@ -20,10 +20,13 @@ const TERNARY_LABELS: Record<TernaryState, string> = {
 export function formatByGameTernary({
   games,
   byGame,
+  countByGame,
   unconfirmed,
 }: {
   games: readonly GameTitle[]
   byGame: Partial<Record<GameTitle, TernaryState>> | undefined
+  /** ゲーム別の台数（任意）。`yes` のセグメントに「あり・4台」の形で添える（無制限台） */
+  countByGame?: Partial<Record<GameTitle, number>>
   /** 出どころが admin 以外（未確認）か。yes/no のセグメントに「（未確認）」を付けるかの判定 */
   unconfirmed: boolean
 }): string | undefined {
@@ -34,7 +37,9 @@ export function formatByGameTernary({
     const value = byGame[game]
     if (value === undefined) continue
     const suffix = unconfirmed && value !== 'unknown' ? '（未確認）' : ''
-    const label = `${TERNARY_LABELS[value]}${suffix}`
+    const count = value === 'yes' ? countByGame?.[game] : undefined
+    const countLabel = count !== undefined ? `・${count}台` : ''
+    const label = `${TERNARY_LABELS[value]}${countLabel}${suffix}`
     segments.push(multi ? `${getGameLabel(game)} ${label}` : label)
   }
   return segments.length > 0 ? segments.join(' ／ ') : undefined
@@ -86,6 +91,115 @@ export function formatFloorByGame({
 
   const segments = resolved.map((r) => `${getGameLabel(r.game)} ${r.value}${suffix}`)
   return { value: segments.join(' ／ '), soft: unconfirmed }
+}
+
+/** 行の下に出す、ゲーム別の内容（自由記述）1行分 */
+export interface ByGameNote {
+  game: GameTitle
+  /** 複数タイトル店だけゲーム名を付ける。単一タイトル店は undefined */
+  gameLabel: string | undefined
+  text: string
+}
+
+/**
+ * ゲーム別の自由記述（クレジットサービス・貸切の内容）を、行の下に出す1行ずつに整形する。
+ * 複数タイトル店はゲーム名つき、単一タイトル店はゲーム名なし。空文字・その店に無いゲームは出さない。
+ */
+export function formatByGameNotes({
+  games,
+  notesByGame,
+}: {
+  games: readonly GameTitle[]
+  notesByGame: Partial<Record<GameTitle, string>> | undefined
+}): ByGameNote[] {
+  if (!notesByGame) return []
+  const multi = games.length > 1
+  const notes: ByGameNote[] = []
+  for (const game of games) {
+    const text = notesByGame[game]
+    if (!text) continue
+    notes.push({ game, gameLabel: multi ? getGameLabel(game) : undefined, text })
+  }
+  return notes
+}
+
+/** 詳細モーダルの属性1行分の表示 */
+export interface AttributeDisplay {
+  /** 表示値（undefined なら「未登録」） */
+  value: string | undefined
+  /** 未確認として amber で出すか */
+  soft: boolean
+  /** value に「（未確認）」を埋め込み済みか（ゲーム別・フロア） */
+  preformatted: boolean
+  /** 行の下に出すゲーム別の内容（店のサービス）。確定/未確認の対象外 */
+  notes: ByGameNote[]
+}
+
+/**
+ * レジストリの属性1つ分を、詳細モーダルの行の表示に整形する。
+ * - フロア: 共通フロアとゲーム別フロアを合わせて {@link formatFloorByGame}
+ * - ゲーム別三値: {@link formatByGameTernary}（数値の付随フィールドがあれば台数を添える）
+ * - 店単位: 三値はラベル、リストは「、」区切り、文字列はそのまま
+ */
+export function formatAttribute(store: Store, def: AttributeDef): AttributeDisplay {
+  const unconfirmed = !isConfirmedSource(store.attributeSources?.[def.sourceKey as StoreAttributeKey])
+  if (def.key === 'floor') {
+    const floor = formatFloorByGame({
+      games: store.games,
+      floorByGame: store.floorByGame,
+      storeWideFloor: store.floor,
+      unconfirmed,
+    })
+    return { value: floor.value, soft: floor.soft, preformatted: true, notes: [] }
+  }
+  const value = readAttribute(store, def)
+  if (def.scope === 'game' && def.kind === 'ternary') {
+    const countDef = childAttributes(def.key).find((c) => c.kind === 'number')
+    const noteDef = childAttributes(def.key).find((c) => c.kind === 'text')
+    return {
+      value: formatByGameTernary({
+        games: store.games,
+        byGame: value as Partial<Record<GameTitle, TernaryState>> | undefined,
+        countByGame: countDef
+          ? (readAttribute(store, countDef) as Partial<Record<GameTitle, number>> | undefined)
+          : undefined,
+        unconfirmed,
+      }),
+      soft: unconfirmed,
+      preformatted: true,
+      notes: noteDef
+        ? formatByGameNotes({
+            games: store.games,
+            notesByGame: readAttribute(store, noteDef) as Partial<Record<GameTitle, string>> | undefined,
+          })
+        : [],
+    }
+  }
+  switch (def.kind) {
+    case 'ternary':
+      return {
+        value: value !== undefined ? TERNARY_LABELS[value as TernaryState] : undefined,
+        soft: unconfirmed,
+        preformatted: false,
+        notes: [],
+      }
+    case 'list': {
+      const items = value as string[] | undefined
+      return {
+        value: items?.length ? items.join('、') : undefined,
+        soft: unconfirmed,
+        preformatted: false,
+        notes: [],
+      }
+    }
+    default:
+      return {
+        value: value === undefined ? undefined : String(value),
+        soft: unconfirmed,
+        preformatted: false,
+        notes: [],
+      }
+  }
 }
 
 /**

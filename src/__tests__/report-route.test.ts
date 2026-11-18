@@ -172,34 +172,63 @@ describe('POST /api/report - mode=structured-store', () => {
     expect(fetch).not.toHaveBeenCalled()
   })
 
-  it('machineCountsJojoLs が非整数（文字列 "abc"）なら400', async () => {
-    const res = await POST(req({ ...baseStore, machineCountsJojoLs: 'abc' }))
+  it('旧形式の平坦フィールド（hasRecordingJojoLs 等）だけの送信は400（ver2.6 で廃止）', async () => {
+    const res = await POST(
+      req({ ...baseStore, hasRecordingJojoLs: 'yes', floorJojoLs: '2F', machineCountsJojoLs: 3 }),
+    )
+    expect(res.status).toBe(400)
+    expect(fetch).not.toHaveBeenCalled()
+  })
+
+  it('三値の不正値は無視し、他に入力が無ければ400', async () => {
+    const res = await POST(req({ ...baseStore, attributes: { smoking: 'maybe' } }))
     expect(res.status).toBe(400)
   })
 
-  it('machineCountsJojoLs が 99 超（100）なら400', async () => {
-    const res = await POST(req({ ...baseStore, machineCountsJojoLs: 100 }))
+  it('レジストリに無い・報告できない属性は受け付けない（officialUrl は無視）', async () => {
+    const res = await POST(req({ ...baseStore, attributes: { officialUrl: 'https://example.com' } }))
     expect(res.status).toBe(400)
   })
 
-  it('machineCountsJojoLs が小数（3.5）なら400', async () => {
-    const res = await POST(req({ ...baseStore, machineCountsJojoLs: 3.5 }))
+  it('ゲーム別の値は既知のゲームのキーだけを Issue に出す', async () => {
+    const res = await POST(
+      req({ ...baseStore, attributes: { hasRecordingByGame: { 'jojo-ls': 'yes', other: 'yes' } } }),
+    )
+    expect(res.status).toBe(200)
+    const [, init] = (fetch as unknown as { mock: { calls: [string, RequestInit][] } }).mock.calls[0]
+    const sent = JSON.parse(init.body as string)
+    expect(sent.body).toContain('| 録画台（ラスサバ） | あり |')
+    expect(sent.body).not.toContain('other')
+  })
+
+  it('machineCounts が非整数（文字列 "abc"）なら400', async () => {
+    const res = await POST(req({ ...baseStore, machineCounts: { 'jojo-ls': 'abc' } }))
+    expect(res.status).toBe(400)
+  })
+
+  it('machineCounts が 99 超（100）なら400', async () => {
+    const res = await POST(req({ ...baseStore, machineCounts: { 'jojo-ls': 100 } }))
+    expect(res.status).toBe(400)
+  })
+
+  it('machineCounts が小数（3.5）なら400', async () => {
+    const res = await POST(req({ ...baseStore, machineCounts: { 'jojo-ls': 3.5 } }))
     expect(res.status).toBe(400)
   })
 
   it('payments が 21 件なら400', async () => {
     const payments = Array.from({ length: 21 }, (_, i) => `pay${i}`)
-    const res = await POST(req({ ...baseStore, payments }))
+    const res = await POST(req({ ...baseStore, attributes: { payments } }))
     expect(res.status).toBe(400)
   })
 
   it('payments の要素が 30 文字超なら400', async () => {
-    const res = await POST(req({ ...baseStore, payments: ['a'.repeat(31)] }))
+    const res = await POST(req({ ...baseStore, attributes: { payments: ['a'.repeat(31)] } }))
     expect(res.status).toBe(400)
   })
 
   it('businessHours のみ入力で200・ユーザー報告ラベル', async () => {
-    const res = await POST(req({ ...baseStore, businessHours: '10:00-23:00' }))
+    const res = await POST(req({ ...baseStore, attributes: { businessHours: '10:00-23:00' } }))
     expect(res.status).toBe(200)
     expect(fetch).toHaveBeenCalledTimes(1)
     const [, init] = (fetch as unknown as { mock: { calls: [string, RequestInit][] } }).mock.calls[0]
@@ -208,8 +237,10 @@ describe('POST /api/report - mode=structured-store', () => {
     expect(sent.body).toContain('10:00-23:00')
   })
 
-  it('floorJojoLs / floorGundamExvs のみ入力で200・フロアが本文に出る', async () => {
-    const res = await POST(req({ ...baseStore, floorJojoLs: '2F', floorGundamExvs: '3F' }))
+  it('floorByGame のみ入力で200・フロアが本文に出る', async () => {
+    const res = await POST(
+      req({ ...baseStore, attributes: { floorByGame: { 'jojo-ls': '2F', 'gundam-exvs': '3F' } } }),
+    )
     expect(res.status).toBe(200)
     const [, init] = (fetch as unknown as { mock: { calls: [string, RequestInit][] } }).mock.calls[0]
     const sent = JSON.parse(init.body as string)
@@ -218,15 +249,60 @@ describe('POST /api/report - mode=structured-store', () => {
   })
 
   it('フロア両ゲーム同値は1行（フロア）にまとまる', async () => {
-    const res = await POST(req({ ...baseStore, floorJojoLs: '2F', floorGundamExvs: '2F' }))
+    const res = await POST(
+      req({ ...baseStore, attributes: { floorByGame: { 'jojo-ls': '2F', 'gundam-exvs': '2F' } } }),
+    )
     expect(res.status).toBe(200)
     const [, init] = (fetch as unknown as { mock: { calls: [string, RequestInit][] } }).mock.calls[0]
     const sent = JSON.parse(init.body as string)
     expect(sent.body).toContain('| フロア | 2F |')
   })
 
+  it('無制限台の台数が範囲外（0・100）なら400', async () => {
+    for (const n of [0, 100]) {
+      const res = await POST(
+        req({
+          ...baseStore,
+          attributes: { hasUnlimitedByGame: { 'gundam-exvs': 'yes' }, unlimitedCountByGame: { 'gundam-exvs': n } },
+        }),
+      )
+      expect(res.status).toBe(400)
+    }
+  })
+
+  it('無制限台の有無と台数で200・本文に2行出る', async () => {
+    const res = await POST(
+      req({
+        ...baseStore,
+        attributes: { hasUnlimitedByGame: { 'gundam-exvs': 'yes' }, unlimitedCountByGame: { 'gundam-exvs': 4 } },
+      }),
+    )
+    expect(res.status).toBe(200)
+    const [, init] = (fetch as unknown as { mock: { calls: [string, RequestInit][] } }).mock.calls[0]
+    const sent = JSON.parse(init.body as string)
+    expect(sent.body).toContain('| 無制限台（イニブ） | あり |')
+    expect(sent.body).toContain('| 無制限台 台数（イニブ） | 4 |')
+  })
+
+  it('店のサービスの内容は trim して100文字で切り、本文に出す', async () => {
+    const res = await POST(
+      req({
+        ...baseStore,
+        attributes: {
+          rentalByGame: { 'gundam-exvs': 'yes' },
+          rentalNoteByGame: { 'gundam-exvs': `  ${'あ'.repeat(120)}  ` },
+        },
+      }),
+    )
+    expect(res.status).toBe(200)
+    const [, init] = (fetch as unknown as { mock: { calls: [string, RequestInit][] } }).mock.calls[0]
+    const sent = JSON.parse(init.body as string)
+    expect(sent.body).toContain('| 貸切（イニブ） | あり |')
+    expect(sent.body).toContain(`| 貸切 内容（イニブ） | ${'あ'.repeat(100)} |`)
+  })
+
   it('honeypot 充填は ok:true かつ fetch未呼出', async () => {
-    const res = await POST(req({ ...baseStore, businessHours: '10:00-23:00', website: 'bot' }))
+    const res = await POST(req({ ...baseStore, attributes: { businessHours: '10:00-23:00' }, website: 'bot' }))
     expect(res.status).toBe(200)
     expect(await res.json()).toEqual({ ok: true })
     expect(fetch).not.toHaveBeenCalled()
@@ -235,7 +311,7 @@ describe('POST /api/report - mode=structured-store', () => {
   it('GitHub API 失敗時に [report:structured-store] プレフィックスでエラーログを出す', async () => {
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
     vi.stubGlobal('fetch', vi.fn(async () => new Response('err', { status: 500 })))
-    const res = await POST(req({ ...baseStore, businessHours: '10:00-23:00' }))
+    const res = await POST(req({ ...baseStore, attributes: { businessHours: '10:00-23:00' } }))
     expect(res.status).toBe(502)
     expect(errorSpy.mock.calls[0][0]).toContain('[report:structured-store]')
   })

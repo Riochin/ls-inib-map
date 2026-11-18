@@ -1,13 +1,16 @@
 'use client'
 
 import { useState, useEffect, type FormEvent, type ReactNode } from 'react'
-import type { Store, TernaryState } from '@/types/store'
-import type { CorrectionType } from '@/lib/report'
+import type { GameTitle, Store, TernaryState } from '@/types/store'
+import type { CorrectionType, StructuredAttributes } from '@/lib/report'
+import { GAME_TITLES } from '@/lib/store-attributes'
 import { HEADING_FONT_STYLE } from '@/lib/heading-font'
 import { getGameLabel } from '@/lib/marker-color'
 import { checkClientRateLimit, recordClientSubmission } from '@/lib/client-rate-limit'
 import { trackEvent } from '@/lib/analytics'
 import { useModalA11y } from '@/hooks/use-modal-a11y'
+import { summarizePayments, summarizeServices } from '@/lib/form-summary'
+import { FoldSection } from './FoldSection'
 
 interface StoreInfoFormProps {
   store: Store
@@ -39,6 +42,58 @@ function parseCount(v: string): number | undefined {
   if (t === '') return undefined
   const n = Number(t)
   return Number.isFinite(n) ? n : undefined
+}
+
+/** ゲーム別の入力からゲーム別マップを組む（未入力・その店に無いゲームは除く）。空なら undefined。 */
+function byGame<T>(
+  values: Partial<Record<GameTitle, T | '' | undefined>>,
+  games: readonly GameTitle[],
+): Partial<Record<GameTitle, T>> | undefined {
+  const out: Partial<Record<GameTitle, T>> = {}
+  for (const game of games) {
+    const v = values[game]
+    if (v !== undefined && v !== '') out[game] = v as T
+  }
+  return Object.keys(out).length > 0 ? out : undefined
+}
+
+/** ゲーム別三値の属性。台数・内容のような付随欄は個別に描く */
+type GameTernaryKey =
+  | 'hasRecordingByGame'
+  | 'hasStreamingByGame'
+  | 'hasUnlimitedByGame'
+  | 'creditServiceByGame'
+  | 'rentalByGame'
+const GAME_TERNARY_KEYS: readonly GameTernaryKey[] = [
+  'hasRecordingByGame',
+  'hasStreamingByGame',
+  'hasUnlimitedByGame',
+  'creditServiceByGame',
+  'rentalByGame',
+]
+type GameTernaryValues = Record<GameTernaryKey, Partial<Record<GameTitle, TernaryState | ''>>>
+
+/** 店のサービス。内容欄を持つため2列に詰めず、ゲームごとに縦に並べる（ADR-0003） */
+type ServiceNoteKey = 'creditServiceNoteByGame' | 'rentalNoteByGame'
+const SERVICE_FIELDS: readonly {
+  key: 'creditServiceByGame' | 'rentalByGame'
+  noteKey: ServiceNoteKey
+  title: string
+  placeholder: string
+}[] = [
+  {
+    key: 'creditServiceByGame',
+    noteKey: 'creditServiceNoteByGame',
+    title: 'クレジットサービス',
+    placeholder: '例）100円2クレ、平日のみ',
+  },
+  { key: 'rentalByGame', noteKey: 'rentalNoteByGame', title: '貸切', placeholder: '例）1時間3,000円、要予約' },
+]
+
+/** 無制限台の台数欄の値を、送れる値（1〜99 の整数）だけに絞る。それ以外は送らない。 */
+function parseUnlimitedCount(v: string | undefined): number | undefined {
+  const n = parseCount(v ?? '')
+  return n !== undefined && Number.isInteger(n) && n >= 1 && n <= 99 ? n : undefined
 }
 
 /** すでに登録済みの項目に添えるバッジ（既存情報だと一目で分かるように・配色は既存の gray 系に統一） */
@@ -88,6 +143,8 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
   const dialogRef = useModalA11y<HTMLDivElement>({ onClose })
   const hasJojo = store.games.includes('jojo-ls')
   const hasGundam = store.games.includes('gundam-exvs')
+  // ゲーム別の欄は常に ラスサバ → イニブ の順で並べる
+  const formGames = GAME_TITLES.filter((game) => store.games.includes(game))
 
   // 台数は既存値を初期入力しない（空欄）。現在値はプレースホルダーでヒント表示する。
   // 事前入力すると、提供を意図しないタイトルの台数までそのまま確定されてしまうため（Issue #171）。
@@ -112,18 +169,28 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
   const [floorGundam, setFloorGundam] = useState(initialGundamFloor)
   const [smoking, setSmoking] = useState<TernaryState | ''>(store.smoking ?? '')
   const [payments, setPayments] = useState<string[]>(store.payments ?? [])
-  const [recordingJojo, setRecordingJojo] = useState<TernaryState | ''>(
-    store.hasRecordingByGame?.['jojo-ls'] ?? '',
+  // 録画台・配信台・無制限台（ゲーム別三値）。既存値を初期入力する
+  const [ternaries, setTernaries] = useState<GameTernaryValues>(() => ({
+    hasRecordingByGame: { ...store.hasRecordingByGame },
+    hasStreamingByGame: { ...store.hasStreamingByGame },
+    hasUnlimitedByGame: { ...store.hasUnlimitedByGame },
+    creditServiceByGame: { ...store.creditServiceByGame },
+    rentalByGame: { ...store.rentalByGame },
+  }))
+  const [serviceNotes, setServiceNotes] = useState<Record<ServiceNoteKey, Partial<Record<GameTitle, string>>>>(
+    () => ({
+      creditServiceNoteByGame: { ...store.creditServiceNoteByGame },
+      rentalNoteByGame: { ...store.rentalNoteByGame },
+    }),
   )
-  const [recordingGundam, setRecordingGundam] = useState<TernaryState | ''>(
-    store.hasRecordingByGame?.['gundam-exvs'] ?? '',
-  )
-  const [streamingJojo, setStreamingJojo] = useState<TernaryState | ''>(
-    store.hasStreamingByGame?.['jojo-ls'] ?? '',
-  )
-  const [streamingGundam, setStreamingGundam] = useState<TernaryState | ''>(
-    store.hasStreamingByGame?.['gundam-exvs'] ?? '',
-  )
+  const [unlimitedCounts, setUnlimitedCounts] = useState<Partial<Record<GameTitle, string>>>(() => {
+    const out: Partial<Record<GameTitle, string>> = {}
+    for (const game of store.games) {
+      const n = store.unlimitedCountByGame?.[game]
+      if (n !== undefined) out[game] = String(n)
+    }
+    return out
+  })
   const [correctionType, setCorrectionType] = useState<CorrectionType | ''>('')
   const [correctionNote, setCorrectionNote] = useState('')
   const [reporter, setReporter] = useState('')
@@ -143,6 +210,11 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
   }, [])
 
   const mark = () => setIsDirty(true)
+
+  function setTernary(key: GameTernaryKey, game: GameTitle, value: TernaryState | '') {
+    setTernaries((prev) => ({ ...prev, [key]: { ...prev[key], [game]: value } }))
+    mark()
+  }
 
   const hasSns = reporter.trim() !== ''
 
@@ -167,18 +239,49 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
     return out
   })()
 
+  // 送信する値（ゲーム別は OverrideEntry と同じマップ・ADR-0005）。送信ボタンの活性判定にも使う
+  const machineCounts = byGame({ 'jojo-ls': jojoNum, 'gundam-exvs': gundamNum }, store.games)
+  const attributes: StructuredAttributes = (() => {
+    const out: StructuredAttributes = {}
+    if (businessHours.trim()) out.businessHours = businessHours.trim()
+    const floorByGame = byGame({ 'jojo-ls': floors.jojo, 'gundam-exvs': floors.gundam }, store.games)
+    if (floorByGame) out.floorByGame = floorByGame
+    if (smoking !== '') out.smoking = smoking
+    if (payments.length > 0) out.payments = payments
+    for (const key of GAME_TERNARY_KEYS) {
+      const values = byGame<TernaryState>(ternaries[key], store.games)
+      if (values) out[key] = values
+    }
+    // 台数は「あり」のゲームだけ送る
+    const counts = byGame<number>(
+      Object.fromEntries(
+        store.games.map((game) => [
+          game,
+          ternaries.hasUnlimitedByGame[game] === 'yes' ? parseUnlimitedCount(unlimitedCounts[game]) : undefined,
+        ]),
+      ),
+      store.games,
+    )
+    if (counts) out.unlimitedCountByGame = counts
+    // 内容は「あり」のゲームだけ送る
+    for (const { key, noteKey } of SERVICE_FIELDS) {
+      const notes = byGame<string>(
+        Object.fromEntries(
+          store.games.map((game) => [
+            game,
+            ternaries[key][game] === 'yes' ? serviceNotes[noteKey][game]?.trim() : undefined,
+          ]),
+        ),
+        store.games,
+      )
+      if (notes) out[noteKey] = notes
+    }
+    return out
+  })()
+
   const hasAnyInput =
-    (jojoNum !== undefined && hasJojo) ||
-    (gundamNum !== undefined && hasGundam) ||
-    businessHours.trim() !== '' ||
-    floors.jojo !== undefined ||
-    floors.gundam !== undefined ||
-    smoking !== '' ||
-    payments.length > 0 ||
-    (recordingJojo !== '' && hasJojo) ||
-    (recordingGundam !== '' && hasGundam) ||
-    (streamingJojo !== '' && hasJojo) ||
-    (streamingGundam !== '' && hasGundam) ||
+    machineCounts !== undefined ||
+    Object.keys(attributes).length > 0 ||
     correctionType !== '' ||
     correctionNote.trim() !== ''
 
@@ -192,12 +295,12 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
     floor: !!store.floor || !!store.floorByGame?.['jojo-ls'] || !!store.floorByGame?.['gundam-exvs'],
     smoking: store.smoking !== undefined,
     payments: (store.payments?.length ?? 0) > 0,
-    recordingJojo: store.hasRecordingByGame?.['jojo-ls'] !== undefined,
-    recordingGundam: store.hasRecordingByGame?.['gundam-exvs'] !== undefined,
-    streamingJojo: store.hasStreamingByGame?.['jojo-ls'] !== undefined,
-    streamingGundam: store.hasStreamingByGame?.['gundam-exvs'] !== undefined,
   }
-  const hasExistingInfo = Object.values(filled).some(Boolean)
+  const ternaryFilled = (key: GameTernaryKey, game: GameTitle) => store[key]?.[game] !== undefined
+  const servicesFilled = SERVICE_FIELDS.some(({ key }) => formGames.some((game) => ternaryFilled(key, game)))
+  const hasExistingInfo =
+    Object.values(filled).some(Boolean) ||
+    GAME_TERNARY_KEYS.some((key) => store.games.some((game) => ternaryFilled(key, game)))
 
   function togglePayment(option: string) {
     setPayments((prev) =>
@@ -222,17 +325,8 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
       website,
     }
 
-    if (hasJojo && jojoNum !== undefined) payload.machineCountsJojoLs = jojoNum
-    if (hasGundam && gundamNum !== undefined) payload.machineCountsGundamExvs = gundamNum
-    if (businessHours.trim()) payload.businessHours = businessHours.trim()
-    if (floors.jojo !== undefined) payload.floorJojoLs = floors.jojo
-    if (floors.gundam !== undefined) payload.floorGundamExvs = floors.gundam
-    if (smoking !== '') payload.smoking = smoking
-    if (payments.length > 0) payload.payments = payments
-    if (hasJojo && recordingJojo !== '') payload.hasRecordingJojoLs = recordingJojo
-    if (hasGundam && recordingGundam !== '') payload.hasRecordingGundamExvs = recordingGundam
-    if (hasJojo && streamingJojo !== '') payload.hasStreamingJojoLs = streamingJojo
-    if (hasGundam && streamingGundam !== '') payload.hasStreamingGundamExvs = streamingGundam
+    if (machineCounts) payload.machineCounts = machineCounts
+    if (Object.keys(attributes).length > 0) payload.attributes = attributes
     if (correctionType !== '') payload.correctionType = correctionType
     if (correctionNote.trim()) payload.correctionNote = correctionNote.trim()
 
@@ -454,69 +548,121 @@ export function StoreInfoForm({ store, onClose }: StoreInfoFormProps) {
                 </select>
               </label>
 
-              {/* 決済/電子マネー */}
-              <fieldset className="mb-3">
-                <legend className="text-xs font-semibold text-gray-600 mb-1.5">
-                  決済・電子マネー（使えるものをすべて選択）{filled.payments && <FilledBadge />}
-                </legend>
-                <div className="grid grid-cols-2 gap-x-3 gap-y-1">
-                  {PAYMENT_OPTIONS.map((opt) => (
-                    <label key={opt} className="flex items-center gap-1.5 text-xs text-gray-700">
-                      <input
-                        type="checkbox"
-                        checked={payments.includes(opt)}
-                        onChange={() => togglePayment(opt)}
-                      />
-                      {opt}
-                    </label>
+              {/* 録画台・配信台・無制限台（タイトル別の2列） */}
+              {(
+                [
+                  { key: 'hasRecordingByGame', title: '録画台', className: 'mb-3' },
+                  { key: 'hasStreamingByGame', title: '配信台', className: 'mb-3' },
+                  { key: 'hasUnlimitedByGame', title: '無制限台', className: 'mb-5' },
+                ] as const
+              ).map(({ key, title, className }) => (
+                <div key={key} className={className}>
+                  <p className="text-xs font-semibold text-gray-600 mb-1.5">{title}</p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {formGames.map((game) => (
+                      <div key={game} className="min-w-0">
+                        <TernarySelect
+                          label={getGameLabel(game)}
+                          filled={ternaryFilled(key, game)}
+                          value={ternaries[key][game] ?? ''}
+                          onChange={(v) => setTernary(key, game, v)}
+                        />
+                        {key === 'hasUnlimitedByGame' && ternaries[key][game] === 'yes' && (
+                          <label className="block mt-1.5">
+                            <span className="text-[11px] text-gray-400">台数（わかれば）</span>
+                            <input
+                              type="number"
+                              min={1}
+                              max={99}
+                              inputMode="numeric"
+                              value={unlimitedCounts[game] ?? ''}
+                              onChange={(e) => {
+                                const v = e.target.value
+                                setUnlimitedCounts((prev) => ({ ...prev, [game]: v }))
+                                mark()
+                              }}
+                              placeholder="例）2"
+                              aria-label={`無制限台の台数（${getGameLabel(game)}）`}
+                              className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
+                            />
+                          </label>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+
+              {/* 記入率の低い項目はたたむ（ADR-0004）。初期は閉じる */}
+              <div className="mb-4 space-y-2.5">
+                <FoldSection
+                  title="決済・電子マネー"
+                  summary={summarizePayments(payments)}
+                  badge={filled.payments ? <FilledBadge /> : undefined}
+                >
+                  <fieldset>
+                    <legend className="sr-only">決済・電子マネー</legend>
+                    <p className="text-[11px] text-gray-400 mb-2">使えるものをすべて選んでください。</p>
+                    <div className="grid grid-cols-2 gap-x-3 gap-y-1">
+                      {PAYMENT_OPTIONS.map((opt) => (
+                        <label key={opt} className="flex items-center gap-1.5 text-xs text-gray-700">
+                          <input
+                            type="checkbox"
+                            checked={payments.includes(opt)}
+                            onChange={() => togglePayment(opt)}
+                          />
+                          {opt}
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+                </FoldSection>
+
+                {/* 店のサービス（ラスサバ、内容、イニブ、内容 の縦積み） */}
+                <FoldSection
+                  title="店のサービス"
+                  summary={summarizeServices(
+                    formGames,
+                    SERVICE_FIELDS.map(({ key, title }) => ({ label: title, values: ternaries[key] })),
+                  )}
+                  badge={servicesFilled ? <FilledBadge /> : undefined}
+                >
+                  {SERVICE_FIELDS.map(({ key, noteKey, title, placeholder }) => (
+                    <div key={key} className="mb-3 last:mb-0">
+                      <p className="text-xs font-semibold text-gray-600 mb-1.5">{title}</p>
+                      <div className="grid gap-2.5">
+                        {formGames.map((game) => (
+                          <div key={game}>
+                            <TernarySelect
+                              label={getGameLabel(game)}
+                              filled={ternaryFilled(key, game)}
+                              value={ternaries[key][game] ?? ''}
+                              onChange={(v) => setTernary(key, game, v)}
+                            />
+                            {ternaries[key][game] === 'yes' && (
+                              <label className="block mt-1.5">
+                                <span className="text-[11px] text-gray-400">内容</span>
+                                <input
+                                  type="text"
+                                  maxLength={100}
+                                  value={serviceNotes[noteKey][game] ?? ''}
+                                  onChange={(e) => {
+                                    const v = e.target.value
+                                    setServiceNotes((prev) => ({ ...prev, [noteKey]: { ...prev[noteKey], [game]: v } }))
+                                    mark()
+                                  }}
+                                  placeholder={placeholder}
+                                  aria-label={`${title}の内容（${getGameLabel(game)}）`}
+                                  className="w-full border border-gray-300 rounded px-2 py-1.5 mt-0.5"
+                                />
+                              </label>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   ))}
-                </div>
-              </fieldset>
-
-              {/* 録画台（タイトル別） */}
-              <div className="mb-3">
-                <p className="text-xs font-semibold text-gray-600 mb-1.5">録画台</p>
-                <div className="grid grid-cols-2 gap-3">
-                  {hasJojo && (
-                    <TernarySelect
-                      label={getGameLabel('jojo-ls')}
-                      filled={filled.recordingJojo}
-                      value={recordingJojo}
-                      onChange={(v) => { setRecordingJojo(v); mark() }}
-                    />
-                  )}
-                  {hasGundam && (
-                    <TernarySelect
-                      label={getGameLabel('gundam-exvs')}
-                      filled={filled.recordingGundam}
-                      value={recordingGundam}
-                      onChange={(v) => { setRecordingGundam(v); mark() }}
-                    />
-                  )}
-                </div>
-              </div>
-
-              {/* 配信台（タイトル別） */}
-              <div className="mb-4">
-                <p className="text-xs font-semibold text-gray-600 mb-1.5">配信台</p>
-                <div className="grid grid-cols-2 gap-3">
-                  {hasJojo && (
-                    <TernarySelect
-                      label={getGameLabel('jojo-ls')}
-                      filled={filled.streamingJojo}
-                      value={streamingJojo}
-                      onChange={(v) => { setStreamingJojo(v); mark() }}
-                    />
-                  )}
-                  {hasGundam && (
-                    <TernarySelect
-                      label={getGameLabel('gundam-exvs')}
-                      filled={filled.streamingGundam}
-                      value={streamingGundam}
-                      onChange={(v) => { setStreamingGundam(v); mark() }}
-                    />
-                  )}
-                </div>
+                </FoldSection>
               </div>
 
               {/* 修正・通報セクション */}

@@ -37,12 +37,13 @@ describe('AreaStoreFilter — 初期描画（段階的強化の担保）', () =>
     expect(html).toContain('店名・住所')
   })
 
-  it('設備ファセット（最低台数・配信台・録画台・喫煙所）を出力する', () => {
+  it('設備ファセット（最低台数・配信台・録画台・喫煙所・無制限台）を出力する', () => {
     const html = render()
     expect(html).toContain('最低台数')
     expect(html).toContain('配信台')
     expect(html).toContain('録画台')
     expect(html).toContain('喫煙所')
+    expect(html).toContain('無制限台あり')
   })
 
   it('「営業中のみ」ファセットは出さない（県ページは既に営業中のみ）', () => {

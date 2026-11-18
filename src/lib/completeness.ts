@@ -1,4 +1,11 @@
 import type { Store, CompletenessLevel } from '@/types/store'
+import {
+  COMPLETENESS_GROUPS,
+  STORE_ATTRIBUTES,
+  hasAttributeValue,
+  readAttribute,
+  type AttributeDef,
+} from '@/lib/store-attributes'
 
 export interface CompletenessResult {
   filled: number
@@ -13,16 +20,17 @@ export const POOR_THRESHOLD = 2
 /**
  * 情報の充実度スコアを算出する。ユーザーにとって価値のある任意情報7項目の
  * 埋まり数を数える（運用フラグ closed/delisted 等は対象外）。
+ * 項目は属性レジストリの `completeness` グループ（同じグループはまとめて1項目。
+ * 例: 録画台・配信台は「台の設備」1項目）と、レジストリ外の台数。
  */
 export function computeCompleteness(store: Store): CompletenessResult {
   const checks: boolean[] = [
-    !!store.businessHours,
-    !!store.floor || hasAnyValue(store.floorByGame),
-    store.smoking !== undefined,
-    Array.isArray(store.payments) && store.payments.length > 0,
-    !!store.officialUrl,
+    ...COMPLETENESS_GROUPS.map((group) =>
+      (STORE_ATTRIBUTES as readonly AttributeDef[]).some(
+        (def) => def.completeness === group && hasAttributeValue(def, readAttribute(store, def)),
+      ),
+    ),
     hasAnyValue(store.machineCounts),
-    hasAnyValue(store.hasStreamingByGame) || hasAnyValue(store.hasRecordingByGame),
   ]
   return { filled: checks.filter(Boolean).length, total: checks.length }
 }

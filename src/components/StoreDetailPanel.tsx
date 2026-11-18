@@ -1,10 +1,11 @@
 'use client'
 
 import { useState, useCallback, useEffect, useRef } from 'react'
-import type { Store, GameTitle, StoreAttributeKey } from '@/types/store'
-import { formatDateJst, formatByGameTernary, formatFloorByGame } from '@/lib/info-display'
+import type { Store, GameTitle } from '@/types/store'
+import { formatDateJst, formatAttribute, type ByGameNote } from '@/lib/info-display'
+import { panelAttributes } from '@/lib/store-attributes'
 import { storesMeta } from '@/data/stores'
-import { getMarkerTheme, getGameLabel, getCountSourceInfo, getStoreStatusLabel, isConfirmedSource } from '@/lib/marker-color'
+import { getMarkerTheme, getGameLabel, getCountSourceInfo, getStoreStatusLabel } from '@/lib/marker-color'
 import { buildShareText } from '@/lib/share'
 import { CountBadge } from './CountBadge'
 import { trackEvent } from '@/lib/analytics'
@@ -15,17 +16,12 @@ interface StoreDetailPanelProps {
   onClose: () => void
 }
 
-const TERNARY_LABELS: Record<string, string> = {
-  yes: 'あり',
-  no: 'なし',
-  unknown: '不明',
-}
-
 function AttributeRow({
   label,
   value,
   unconfirmed,
   preformatted = false,
+  notes = [],
 }: {
   label: string
   value: string | undefined
@@ -33,9 +29,15 @@ function AttributeRow({
   unconfirmed: boolean
   /** value 側で既に「（未確認）」を埋め込み済みの場合 true（録画台/配信台/フロアのタイトル別表示） */
   preformatted?: boolean
+  /** 行の下に1行ずつ出すゲーム別の内容（店のサービス）。中立表示 */
+  notes?: ByGameNote[]
 }) {
   return (
-    <div className="flex justify-between items-start gap-2 py-1.5 border-b border-gray-100 last:border-0">
+    <div
+      className={`flex justify-between items-start gap-2 py-1.5 border-b border-gray-100 last:border-0${
+        notes.length > 0 ? ' flex-wrap' : ''
+      }`}
+    >
       <span className="text-xs text-gray-500 shrink-0">{label}</span>
       {value === undefined ? (
         <span className="text-xs text-gray-400">未登録</span>
@@ -45,6 +47,12 @@ function AttributeRow({
           {unconfirmed && !preformatted ? '（未確認）' : ''}
         </span>
       )}
+      {notes.map((note) => (
+        <span key={note.game} className="basis-full text-xs text-gray-700 leading-relaxed pt-0.5 break-words">
+          {note.gameLabel && <span className="text-gray-500">{note.gameLabel} </span>}
+          {note.text}
+        </span>
+      ))}
     </div>
   )
 }
@@ -99,30 +107,6 @@ export function StoreDetailPanel({ store, onOpenInfoForm, onClose }: StoreDetail
       : shareState === 'failed'
         ? 'コピーに失敗しました'
         : 'この店舗を共有'
-
-  // 確定は出どころが admin のときのみ。それ以外（公式/自動取得/みんなの報告/未登録）は未確認。
-  function unconfirmed(key: StoreAttributeKey): boolean {
-    return !isConfirmedSource(store.attributeSources?.[key])
-  }
-
-  const smokingValue = store.smoking !== undefined ? TERNARY_LABELS[store.smoking] : undefined
-  const recordingValue = formatByGameTernary({
-    games: store.games,
-    byGame: store.hasRecordingByGame,
-    unconfirmed: unconfirmed('hasRecordingByGame'),
-  })
-  const streamingValue = formatByGameTernary({
-    games: store.games,
-    byGame: store.hasStreamingByGame,
-    unconfirmed: unconfirmed('hasStreamingByGame'),
-  })
-  const paymentsValue = store.payments?.length ? store.payments.join('、') : undefined
-  const floor = formatFloorByGame({
-    games: store.games,
-    floorByGame: store.floorByGame,
-    storeWideFloor: store.floor,
-    unconfirmed: unconfirmed('floor'),
-  })
 
   return (
     <div className="p-4 text-sm text-gray-800">
@@ -186,12 +170,37 @@ export function StoreDetailPanel({ store, onOpenInfoForm, onClose }: StoreDetail
 
       {/* 拡張属性一覧 */}
       <div className="bg-gray-50 rounded-xl px-3 py-0.5 mb-3">
-        <AttributeRow label="営業時間" value={store.businessHours} unconfirmed={unconfirmed('businessHours')} />
-        <AttributeRow label="フロア" value={floor.value} unconfirmed={floor.soft} preformatted />
-        <AttributeRow label="喫煙所" value={smokingValue} unconfirmed={unconfirmed('smoking')} />
-        <AttributeRow label="決済/電子マネー" value={paymentsValue} unconfirmed={unconfirmed('payments')} />
-        <AttributeRow label="録画台" value={recordingValue} unconfirmed={unconfirmed('hasRecordingByGame')} preformatted />
-        <AttributeRow label="配信台" value={streamingValue} unconfirmed={unconfirmed('hasStreamingByGame')} preformatted />
+        {panelAttributes('facility').map((def) => {
+          // 確定は出どころが admin のときのみ。それ以外（公式/自動取得/みんなの報告/未登録）は未確認。
+          const display = formatAttribute(store, def)
+          return (
+            <AttributeRow
+              key={def.key}
+              label={def.label}
+              value={display.value}
+              unconfirmed={display.soft}
+              preformatted={display.preformatted}
+            />
+          )
+        })}
+      </div>
+
+      {/* 店のサービス（クレジットサービス・貸切。有無はゲーム別、行の下にゲーム別の内容） */}
+      <p className="text-xs font-semibold text-gray-500 mb-1.5">店のサービス</p>
+      <div className="bg-gray-50 rounded-xl px-3 py-0.5 mb-3">
+        {panelAttributes('service').map((def) => {
+          const display = formatAttribute(store, def)
+          return (
+            <AttributeRow
+              key={def.key}
+              label={def.label}
+              value={display.value}
+              unconfirmed={display.soft}
+              preformatted={display.preformatted}
+              notes={display.notes}
+            />
+          )
+        })}
       </div>
 
       {/* 補足（自由記述・運営編集の中立テキスト。確定/未確認の対象外） */}

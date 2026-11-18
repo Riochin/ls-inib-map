@@ -1,17 +1,6 @@
 import type { Store, GameTitle, StoreAttributeKey, Provenance } from '@/types/store'
 import type { OverridesFile, OverrideEntry } from '@/types/overrides'
-
-const GAME_TITLES: GameTitle[] = ['jojo-ls', 'gundam-exvs']
-
-// 単純値の属性キー（entry[key] をそのまま写すもの）。録画台/配信台は
-// ゲーム別（ByGame）でマージが必要なため、ここには含めず個別に処理する。
-const ATTRIBUTE_KEYS: StoreAttributeKey[] = [
-  'businessHours',
-  'floor',
-  'smoking',
-  'payments',
-  'officialUrl',
-]
+import { GAME_TITLES, STORE_ATTRIBUTES, readAttribute } from '@/lib/store-attributes'
 
 /** ゲーム別レコードを重ねる（指定ゲームのみ置換。machineCounts と同パターン）。 */
 function mergeByGame<T>(
@@ -101,36 +90,26 @@ function applyEntry(store: Store, entry: OverrideEntry): Store {
   // 店舗単位の「情報更新日」を表示に載せる（override の更新日時）
   if (entry.updatedAt !== undefined) next.infoUpdatedAt = entry.updatedAt
 
-  // 新拡張属性を適用し、attributeSources に出どころを記録する
+  // 店舗属性（レジストリ）を適用し、attributeSources に出どころを記録する。
+  // 店単位は代入、ゲーム別はゲーム単位でマージ（指定ゲームのみ置換）。出どころは sourceKey 単位で1つ
+  // （ゲーム別フロアは 'floor'、付随フィールドは本体のキーを共有する）。
   const attributeSources = { ...store.attributeSources }
   let hasAttributeUpdate = false
+  const target = next as unknown as Record<string, unknown>
 
-  // ゲーム別の録画台/配信台はゲーム単位でマージ（provenance は機能単位で1つ）
-  if (entry.hasRecordingByGame) {
-    next.hasRecordingByGame = mergeByGame(store.hasRecordingByGame, entry.hasRecordingByGame)
-    attributeSources.hasRecordingByGame = attrSource('hasRecordingByGame')
-    hasAttributeUpdate = true
-  }
-  if (entry.hasStreamingByGame) {
-    next.hasStreamingByGame = mergeByGame(store.hasStreamingByGame, entry.hasStreamingByGame)
-    attributeSources.hasStreamingByGame = attrSource('hasStreamingByGame')
-    hasAttributeUpdate = true
-  }
-
-  // ゲーム別フロアもゲーム単位でマージ（provenance はフロア属性で1つ＝'floor'）
-  if (entry.floorByGame) {
-    next.floorByGame = mergeByGame(store.floorByGame, entry.floorByGame)
-    attributeSources.floor = attrSource('floor')
-    hasAttributeUpdate = true
-  }
-
-  for (const key of ATTRIBUTE_KEYS) {
-    const value = entry[key]
-    if (value !== undefined) {
-      ;(next as unknown as Record<string, unknown>)[key] = value
-      attributeSources[key] = attrSource(key)
-      hasAttributeUpdate = true
+  for (const def of STORE_ATTRIBUTES) {
+    const value = readAttribute(entry, def)
+    if (value === undefined) continue
+    if (def.scope === 'game') {
+      target[def.key] = mergeByGame(
+        readAttribute(store, def) as Partial<Record<GameTitle, unknown>> | undefined,
+        value as Partial<Record<GameTitle, unknown>>,
+      )
+    } else {
+      target[def.key] = value
     }
+    attributeSources[def.sourceKey] = attrSource(def.sourceKey)
+    hasAttributeUpdate = true
   }
   if (hasAttributeUpdate) next.attributeSources = attributeSources
 

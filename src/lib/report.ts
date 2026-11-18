@@ -5,7 +5,17 @@
  * API ルート（server）でズレないようにする。実際の Issue 作成・検証は API ルート側。
  */
 
-import type { TernaryState } from '@/types/store'
+import type { GameTitle, TernaryState } from '@/types/store'
+import type { OverrideEntry } from '@/types/overrides'
+import {
+  GAME_TITLES,
+  REPORTABLE_ATTRIBUTES,
+  TERNARY_LABELS,
+  readAttribute,
+  type AttributeDataKey,
+  type AttributeDef,
+} from '@/lib/store-attributes'
+import { getGameLabel } from '@/lib/marker-color'
 
 /** 報告種別の選択肢（フォームの選択肢＝サーバーのホワイトリスト） */
 export const REPORT_TYPES = ['位置ズレ', '台数', '閉店・移設', 'その他'] as const
@@ -74,6 +84,13 @@ export interface FeedbackInput {
 // ─── 構造化店舗情報提供フォーム ────────────────────────────────────
 export type CorrectionType = '位置ズレ' | '閉店・移設'
 
+/**
+ * 提供フォームで送る店舗属性。`OverrideEntry` と同じ形（ゲーム別はマップ）で、
+ * フォーム → API → Issue → 自動反映 → overrides.json を同じ形で流す（ADR-0005）。
+ * 受け付ける属性・上限は属性レジストリ（`@/lib/store-attributes`）の `reportable` 項目。
+ */
+export type StructuredAttributes = Partial<Pick<OverrideEntry, AttributeDataKey>>
+
 export interface StructuredStoreInput {
   /** max 200 */
   storeId: string
@@ -84,20 +101,10 @@ export interface StructuredStoreInput {
   /** max 80 */
   reporter?: string
   noMention?: boolean
-  machineCountsJojoLs?: number
-  machineCountsGundamExvs?: number
-  /** max 100 */
-  businessHours?: string
-  /** ゲーム別フロア（各 max 50）。両ゲーム同フロアなら同値を入れる。 */
-  floorJojoLs?: string
-  floorGundamExvs?: string
-  smoking?: TernaryState
-  /** max 20件・各 max 30文字 */
-  payments?: string[]
-  hasRecordingJojoLs?: TernaryState
-  hasRecordingGundamExvs?: TernaryState
-  hasStreamingJojoLs?: TernaryState
-  hasStreamingGundamExvs?: TernaryState
+  /** ゲーム別台数（各 0〜99 の整数）。出どころは countSources で別管理のためレジストリ外 */
+  machineCounts?: Partial<Record<GameTitle, number>>
+  /** 店舗属性（入力済みのものだけ） */
+  attributes?: StructuredAttributes
   correctionType?: CorrectionType
   /** max 500 */
   correctionNote?: string
@@ -129,10 +136,49 @@ export function buildFeedbackIssue(input: FeedbackInput): ReportIssue {
   return { title, body }
 }
 
-const TERNARY_LABEL: Record<TernaryState, string> = {
-  yes: 'あり',
-  no: 'なし',
-  unknown: '不明',
+/** 台数行のラベル（過去の Issue と自動反映の指示文が依存するため変えない） */
+const MACHINE_COUNT_LABELS: Record<GameTitle, string> = {
+  'jojo-ls': 'ジョジョ台数',
+  'gundam-exvs': 'イニブ台数',
+}
+
+/** 提案値表の1セル分の値。空のリストなど行を作らない値は undefined。 */
+function formatProposal(def: AttributeDef, value: unknown, cell: (v: string) => string): string | undefined {
+  if (value === undefined) return undefined
+  switch (def.kind) {
+    case 'ternary':
+      return TERNARY_LABELS[value as TernaryState]
+    case 'text':
+      return cell(value as string)
+    case 'number':
+      return String(value)
+    case 'list': {
+      const items = value as string[]
+      return items.length > 0 ? items.map(cell).join(', ') : undefined
+    }
+  }
+}
+
+/**
+ * 属性1つ分の提案値行。店単位は「ラベル」、ゲーム別は「ラベル（ラスサバ）」の行をゲームごとに作る。
+ * `collapseSameValue` の属性（フロア）は全ゲームが同じ値なら「ラベル」1行にまとめる。
+ */
+function proposalRows(def: AttributeDef, value: unknown, cell: (v: string) => string): string[] {
+  if (def.scope === 'store') {
+    const v = formatProposal(def, value, cell)
+    return v === undefined ? [] : [`| ${def.label} | ${v} |`]
+  }
+  const byGame = (value ?? {}) as Partial<Record<GameTitle, unknown>>
+  const values = GAME_TITLES.map((game) => ({ game, v: formatProposal(def, byGame[game], cell) }))
+  const present = values.filter((x): x is { game: GameTitle; v: string } => x.v !== undefined)
+  if (
+    def.collapseSameValue &&
+    present.length === GAME_TITLES.length &&
+    present.every((x) => x.v === present[0].v)
+  ) {
+    return [`| ${def.label} | ${present[0].v} |`]
+  }
+  return present.map((x) => `| ${def.label}（${getGameLabel(x.game)}） | ${x.v} |`)
 }
 
 /** 構造化店舗情報を「提案値一覧」テーブル形式の GitHub Issue へ整形する。 */
@@ -151,37 +197,14 @@ export function buildStructuredStoreIssue(input: StructuredStoreInput): ReportIs
   // 提案値一覧（入力済みフィールドのみ）。ユーザー入力はテーブルセル用にエスケープする
   const cell = (v: string) => escapeTableCell(safe(v))
   const rows: string[] = []
-  if (input.machineCountsJojoLs !== undefined)
-    rows.push(`| ジョジョ台数 | ${input.machineCountsJojoLs} |`)
-  if (input.machineCountsGundamExvs !== undefined)
-    rows.push(`| イニブ台数 | ${input.machineCountsGundamExvs} |`)
-  if (input.businessHours !== undefined)
-    rows.push(`| 営業時間 | ${cell(input.businessHours)} |`)
-  // フロア: 両ゲーム同値なら1行、異なれば（片方のみ含む）タイトル別に出す
-  if (
-    input.floorJojoLs !== undefined &&
-    input.floorGundamExvs !== undefined &&
-    input.floorJojoLs === input.floorGundamExvs
-  ) {
-    rows.push(`| フロア | ${cell(input.floorJojoLs)} |`)
-  } else {
-    if (input.floorJojoLs !== undefined)
-      rows.push(`| フロア（ラスサバ） | ${cell(input.floorJojoLs)} |`)
-    if (input.floorGundamExvs !== undefined)
-      rows.push(`| フロア（イニブ） | ${cell(input.floorGundamExvs)} |`)
+  for (const game of GAME_TITLES) {
+    const count = input.machineCounts?.[game]
+    if (count !== undefined) rows.push(`| ${MACHINE_COUNT_LABELS[game]} | ${count} |`)
   }
-  if (input.smoking !== undefined)
-    rows.push(`| 喫煙所 | ${TERNARY_LABEL[input.smoking]} |`)
-  if (input.payments !== undefined && input.payments.length > 0)
-    rows.push(`| 決済/電子マネー | ${input.payments.map(cell).join(', ')} |`)
-  if (input.hasRecordingJojoLs !== undefined)
-    rows.push(`| 録画台（ラスサバ） | ${TERNARY_LABEL[input.hasRecordingJojoLs]} |`)
-  if (input.hasRecordingGundamExvs !== undefined)
-    rows.push(`| 録画台（イニブ） | ${TERNARY_LABEL[input.hasRecordingGundamExvs]} |`)
-  if (input.hasStreamingJojoLs !== undefined)
-    rows.push(`| 配信台（ラスサバ） | ${TERNARY_LABEL[input.hasStreamingJojoLs]} |`)
-  if (input.hasStreamingGundamExvs !== undefined)
-    rows.push(`| 配信台（イニブ） | ${TERNARY_LABEL[input.hasStreamingGundamExvs]} |`)
+  const attributes = input.attributes ?? {}
+  for (const def of REPORTABLE_ATTRIBUTES) {
+    rows.push(...proposalRows(def, readAttribute(attributes, def), cell))
+  }
   if (input.correctionType !== undefined)
     rows.push(`| 修正・通報種別 | ${input.correctionType} |`)
   if (input.correctionNote !== undefined && input.correctionNote.trim())

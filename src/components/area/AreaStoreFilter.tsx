@@ -10,7 +10,7 @@ import { AreaStoreSections } from '@/components/area/AreaStoreSections'
 /**
  * 県ページ内の店舗検索・絞り込みアイランド（クライアント・段階的強化）。
  *
- * 店名・住所のフリーテキストと設備ファセット（最低台数・配信台・録画台・喫煙所）で、
+ * 店名・住所のフリーテキストと設備ファセット（最低台数・配信台・録画台・喫煙所・無制限台）で、
  * 県内一覧をその場で絞る。一致は純関数 {@link filterAreaStoresByGame}（＝既存の
  * `filterStoresByKeyword` / `filterStoresByFacility` を共有）に委譲し、エリア側で再実装しない。
  *
@@ -65,14 +65,22 @@ export function AreaStoreFilter({
   const [hasStreaming, setHasStreaming] = useState(false)
   const [hasRecording, setHasRecording] = useState(false)
   const [hasSmoking, setHasSmoking] = useState(false)
+  const [hasUnlimited, setHasUnlimited] = useState(false)
 
   const visibleByGame = useMemo(
     () =>
       filterAreaStoresByGame(storesByGame, {
         query,
-        facility: { ...EMPTY_FACILITY_FILTER, minMachines, hasStreaming, hasRecording, hasSmoking },
+        facility: {
+          ...EMPTY_FACILITY_FILTER,
+          minMachines,
+          hasStreaming,
+          hasRecording,
+          hasSmoking,
+          hasUnlimited,
+        },
       }),
-    [storesByGame, query, minMachines, hasStreaming, hasRecording, hasSmoking],
+    [storesByGame, query, minMachines, hasStreaming, hasRecording, hasSmoking, hasUnlimited],
   )
 
   const total = (Object.keys(visibleByGame) as GameTitle[]).reduce(
@@ -149,6 +157,9 @@ export function AreaStoreFilter({
             </Chip>
             <Chip active={hasSmoking} onClick={() => setHasSmoking((v) => !v)}>
               喫煙所あり
+            </Chip>
+            <Chip active={hasUnlimited} onClick={() => setHasUnlimited((v) => !v)}>
+              無制限台あり
             </Chip>
           </div>
         </div>

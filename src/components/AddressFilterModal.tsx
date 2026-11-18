@@ -59,6 +59,7 @@ const FACILITY_TOGGLES: { key: keyof Omit<FacilityFilter, 'minMachines'>; label:
   { key: 'hasRecording', label: '録画台あり' },
   { key: 'hasSmoking', label: '喫煙所あり' },
   { key: 'openOnly', label: '営業中のみ' },
+  { key: 'hasUnlimited', label: '無制限台あり' },
 ]
 
 export function AddressFilterModal({
@@ -176,6 +177,7 @@ export function AddressFilterModal({
       has_recording: facility.hasRecording,
       has_smoking: facility.hasSmoking,
       open_only: facility.openOnly,
+      has_unlimited: facility.hasUnlimited,
       completeness: draft.completeness,
       result_count: previewCount ? previewCount(draft, gameDraft) : 0,
       is_filtered: chips.length > 0 || gameDraft !== 'all',

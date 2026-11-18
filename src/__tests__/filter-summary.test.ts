@@ -21,7 +21,14 @@ describe('activeFilterChips', () => {
   it('地方・都県・市区・設備・充実度をチップ化する（順序付き）', () => {
     const f = filter({
       address: { region: '関東', prefectures: ['東京都', '神奈川県'], cities: ['新宿区'], wards: [] },
-      facility: { minMachines: 3, hasStreaming: true, hasRecording: false, hasSmoking: false, openOnly: true },
+      facility: {
+        minMachines: 3,
+        hasStreaming: true,
+        hasRecording: false,
+        hasSmoking: false,
+        openOnly: true,
+        hasUnlimited: true,
+      },
       completeness: 'poor',
     })
     const labels = activeFilterChips(f).map((c) => c.label)
@@ -33,6 +40,7 @@ describe('activeFilterChips', () => {
       '3台以上',
       '配信台あり',
       '営業中',
+      '無制限台あり',
       '情報が不足',
     ])
   })
@@ -45,7 +53,14 @@ describe('activeFilterChips', () => {
 describe('removeFilterChip', () => {
   const base = filter({
     address: { region: '関東', prefectures: ['東京都', '神奈川県'], cities: ['新宿区'], wards: ['西区'] },
-    facility: { minMachines: 3, hasStreaming: true, hasRecording: false, hasSmoking: false, openOnly: true },
+    facility: {
+      minMachines: 3,
+      hasStreaming: true,
+      hasRecording: false,
+      hasSmoking: false,
+      openOnly: true,
+      hasUnlimited: false,
+    },
     completeness: 'poor',
   })
 
@@ -103,8 +118,16 @@ describe('セクションサマリー', () => {
   it('describeFacility', () => {
     expect(describeFacility(EMPTY_STORE_FILTER.facility)).toBe('指定なし')
     expect(
-      describeFacility({ minMachines: 3, hasStreaming: true, hasRecording: false, hasSmoking: false, openOnly: true }),
+      describeFacility({
+        minMachines: 3,
+        hasStreaming: true,
+        hasRecording: false,
+        hasSmoking: false,
+        openOnly: true,
+        hasUnlimited: false,
+      }),
     ).toBe('3台以上・配信台あり・営業中')
+    expect(describeFacility({ ...EMPTY_STORE_FILTER.facility, hasUnlimited: true })).toBe('無制限台あり')
   })
 
   it('describeCompleteness', () => {

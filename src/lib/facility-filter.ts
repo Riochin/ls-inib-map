@@ -29,7 +29,7 @@ function hasYesForGame(
 
 /**
  * 設備・条件フィルタを適用する。各条件は AND 結合。
- * 台数・録画台・配信台は選択中ゲーム（`game`）でスコープする。'all' は全ゲーム
+ * 台数・録画台・配信台・無制限台は選択中ゲーム（`game`）でスコープする。'all' は全ゲーム
  * 横断（合算／いずれかが 'yes'）で判定し、特定タイトル選択時はそのゲームのみで判定する。
  * 喫煙所・営業中は店舗単位の属性のためゲーム非依存。
  * 「あり」系は確定 'yes' のみ通過（unknown/未設定は除外）。
@@ -45,6 +45,7 @@ export function filterStoresByFacility(
       return false
     if (facility.hasStreaming && !hasYesForGame(store.hasStreamingByGame, game)) return false
     if (facility.hasRecording && !hasYesForGame(store.hasRecordingByGame, game)) return false
+    if (facility.hasUnlimited && !hasYesForGame(store.hasUnlimitedByGame, game)) return false
     if (facility.hasSmoking && store.smoking !== 'yes') return false
     if (facility.openOnly && (store.closed === true || store.delisted === true)) return false
     return true
