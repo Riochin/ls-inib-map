@@ -13,6 +13,10 @@
       "machineCounts": {
         "jojo-ls": 2,
         "gundam-exvs": 8
+      },
+      "countBaselines": {
+        "jojo-ls": 3,
+        "gundam-exvs": 10
       }
     },
     "07906e9552bc": {
@@ -22,6 +26,9 @@
       "remarks": "2026年8月9日をもって閉店したとの情報があります。",
       "machineCounts": {
         "gundam-exvs": 8
+      },
+      "countBaselines": {
+        "gundam-exvs": 9
       }
     },
     "0a3697626fe5": {
@@ -36,6 +43,10 @@
       "lat": 37.4578494,
       "lng": 138.8131163,
       "machineCounts": {
+        "jojo-ls": 3,
+        "gundam-exvs": 10
+      },
+      "countBaselines": {
         "jojo-ls": 3,
         "gundam-exvs": 10
       },
@@ -55,6 +66,9 @@
       "remarks": "お手洗いはイニブ筐体のすぐ裏手にあります。",
       "machineCounts": {
         "gundam-exvs": 8
+      },
+      "countBaselines": {
+        "gundam-exvs": 9
       }
     },
     "20a5efd3c27f": {
@@ -63,6 +77,10 @@
       "updatedAt": "2026-06-19",
       "machineCounts": {
         "jojo-ls": 3,
+        "gundam-exvs": 14
+      },
+      "countBaselines": {
+        "jojo-ls": 0,
         "gundam-exvs": 14
       },
       "smoking": "yes"
@@ -74,6 +92,10 @@
       "machineCounts": {
         "jojo-ls": 10,
         "gundam-exvs": 24
+      },
+      "countBaselines": {
+        "jojo-ls": 12,
+        "gundam-exvs": 30
       },
       "businessHours": "10:00〜23:00",
       "floor": "地下1階",
@@ -105,6 +127,10 @@
         "jojo-ls": 3,
         "gundam-exvs": 14
       },
+      "countBaselines": {
+        "jojo-ls": 3,
+        "gundam-exvs": 14
+      },
       "businessHours": "9:00〜翌0:00",
       "floor": "1F",
       "smoking": "yes",
@@ -127,6 +153,9 @@
       "machineCounts": {
         "gundam-exvs": 14
       },
+      "countBaselines": {
+        "gundam-exvs": 18
+      },
       "floor": "地下1F",
       "hasRecordingByGame": {
         "gundam-exvs": "yes"
@@ -142,6 +171,9 @@
       "machineCounts": {
         "gundam-exvs": 12
       },
+      "countBaselines": {
+        "gundam-exvs": 15
+      },
       "hasStreamingByGame": {
         "gundam-exvs": "yes"
       }
@@ -153,6 +185,9 @@
       "closed": true,
       "machineCounts": {
         "jojo-ls": 24
+      },
+      "countBaselines": {
+        "jojo-ls": 0
       },
       "floor": "どっちも地下２階",
       "smoking": "no",
@@ -175,6 +210,9 @@
       "machineCounts": {
         "gundam-exvs": 6
       },
+      "countBaselines": {
+        "gundam-exvs": 8
+      },
       "businessHours": "10:00-23:00",
       "hasRecordingByGame": {
         "jojo-ls": "yes"
@@ -192,6 +230,10 @@
       "businessHours": "10:00〜24:00",
       "floor": "ワンフロア",
       "machineCounts": {
+        "jojo-ls": 2,
+        "gundam-exvs": 18
+      },
+      "countBaselines": {
         "jojo-ls": 2,
         "gundam-exvs": 18
       },
@@ -214,6 +256,10 @@
         "jojo-ls": 6,
         "gundam-exvs": 18
       },
+      "countBaselines": {
+        "jojo-ls": 6,
+        "gundam-exvs": 18
+      },
       "businessHours": "7:00〜23:50",
       "floor": "2F",
       "smoking": "yes",
@@ -231,6 +277,9 @@
       "note": "namco池袋 ラスサバ10台で確定（Issue #99）。報告者=管理者確認済み。Issue #463 @ls_boushi（SNS提供=確定・お礼可）: 営業10:00〜23:00・地下1階・決済(PayPay/d払い/楽天ペイ/nanaco/iD/WAON/交通系IC)・配信台(ラスサバ)あり。",
       "updatedAt": "2026-09-24",
       "machineCounts": {
+        "jojo-ls": 10
+      },
+      "countBaselines": {
         "jojo-ls": 10
       },
       "businessHours": "10:00〜23:00",
@@ -255,6 +304,10 @@
       "machineCounts": {
         "jojo-ls": 4,
         "gundam-exvs": 9
+      },
+      "countBaselines": {
+        "jojo-ls": 4,
+        "gundam-exvs": 9
       }
     },
     "4a4912e8ada8": {
@@ -262,6 +315,10 @@
       "note": "ゲームポイントシャトーEX ラスサバ4台・イニブ14台・2F・喫煙所あり（屋外1F）・配信台あり（Issue #129）。v2.3.5: 配信台/録画台をタイトル別化。公式サイト(ex-kyobashi.com)でイニブ・ラスサバ両タイトルに配信PC＋録画機完備を確認＝両方あり。",
       "updatedAt": "2026-06-23",
       "machineCounts": {
+        "jojo-ls": 4,
+        "gundam-exvs": 14
+      },
+      "countBaselines": {
         "jojo-ls": 4,
         "gundam-exvs": 14
       },
@@ -283,6 +340,9 @@
       "machineCounts": {
         "gundam-exvs": 28
       },
+      "countBaselines": {
+        "gundam-exvs": 28
+      },
       "businessHours": "10:00〜0:45",
       "floor": "3階",
       "smoking": "yes",
@@ -300,6 +360,9 @@
       "machineCounts": {
         "gundam-exvs": 4
       },
+      "countBaselines": {
+        "gundam-exvs": 5
+      },
       "lat": 33.3251978,
       "lng": 130.9114515
     },
@@ -310,6 +373,9 @@
       "remarks": "イニブは筐体4台＋ライブモニター1台です（公式表記の5台はモニター込みの数）。",
       "machineCounts": {
         "gundam-exvs": 4
+      },
+      "countBaselines": {
+        "gundam-exvs": 5
       },
       "businessHours": "10:00〜23:45",
       "floorByGame": {
@@ -331,6 +397,10 @@
         "jojo-ls": 3,
         "gundam-exvs": 9
       },
+      "countBaselines": {
+        "jojo-ls": 3,
+        "gundam-exvs": 9
+      },
       "smoking": "yes",
       "hasRecordingByGame": {
         "jojo-ls": "unknown",
@@ -346,6 +416,10 @@
       "note": "上越レジャーランボウル ラスサバ3台・イニブ7台・喫煙所あり（Issue #137）。Issue #333（SNS未記入・未確認）: 営業9:00〜24:00・フロア1F・録画台(ラスサバ)なし・配信台(ラスサバ)なし。喫煙所は既報と一致。",
       "updatedAt": "2026-07-13",
       "machineCounts": {
+        "jojo-ls": 3,
+        "gundam-exvs": 7
+      },
+      "countBaselines": {
         "jojo-ls": 3,
         "gundam-exvs": 7
       },
@@ -366,6 +440,9 @@
       "machineCounts": {
         "gundam-exvs": 16
       },
+      "countBaselines": {
+        "gundam-exvs": 17
+      },
       "businessHours": "平日 10:00〜23:59",
       "floor": "南館5階",
       "hasRecordingByGame": {
@@ -383,10 +460,16 @@
         "jojo-ls": 12,
         "gundam-exvs": 59
       },
+      "countBaselines": {
+        "jojo-ls": 12,
+        "gundam-exvs": 59
+      },
       "businessHours": "10:00〜24:00",
       "floor": "3F",
       "smoking": "no",
-      "payments": ["交通系IC（Suica/PASMOなど）"],
+      "payments": [
+        "交通系IC（Suica/PASMOなど）"
+      ],
       "hasRecordingByGame": {
         "jojo-ls": "unknown",
         "gundam-exvs": "unknown"
@@ -407,10 +490,19 @@
       "machineCounts": {
         "jojo-ls": 3
       },
+      "countBaselines": {
+        "jojo-ls": 5
+      },
       "businessHours": "10:00〜23:00",
       "floor": "2F",
       "smoking": "no",
-      "payments": ["交通系IC（Suica/PASMOなど）", "d払い", "PayPay", "楽天ペイ", "nanaco"],
+      "payments": [
+        "交通系IC（Suica/PASMOなど）",
+        "d払い",
+        "PayPay",
+        "楽天ペイ",
+        "nanaco"
+      ],
       "hasRecordingByGame": {
         "jojo-ls": "no",
         "gundam-exvs": "no"
@@ -440,10 +532,16 @@
         "jojo-ls": 4,
         "gundam-exvs": 22
       },
+      "countBaselines": {
+        "jojo-ls": 4,
+        "gundam-exvs": 25
+      },
       "businessHours": "9:00～0:00",
       "floor": "4F",
       "smoking": "yes",
-      "payments": ["交通系IC（Suica/PASMOなど）"],
+      "payments": [
+        "交通系IC（Suica/PASMOなど）"
+      ],
       "hasRecordingByGame": {
         "jojo-ls": "no",
         "gundam-exvs": "yes"
@@ -458,6 +556,9 @@
       "updatedAt": "2026-06-10",
       "machineCounts": {
         "gundam-exvs": 10
+      },
+      "countBaselines": {
+        "gundam-exvs": 11
       }
     },
     "7fe925f86f0f": {
@@ -467,6 +568,9 @@
       "remarks": "イニブは筐体4台＋ライブモニター1台です（公式表記の5台はモニター込みの数）。",
       "machineCounts": {
         "gundam-exvs": 4
+      },
+      "countBaselines": {
+        "gundam-exvs": 5
       }
     },
     "809ce2bb59b4": {
@@ -476,6 +580,10 @@
       "machineCounts": {
         "jojo-ls": 4,
         "gundam-exvs": 4
+      },
+      "countBaselines": {
+        "jojo-ls": 4,
+        "gundam-exvs": 7
       },
       "floorByGame": {
         "jojo-ls": "1F",
@@ -498,6 +606,10 @@
       "lat": 36.5839552,
       "lng": 136.6215528,
       "machineCounts": {
+        "jojo-ls": 3,
+        "gundam-exvs": 9
+      },
+      "countBaselines": {
         "jojo-ls": 3,
         "gundam-exvs": 9
       },
@@ -525,6 +637,9 @@
       "updatedAt": "2026-06-12",
       "machineCounts": {
         "jojo-ls": 5
+      },
+      "countBaselines": {
+        "jojo-ls": 6
       }
     },
     "a4bf5a4b8d0b": {
@@ -534,9 +649,21 @@
       "machineCounts": {
         "jojo-ls": 2
       },
+      "countBaselines": {
+        "jojo-ls": 4
+      },
       "businessHours": "10:00〜翌0:00",
       "smoking": "yes",
-      "payments": ["交通系IC（Suica/PASMOなど）", "d払い", "LINE Pay", "WAON", "QUICPay", "PayPay", "楽天ペイ", "nanaco"],
+      "payments": [
+        "交通系IC（Suica/PASMOなど）",
+        "d払い",
+        "LINE Pay",
+        "WAON",
+        "QUICPay",
+        "PayPay",
+        "楽天ペイ",
+        "nanaco"
+      ],
       "hasRecordingByGame": {
         "jojo-ls": "yes",
         "gundam-exvs": "yes"
@@ -547,6 +674,10 @@
       "note": "オアシスさん",
       "updatedAt": "2026-06-09",
       "machineCounts": {
+        "jojo-ls": 4,
+        "gundam-exvs": 9
+      },
+      "countBaselines": {
         "jojo-ls": 4,
         "gundam-exvs": 9
       }
@@ -560,6 +691,9 @@
       "machineCounts": {
         "gundam-exvs": 4
       },
+      "countBaselines": {
+        "gundam-exvs": 9
+      },
       "floor": "2F",
       "smoking": "yes"
     },
@@ -569,6 +703,9 @@
       "updatedAt": "2026-06-10",
       "machineCounts": {
         "gundam-exvs": 2
+      },
+      "countBaselines": {
+        "gundam-exvs": 3
       }
     },
     "c5cf6ac3661e": {
@@ -578,6 +715,9 @@
       "remarks": "イニブは筐体4台＋ライブモニター1台です（公式表記の5台はモニター込みの数）。",
       "machineCounts": {
         "gundam-exvs": 4
+      },
+      "countBaselines": {
+        "gundam-exvs": 5
       }
     },
     "c63f86f0b751": {
@@ -586,6 +726,9 @@
       "updatedAt": "2026-06-10",
       "machineCounts": {
         "gundam-exvs": 8
+      },
+      "countBaselines": {
+        "gundam-exvs": 9
       }
     },
     "caeb68c472ce": {
@@ -594,6 +737,9 @@
       "updatedAt": "2026-06-25",
       "machineCounts": {
         "gundam-exvs": 8
+      },
+      "countBaselines": {
+        "gundam-exvs": 9
       },
       "businessHours": "10:00〜1:00",
       "floor": "3F",
@@ -608,6 +754,9 @@
       "updatedAt": "2026-06-12",
       "machineCounts": {
         "gundam-exvs": 4
+      },
+      "countBaselines": {
+        "gundam-exvs": 5
       }
     },
     "d3d5ea015d5f": {
@@ -617,6 +766,10 @@
       "machineCounts": {
         "jojo-ls": 2,
         "gundam-exvs": 13
+      },
+      "countBaselines": {
+        "jojo-ls": 0,
+        "gundam-exvs": 9
       },
       "businessHours": "10:00〜21:00",
       "floor": "イオンモール東館2F",
@@ -645,6 +798,10 @@
       "machineCounts": {
         "jojo-ls": 3,
         "gundam-exvs": 8
+      },
+      "countBaselines": {
+        "jojo-ls": 3,
+        "gundam-exvs": 9
       }
     },
     "ec36fcabd4d3": {
@@ -652,6 +809,9 @@
       "note": "オアシスさん",
       "updatedAt": "2026-06-09",
       "machineCounts": {
+        "gundam-exvs": 9
+      },
+      "countBaselines": {
         "gundam-exvs": 9
       }
     },
@@ -662,6 +822,9 @@
       "remarks": "録画・配信の設備はありません。電子マネーは使えません。",
       "machineCounts": {
         "gundam-exvs": 2
+      },
+      "countBaselines": {
+        "gundam-exvs": 3
       }
     },
     "f94e47ba4311": {
@@ -670,6 +833,9 @@
       "updatedAt": "2026-09-24",
       "machineCounts": {
         "jojo-ls": 4
+      },
+      "countBaselines": {
+        "jojo-ls": 6
       },
       "businessHours": "10:00〜23:50（土日祝は9:00〜）",
       "floor": "1F",
@@ -691,6 +857,9 @@
       "machineCounts": {
         "gundam-exvs": 5
       },
+      "countBaselines": {
+        "gundam-exvs": 5
+      },
       "hasRecordingByGame": {
         "gundam-exvs": "yes"
       },
@@ -703,6 +872,9 @@
       "note": "ラウンドワン町田 Issue #151 @AzukiBAR1800（お礼可）。ラスサバ4台・イニブ18台(マップ値据置・未確定/#171)・営業10:00〜0:59（アミューズメントコーナー）・2F・喫煙所あり・録画台あり・配信台なし。報告者=ラスサバ勢のため台数はラスサバのみ確定、録画/配信もラスサバ側に割当。録画はRound1のGR-HD録画機（EXVS.2IB設置店）＝イニブ側も録画ありと判断、配信はイニブ不明。Issue #354（SNS未記入・未確認）: フロアをラスサバ2F・イニブ1Fに分離（従来は単一フロア表記2Fだったが、イニブは別階と判明）。配信台(イニブ)なしを追加確認（従来不明）。録画台(イニブ)あり・喫煙所あり・営業時間は既報と一致。",
       "updatedAt": "2026-07-21",
       "machineCounts": {
+        "jojo-ls": 4
+      },
+      "countBaselines": {
         "jojo-ls": 4
       },
       "businessHours": "10:00〜0:59（アミューズメントコーナー）",
@@ -727,6 +899,9 @@
       "machineCounts": {
         "jojo-ls": 2
       },
+      "countBaselines": {
+        "jojo-ls": 2
+      },
       "businessHours": "10:00〜24:00",
       "floor": "2F",
       "smoking": "yes",
@@ -746,10 +921,16 @@
       "machineCounts": {
         "jojo-ls": 3
       },
+      "countBaselines": {
+        "jojo-ls": 3
+      },
       "businessHours": "9:00〜24:00",
       "floor": "2F",
       "smoking": "yes",
-      "payments": ["PayPay", "交通系IC（Suica/PASMOなど）"],
+      "payments": [
+        "PayPay",
+        "交通系IC（Suica/PASMOなど）"
+      ],
       "hasRecordingByGame": {
         "jojo-ls": "unknown",
         "gundam-exvs": "unknown"
@@ -764,6 +945,9 @@
       "note": "タイトーステーション横浜西口五番街 Issue #155 @AzukiBAR1800（お礼可）。ラスサバ4台・イニブ19台(マップ値据置・未確定/#171)・営業09:00〜23:45・5F・喫煙所あり・録画台なし・配信台なし。報告者=ラスサバ勢のため台数はラスサバのみ確定、録画/配信もラスサバ側に割当・イニブ側は不明。",
       "updatedAt": "2026-06-23",
       "machineCounts": {
+        "jojo-ls": 4
+      },
+      "countBaselines": {
         "jojo-ls": 4
       },
       "businessHours": "09:00〜23:45",
@@ -785,6 +969,9 @@
       "machineCounts": {
         "jojo-ls": 4
       },
+      "countBaselines": {
+        "jojo-ls": 4
+      },
       "floor": "3F",
       "smoking": "yes",
       "hasRecordingByGame": {
@@ -803,6 +990,9 @@
       "machineCounts": {
         "jojo-ls": 4
       },
+      "countBaselines": {
+        "jojo-ls": 4
+      },
       "floor": "地下1F",
       "hasRecordingByGame": {
         "jojo-ls": "unknown",
@@ -818,6 +1008,9 @@
       "note": "Amusement＆Game MAGHREB Issue #158 @AzukiBAR1800（お礼可）。ラスサバ1台・イニブ9台(マップ値据置・未確定/#171)・営業10:00〜24:00・1F・喫煙所あり・録画台なし・配信台なし。報告者=ラスサバ勢のため台数はラスサバのみ確定、録画/配信もラスサバ側に割当・イニブ側は不明。",
       "updatedAt": "2026-06-23",
       "machineCounts": {
+        "jojo-ls": 1
+      },
+      "countBaselines": {
         "jojo-ls": 1
       },
       "businessHours": "10:00〜24:00",
@@ -850,7 +1043,13 @@
       "updatedAt": "2026-08-17",
       "floor": "地下1F",
       "smoking": "no",
-      "payments": ["交通系IC（Suica/PASMOなど）", "PayPay", "楽天ペイ", "iD", "nanaco"],
+      "payments": [
+        "交通系IC（Suica/PASMOなど）",
+        "PayPay",
+        "楽天ペイ",
+        "iD",
+        "nanaco"
+      ],
       "hasRecordingByGame": {
         "jojo-ls": "no",
         "gundam-exvs": "no"
@@ -898,6 +1097,10 @@
       "machineCounts": {
         "jojo-ls": 2,
         "gundam-exvs": 6
+      },
+      "countBaselines": {
+        "jojo-ls": 2,
+        "gundam-exvs": 7
       },
       "businessHours": "10:00〜24:00",
       "floor": "3F",
@@ -961,6 +1164,9 @@
       "machineCounts": {
         "gundam-exvs": 12
       },
+      "countBaselines": {
+        "gundam-exvs": 14
+      },
       "smoking": "yes",
       "hasRecordingByGame": {
         "jojo-ls": "yes",
@@ -976,6 +1182,9 @@
       "updatedAt": "2026-06-26",
       "machineCounts": {
         "gundam-exvs": 4
+      },
+      "countBaselines": {
+        "gundam-exvs": 5
       },
       "floor": "1F",
       "smoking": "yes",
@@ -993,6 +1202,9 @@
       "machineCounts": {
         "gundam-exvs": 8
       },
+      "countBaselines": {
+        "gundam-exvs": 9
+      },
       "businessHours": "9:00-24:00",
       "floor": "5F",
       "hasRecordingByGame": {
@@ -1008,6 +1220,9 @@
       "updatedAt": "2026-06-26",
       "machineCounts": {
         "gundam-exvs": 8
+      },
+      "countBaselines": {
+        "gundam-exvs": 9
       },
       "businessHours": "9:00-24:00",
       "floor": "2階",
@@ -1025,10 +1240,18 @@
       "machineCounts": {
         "gundam-exvs": 40
       },
+      "countBaselines": {
+        "gundam-exvs": 44
+      },
       "businessHours": "10:00-23:00",
       "floor": "B1",
       "smoking": "no",
-      "payments": ["交通系IC（Suica/PASMOなど）", "d払い", "nanaco", "iD"],
+      "payments": [
+        "交通系IC（Suica/PASMOなど）",
+        "d払い",
+        "nanaco",
+        "iD"
+      ],
       "hasRecordingByGame": {
         "gundam-exvs": "no"
       },
@@ -1044,10 +1267,23 @@
       "machineCounts": {
         "gundam-exvs": 6
       },
+      "countBaselines": {
+        "gundam-exvs": 7
+      },
       "businessHours": "10:00-23:00",
       "floor": "4階",
       "smoking": "no",
-      "payments": ["交通系IC（Suica/PASMOなど）", "nanaco", "iD", "楽天ペイ", "QUICPay", "WAON", "PayPay", "LINE Pay", "d払い"],
+      "payments": [
+        "交通系IC（Suica/PASMOなど）",
+        "nanaco",
+        "iD",
+        "楽天ペイ",
+        "QUICPay",
+        "WAON",
+        "PayPay",
+        "LINE Pay",
+        "d払い"
+      ],
       "hasRecordingByGame": {
         "gundam-exvs": "no"
       },
@@ -1062,10 +1298,20 @@
       "machineCounts": {
         "gundam-exvs": 36
       },
+      "countBaselines": {
+        "gundam-exvs": 39
+      },
       "businessHours": "10:00〜23:30",
       "floor": "3F",
       "smoking": "yes",
-      "payments": ["交通系IC（Suica/PASMOなど）", "PayPay", "nanaco", "iD", "WAON", "d払い"],
+      "payments": [
+        "交通系IC（Suica/PASMOなど）",
+        "PayPay",
+        "nanaco",
+        "iD",
+        "WAON",
+        "d払い"
+      ],
       "hasRecordingByGame": {
         "gundam-exvs": "yes"
       },
@@ -1090,6 +1336,10 @@
         "jojo-ls": 2,
         "gundam-exvs": 5
       },
+      "countBaselines": {
+        "jojo-ls": 3,
+        "gundam-exvs": 5
+      },
       "businessHours": "10:00〜23:00",
       "floor": "2F",
       "smoking": "yes",
@@ -1110,6 +1360,9 @@
       "remarks": "ラスサバの筐体は他店舗へ移設されたという情報があります（店員さん談・移設先は不明）。",
       "machineCounts": {
         "jojo-ls": 0
+      },
+      "countBaselines": {
+        "jojo-ls": 2
       }
     },
     "d5e00a38988d": {
@@ -1118,6 +1371,9 @@
       "updatedAt": "2026-06-28",
       "machineCounts": {
         "jojo-ls": 4
+      },
+      "countBaselines": {
+        "jojo-ls": 12
       },
       "businessHours": "10:00〜翌3:00",
       "floor": "1F",
@@ -1147,6 +1403,9 @@
       "updatedAt": "2026-06-29",
       "machineCounts": {
         "jojo-ls": 2
+      },
+      "countBaselines": {
+        "jojo-ls": 3
       }
     },
     "74f2970702de": {
@@ -1224,10 +1483,23 @@
       "machineCounts": {
         "gundam-exvs": 8
       },
+      "countBaselines": {
+        "gundam-exvs": 9
+      },
       "businessHours": "08:00〜23:00",
       "floor": "2F",
       "smoking": "no",
-      "payments": ["交通系IC（Suica/PASMOなど）", "d払い", "LINE Pay", "WAON", "QUICPay", "PayPay", "楽天ペイ", "nanaco", "iD"],
+      "payments": [
+        "交通系IC（Suica/PASMOなど）",
+        "d払い",
+        "LINE Pay",
+        "WAON",
+        "QUICPay",
+        "PayPay",
+        "楽天ペイ",
+        "nanaco",
+        "iD"
+      ],
       "hasRecordingByGame": {
         "gundam-exvs": "no"
       },
@@ -1256,6 +1528,9 @@
       "machineCounts": {
         "gundam-exvs": 6
       },
+      "countBaselines": {
+        "gundam-exvs": 7
+      },
       "businessHours": "10:00〜24:00",
       "floorByGame": {
         "gundam-exvs": "1F"
@@ -1272,10 +1547,16 @@
       "machineCounts": {
         "gundam-exvs": 16
       },
+      "countBaselines": {
+        "gundam-exvs": 18
+      },
       "businessHours": "10:00〜24:00",
       "floor": "地下1階",
       "smoking": "yes",
-      "payments": ["PayPay", "QUICPay"],
+      "payments": [
+        "PayPay",
+        "QUICPay"
+      ],
       "hasRecordingByGame": {
         "jojo-ls": "no"
       },
@@ -1293,6 +1574,9 @@
       "updatedAt": "2026-10-12",
       "machineCounts": {
         "gundam-exvs": 8
+      },
+      "countBaselines": {
+        "gundam-exvs": 9
       },
       "businessHours": "10:00〜23:30",
       "floor": "3F",
@@ -1363,6 +1647,9 @@
       "machineCounts": {
         "gundam-exvs": 11
       },
+      "countBaselines": {
+        "gundam-exvs": 12
+      },
       "hasRecordingByGame": {
         "gundam-exvs": "no"
       },
@@ -1377,6 +1664,9 @@
       "remarks": "イニブは稼働中のゲーム筐体6台＋ライブモニター1台の構成です（公式表記の7台はモニター込みの数）。",
       "machineCounts": {
         "gundam-exvs": 6
+      },
+      "countBaselines": {
+        "gundam-exvs": 7
       },
       "businessHours": "10:00〜24:00",
       "floorByGame": {
@@ -1395,6 +1685,9 @@
       "updatedAt": "2026-07-02",
       "machineCounts": {
         "gundam-exvs": 2
+      },
+      "countBaselines": {
+        "gundam-exvs": 4
       },
       "smoking": "no",
       "hasRecordingByGame": {
@@ -1434,6 +1727,9 @@
       "machineCounts": {
         "gundam-exvs": 10
       },
+      "countBaselines": {
+        "gundam-exvs": 11
+      },
       "hasRecordingByGame": {
         "gundam-exvs": "yes"
       },
@@ -1458,6 +1754,9 @@
       "businessHours": "10:00〜21:00",
       "machineCounts": {
         "gundam-exvs": 8
+      },
+      "countBaselines": {
+        "gundam-exvs": 10
       },
       "floorByGame": {
         "gundam-exvs": "3F"
@@ -1499,6 +1798,9 @@
       "updatedAt": "2026-07-03",
       "machineCounts": {
         "gundam-exvs": 8
+      },
+      "countBaselines": {
+        "gundam-exvs": 10
       },
       "hasStreamingByGame": {
         "gundam-exvs": "yes"
@@ -1554,6 +1856,9 @@
       "machineCounts": {
         "gundam-exvs": 4
       },
+      "countBaselines": {
+        "gundam-exvs": 5
+      },
       "hasStreamingByGame": {
         "gundam-exvs": "no"
       }
@@ -1566,10 +1871,17 @@
       "machineCounts": {
         "gundam-exvs": 8
       },
+      "countBaselines": {
+        "gundam-exvs": 9
+      },
       "floorByGame": {
         "gundam-exvs": "1F"
       },
-      "payments": ["交通系IC（Suica/PASMOなど）", "PayPay", "楽天ペイ"],
+      "payments": [
+        "交通系IC（Suica/PASMOなど）",
+        "PayPay",
+        "楽天ペイ"
+      ],
       "hasRecordingByGame": {
         "gundam-exvs": "no"
       },
@@ -1585,6 +1897,10 @@
       "machineCounts": {
         "jojo-ls": 6,
         "gundam-exvs": 12
+      },
+      "countBaselines": {
+        "jojo-ls": 6,
+        "gundam-exvs": 14
       },
       "businessHours": "09:00〜23:30",
       "floor": "2F",
@@ -1604,6 +1920,9 @@
       "updatedAt": "2026-07-12",
       "machineCounts": {
         "jojo-ls": 3
+      },
+      "countBaselines": {
+        "jojo-ls": 7
       },
       "hasRecordingByGame": {
         "jojo-ls": "no"
@@ -1712,7 +2031,17 @@
         "gundam-exvs": "地下1階"
       },
       "smoking": "no",
-      "payments": ["iD", "nanaco", "楽天ペイ", "PayPay", "交通系IC（Suica/PASMOなど）", "d払い", "WAON", "LINE Pay", "QUICPay"],
+      "payments": [
+        "iD",
+        "nanaco",
+        "楽天ペイ",
+        "PayPay",
+        "交通系IC（Suica/PASMOなど）",
+        "d払い",
+        "WAON",
+        "LINE Pay",
+        "QUICPay"
+      ],
       "hasRecordingByGame": {
         "gundam-exvs": "no"
       },
@@ -1751,6 +2080,9 @@
       "updatedAt": "2026-07-21",
       "machineCounts": {
         "gundam-exvs": 8
+      },
+      "countBaselines": {
+        "gundam-exvs": 9
       },
       "businessHours": "10:00〜24:00",
       "floorByGame": {
@@ -1824,6 +2156,9 @@
       "machineCounts": {
         "gundam-exvs": 4
       },
+      "countBaselines": {
+        "gundam-exvs": 5
+      },
       "smoking": "yes",
       "hasRecordingByGame": {
         "gundam-exvs": "no"
@@ -1851,6 +2186,9 @@
       "updatedAt": "2026-08-01",
       "machineCounts": {
         "jojo-ls": 1
+      },
+      "countBaselines": {
+        "jojo-ls": 0
       }
     },
     "f805dfe8e425": {
@@ -1952,9 +2290,16 @@
       "machineCounts": {
         "gundam-exvs": 6
       },
+      "countBaselines": {
+        "gundam-exvs": 8
+      },
       "businessHours": "09:00〜23:00",
       "smoking": "no",
-      "payments": ["交通系IC（Suica/PASMOなど）", "WAON", "iD"],
+      "payments": [
+        "交通系IC（Suica/PASMOなど）",
+        "WAON",
+        "iD"
+      ],
       "hasRecordingByGame": {
         "jojo-ls": "no",
         "gundam-exvs": "no"
@@ -1971,6 +2316,9 @@
       "remarks": "イニブは筐体4台＋ライブモニター1台です（公式表記の5台はモニター込みの数）。ライブモニターはUSBメモリ・外付けHDDで録画可能です。",
       "machineCounts": {
         "gundam-exvs": 4
+      },
+      "countBaselines": {
+        "gundam-exvs": 5
       },
       "businessHours": "11:00〜24:00",
       "floor": "2階",
@@ -1992,7 +2340,15 @@
       "businessHours": "10:00〜23:30",
       "floor": "4階",
       "smoking": "yes",
-      "payments": ["PayPay", "nanaco", "楽天ペイ", "iD", "WAON", "交通系IC（Suica/PASMOなど）", "d払い"],
+      "payments": [
+        "PayPay",
+        "nanaco",
+        "楽天ペイ",
+        "iD",
+        "WAON",
+        "交通系IC（Suica/PASMOなど）",
+        "d払い"
+      ],
       "hasRecordingByGame": {
         "gundam-exvs": "yes"
       },
@@ -2097,7 +2453,9 @@
         "gundam-exvs": "3F"
       },
       "smoking": "yes",
-      "payments": ["交通系IC（Suica/PASMOなど）"],
+      "payments": [
+        "交通系IC（Suica/PASMOなど）"
+      ],
       "hasRecordingByGame": {
         "gundam-exvs": "no"
       },
@@ -2131,6 +2489,9 @@
       "machineCounts": {
         "gundam-exvs": 12
       },
+      "countBaselines": {
+        "gundam-exvs": 13
+      },
       "businessHours": "9:00〜24:00",
       "floorByGame": {
         "gundam-exvs": "B1F"
@@ -2150,12 +2511,24 @@
       "machineCounts": {
         "gundam-exvs": 6
       },
+      "countBaselines": {
+        "gundam-exvs": 7
+      },
       "businessHours": "9:30〜22:30",
       "floorByGame": {
         "gundam-exvs": "B1F"
       },
       "smoking": "no",
-      "payments": ["交通系IC（Suica/PASMOなど）", "iD", "nanaco", "WAON", "楽天ペイ", "d払い", "QUICPay", "PayPay"],
+      "payments": [
+        "交通系IC（Suica/PASMOなど）",
+        "iD",
+        "nanaco",
+        "WAON",
+        "楽天ペイ",
+        "d払い",
+        "QUICPay",
+        "PayPay"
+      ],
       "hasRecordingByGame": {
         "gundam-exvs": "no"
       },
@@ -2170,6 +2543,9 @@
       "remarks": "イニブの録画はターミナルからのみ利用できます。",
       "machineCounts": {
         "gundam-exvs": 4
+      },
+      "countBaselines": {
+        "gundam-exvs": 5
       },
       "businessHours": "9:00〜23:00",
       "floorByGame": {
@@ -2190,6 +2566,9 @@
       "machineCounts": {
         "gundam-exvs": 8
       },
+      "countBaselines": {
+        "gundam-exvs": 9
+      },
       "businessHours": "9:30〜22:30",
       "floorByGame": {
         "gundam-exvs": "B1F"
@@ -2208,6 +2587,9 @@
       "updatedAt": "2026-10-09",
       "machineCounts": {
         "jojo-ls": 2
+      },
+      "countBaselines": {
+        "jojo-ls": 3
       },
       "businessHours": "12:00〜21:00",
       "floor": "2階",
@@ -2231,6 +2613,9 @@
       "machineCounts": {
         "gundam-exvs": 14
       },
+      "countBaselines": {
+        "gundam-exvs": 16
+      },
       "businessHours": "09:00〜24:00",
       "floor": "2番街2階",
       "smoking": "no",
@@ -2250,6 +2635,10 @@
       "machineCounts": {
         "jojo-ls": 2,
         "gundam-exvs": 6
+      },
+      "countBaselines": {
+        "jojo-ls": 2,
+        "gundam-exvs": 7
       },
       "businessHours": "10:00〜23:00",
       "smoking": "yes",
@@ -2318,6 +2707,10 @@
         "jojo-ls": 2,
         "gundam-exvs": 20
       },
+      "countBaselines": {
+        "jojo-ls": 2,
+        "gundam-exvs": 24
+      },
       "businessHours": "9:00〜24:00",
       "floor": "3F",
       "smoking": "yes",
@@ -2336,6 +2729,9 @@
       "updatedAt": "2026-10-09",
       "machineCounts": {
         "gundam-exvs": 8
+      },
+      "countBaselines": {
+        "gundam-exvs": 10
       },
       "businessHours": "10:00〜23:00",
       "floorByGame": {
@@ -2368,6 +2764,9 @@
       "machineCounts": {
         "gundam-exvs": 0
       },
+      "countBaselines": {
+        "gundam-exvs": 5
+      },
       "hasRecordingByGame": {
         "gundam-exvs": "no"
       },
@@ -2382,6 +2781,10 @@
       "machineCounts": {
         "jojo-ls": 3,
         "gundam-exvs": 12
+      },
+      "countBaselines": {
+        "jojo-ls": 3,
+        "gundam-exvs": 13
       },
       "businessHours": "10:00〜23:00",
       "floor": "3F",
@@ -2413,6 +2816,9 @@
       "machineCounts": {
         "gundam-exvs": 8
       },
+      "countBaselines": {
+        "gundam-exvs": 9
+      },
       "businessHours": "14:00〜24:00",
       "floorByGame": {
         "gundam-exvs": "1F"
@@ -2442,6 +2848,9 @@
       "updatedAt": "2026-11-03",
       "remarks": "イニブは筐体4台＋ターミナル1台の計5台です。",
       "machineCounts": {
+        "gundam-exvs": 5
+      },
+      "countBaselines": {
         "gundam-exvs": 5
       },
       "businessHours": "9:00〜24:00",
@@ -2488,6 +2897,9 @@
       "closed": true,
       "machineCounts": {
         "gundam-exvs": 0
+      },
+      "countBaselines": {
+        "gundam-exvs": 7
       }
     },
     "07c125dc30cf": {
@@ -2506,6 +2918,9 @@
       "businessHours": "10:00〜24:00",
       "machineCounts": {
         "jojo-ls": 0
+      },
+      "countBaselines": {
+        "jojo-ls": 3
       }
     },
     "1d5eb4f03924": {
