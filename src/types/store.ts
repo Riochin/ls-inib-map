@@ -1,3 +1,5 @@
+import type { AttributeSourceKey } from '@/lib/store-attributes'
+
 /** ゲームタイトル識別子 */
 export type GameTitle = 'jojo-ls' | 'gundam-exvs'
 
@@ -13,15 +15,11 @@ export type Provenance = 'official' | 'auto-scrape' | 'user-report' | 'admin'
 /** 三値状態（あり / なし / 不明） */
 export type TernaryState = 'yes' | 'no' | 'unknown'
 
-/** 店舗属性キー（attributeSources で provenance を管理する対象） */
-export type StoreAttributeKey =
-  | 'businessHours'
-  | 'floor'
-  | 'smoking'
-  | 'payments'
-  | 'hasRecordingByGame'
-  | 'hasStreamingByGame'
-  | 'officialUrl'
+/**
+ * 店舗属性キー（attributeSources で provenance を管理する対象）。
+ * 属性レジストリ（`@/lib/store-attributes`）の `sourceKey` から導出する。
+ */
+export type StoreAttributeKey = AttributeSourceKey
 
 /** 設置店舗 */
 export interface Store {

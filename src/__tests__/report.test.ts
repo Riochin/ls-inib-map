@@ -205,3 +205,106 @@ describe('定数', () => {
     expect(FEEDBACK_LABEL).toBe('アプリ要望')
   })
 })
+
+// --------  Issue 本文スナップショット（ver2.6 属性レジストリ化の前後で一致させる基準）  --------
+
+describe('buildStructuredStoreIssue — 本文スナップショット', () => {
+  const base: StructuredStoreInput = {
+    storeId: 'store-001',
+    storeName: 'テスト店',
+    storeAddress: '東京都新宿区1-1-1',
+  }
+
+  it('全項目入り（両ゲーム同フロア）', () => {
+    const { title, body } = buildStructuredStoreIssue({
+      ...base,
+      reporter: 'myid',
+      noMention: true,
+      machineCountsJojoLs: 3,
+      machineCountsGundamExvs: 0,
+      businessHours: '10:00〜23:00',
+      floorJojoLs: '2F',
+      floorGundamExvs: '2F',
+      smoking: 'unknown',
+      payments: ['PayPay', 'iD'],
+      hasRecordingJojoLs: 'yes',
+      hasRecordingGundamExvs: 'yes',
+      hasStreamingJojoLs: 'no',
+      hasStreamingGundamExvs: 'unknown',
+      correctionType: '位置ズレ',
+      correctionNote: 'ピンが南側にずれています',
+    })
+    expect(title).toMatchInlineSnapshot(`"[ユーザー報告] テスト店 — 店舗情報の提供"`)
+    expect(body).toMatchInlineSnapshot(`
+      "[自動投稿] アプリ内「情報を提供」フォームからの報告です。
+
+      - store-id: store-001
+      - 店名: テスト店
+      - 住所: 東京都新宿区1-1-1
+      - SNS ID: myid
+      - 確定可否: SNS ID提供あり → 確定可能
+      - お礼リプライ: 不可（メンション希望なし）
+
+      ## 提案値一覧
+      | 項目 | 提案値 |
+      |------|--------|
+      | ジョジョ台数 | 3 |
+      | イニブ台数 | 0 |
+      | 営業時間 | 10:00〜23:00 |
+      | フロア | 2F |
+      | 喫煙所 | 不明 |
+      | 決済/電子マネー | PayPay, iD |
+      | 録画台（ラスサバ） | あり |
+      | 録画台（イニブ） | あり |
+      | 配信台（ラスサバ） | なし |
+      | 配信台（イニブ） | 不明 |
+      | 修正・通報種別 | 位置ズレ |
+      | 修正・通報メモ | ピンが南側にずれています |"
+    `)
+  })
+
+  it('別フロア・片方のゲームだけの設備', () => {
+    const { body } = buildStructuredStoreIssue({
+      ...base,
+      floorJojoLs: '2F',
+      floorGundamExvs: '3F',
+      hasStreamingGundamExvs: 'yes',
+    })
+    expect(body).toMatchInlineSnapshot(`
+      "[自動投稿] アプリ内「情報を提供」フォームからの報告です。
+
+      - store-id: store-001
+      - 店名: テスト店
+      - 住所: 東京都新宿区1-1-1
+      - SNS ID: （未記入）
+      - 確定可否: SNS ID未記入 → 未確認（みんなの報告）扱い
+      - お礼リプライ: —
+
+      ## 提案値一覧
+      | 項目 | 提案値 |
+      |------|--------|
+      | フロア（ラスサバ） | 2F |
+      | フロア（イニブ） | 3F |
+      | 配信台（イニブ） | あり |"
+    `)
+  })
+
+  it('片方のゲームのフロアだけ・決済は空配列', () => {
+    const { body } = buildStructuredStoreIssue({ ...base, floorGundamExvs: '4F', payments: [] })
+    expect(body).toMatchInlineSnapshot(`
+      "[自動投稿] アプリ内「情報を提供」フォームからの報告です。
+
+      - store-id: store-001
+      - 店名: テスト店
+      - 住所: 東京都新宿区1-1-1
+      - SNS ID: （未記入）
+      - 確定可否: SNS ID未記入 → 未確認（みんなの報告）扱い
+      - お礼リプライ: —
+
+      ## 提案値一覧
+      | 項目 | 提案値 |
+      |------|--------|
+      | フロア（イニブ） | 4F |"
+    `)
+  })
+})
