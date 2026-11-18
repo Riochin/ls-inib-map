@@ -92,6 +92,11 @@ export function AboutContent({ lastUpdated, totalStores, prefectureCount, popula
                   {n.full}（{n.short}）
                 </dt>
                 <dd className="text-xs text-gray-500 mt-0.5">別名・表記：{n.aliases.join('・')}</dd>
+                {n.predecessor && (
+                  <dd className="text-xs text-gray-500 mt-0.5">
+                    前作：{n.predecessor.full}（{n.predecessor.short}）
+                  </dd>
+                )}
               </div>
             )
           })}

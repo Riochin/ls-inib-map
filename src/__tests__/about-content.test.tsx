@@ -56,7 +56,13 @@ describe('AboutContent — 正式名称の展開', () => {
   })
 
   it('別名（検索表記）を出力する', () => {
-    expect(render()).toContain('EXVS2')
+    const html = render()
+    expect(html).toContain('EXVS2')
+    expect(html).toContain('インフィニットブースト')
+  })
+
+  it('前作を別名とは分けて出力する', () => {
+    expect(render()).toContain('前作：機動戦士ガンダム EXTREME VS.2 OVERBOOST（オバブ）')
   })
 })
 

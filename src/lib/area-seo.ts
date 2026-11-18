@@ -1,6 +1,6 @@
 import type { AreaDetail } from '@/lib/area'
 import type { GameTitle, Store } from '@/types/store'
-import { SITE_URL } from '@/lib/site-config'
+import { SITE_URL, gameShortWithAliases } from '@/lib/site-config'
 
 /**
  * エリア（県）ページの SEO 用ヘルパー（純関数）。
@@ -21,13 +21,21 @@ export function areaTitle(prefecture: string): string {
   return `${prefecture}のラスサバ・イニブ 設置店舗一覧`
 }
 
-/** メタ description: 県名と件数（営業中店舗数・タイトル別）を含む。 */
+/**
+ * description 用のタイトル名（例: ラスサバ（ジョジョ ラストサバイバー）・イニブ（インフィニットブースト・エクバ））。
+ * 別名は {@link GAME_NAMES} の先頭から使う（並び順＝検索の多い順）。
+ */
+function titlesWithAliases(): string {
+  return `${gameShortWithAliases('jojo-ls', 1)}・${gameShortWithAliases('gundam-exvs', 2)}`
+}
+
+/** メタ description: 県名と件数（営業中店舗数・タイトル別）を含む。「設置・稼働店舗」で両方の言い方を含める。 */
 export function areaDescription(detail: AreaDetail): string {
   const inib = detail.storesByGame['gundam-exvs'].length
   const lasaba = detail.storesByGame['jojo-ls'].length
   return (
-    `${detail.prefecture}のラスサバ（ジョジョ ラストサバイバー）・イニブ（ガンダム EXVS2）` +
-    `設置店舗一覧。営業中${detail.total}店（イニブ${inib}店・ラスサバ${lasaba}店）の` +
+    `${detail.prefecture}の${titlesWithAliases()}の` +
+    `設置・稼働店舗一覧。営業中${detail.total}店（イニブ${inib}店・ラスサバ${lasaba}店）の` +
     `店名・住所・台数を掲載。`
   )
 }
@@ -48,8 +56,8 @@ export function areaHubTitle(): string {
 /** ハブページのメタ description（総店舗数・都道府県数を含む）。 */
 export function areaHubDescription(totalStores: number, prefectureCount: number): string {
   return (
-    `全国${prefectureCount}都道府県・計${totalStores}店のラスサバ（ジョジョ ラストサバイバー）・` +
-    `イニブ（ガンダム EXVS2）営業中店舗を都道府県別に掲載。地名から設置店舗一覧へアクセスできます。`
+    `全国${prefectureCount}都道府県・計${totalStores}店の${titlesWithAliases()}の` +
+    `設置・稼働店舗（営業中）を都道府県別に掲載。地名から設置店舗一覧へアクセスできます。`
   )
 }
 

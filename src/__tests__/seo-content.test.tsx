@@ -87,3 +87,12 @@ describe('SeoContent — タイトル名', () => {
     )
   })
 })
+
+describe('SeoContent — 隠しテキストに別名を足さない', () => {
+  it('読み上げ用本文に別名・前作の通称を出さない', () => {
+    const html = render()
+    for (const word of ['インフィニットブースト', 'エクバ', 'EXVS2IB', 'オバブ']) {
+      expect(html).not.toContain(word)
+    }
+  })
+})

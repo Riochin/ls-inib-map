@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import { GoogleAnalytics } from '@next/third-parties/google'
 import { SITE_URL } from '@/lib/site-config'
-import { SITE_NAME, SITE_DESCRIPTION as DESCRIPTION, buildSiteJsonLd } from '@/lib/site-seo'
+import { SITE_NAME, SITE_DESCRIPTION as DESCRIPTION, SITE_KEYWORDS, buildSiteJsonLd } from '@/lib/site-seo'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -11,21 +11,7 @@ export const metadata: Metadata = {
     template: '%s｜ラスサバ・イニブ 設置店舗マップ',
   },
   description: DESCRIPTION,
-  keywords: [
-    'ラスサバ',
-    'ラストサバイバー',
-    'ジョジョの奇妙な冒険 ラストサバイバー',
-    'イニブ',
-    '機動戦士ガンダム EXTREME VS.2 INFINITEBOOST',
-    'ガンダム EXVS2',
-    '設置店舗',
-    '設置店',
-    '筐体',
-    'ゲームセンター',
-    'マップ',
-    '地図検索',
-    'ラストサバイニブ',
-  ],
+  keywords: SITE_KEYWORDS,
   alternates: {
     canonical: '/',
   },

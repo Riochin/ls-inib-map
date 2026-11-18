@@ -21,31 +21,58 @@ export interface GameNameInfo {
   short: string
   /** 正式名称。 */
   full: string
-  /** 別名・英語表記・よくある検索表記（重複なし）。 */
+  /** 別名・英語表記・よくある検索表記（重複なし）。並び順＝優先度（description には先頭から使う）。 */
   aliases: string[]
+  /** 前作（別名ではない。`/about` の対応タイトル欄に事実として出すだけ）。 */
+  predecessor?: { short: string; full: string }
 }
 
 /**
- * 対応タイトルの名称表。正式名は layout.tsx / SeoContent.tsx の表記と揃える。
- * 別名は「実際に検索されうる正しい表記」のみを入れる（誤った別名で誤誘導しない）。
+ * 対応タイトルの名称表。トップ・エリア・/about・manifest の名称はすべてここから作る。
+ *
+ * 別名は「実際に検索されている正しい表記」のみを入れる（誤った別名で誤誘導しない）。
+ * 前作の通称（オバブ）は検索されていても別名には入れず、`predecessor` に分ける。
+ * 並び順は Search Console の検索クエリ（2026-11-18 時点・過去3か月）の表示回数順。
+ *
+ * 別名を出す場所は、隠しテキストや「画面に無い内容のマークアップ」にならない所に限る:
+ * メタ description（先頭の1〜2個）と、別名が画面に出ている `/about` の構造化データ。
+ * トップの `sr-only` 本文とトップの構造化データには入れない。
  */
 export const GAME_NAMES: Record<GameTitle, GameNameInfo> = {
   'gundam-exvs': {
     short: 'イニブ',
     full: '機動戦士ガンダム EXTREME VS.2 INFINITEBOOST',
-    aliases: ['ガンダム EXVS2', 'エクバ2', 'EXVS2', 'INFINITE BOOST'],
+    aliases: [
+      'インフィニットブースト',
+      'エクバ',
+      'EXVS2IB',
+      'ガンダム EXVS2',
+      'エクバ2',
+      'EXVS2',
+      'INFINITE BOOST',
+    ],
+    predecessor: { short: 'オバブ', full: '機動戦士ガンダム EXTREME VS.2 OVERBOOST' },
   },
   'jojo-ls': {
     short: 'ラスサバ',
     full: 'ジョジョの奇妙な冒険 ラストサバイバー',
-    aliases: ['ラストサバイバー', 'ジョジョ ラスサバ', 'JOJO ラストサバイバー'],
+    aliases: ['ジョジョ ラストサバイバー', 'ラストサバイバー', 'ジョジョ ラスサバ', 'JOJO ラストサバイバー'],
   },
 }
 
-/** 「正式名称（通称）」の表記を返すヘルパー（例: ○○○（イニブ））。 */
-export function gameFullWithShort(game: GameTitle): string {
+/**
+ * 「正式名称（通称）」の表記を返すヘルパー（例: ○○○（イニブ））。
+ * `aliasCount` を渡すと、通称のあとに別名を先頭から足す（例: ○○○（イニブ・インフィニットブースト））。
+ */
+export function gameFullWithShort(game: GameTitle, aliasCount = 0): string {
   const n = GAME_NAMES[game]
-  return `${n.full}（${n.short}）`
+  return `${n.full}（${[n.short, ...n.aliases.slice(0, aliasCount)].join('・')}）`
+}
+
+/** 「通称（別名・別名）」の表記を返すヘルパー（例: イニブ（インフィニットブースト・エクバ））。 */
+export function gameShortWithAliases(game: GameTitle, aliasCount: number): string {
+  const n = GAME_NAMES[game]
+  return `${n.short}（${n.aliases.slice(0, aliasCount).join('・')}）`
 }
 
 /** 開発者の表示名。 */

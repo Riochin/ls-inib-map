@@ -44,6 +44,13 @@ describe('areaDescription', () => {
     expect(desc).toContain('東京都')
     expect(desc).toContain('2店')
   })
+
+  it('検索の多い別名と「設置・稼働店舗」を含む', () => {
+    expect(areaDescription(tokyoDetail)).toBe(
+      '東京都のラスサバ（ジョジョ ラストサバイバー）・イニブ（インフィニットブースト・エクバ）の' +
+        '設置・稼働店舗一覧。営業中2店（イニブ2店・ラスサバ1店）の店名・住所・台数を掲載。',
+    )
+  })
 })
 
 describe('areaCanonicalPath', () => {
@@ -65,6 +72,13 @@ describe('areaHubDescription', () => {
     const desc = areaHubDescription(123, 30)
     expect(desc).toContain('123')
     expect(desc).toContain('30')
+  })
+
+  it('検索の多い別名と「稼働店舗」を含む', () => {
+    const desc = areaHubDescription(123, 30)
+    expect(desc).toContain('イニブ（インフィニットブースト・エクバ）')
+    expect(desc).toContain('ラスサバ（ジョジョ ラストサバイバー）')
+    expect(desc).toContain('稼働店舗')
   })
 })
 
