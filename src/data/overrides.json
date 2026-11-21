@@ -2942,6 +2942,36 @@
       "hasRecordingByGame": {
         "gundam-exvs": "yes"
       }
+    },
+    "c618ee9dbaba": {
+      "source": "user-report",
+      "note": "アピナ八王子みなみ野 Issue #547（SNS未記入・未確認）: イニブ 3F・録画台あり・配信台なし。",
+      "updatedAt": "2026-11-21",
+      "floorByGame": {
+        "gundam-exvs": "3F"
+      },
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "8dcaeca955a3": {
+      "source": "user-report",
+      "note": "エースレーン堅田 Issue #545（SNS未記入・未確認）: ラスサバ4台・イニブ4台（マップ ラスサバ7/イニブ6 → 修正）、営業時間10:00〜23:00、2F。ラスサバは店舗より早く終了との補足あり。",
+      "updatedAt": "2026-11-21",
+      "remarks": "店舗の営業は23:00まで（土曜は23:30まで）ですが、ラスサバは22:15まで（土曜は23:15まで）との情報があります。",
+      "machineCounts": {
+        "jojo-ls": 4,
+        "gundam-exvs": 4
+      },
+      "countBaselines": {
+        "jojo-ls": 7,
+        "gundam-exvs": 6
+      },
+      "businessHours": "10:00〜23:00",
+      "floor": "2F"
     }
   }
 }
