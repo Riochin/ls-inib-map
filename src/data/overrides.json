@@ -223,15 +223,15 @@
     },
     "3ec1f3534a2a": {
       "source": "admin",
-      "note": "福井レジャーランド板垣 ピン位置修正（Issue #81）。住所ジオコードが南へズレていたのを店名ROOFTOP（下馬3丁目・交差点付近）へ補正。@kiyo_general。ラスサバ2台・イニブ18台・喫煙所あり（Issue #123/#134）。v2.3.5: 配信台/録画台をタイトル別化。Issue #166で再報告（録画ラスサバなし/イニブ不明・配信ラスサバなし/イニブ不明、SNS未記入＝未確認）。ラスサバ側を反映、イニブ側は不明のまま。Issue #473（SNS未記入・未確認）: 録画台(ラスサバ)あり（旧値: なし→新報告を採用）。喫煙所あり・配信台(ラスサバ)なしは既存値と一致、イニブの録画/配信は不明のため据置。Issue #520（SNS提供=確定・お礼不可）: 営業時間10:00〜24:00・フロア ワンフロア（新規）。喫煙所あり・録画台(ラスサバ)あり・配信台(ラスサバ)なしは既存値と一致（録画台(ラスサバ)はSNS提供で確定扱いに）、イニブの録画/配信は不明のため据置。",
-      "updatedAt": "2026-11-03",
+      "note": "福井レジャーランド板垣 ピン位置修正（Issue #81）。住所ジオコードが南へズレていたのを店名ROOFTOP（下馬3丁目・交差点付近）へ補正。@kiyo_general。ラスサバ2台・イニブ18台・喫煙所あり（Issue #123/#134）。v2.3.5: 配信台/録画台をタイトル別化。Issue #166で再報告（録画ラスサバなし/イニブ不明・配信ラスサバなし/イニブ不明、SNS未記入＝未確認）。ラスサバ側を反映、イニブ側は不明のまま。Issue #473（SNS未記入・未確認）: 録画台(ラスサバ)あり（旧値: なし→新報告を採用）。喫煙所あり・配信台(ラスサバ)なしは既存値と一致、イニブの録画/配信は不明のため据置。Issue #520（SNS提供=確定・お礼不可）: 営業時間10:00〜24:00・フロア ワンフロア（新規）。喫煙所あり・録画台(ラスサバ)あり・配信台(ラスサバ)なしは既存値と一致（録画台(ラスサバ)はSNS提供で確定扱いに）、イニブの録画/配信は不明のため据置。 Issue #554, #556（SNS提供=確定・お礼は#556で不可）: ラスサバ2台・イニブ16台（旧値: 18台→新報告を採用）。営業時間10:00〜24:00・フロア ワンフロア・喫煙所あり・録画台(ラスサバ/イニブ)あり・配信台(ラスサバ)なし・配信台(イニブ)あり。",
+      "updatedAt": "2026-11-28",
       "lat": 36.0422008,
       "lng": 136.2336664,
       "businessHours": "10:00〜24:00",
       "floor": "ワンフロア",
       "machineCounts": {
         "jojo-ls": 2,
-        "gundam-exvs": 18
+        "gundam-exvs": 16
       },
       "countBaselines": {
         "jojo-ls": 2,
@@ -240,12 +240,13 @@
       "smoking": "yes",
       "hasRecordingByGame": {
         "jojo-ls": "yes",
-        "gundam-exvs": "unknown"
+        "gundam-exvs": "yes"
       },
       "hasStreamingByGame": {
         "jojo-ls": "no",
-        "gundam-exvs": "unknown"
-      }
+        "gundam-exvs": "yes"
+      },
+      "remarks": "イニブは16台＋ライブモニター2台（6台列と5台+5台列にそれぞれライブモニター1台接続、いずれも録画可）。店舗奥側の5台列の1番奥に配信台あり。"
     },
     "40beebc2cba3": {
       "source": "user-report",
@@ -750,13 +751,25 @@
     },
     "cf6a353b751e": {
       "source": "admin",
-      "note": "GiGO 福井 イニブ筐体4台＋リプレイ1台（公式5→筐体4, Issue #79）。@kiyo_general。メンション不可（お礼希望なし）。",
-      "updatedAt": "2026-06-12",
+      "note": "GiGO 福井 イニブ筐体4台＋リプレイ1台（公式5→筐体4, Issue #79）。@kiyo_general。メンション不可（お礼希望なし）。 Issue #552, #553（SNS提供=確定・お礼不可）: イニブ4台（既存値と一致）、喫煙所あり、録画台/配信台(イニブ)なし。営業時間は#553の新しい報告6:00〜24:00を採用（#552は平日10:00〜24:00・休日9:00〜24:00）。フロア ワンフロア（2階）。",
+      "updatedAt": "2026-11-28",
       "machineCounts": {
         "gundam-exvs": 4
       },
       "countBaselines": {
         "gundam-exvs": 5
+      },
+      "remarks": "イニブは2階。店舗南側（福井市街地方向）の他のビデオゲームコーナーではなく、北側（金沢方向）のボウリングレーン裏側にあります。",
+      "businessHours": "6:00〜24:00",
+      "floorByGame": {
+        "gundam-exvs": "ワンフロア（2階）"
+      },
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
       }
     },
     "d3d5ea015d5f": {
@@ -2942,6 +2955,81 @@
       "hasRecordingByGame": {
         "gundam-exvs": "yes"
       }
+    },
+    "3a1c5006d51a": {
+      "source": "admin",
+      "note": "GiGO 武生 Issue #555（SNS提供=確定・お礼不可）: イニブ4台（公式5→筐体4+ライブモニター1）、営業時間10:00〜24:00、フロア ワンフロア、喫煙所あり、録画台/配信台(イニブ)なし。",
+      "remarks": "イニブは4台＋ライブモニター1台。",
+      "updatedAt": "2026-11-28",
+      "businessHours": "10:00〜24:00",
+      "floorByGame": {
+        "gundam-exvs": "ワンフロア"
+      },
+      "machineCounts": {
+        "gundam-exvs": 4
+      },
+      "countBaselines": {
+        "gundam-exvs": 5
+      },
+      "smoking": "yes",
+      "hasRecordingByGame": {
+        "gundam-exvs": "no"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "15221ecd6288": {
+      "source": "user-report",
+      "note": "イミグランデ溝口2 Issue #549 (SNS未記入=未確認): 営業時間9:00〜24:00、フロア(イニブ)4F、喫煙所なし、録画台/配信台(イニブ)あり。",
+      "updatedAt": "2026-11-28",
+      "businessHours": "9:00〜24:00",
+      "floorByGame": {
+        "gundam-exvs": "4F"
+      },
+      "smoking": "no",
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "yes"
+      }
+    },
+    "c618ee9dbaba": {
+      "source": "user-report",
+      "note": "アピナ八王子みなみ野 Issue #547 (SNS未記入=未確認): フロア(イニブ)3F、録画台(イニブ)あり、配信台(イニブ)なし。",
+      "updatedAt": "2026-11-28",
+      "floorByGame": {
+        "gundam-exvs": "3F"
+      },
+      "hasRecordingByGame": {
+        "gundam-exvs": "yes"
+      },
+      "hasStreamingByGame": {
+        "gundam-exvs": "no"
+      }
+    },
+    "8dcaeca955a3": {
+      "source": "user-report",
+      "note": "エースレーン堅田 Issue #545 (SNS未記入=未確認): ラスサバ4台・イニブ4台（公式7/6）、営業時間10:00〜23:00（土曜23:30まで）、フロア2F。",
+      "remarks": "店舗の営業時間は23:00まで（土曜は23:30まで）ですが、ラスサバは22:15まで（土曜は23:15まで）の稼働です。",
+      "updatedAt": "2026-11-28",
+      "businessHours": "10:00〜23:00（土曜は〜23:30）",
+      "floor": "2F",
+      "machineCounts": {
+        "jojo-ls": 4,
+        "gundam-exvs": 4
+      },
+      "countBaselines": {
+        "jojo-ls": 7,
+        "gundam-exvs": 6
+      }
+    },
+    "4abedbaa3687": {
+      "source": "user-report",
+      "note": "GiGO 調布 Issue #558 (SNS未記入=未確認): 閉店・移設の報告、メモ「撤去」。伝聞扱いのため閉店フラグ・台数は変更せず remarks のみ。",
+      "remarks": "ユーザー報告により、筐体が撤去されたとの情報があります（未確認）。",
+      "updatedAt": "2026-11-28"
     }
   }
 }
